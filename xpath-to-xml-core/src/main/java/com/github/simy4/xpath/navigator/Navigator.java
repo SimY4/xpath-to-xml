@@ -22,8 +22,6 @@ public interface Navigator<N> {
 
     NodeWrapper<N> createLiteral(String literal);
 
-    NodeWrapper<N> clone(NodeWrapper<N> prototype) throws XmlBuilderException;
-
     void setText(NodeWrapper<N> node, String text) throws XmlBuilderException;
 
     void append(NodeWrapper<N> parentNode, NodeWrapper<N> child) throws XmlBuilderException;

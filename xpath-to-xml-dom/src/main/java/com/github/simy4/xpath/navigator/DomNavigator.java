@@ -86,12 +86,6 @@ final class DomNavigator implements Navigator<Node> {
     }
 
     @Override
-    public NodeWrapper<Node> clone(NodeWrapper<Node> prototype) throws XmlBuilderException {
-        final Node clone = prototype.getWrappedNode().cloneNode(true);
-        return new DomNodeWrapper(clone);
-    }
-
-    @Override
     public void setText(NodeWrapper<Node> node, String text) {
         try {
             node.getWrappedNode().setTextContent(text);

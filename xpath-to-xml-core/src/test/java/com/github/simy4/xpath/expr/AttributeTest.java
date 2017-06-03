@@ -25,7 +25,7 @@ public class AttributeTest {
     @Mock
     private Navigator<String> navigator;
 
-    private final StepExpr attribute = new Attribute(new QName("attr"));
+    private StepExpr attribute = new Attribute(new QName("attr"));
 
     @Test
     public void shouldMatchAttributesFromAListOfChildNodes() {
@@ -45,6 +45,20 @@ public class AttributeTest {
         NodeWrapper<String> newAttribute = attribute.createNode(navigator);
         assertThat(newAttribute).isEqualTo(wrappedAttribute);
         verify(navigator).createAttribute(attributeName);
+    }
+
+    @Test(expected = XmlBuilderException.class)
+    public void shouldThrowForAttributesWithWildcardNamespace() {
+        attribute = new Attribute(new QName("*", "attr"));
+
+        attribute.createNode(navigator);
+    }
+
+    @Test(expected = XmlBuilderException.class)
+    public void shouldThrowForAttributesWithWildcardLocalPart() {
+        attribute = new Attribute(new QName("http://www.example.com/my", "*", "my"));
+
+        attribute.createNode(navigator);
     }
 
     @Test(expected = XmlBuilderException.class)

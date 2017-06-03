@@ -25,7 +25,7 @@ public class ElementTest {
     @Mock
     private Navigator<String> navigator;
 
-    private final StepExpr element = new Element(new QName("elem"));
+    private StepExpr element = new Element(new QName("elem"));
 
     @Test
     public void shouldMatchElementsFromAListOfChildNodes() {
@@ -45,6 +45,20 @@ public class ElementTest {
         NodeWrapper<String> newElement = element.createNode(navigator);
         assertThat(newElement).isEqualTo(wrappedElement);
         verify(navigator).createElement(elementName);
+    }
+
+    @Test(expected = XmlBuilderException.class)
+    public void shouldThrowForAttributesWithWildcardNamespace() {
+        element = new Element(new QName("*", "attr"));
+
+        element.createNode(navigator);
+    }
+
+    @Test(expected = XmlBuilderException.class)
+    public void shouldThrowForAttributesWithWildcardLocalPart() {
+        element = new Element(new QName("http://www.example.com/my", "*", "my"));
+
+        element.createNode(navigator);
     }
 
     @Test(expected = XmlBuilderException.class)

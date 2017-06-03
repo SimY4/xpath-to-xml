@@ -1,5 +1,6 @@
 package com.github.simy4.xpath.expr;
 
+import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.NodeWrapper;
 
@@ -26,6 +27,9 @@ public class Element implements StepExpr {
 
     @Override
     public <N> NodeWrapper<N> createNode(Navigator<N> navigator) {
+        if ("*".equals(element.getNamespaceURI()) || "*".equals(element.getLocalPart())) {
+            throw new XmlBuilderException("Wildcard attribute cannot be created");
+        }
         return navigator.createElement(element);
     }
 
