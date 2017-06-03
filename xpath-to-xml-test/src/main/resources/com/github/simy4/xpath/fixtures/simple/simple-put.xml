@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<breakfast_menu>
+    <food>
+        <name>Belgian Waffles</name>
+        <price/>
+        <description/>
+        <calories/>
+    </food>
+    <food>
+        <name>Strawberry Belgian Waffles</name>
+        <price/>
+        <description/>
+        <calories/>
+    </food>
+    <food>
+        <name>Berry-Berry Belgian Waffles</name>
+        <price/>
+        <description/>
+        <calories/>
+    </food>
+    <food>
+        <name>French Toast</name>
+        <price/>
+        <description/>
+        <calories/>
+    </food>
+    <food>
+        <name>Homestyle Breakfast</name>
+        <price/>
+        <description/>
+        <calories/>
+    </food>
+</breakfast_menu>

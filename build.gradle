@@ -1,0 +1,51 @@
+allprojects {
+    group 'com.github.simy4'
+    version '0.1-SNAPSHOT'
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'checkstyle'
+    apply plugin: 'findbugs'
+
+    sourceCompatibility = JavaVersion.VERSION_1_6
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        checkstyle 'com.puppycrawl.tools:checkstyle:7.8'
+        compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+    }
+
+    checkstyle {
+        configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+        showViolations = true
+        ignoreFailures = false
+    }
+
+    findbugs {
+        toolVersion = "3.0.1"
+        sourceSets = [sourceSets.main]
+        ignoreFailures = true
+        reportsDir = file("$project.buildDir/reports/findbugs")
+        effort = "max"
+        reportLevel = "high"
+    }
+
+    findbugsMain {
+        reports {
+            xml.enabled = false
+            html.enabled = true
+        }
+    }
+
+    findbugsTest {
+        reports {
+            xml.enabled = false
+            html.enabled = true
+        }
+    }
+
+}
