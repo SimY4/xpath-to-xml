@@ -3,6 +3,7 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.NodeWrapper;
 
+import java.util.Collections;
 import java.util.List;
 
 public class NumberExpr implements Expr {
@@ -15,8 +16,7 @@ public class NumberExpr implements Expr {
 
     @Override
     public <N> List<NodeWrapper<N>> apply(Navigator<N> navigator, NodeWrapper<N> xml, boolean greedy) {
-        final NodeWrapper<N> parent = navigator.parentOf(xml);
-        return null;
+        return Collections.<NodeWrapper<N>>singletonList(new NodeWrapper.NumberNodeWrapper<N>(number));
     }
 
     @Override

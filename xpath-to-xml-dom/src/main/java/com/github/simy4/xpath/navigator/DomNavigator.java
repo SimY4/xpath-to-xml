@@ -81,11 +81,6 @@ final class DomNavigator implements Navigator<Node> {
     }
 
     @Override
-    public NodeWrapper<Node> createLiteral(String literal) {
-        return new DomNodeWrapper(document.createTextNode(literal));
-    }
-
-    @Override
     public void setText(NodeWrapper<Node> node, String text) {
         try {
             node.getWrappedNode().setTextContent(text);

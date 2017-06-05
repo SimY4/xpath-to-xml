@@ -13,21 +13,22 @@ import static com.github.simy4.xpath.utils.StringNodeWrapper.node;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
-public class LiteralExprTest {
+public class NumberExprTest {
 
-    @Mock private Navigator<String> navigator;
+    @Mock
+    private Navigator<String> navigator;
 
-    private final Expr literalExpr = new LiteralExpr("value");
+    private final Expr numberExpr = new NumberExpr(2.0);
 
     @Test
-    public void shouldAlwaysReturnSingleLiteralNode() {
-        List<NodeWrapper<String>> result = literalExpr.apply(navigator, node("xml"), false);
-        assertThat(result).extracting("literal", String.class).containsExactly("value");
+    public void shouldAlwaysReturnSingleNumberNode() {
+        List<NodeWrapper<String>> result = numberExpr.apply(navigator, node("xml"), false);
+        assertThat(result).extracting("number", Number.class).containsExactly(2.0);
     }
 
     @Test
     public void testToString() {
-        assertThat(literalExpr).hasToString("'value'");
+        assertThat(numberExpr).hasToString("2.0");
     }
 
 }

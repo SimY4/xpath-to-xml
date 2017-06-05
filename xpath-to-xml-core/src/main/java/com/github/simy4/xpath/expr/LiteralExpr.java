@@ -20,7 +20,7 @@ public class LiteralExpr implements Expr {
 
     @Override
     public <N> List<NodeWrapper<N>> apply(Navigator<N> navigator, NodeWrapper<N> xml, boolean greedy) {
-        return Collections.singletonList(navigator.createLiteral(literal));
+        return Collections.<NodeWrapper<N>>singletonList(new NodeWrapper.LiteralNodeWrapper<N>(literal));
     }
 
     @Override

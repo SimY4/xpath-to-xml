@@ -20,8 +20,6 @@ public interface Navigator<N> {
 
     NodeWrapper<N> createElement(QName element) throws XmlBuilderException;
 
-    NodeWrapper<N> createLiteral(String literal);
-
     void setText(NodeWrapper<N> node, String text) throws XmlBuilderException;
 
     void append(NodeWrapper<N> parentNode, NodeWrapper<N> child) throws XmlBuilderException;
