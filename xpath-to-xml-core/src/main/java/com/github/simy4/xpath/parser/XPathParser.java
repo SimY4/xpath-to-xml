@@ -16,10 +16,12 @@ import com.github.simy4.xpath.parser.Token.Type;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.NotThreadSafe;
 import javax.annotation.concurrent.ThreadSafe;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
+import javax.xml.xpath.XPathExpressionException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,9 +46,9 @@ public class XPathParser {
      *
      * @param xpath XPath to parse
      * @return resulting {@link Expr}
-     * @throws XPathParserException if xpath cannot be parsed
+     * @throws XPathExpressionException if xpath cannot be parsed
      */
-    public Expr parse(String xpath) throws XPathParserException {
+    public Expr parse(String xpath) throws XPathExpressionException {
         final Context context = new Context(xpath);
         Expr expr = Expr(context);
         if (context.hasMoreElements()) {
@@ -55,11 +57,11 @@ public class XPathParser {
         return expr;
     }
 
-    private Expr Expr(Context context) throws XPathParserException {
+    private Expr Expr(Context context) throws XPathExpressionException {
         return ComparisonExpr(context);
     }
 
-    private Expr ComparisonExpr(Context context) throws XPathParserException {
+    private Expr ComparisonExpr(Context context) throws XPathExpressionException {
         Expr left = ValueExpr(context);
         switch (context.tokenAt(1).getType()) {
             case EQUALS:
@@ -71,7 +73,7 @@ public class XPathParser {
         }
     }
 
-    private Expr ValueExpr(Context context) throws XPathParserException {
+    private Expr ValueExpr(Context context) throws XPathExpressionException {
         switch (context.tokenAt(1).getType()) {
             case LITERAL:
                 String token = context.match(Type.LITERAL).getToken();
@@ -84,7 +86,7 @@ public class XPathParser {
         }
     }
 
-    private Expr PathExpr(Context context) throws XPathParserException {
+    private Expr PathExpr(Context context) throws XPathExpressionException {
         final List<StepExpr> pathExpr = new ArrayList<StepExpr>();
         switch (context.tokenAt(1).getType()) {
             case SLASH:
@@ -113,7 +115,7 @@ public class XPathParser {
         return new PathExpr(pathExpr);
     }
 
-    private void RelativePathExpr(Context context, List<StepExpr> pathExpr) throws XPathParserException {
+    private void RelativePathExpr(Context context, List<StepExpr> pathExpr) throws XPathExpressionException {
         pathExpr.add(StepExpr(context));
         Type type = context.tokenAt(1).getType();
         while (Type.SLASH == type || Type.DOUBLE_SLASH == type) {
@@ -134,7 +136,7 @@ public class XPathParser {
         }
     }
 
-    private StepExpr StepExpr(Context context) throws XPathParserException {
+    private StepExpr StepExpr(Context context) throws XPathExpressionException {
         final QName nodeTest;
         final List<Expr> predicateList;
         final StepExpr stepExpr;
@@ -168,7 +170,7 @@ public class XPathParser {
         return stepExpr;
     }
 
-    private QName NodeTest(Context context) throws XPathParserException {
+    private QName NodeTest(Context context) throws XPathExpressionException {
         switch (context.tokenAt(1).getType()) {
             case STAR:
                 final Token star = context.match(Type.STAR);
@@ -204,7 +206,7 @@ public class XPathParser {
         }
     }
 
-    private List<Expr> PredicateList(Context context) throws XPathParserException {
+    private List<Expr> PredicateList(Context context) throws XPathExpressionException {
         final List<Expr> predicateList = new ArrayList<Expr>();
         Type type = context.tokenAt(1).getType();
         while (Type.LEFT_BRACKET == type) {
@@ -214,14 +216,16 @@ public class XPathParser {
         return predicateList;
     }
 
-    private Expr Predicate(Context context) throws XPathParserException {
+    private Expr Predicate(Context context) throws XPathExpressionException {
         context.match(Type.LEFT_BRACKET);
         Expr predicate = Expr(context);
         context.match(Type.RIGHT_BRACKET);
         return predicate;
     }
 
+    @NotThreadSafe
     private static final class Context {
+
         private final XPathLexer lexer;
         private final List<Token> tokens = new ArrayList<Token>();
 
@@ -242,7 +246,7 @@ public class XPathParser {
             return tokens.get(i - 1);
         }
 
-        Token match(Type type) throws XPathParserException {
+        Token match(Type type) throws XPathExpressionException {
             final Token token = tokenAt(1);
             if (token.getType() == type) {
                 tokens.remove(0);

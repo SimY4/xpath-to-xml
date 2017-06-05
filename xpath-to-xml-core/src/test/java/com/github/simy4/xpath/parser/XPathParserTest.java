@@ -13,27 +13,31 @@ import com.github.simy4.xpath.expr.StepExpr;
 import com.github.simy4.xpath.utils.Pair;
 import com.github.simy4.xpath.utils.SimpleNamespaceContext;
 import com.github.simy4.xpath.utils.Triple;
+import org.junit.Rule;
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.FromDataPoints;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
-
+import javax.xml.xpath.XPathExpressionException;
 import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Theories.class)
 public class XPathParserTest {
 
     private static final List<Expr> NIL = Collections.emptyList();
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @DataPoints("namespaceContexts")
     public static final NamespaceContext[] NAMESPACE_CONTEXTS = new NamespaceContext[] {
@@ -129,7 +133,7 @@ public class XPathParserTest {
     @Theory
     public void shouldParseSimpleXPath(@FromDataPoints("Positive-Simple") Pair<String, Expr> data,
                                        @FromDataPoints("namespaceContexts") NamespaceContext context)
-            throws XPathParserException {
+            throws XPathExpressionException {
         Expr actualExpr = new XPathParser(context).parse(data.getFirst());
         assertThat(actualExpr).hasToString(data.getSecond().toString());
     }
@@ -137,18 +141,17 @@ public class XPathParserTest {
     @Theory
     public void shouldParsePrefixedXPath(@FromDataPoints("Positive-Prefixed") Triple<String, Expr, Expr> data,
                                          @FromDataPoints("namespaceContexts") NamespaceContext context)
-            throws XPathParserException {
+            throws XPathExpressionException {
         Expr actualExpr = new XPathParser(context).parse(data.getFirst());
         assertThat(actualExpr).hasToString(null == context ? data.getSecond().toString() : data.getThird().toString());
     }
 
     @Theory
     public void shouldThrowExceptionOnParse(@FromDataPoints("Negative") String invalidXPath,
-                                            @FromDataPoints("namespaceContexts") NamespaceContext namespaceContext) {
-        try {
-            System.err.println(new XPathParser(namespaceContext).parse(invalidXPath));
-            fail("Should throw XPathParserException");
-        } catch (XPathParserException ignored) { }
+                                            @FromDataPoints("namespaceContexts") NamespaceContext namespaceContext)
+            throws XPathExpressionException {
+        thrown.expect(XPathExpressionException.class);
+        System.err.println(new XPathParser(namespaceContext).parse(invalidXPath));
     }
 
     private static Expr pathExpr(StepExpr... pathExpr) {

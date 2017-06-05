@@ -5,7 +5,7 @@ import com.github.simy4.xpath.parser.Token.Type;
 import javax.xml.xpath.XPathExpressionException;
 import java.util.Arrays;
 
-public class XPathParserException extends XPathExpressionException {
+class XPathParserException extends XPathExpressionException {
 
     XPathParserException(Token actual) {
         super("Expected no more tokens but was: " + actual);

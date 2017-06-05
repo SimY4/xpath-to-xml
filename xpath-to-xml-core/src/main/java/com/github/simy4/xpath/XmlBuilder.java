@@ -7,11 +7,11 @@ import com.github.simy4.xpath.action.PutValueAction;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.navigator.NavigatorSpi;
 import com.github.simy4.xpath.parser.XPathParser;
-import com.github.simy4.xpath.parser.XPathParserException;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import javax.xml.namespace.NamespaceContext;
+import javax.xml.xpath.XPathExpressionException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -52,10 +52,10 @@ public class XmlBuilder {
      *
      * @param xpath XPath to process
      * @return {@link XmlBuilder} instance
-     * @throws XPathParserException if xpath cannot be parsed
+     * @throws XPathExpressionException if xpath cannot be parsed
      * @see #putAll(Iterable)
      */
-    public XmlBuilder put(String xpath) throws XPathParserException {
+    public XmlBuilder put(String xpath) throws XPathExpressionException {
         return putAll(Collections.singletonList(xpath));
     }
 
@@ -64,10 +64,10 @@ public class XmlBuilder {
      *
      * @param xpaths XPaths to process
      * @return {@link XmlBuilder} instance
-     * @throws XPathParserException if xpath cannot be parsed
+     * @throws XPathExpressionException if xpath cannot be parsed
      * @see #putAll(Iterable)
      */
-    public XmlBuilder putAll(String... xpaths) throws XPathParserException {
+    public XmlBuilder putAll(String... xpaths) throws XPathExpressionException {
         return putAll(Arrays.asList(xpaths));
     }
 
@@ -76,11 +76,11 @@ public class XmlBuilder {
      *
      * @param xpaths XPaths to process
      * @return {@link XmlBuilder} instance
-     * @throws XPathParserException if xpath cannot be parsed
+     * @throws XPathExpressionException if xpath cannot be parsed
      * @see #put(String)
      * @see #putAll(String...)
      */
-    public XmlBuilder putAll(Iterable<String> xpaths) throws XPathParserException {
+    public XmlBuilder putAll(Iterable<String> xpaths) throws XPathExpressionException {
         final Collection<Action> exprs = new ArrayList<Action>(this.actions);
         for (String xpath : xpaths) {
             final Expr expr = parser.parse(xpath);
@@ -96,10 +96,10 @@ public class XmlBuilder {
      * @param xpath XPath to process
      * @param value value to set
      * @return {@link XmlBuilder} instance
-     * @throws XPathParserException if xpath cannot be parsed
+     * @throws XPathExpressionException if xpath cannot be parsed
      * @see #putAll(Map)
      */
-    public XmlBuilder put(String xpath, @Nullable Object value) throws XPathParserException {
+    public XmlBuilder put(String xpath, @Nullable Object value) throws XPathExpressionException {
         return putAll(Collections.singletonMap(xpath, value));
     }
 
@@ -109,10 +109,10 @@ public class XmlBuilder {
      *
      * @param xpathToValueMap XPath to values associations
      * @return {@link XmlBuilder} instance
-     * @throws XPathParserException if xpath cannot be parsed
+     * @throws XPathExpressionException if xpath cannot be parsed
      * @see #put(String, Object)
      */
-    public XmlBuilder putAll(Map<String, Object> xpathToValueMap) throws XPathParserException {
+    public XmlBuilder putAll(Map<String, Object> xpathToValueMap) throws XPathExpressionException {
         final Collection<Action> exprs = new ArrayList<Action>(this.actions);
         for (Entry<String, Object> xpathToValuePair : xpathToValueMap.entrySet()) {
             final Expr expr = parser.parse(xpathToValuePair.getKey());
@@ -126,10 +126,10 @@ public class XmlBuilder {
      *
      * @param xpath XPath to process
      * @return {@link XmlBuilder} instance
-     * @throws XPathParserException if xpath cannot be parsed
+     * @throws XPathExpressionException if xpath cannot be parsed
      * @see #removeAll(Iterable)
      */
-    public XmlBuilder remove(String xpath) throws XPathParserException {
+    public XmlBuilder remove(String xpath) throws XPathExpressionException {
         return removeAll(Collections.singletonList(xpath));
     }
 
@@ -138,10 +138,10 @@ public class XmlBuilder {
      *
      * @param xpaths XPaths to process
      * @return {@link XmlBuilder} instance
-     * @throws XPathParserException if xpath cannot be parsed
+     * @throws XPathExpressionException if xpath cannot be parsed
      * @see #removeAll(Iterable)
      */
-    public XmlBuilder removeAll(String... xpaths) throws XPathParserException {
+    public XmlBuilder removeAll(String... xpaths) throws XPathExpressionException {
         return removeAll(Arrays.asList(xpaths));
     }
 
@@ -150,11 +150,11 @@ public class XmlBuilder {
      *
      * @param xpaths XPaths to process
      * @return {@link XmlBuilder} instance
-     * @throws XPathParserException if xpath cannot be parsed
+     * @throws XPathExpressionException if xpath cannot be parsed
      * @see #remove(String)
      * @see #removeAll(String...)
      */
-    public XmlBuilder removeAll(Iterable<String> xpaths) throws XPathParserException {
+    public XmlBuilder removeAll(Iterable<String> xpaths) throws XPathExpressionException {
         final Collection<Action> exprs = new ArrayList<Action>(this.actions);
         for (String xpath : xpaths) {
             final Expr expr = parser.parse(xpath);
