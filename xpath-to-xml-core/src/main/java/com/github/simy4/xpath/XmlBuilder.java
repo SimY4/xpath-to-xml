@@ -60,6 +60,20 @@ public class XmlBuilder {
     }
 
     /**
+     * Greedily creates all missing nodes that could be evaluated by given XPath expression and then sets given
+     * value as text content to all evaluated nodes.
+     *
+     * @param xpath XPath to process
+     * @param value value to set
+     * @return {@link XmlBuilder} instance
+     * @throws XPathExpressionException if xpath cannot be parsed
+     * @see #putAll(Map)
+     */
+    public XmlBuilder put(String xpath, @Nullable Object value) throws XPathExpressionException {
+        return putAll(Collections.singletonMap(xpath, value));
+    }
+
+    /**
      * Greedily creates all missing nodes that could be evaluated by given XPath expressions.
      *
      * @param xpaths XPaths to process
@@ -87,20 +101,6 @@ public class XmlBuilder {
             exprs.add(new PutAction(expr));
         }
         return new XmlBuilder(parser, exprs);
-    }
-
-    /**
-     * Greedily creates all missing nodes that could be evaluated by given XPath expression and then sets given
-     * value as text content to all evaluated nodes.
-     *
-     * @param xpath XPath to process
-     * @param value value to set
-     * @return {@link XmlBuilder} instance
-     * @throws XPathExpressionException if xpath cannot be parsed
-     * @see #putAll(Map)
-     */
-    public XmlBuilder put(String xpath, @Nullable Object value) throws XPathExpressionException {
-        return putAll(Collections.singletonMap(xpath, value));
     }
 
     /**

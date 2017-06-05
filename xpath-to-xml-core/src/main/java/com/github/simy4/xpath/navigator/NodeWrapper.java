@@ -4,12 +4,34 @@ import javax.annotation.concurrent.Immutable;
 import javax.xml.namespace.QName;
 import javax.xml.xpath.XPathConstants;
 
+/**
+ * XML node contract.
+ *
+ * @param <N> XML node type
+ * @author Alex Simkin
+ * @since 1.0
+ */
 public interface NodeWrapper<N> {
 
+    /**
+     * Original node.
+     *
+     * @return node.
+     */
     N getWrappedNode();
 
+    /**
+     * XML node name.
+     *
+     * @return node name.
+     */
     QName getNodeName();
 
+    /**
+     * XML node text content.
+     *
+     * @return text content.
+     */
     String getText();
 
     @Immutable

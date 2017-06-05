@@ -12,6 +12,13 @@ public class ComparisonExpr implements Expr {
     private final Expr rightExpr;
     private final Op op;
 
+    /**
+     * Constructor.
+     *
+     * @param leftExpr  left expression
+     * @param rightExpr right expression
+     * @param op        comparison operation
+     */
     public ComparisonExpr(Expr leftExpr, Expr rightExpr, Op op) {
         this.leftExpr = leftExpr;
         this.rightExpr = rightExpr;

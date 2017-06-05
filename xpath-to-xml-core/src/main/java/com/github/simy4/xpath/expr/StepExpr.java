@@ -15,7 +15,7 @@ import java.util.List;
 public interface StepExpr {
 
     /**
-     * Traverses XML nodes for the nodes that matches this step expression
+     * Traverses XML nodes for the nodes that matches this step expression.
      *
      * @param navigator   XML model navigator
      * @param parentNodes XML nodes to traverse
@@ -26,7 +26,7 @@ public interface StepExpr {
     <N> List<NodeWrapper<N>> traverse(Navigator<N> navigator, List<NodeWrapper<N>> parentNodes);
 
     /**
-     * Creates new node of this step type
+     * Creates new node of this step type.
      *
      * @param navigator XML model navigator
      * @param <N>       XML node type
