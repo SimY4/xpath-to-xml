@@ -42,7 +42,6 @@ public class DomNavigatorTest {
         when(root.createAttributeNS(anyString(), anyString())).thenReturn(mock(Attr.class));
         when(root.createElement(anyString())).thenReturn(mock(Element.class));
         when(root.createElementNS(anyString(), anyString())).thenReturn(mock(Element.class));
-        when(root.createTextNode(anyString())).thenReturn(mock(Text.class));
 
         when(xml.getNodeType()).thenReturn(Node.ELEMENT_NODE);
         when(xml.getOwnerDocument()).thenReturn(root);
@@ -141,11 +140,6 @@ public class DomNavigatorTest {
     public void testCreateNsElementFailure() {
         when(root.createElementNS(anyString(), anyString())).thenThrow(DOMException.class);
         navigator.createElement(new QName("http://example.com/my", "elem"));
-    }
-
-    @Test
-    public void createLiteral() {
-        assertThat(navigator.createLiteral("literal")).isNotNull();
     }
 
     @Test
