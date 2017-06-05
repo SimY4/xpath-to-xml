@@ -14,10 +14,6 @@ public class LiteralExpr implements Expr {
         this.literal = literal;
     }
 
-    public LiteralExpr(Number number) {
-        this.literal = String.valueOf(number);
-    }
-
     @Override
     public <N> List<NodeWrapper<N>> apply(Navigator<N> navigator, NodeWrapper<N> xml, boolean greedy) {
         return Collections.<NodeWrapper<N>>singletonList(new NodeWrapper.LiteralNodeWrapper<N>(literal));
