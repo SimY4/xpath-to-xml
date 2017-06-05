@@ -1,21 +1,30 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.NodeWrapper;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 public class Root implements StepExpr {
 
     @Override
-    public <N> List<NodeWrapper<N>> traverse(Navigator<N> navigator, List<NodeWrapper<N>> parentNodes) {
-        return Collections.singletonList(navigator.root());
+    public <N> Set<NodeWrapper<N>> apply(ExprContext<N> context, NodeWrapper<N> xml, boolean greedy)
+            throws XmlBuilderException {
+        Set<NodeWrapper<N>> result = traverse(context, xml);
+        if (result.isEmpty() && greedy) {
+            result = Collections.singleton(createNode(context));
+        }
+        return result;
     }
 
     @Override
-    public <N> NodeWrapper<N> createNode(Navigator<N> navigator) throws XmlBuilderException {
+    public <N> Set<NodeWrapper<N>> traverse(ExprContext<N> context, NodeWrapper<N> parentNode) {
+        return Collections.singleton(context.getNavigator().root());
+    }
+
+    @Override
+    public <N> NodeWrapper<N> createNode(ExprContext<N> context) throws XmlBuilderException {
         throw new XmlBuilderException("Root node cannot modify XML model");
     }
 

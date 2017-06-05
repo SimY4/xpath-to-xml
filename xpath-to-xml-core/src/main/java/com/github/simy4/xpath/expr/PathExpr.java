@@ -1,11 +1,12 @@
 package com.github.simy4.xpath.expr;
 
-import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.NodeWrapper;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PathExpr implements Expr {
 
@@ -16,18 +17,17 @@ public class PathExpr implements Expr {
     }
 
     @Override
-    public <N> List<NodeWrapper<N>> apply(Navigator<N> navigator, NodeWrapper<N> xml, boolean greedy) {
+    public <N> Set<NodeWrapper<N>> apply(ExprContext<N> context, NodeWrapper<N> xml, boolean greedy) {
         final Iterator<StepExpr> pathExprIterator = pathExpr.iterator();
-        List<NodeWrapper<N>> nodes = Collections.singletonList(xml);
+        ExprContext<N> stepExprContext = context;
+        Set<NodeWrapper<N>> nodes = Collections.singleton(xml);
         while (pathExprIterator.hasNext() && !nodes.isEmpty()) {
             final StepExpr stepExpr = pathExprIterator.next();
-            List<NodeWrapper<N>> children = stepExpr.traverse(navigator, nodes);
-            if (children.isEmpty() && greedy) {
-                final NodeWrapper<N> newNode = stepExpr.createNode(navigator);
-                final NodeWrapper<N> lastNode = nodes.get(nodes.size() - 1);
-                navigator.append(lastNode, newNode);
-                children = Collections.singletonList(newNode);
+            final Set<NodeWrapper<N>> children = new LinkedHashSet<NodeWrapper<N>>();
+            for (NodeWrapper<N> node : nodes) {
+                children.addAll(stepExpr.apply(context, node, greedy));
             }
+            stepExprContext = new ExprContext<N>(stepExprContext.getNavigator(), children.size(), 1);
             nodes = children;
         }
         return nodes;

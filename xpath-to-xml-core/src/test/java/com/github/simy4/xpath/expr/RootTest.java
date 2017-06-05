@@ -9,10 +9,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.List;
+import java.util.Set;
 
 import static com.github.simy4.xpath.utils.StringNodeWrapper.node;
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -30,14 +29,13 @@ public class RootTest {
 
     @Test
     public void shouldReturnSingleRootNodeOnTraverse() {
-        List<NodeWrapper<String>> nodes = asList(node("1"), node("2"), node("3"));
-        List<NodeWrapper<String>> result = root.traverse(navigator, nodes);
+        Set<NodeWrapper<String>> result = root.apply(new ExprContext<String>(navigator, 3, 1), node("node"), false);
         assertThat(result).containsExactly(node("root"));
     }
 
     @Test(expected = XmlBuilderException.class)
     public void shouldThrowOnCreateNode() {
-        root.createNode(navigator);
+        root.createNode(new ExprContext<String>(navigator, 3, 1));
     }
 
     @Test

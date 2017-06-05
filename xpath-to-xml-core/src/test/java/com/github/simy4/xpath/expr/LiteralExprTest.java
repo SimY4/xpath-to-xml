@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.List;
+import java.util.Set;
 
 import static com.github.simy4.xpath.utils.StringNodeWrapper.node;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,7 +21,7 @@ public class LiteralExprTest {
 
     @Test
     public void shouldAlwaysReturnSingleLiteralNode() {
-        List<NodeWrapper<String>> result = literalExpr.apply(navigator, node("xml"), false);
+        Set<NodeWrapper<String>> result = literalExpr.apply(new ExprContext<String>(navigator, 3, 1), node("xml"), false);
         assertThat(result).extracting("literal", String.class).containsExactly("value");
     }
 

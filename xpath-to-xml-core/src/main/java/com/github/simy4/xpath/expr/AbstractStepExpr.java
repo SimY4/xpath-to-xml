@@ -1,12 +1,13 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.NodeWrapper;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 abstract class AbstractStepExpr implements StepExpr {
 
@@ -17,12 +18,27 @@ abstract class AbstractStepExpr implements StepExpr {
     }
 
     @Override
-    public final <N> List<NodeWrapper<N>> traverse(Navigator<N> navigator, List<NodeWrapper<N>> parentNodes) {
-        final List<NodeWrapper<N>> nodes = traverseStep(navigator, parentNodes);
-        final List<NodeWrapper<N>> result = new ArrayList<NodeWrapper<N>>(nodes.size());
+    public final <N> Set<NodeWrapper<N>> apply(ExprContext<N> context, NodeWrapper<N> xml, boolean greedy)
+            throws XmlBuilderException {
+        final ExprContext<N> stepExprContext = new ExprContext<N>(context.getNavigator());
+        Set<NodeWrapper<N>> children = traverse(stepExprContext, xml);
+        if (children.isEmpty() && context.isLast() && greedy) {
+            final NodeWrapper<N> newNode = createNode(stepExprContext);
+            context.getNavigator().append(xml, newNode);
+            children = Collections.singleton(newNode);
+        }
+        return children;
+    }
+
+    @Override
+    public final <N> Set<NodeWrapper<N>> traverse(ExprContext<N> context, NodeWrapper<N> parentNode) {
+        final Set<NodeWrapper<N>> nodes = traverseStep(context, parentNode);
+        final Set<NodeWrapper<N>> result = new LinkedHashSet<NodeWrapper<N>>(nodes.size());
+        context.setSize(nodes.size());
         for (NodeWrapper<N> node : nodes) {
+            context.advance();
             final Iterator<Expr> predicatesIterator = predicateList.iterator();
-            if (test(navigator, node, predicatesIterator)) {
+            if (test(context, node, predicatesIterator)) {
                 result.add(node);
             }
         }
@@ -30,23 +46,23 @@ abstract class AbstractStepExpr implements StepExpr {
     }
 
     @Override
-    public final <N> NodeWrapper<N> createNode(Navigator<N> navigator) throws XmlBuilderException {
-        final NodeWrapper<N> newNode = createStepNode(navigator);
+    public final <N> NodeWrapper<N> createNode(ExprContext<N> context) throws XmlBuilderException {
+        final NodeWrapper<N> newNode = createStepNode(context);
         for (Expr predicate : predicateList) {
-            predicate.apply(navigator, newNode, true);
+            predicate.apply(context, newNode, true);
         }
         return newNode;
     }
 
-    abstract <N> List<NodeWrapper<N>> traverseStep(Navigator<N> navigator, List<NodeWrapper<N>> parentNodes);
+    abstract <N> Set<NodeWrapper<N>> traverseStep(ExprContext<N> context, NodeWrapper<N> parentNode);
 
-    abstract <N> NodeWrapper<N> createStepNode(Navigator<N> navigator) throws XmlBuilderException;
+    abstract <N> NodeWrapper<N> createStepNode(ExprContext<N> context) throws XmlBuilderException;
 
-    private <N> boolean test(Navigator<N> navigator, NodeWrapper<N> node, Iterator<Expr> predicateIterator) {
+    private <N> boolean test(ExprContext<N> context, NodeWrapper<N> node, Iterator<Expr> predicateIterator) {
         if (predicateIterator.hasNext()) {
             final Expr predicate = predicateIterator.next();
-            final List<NodeWrapper<N>> children = predicate.apply(navigator, node, false);
-            return !children.isEmpty() && test(navigator, node, predicateIterator);
+            final Set<NodeWrapper<N>> children = predicate.apply(context, node, false);
+            return !children.isEmpty() && test(context, node, predicateIterator);
         } else {
             return true;
         }

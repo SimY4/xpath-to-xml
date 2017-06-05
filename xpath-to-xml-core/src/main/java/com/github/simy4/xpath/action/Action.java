@@ -15,8 +15,9 @@ public interface Action {
      * Performs action against particular XML model {@link Navigator} instance.
      *
      * @param navigator XML model navigator
+     * @param <N> XML model type
      * @throws XmlBuilderException if error occur during XML model modification
      */
-    <T> void perform(Navigator<T> navigator) throws XmlBuilderException;
+    <N> void perform(Navigator<N> navigator) throws XmlBuilderException;
 
 }

@@ -2,9 +2,8 @@ package com.github.simy4.xpath.action;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.Expr;
+import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
-
-import java.util.Collections;
 
 public class PutAction implements Action {
 
@@ -15,8 +14,9 @@ public class PutAction implements Action {
     }
 
     @Override
-    public <T> void perform(Navigator<T> navigator) throws XmlBuilderException {
-        expr.apply(navigator, navigator.xml(), true);
+    public <N> void perform(Navigator<N> navigator) throws XmlBuilderException {
+        final ExprContext<N> context = new ExprContext<N>(navigator, 1, 1);
+        expr.apply(context, navigator.xml(), true);
     }
 
 }

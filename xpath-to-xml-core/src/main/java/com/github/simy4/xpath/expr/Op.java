@@ -2,18 +2,22 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.NodeWrapper;
 
-import java.util.List;
+import java.util.Iterator;
 
 public enum Op {
 
     EQ("=") {
         @Override
-        <N> boolean test(List<NodeWrapper<N>> left, List<NodeWrapper<N>> right) {
-            if (left.isEmpty()) {
-                return right.isEmpty();
+        <N> boolean test(Iterable<NodeWrapper<N>> left, Iterable<NodeWrapper<N>> right) {
+            final Iterator<NodeWrapper<N>> leftIterator = left.iterator();
+            final Iterator<NodeWrapper<N>> rightIterator = right.iterator();
+            if (!leftIterator.hasNext()) {
+                return !leftIterator.hasNext();
             } else {
-                for (NodeWrapper<N> leftNode : left) {
-                    for (NodeWrapper<N> rightNode : right) {
+                while (leftIterator.hasNext()) {
+                    final NodeWrapper<N> leftNode = leftIterator.next();
+                    while (rightIterator.hasNext()) {
+                        final NodeWrapper<N> rightNode = rightIterator.next();
                         if (0 == Comparators.NODE_COMPARATOR.compare(leftNode, rightNode)) {
                             return true;
                         }
@@ -25,71 +29,8 @@ public enum Op {
     },
     NE("!=") {
         @Override
-        <N> boolean test(List<NodeWrapper<N>> left, List<NodeWrapper<N>> right) {
-            if (left.isEmpty()) {
-                return !right.isEmpty();
-            } else {
-                for (NodeWrapper<N> leftNode : left) {
-                    for (NodeWrapper<N> rightNode : right) {
-                        if (0 != Comparators.NODE_COMPARATOR.compare(leftNode, rightNode)) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-        }
-    },
-    GT(">") {
-        @Override
-        <N> boolean test(List<NodeWrapper<N>> left, List<NodeWrapper<N>> right) {
-            for (NodeWrapper<N> leftNode : left) {
-                for (NodeWrapper<N> rightNode : right) {
-                    if (0 > Comparators.NODE_COMPARATOR.compare(leftNode, rightNode)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-    },
-    GE(">=") {
-        @Override
-        <N> boolean test(List<NodeWrapper<N>> left, List<NodeWrapper<N>> right) {
-            for (NodeWrapper<N> leftNode : left) {
-                for (NodeWrapper<N> rightNode : right) {
-                    if (0 >= Comparators.NODE_COMPARATOR.compare(leftNode, rightNode)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-    },
-    LT("<") {
-        @Override
-        <N> boolean test(List<NodeWrapper<N>> left, List<NodeWrapper<N>> right) {
-            for (NodeWrapper<N> leftNode : left) {
-                for (NodeWrapper<N> rightNode : right) {
-                    if (0 < Comparators.NODE_COMPARATOR.compare(leftNode, rightNode)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-    },
-    LE("<=") {
-        @Override
-        <N> boolean test(List<NodeWrapper<N>> left, List<NodeWrapper<N>> right) {
-            for (NodeWrapper<N> leftNode : left) {
-                for (NodeWrapper<N> rightNode : right) {
-                    if (0 <= Comparators.NODE_COMPARATOR.compare(leftNode, rightNode)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
+        <N> boolean test(Iterable<NodeWrapper<N>> left, Iterable<NodeWrapper<N>> right) {
+            return !EQ.test(left, right);
         }
     };
 
@@ -99,7 +40,7 @@ public enum Op {
         this.op = op;
     }
 
-    abstract <N> boolean test(List<NodeWrapper<N>> left, List<NodeWrapper<N>> right);
+    abstract <N> boolean test(Iterable<NodeWrapper<N>> left, Iterable<NodeWrapper<N>> right);
 
     @Override
     public String toString() {

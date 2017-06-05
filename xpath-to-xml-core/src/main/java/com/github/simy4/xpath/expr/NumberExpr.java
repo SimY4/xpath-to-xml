@@ -1,10 +1,9 @@
 package com.github.simy4.xpath.expr;
 
-import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.NodeWrapper;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 public class NumberExpr implements Expr {
 
@@ -15,8 +14,8 @@ public class NumberExpr implements Expr {
     }
 
     @Override
-    public <N> List<NodeWrapper<N>> apply(Navigator<N> navigator, NodeWrapper<N> xml, boolean greedy) {
-        return Collections.<NodeWrapper<N>>singletonList(new NodeWrapper.NumberNodeWrapper<N>(number));
+    public <N> Set<NodeWrapper<N>> apply(ExprContext<N> context, NodeWrapper<N> xml, boolean greedy) {
+        return Collections.<NodeWrapper<N>>singleton(new NodeWrapper.NumberNodeWrapper<N>(number));
     }
 
     @Override

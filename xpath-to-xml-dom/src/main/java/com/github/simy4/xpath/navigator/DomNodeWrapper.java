@@ -37,6 +37,25 @@ final class DomNodeWrapper implements NodeWrapper<Node> {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        DomNodeWrapper that = (DomNodeWrapper) o;
+
+        return wrappedNode.equals(that.wrappedNode);
+    }
+
+    @Override
+    public int hashCode() {
+        return wrappedNode.hashCode();
+    }
+
+    @Override
     public String toString() {
         return wrappedNode.toString();
     }
