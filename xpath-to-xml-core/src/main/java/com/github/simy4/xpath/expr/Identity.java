@@ -6,21 +6,25 @@ import com.github.simy4.xpath.navigator.NodeWrapper;
 
 import java.util.List;
 
-public class Identity implements StepExpr {
+public class Identity extends AbstractStepExpr {
+
+    public Identity(List<Expr> predicateList) {
+        super(predicateList);
+    }
 
     @Override
-    public <N> List<NodeWrapper<N>> traverse(Navigator<N> navigator, List<NodeWrapper<N>> parentNodes) {
+    <N> List<NodeWrapper<N>> traverseStep(Navigator<N> navigator, List<NodeWrapper<N>> parentNodes) {
         return parentNodes;
     }
 
     @Override
-    public <N> NodeWrapper<N> createNode(Navigator<N> navigator) {
+    <N> NodeWrapper<N> createStepNode(Navigator<N> navigator) {
         throw new XmlBuilderException("Identity node cannot modify XML model");
     }
 
     @Override
     public String toString() {
-        return ".";
+        return "." + super.toString();
     }
 
 }

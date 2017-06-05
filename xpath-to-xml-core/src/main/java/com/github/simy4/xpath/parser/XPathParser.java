@@ -6,7 +6,6 @@ import com.github.simy4.xpath.expr.Element;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.expr.Identity;
 import com.github.simy4.xpath.expr.LiteralExpr;
-import com.github.simy4.xpath.expr.MetaStepExpr;
 import com.github.simy4.xpath.expr.NumberExpr;
 import com.github.simy4.xpath.expr.Op;
 import com.github.simy4.xpath.expr.Parent;
@@ -22,6 +21,7 @@ import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -103,7 +103,7 @@ public class XPathParser {
             case DOUBLE_SLASH:
                 context.match(Type.DOUBLE_SLASH);
                 pathExpr.add(new Root());
-                pathExpr.add(new Element(new QName("*"))); // TODO
+                pathExpr.add(new Element(new QName("*"), Collections.<Expr>emptyList())); // TODO
                 RelativePathExpr(context, pathExpr);
                 break;
             default:
@@ -124,7 +124,7 @@ public class XPathParser {
                     break;
                 case DOUBLE_SLASH:
                     context.match(Type.DOUBLE_SLASH);
-                    pathExpr.add(new Element(new QName("*"))); // TODO
+                    pathExpr.add(new Element(new QName("*"), Collections.<Expr>emptyList())); // TODO
                     pathExpr.add(StepExpr(context));
                     break;
                 default:
@@ -135,30 +135,37 @@ public class XPathParser {
     }
 
     private StepExpr StepExpr(Context context) throws XPathParserException {
+        final QName nodeTest;
+        final List<Expr> predicateList;
         final StepExpr stepExpr;
         switch (context.tokenAt(1).getType()) {
             case DOT:
                 context.match(Type.DOT);
-                stepExpr = new Identity();
+                predicateList = PredicateList(context);
+                stepExpr = new Identity(predicateList);
                 break;
             case DOUBLE_DOT:
                 context.match(Type.DOUBLE_DOT);
-                stepExpr = new Parent();
+                predicateList = PredicateList(context);
+                stepExpr = new Parent(predicateList);
                 break;
             case AT:
                 context.match(Type.AT);
-                stepExpr = new Attribute(NodeTest(context));
+                nodeTest = NodeTest(context);
+                predicateList = PredicateList(context);
+                stepExpr = new Attribute(nodeTest, predicateList);
                 break;
             case STAR:
             case IDENTIFIER:
-                stepExpr = new Element(NodeTest(context));
+                nodeTest = NodeTest(context);
+                predicateList = PredicateList(context);
+                stepExpr = new Element(nodeTest, predicateList);
                 break;
             default:
                 throw new XPathParserException(context.tokenAt(1), Type.DOT, Type.DOUBLE_DOT, Type.AT, Type.STAR,
                         Type.IDENTIFIER);
         }
-        List<Expr> predicateList = PredicateList(context);
-        return new MetaStepExpr(stepExpr, predicateList);
+        return stepExpr;
     }
 
     private QName NodeTest(Context context) throws XPathParserException {
@@ -201,19 +208,20 @@ public class XPathParser {
         final List<Expr> predicateList = new ArrayList<Expr>();
         Type type = context.tokenAt(1).getType();
         while (Type.LEFT_BRACKET == type) {
-            context.match(Type.LEFT_BRACKET);
             predicateList.add(Predicate(context));
-            context.match(Type.RIGHT_BRACKET);
             type = context.tokenAt(1).getType();
         }
         return predicateList;
     }
 
     private Expr Predicate(Context context) throws XPathParserException {
-        return Expr(context);
+        context.match(Type.LEFT_BRACKET);
+        Expr predicate = Expr(context);
+        context.match(Type.RIGHT_BRACKET);
+        return predicate;
     }
 
-    private static class Context {
+    private static final class Context {
         private final XPathLexer lexer;
         private final List<Token> tokens = new ArrayList<Token>();
 

@@ -8,16 +8,17 @@ import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Attribute implements StepExpr {
+public class Attribute extends AbstractStepExpr {
 
     private final QName attribute;
 
-    public Attribute(QName attribute) {
+    public Attribute(QName attribute, List<Expr> predicates) {
+        super(predicates);
         this.attribute = attribute;
     }
 
     @Override
-    public <N> List<NodeWrapper<N>> traverse(Navigator<N> navigator, List<NodeWrapper<N>> parentNodes) {
+    <N> List<NodeWrapper<N>> traverseStep(Navigator<N> navigator, List<NodeWrapper<N>> parentNodes) {
         final List<NodeWrapper<N>> nodes = new ArrayList<NodeWrapper<N>>();
         for (NodeWrapper<N> parentNode : parentNodes) {
             nodes.addAll(traverseEach(navigator, parentNode));
@@ -26,7 +27,7 @@ public class Attribute implements StepExpr {
     }
 
     @Override
-    public <N> NodeWrapper<N> createNode(Navigator<N> navigator) {
+    <N> NodeWrapper<N> createStepNode(Navigator<N> navigator) {
         if ("*".equals(attribute.getNamespaceURI()) || "*".equals(attribute.getLocalPart())) {
             throw new XmlBuilderException("Wildcard attribute cannot be created");
         }
@@ -45,7 +46,7 @@ public class Attribute implements StepExpr {
 
     @Override
     public String toString() {
-        return "@" + attribute;
+        return "@" + attribute + super.toString();
     }
 
 }

@@ -5,10 +5,10 @@ import com.github.simy4.xpath.navigator.NodeWrapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.AdditionalAnswers;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
+import org.mockito.stubbing.Answer1;
 
 import java.util.List;
 
@@ -26,11 +26,13 @@ public class LiteralExprTest {
 
     @Before
     public void setUp() {
-        when(navigator.createLiteral(anyString())).thenAnswer(new Answer<NodeWrapper<String>>() {
-            public NodeWrapper<String> answer(InvocationOnMock invocationOnMock) {
-                return node((String) invocationOnMock.getArguments()[0]);
-            }
-        });
+        when(navigator.createLiteral(anyString())).thenAnswer(AdditionalAnswers
+                .answer(new Answer1<NodeWrapper<String>, String>() {
+                    @Override
+                    public NodeWrapper<String> answer(String literal) {
+                        return node(literal);
+                    }
+                }));
     }
 
     @Test

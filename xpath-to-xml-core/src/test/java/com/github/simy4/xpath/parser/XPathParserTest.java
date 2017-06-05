@@ -5,7 +5,6 @@ import com.github.simy4.xpath.expr.ComparisonExpr;
 import com.github.simy4.xpath.expr.Element;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.expr.Identity;
-import com.github.simy4.xpath.expr.MetaStepExpr;
 import com.github.simy4.xpath.expr.NumberExpr;
 import com.github.simy4.xpath.expr.Op;
 import com.github.simy4.xpath.expr.PathExpr;
@@ -23,12 +22,18 @@ import org.junit.runner.RunWith;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
+import java.util.Collections;
+import java.util.List;
+
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Theories.class)
 public class XPathParserTest {
+
+    private static final List<Expr> NIL = Collections.emptyList();
 
     @DataPoints("namespaceContexts")
     public static final NamespaceContext[] NAMESPACE_CONTEXTS = new NamespaceContext[] {
@@ -39,77 +44,78 @@ public class XPathParserTest {
     @DataPoints("Positive-Simple")
     public static Pair[] positiveSimple() {
         return new Pair[] {
-                Pair.of("./author", pathExpr(stepExpr(new Identity()),
-                        stepExpr(new Element(new QName("author"))))),
-                Pair.of("author", pathExpr(stepExpr(new Element(new QName("author"))))),
-                Pair.of("first.name", pathExpr(stepExpr(new Element(new QName("first.name"))))),
-                Pair.of("/bookstore", pathExpr(new Root(), stepExpr(new Element(new QName("bookstore"))))),
-                Pair.of("//author", pathExpr(new Root(), new Element(new QName("*")),
-                        stepExpr(new Element(new QName("author"))))),
+                Pair.of("./author", pathExpr(new Identity(NIL), new Element(new QName("author"), NIL))),
+                Pair.of("author", pathExpr(new Element(new QName("author"), NIL))),
+                Pair.of("first.name", pathExpr(new Element(new QName("first.name"), NIL))),
+                Pair.of("/bookstore", pathExpr(new Root(), new Element(new QName("bookstore"), NIL))),
+                Pair.of("//author", pathExpr(new Root(), new Element(new QName("*"), NIL),
+                        new Element(new QName("author"), NIL))),
                 Pair.of("book[/bookstore/@specialty=@style]",
-                        pathExpr(stepExpr(new Element(new QName("book")), new ComparisonExpr(
-                                pathExpr(
-                                        new Root(),
-                                        stepExpr(new Element(new QName("bookstore"))),
-                                        stepExpr(new Attribute(new QName("specialty")))),
-                                pathExpr(
-                                        stepExpr(new Attribute(new QName("style")))),
-                                Op.EQ)))),
-                Pair.of("author/first-name", pathExpr(stepExpr(new Element(new QName("author"))),
-                        stepExpr(new Element(new QName("first-name"))))),
+                        pathExpr(new Element(new QName("book"), Collections.<Expr>singletonList(
+                                new ComparisonExpr(
+                                        pathExpr(
+                                                new Root(),
+                                                new Element(new QName("bookstore"), NIL),
+                                                new Attribute(new QName("specialty"), NIL)),
+                                        pathExpr(
+                                                new Attribute(new QName("style"), NIL)),
+                                        Op.EQ))))),
+                Pair.of("author/first-name", pathExpr(new Element(new QName("author"), NIL),
+                        new Element(new QName("first-name"), NIL))),
                 Pair.of("bookstore//title", pathExpr(
-                        stepExpr(new Element(new QName("bookstore"))),
-                        new Element(new QName("*")),
-                        stepExpr(new Element(new QName("title"))))),
-                Pair.of("bookstore/*/title", pathExpr(stepExpr(new Element(new QName("bookstore"))),
-                        stepExpr(new Element(new QName("*"))),
-                        stepExpr(new Element(new QName("title"))))),
-                Pair.of("bookstore//book/excerpt//emph", pathExpr(stepExpr(new Element(new QName("bookstore"))),
-                        new Element(new QName("*")),
-                        stepExpr(new Element(new QName("book"))),
-                        stepExpr(new Element(new QName("excerpt"))),
-                        new Element(new QName("*")),
-                        stepExpr(new Element(new QName("emph"))))),
-                Pair.of(".//title", pathExpr(stepExpr(new Identity()), new Element(new QName("*")),
-                        stepExpr(new Element(new QName("title"))))),
-                Pair.of("author/*", pathExpr(stepExpr(new Element(new QName("author"))),
-                        stepExpr(new Element(new QName("*"))))),
-                Pair.of("book/*/last-name", pathExpr(stepExpr(new Element(new QName("book"))),
-                        stepExpr(new Element(new QName("*"))),
-                        stepExpr(new Element(new QName("last-name"))))),
-                Pair.of("*/*", pathExpr(stepExpr(new Element(new QName("*"))),
-                        stepExpr(new Element(new QName("*"))))),
-                Pair.of("*[@specialty]", pathExpr(stepExpr(new Element(new QName("*")),
-                        pathExpr(stepExpr(new Attribute(new QName("specialty"))))))),
-                Pair.of("@style", pathExpr(stepExpr(new Attribute(new QName("style"))))),
-                Pair.of("price/@exchange", pathExpr(stepExpr(new Element(new QName("price"))),
-                        stepExpr(new Attribute(new QName("exchange"))))),
-                Pair.of("price/@exchange/total", pathExpr(stepExpr(new Element(new QName("price"))),
-                        stepExpr(new Attribute(new QName("exchange"))),
-                        stepExpr(new Element(new QName("total"))))),
-                Pair.of("book[@style]", pathExpr(stepExpr(new Element(new QName("book")),
-                        pathExpr(stepExpr(new Attribute(new QName("style"))))))),
-                Pair.of("book/@style", pathExpr(stepExpr(new Element(new QName("book"))),
-                        stepExpr(new Attribute(new QName("style"))))),
-                Pair.of("@*", pathExpr(stepExpr(new Attribute(new QName("*"))))),
-                Pair.of("./first-name", pathExpr(stepExpr(new Identity()),
-                        stepExpr(new Element(new QName("first-name"))))),
-                Pair.of("first-name", pathExpr(stepExpr(new Element(new QName("first-name"))))),
-                Pair.of("author[1]", pathExpr(stepExpr(new Element(new QName("author")), new NumberExpr(1.0)))),
-                Pair.of("author[first-name][3]", pathExpr(stepExpr(new Element(new QName("author")),
-                        pathExpr(stepExpr(new Element(new QName("first-name")))), new NumberExpr(3.0)))),
+                        new Element(new QName("bookstore"), NIL),
+                        new Element(new QName("*"), NIL),
+                        new Element(new QName("title"), NIL))),
+                Pair.of("bookstore/*/title", pathExpr(new Element(new QName("bookstore"), NIL),
+                        new Element(new QName("*"), NIL),
+                        new Element(new QName("title"), NIL))),
+                Pair.of("bookstore//book/excerpt//emph", pathExpr(new Element(new QName("bookstore"), NIL),
+                        new Element(new QName("*"), NIL),
+                        new Element(new QName("book"), NIL),
+                        new Element(new QName("excerpt"), NIL),
+                        new Element(new QName("*"), NIL),
+                        new Element(new QName("emph"), NIL))),
+                Pair.of(".//title", pathExpr(new Identity(NIL), new Element(new QName("*"), NIL),
+                        new Element(new QName("title"), NIL))),
+                Pair.of("author/*", pathExpr(new Element(new QName("author"), NIL),
+                        new Element(new QName("*"), NIL))),
+                Pair.of("book/*/last-name", pathExpr(new Element(new QName("book"), NIL),
+                        new Element(new QName("*"), NIL),
+                        new Element(new QName("last-name"), NIL))),
+                Pair.of("*/*", pathExpr(new Element(new QName("*"), NIL),
+                        new Element(new QName("*"), NIL))),
+                Pair.of("*[@specialty]", pathExpr(new Element(new QName("*"), singletonList(
+                        pathExpr(new Attribute(new QName("specialty"), NIL)))))),
+                Pair.of("@style", pathExpr(new Attribute(new QName("style"), NIL))),
+                Pair.of("price/@exchange", pathExpr(new Element(new QName("price"), NIL),
+                        new Attribute(new QName("exchange"), NIL))),
+                Pair.of("price/@exchange/total", pathExpr(new Element(new QName("price"), NIL),
+                        new Attribute(new QName("exchange"), NIL),
+                        new Element(new QName("total"), NIL))),
+                Pair.of("book[@style]", pathExpr(new Element(new QName("book"), singletonList(
+                        pathExpr(new Attribute(new QName("style"), NIL)))))),
+                Pair.of("book/@style", pathExpr(new Element(new QName("book"), NIL),
+                        new Attribute(new QName("style"), NIL))),
+                Pair.of("@*", pathExpr(new Attribute(new QName("*"), NIL))),
+                Pair.of("./first-name", pathExpr(new Identity(NIL),
+                        new Element(new QName("first-name"), NIL))),
+                Pair.of("first-name", pathExpr(new Element(new QName("first-name"), NIL))),
+                Pair.of("author[1]", pathExpr(new Element(new QName("author"),
+                        Collections.<Expr>singletonList(new NumberExpr(1.0))))),
+                Pair.of("author[first-name][3]", pathExpr(new Element(new QName("author"), asList(
+                        pathExpr(new Element(new QName("first-name"), NIL)), new NumberExpr(3.0))))),
         };
     }
 
     @DataPoints("Positive-Prefixed")
     public static Triple[] positivePrefixed() {
         return new Triple[] {
-                Triple.of("my:book", pathExpr(stepExpr(new Element(new QName("book")))),
-                        pathExpr(stepExpr(new Element(new QName("http://www.example.com/my", "book", "my"))))),
-                Triple.of("my:*", pathExpr(stepExpr(new Element(new QName("*")))),
-                        pathExpr(stepExpr(new Element(new QName("http://www.example.com/my", "*", "my"))))),
-                Triple.of("@my:*", pathExpr(stepExpr(new Attribute(new QName("*")))),
-                        pathExpr(stepExpr(new Attribute(new QName("http://www.example.com/my", "*", "my"))))),
+                Triple.of("my:book", pathExpr(new Element(new QName("book"), NIL)),
+                        pathExpr(new Element(new QName("http://www.example.com/my", "book", "my"), NIL))),
+                Triple.of("my:*", pathExpr(new Element(new QName("*"), NIL)),
+                        pathExpr(new Element(new QName("http://www.example.com/my", "*", "my"), NIL))),
+                Triple.of("@my:*", pathExpr(new Attribute(new QName("*"), NIL)),
+                        pathExpr(new Attribute(new QName("http://www.example.com/my", "*", "my"), NIL))),
         };
     }
 
@@ -147,10 +153,6 @@ public class XPathParserTest {
 
     private static Expr pathExpr(StepExpr... pathExpr) {
         return new PathExpr(asList(pathExpr));
-    }
-
-    private static StepExpr stepExpr(StepExpr step, Expr... predicates) {
-        return new MetaStepExpr(step, asList(predicates));
     }
 
 }

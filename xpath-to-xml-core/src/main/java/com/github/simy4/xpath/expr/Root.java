@@ -15,7 +15,7 @@ public class Root implements StepExpr {
     }
 
     @Override
-    public <N> NodeWrapper<N> createNode(Navigator<N> navigator) {
+    public <N> NodeWrapper<N> createNode(Navigator<N> navigator) throws XmlBuilderException {
         throw new XmlBuilderException("Root node cannot modify XML model");
     }
 

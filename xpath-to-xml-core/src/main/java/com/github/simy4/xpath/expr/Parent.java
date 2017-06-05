@@ -9,10 +9,14 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Parent implements StepExpr {
+public class Parent extends AbstractStepExpr {
+
+    public Parent(List<Expr> predicateList) {
+        super(predicateList);
+    }
 
     @Override
-    public <N> List<NodeWrapper<N>> traverse(Navigator<N> navigator, List<NodeWrapper<N>> nodes) {
+    <N> List<NodeWrapper<N>> traverseStep(Navigator<N> navigator, List<NodeWrapper<N>> nodes) {
         final Set<NodeWrapper<N>> parents = new LinkedHashSet<NodeWrapper<N>>();
         for (NodeWrapper<N> node : nodes) {
             NodeWrapper<N> parent = navigator.parentOf(node);
@@ -24,13 +28,13 @@ public class Parent implements StepExpr {
     }
 
     @Override
-    public <N> NodeWrapper<N> createNode(Navigator<N> navigator) {
+    <N> NodeWrapper<N> createStepNode(Navigator<N> navigator) {
         throw new XmlBuilderException("Parent node cannot modify XML model");
     }
 
     @Override
     public String toString() {
-        return "..";
+        return ".." + super.toString();
     }
 
 }

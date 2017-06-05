@@ -39,7 +39,7 @@ public class ComparisonExpr implements Expr {
 
     @Override
     public String toString() {
-        return leftExpr.toString() + "=" + rightExpr.toString();
+        return leftExpr.toString() + op.toString() + rightExpr.toString();
     }
 
 }

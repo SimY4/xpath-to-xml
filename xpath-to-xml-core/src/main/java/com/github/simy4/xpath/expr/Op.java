@@ -6,7 +6,7 @@ import java.util.List;
 
 public enum Op {
 
-    EQ {
+    EQ("=") {
         @Override
         <N> boolean test(List<NodeWrapper<N>> left, List<NodeWrapper<N>> right) {
             if (left.isEmpty()) {
@@ -23,7 +23,7 @@ public enum Op {
             }
         }
     },
-    NE {
+    NE("!=") {
         @Override
         <N> boolean test(List<NodeWrapper<N>> left, List<NodeWrapper<N>> right) {
             if (left.isEmpty()) {
@@ -40,7 +40,7 @@ public enum Op {
             }
         }
     },
-    GT {
+    GT(">") {
         @Override
         <N> boolean test(List<NodeWrapper<N>> left, List<NodeWrapper<N>> right) {
             for (NodeWrapper<N> leftNode : left) {
@@ -53,7 +53,7 @@ public enum Op {
             return false;
         }
     },
-    GE {
+    GE(">=") {
         @Override
         <N> boolean test(List<NodeWrapper<N>> left, List<NodeWrapper<N>> right) {
             for (NodeWrapper<N> leftNode : left) {
@@ -66,7 +66,7 @@ public enum Op {
             return false;
         }
     },
-    LT {
+    LT("<") {
         @Override
         <N> boolean test(List<NodeWrapper<N>> left, List<NodeWrapper<N>> right) {
             for (NodeWrapper<N> leftNode : left) {
@@ -79,7 +79,7 @@ public enum Op {
             return false;
         }
     },
-    LE {
+    LE("<=") {
         @Override
         <N> boolean test(List<NodeWrapper<N>> left, List<NodeWrapper<N>> right) {
             for (NodeWrapper<N> leftNode : left) {
@@ -93,6 +93,17 @@ public enum Op {
         }
     };
 
+    private final String op;
+
+    Op(String op) {
+        this.op = op;
+    }
+
     abstract <N> boolean test(List<NodeWrapper<N>> left, List<NodeWrapper<N>> right);
+
+    @Override
+    public String toString() {
+        return op;
+    }
 
 }
