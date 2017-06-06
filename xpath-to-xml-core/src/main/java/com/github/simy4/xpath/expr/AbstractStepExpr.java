@@ -30,8 +30,24 @@ abstract class AbstractStepExpr implements StepExpr {
         return children;
     }
 
+    /**
+     * Traverses XML nodes for the nodes that matches this step expression.
+     *
+     * @param context    XPath expression context
+     * @param parentNode XML node to traverse
+     * @param <N>        XML node type
+     * @return list of matching nodes
+     */
     abstract <N> Set<NodeWrapper<N>> traverseStep(ExprContext<N> context, NodeWrapper<N> parentNode);
 
+    /**
+     * Creates new node of this step type.
+     *
+     * @param context XML model navigator
+     * @param <N>     XML node type
+     * @return newly created node
+     * @throws XmlBuilderException if error occur during XML node creation
+     */
     abstract <N> NodeWrapper<N> createStepNode(ExprContext<N> context) throws XmlBuilderException;
 
     private <N> Set<NodeWrapper<N>> traverse(ExprContext<N> pathContext, ExprContext<N> stepContext,

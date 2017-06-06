@@ -41,18 +41,18 @@ public class IdentityTest {
     public void setUp() {
         when(predicate1.apply(ArgumentMatchers.<ExprContext<String>>any(), ArgumentMatchers.<NodeWrapper<String>>any(),
                 anyBoolean())).thenAnswer(new Answer<Set<NodeWrapper<String>>>() {
-            @Override
-            public Set<NodeWrapper<String>> answer(InvocationOnMock invocationOnMock) {
-                return singleton(node(invocationOnMock.getArgument(0) + "[P1]"));
-            }
-        });
+                    @Override
+                    public Set<NodeWrapper<String>> answer(InvocationOnMock invocationOnMock) {
+                        return singleton(node(invocationOnMock.getArgument(0) + "[P1]"));
+                    }
+                });
         when(predicate2.apply(ArgumentMatchers.<ExprContext<String>>any(), ArgumentMatchers.<NodeWrapper<String>>any(),
                 anyBoolean())).thenAnswer(new Answer<Set<NodeWrapper<String>>>() {
-            @Override
-            public Set<NodeWrapper<String>> answer(InvocationOnMock invocationOnMock) {
-                return singleton(node(invocationOnMock.getArgument(0) + "[P2]"));
-            }
-        });
+                    @Override
+                    public Set<NodeWrapper<String>> answer(InvocationOnMock invocationOnMock) {
+                        return singleton(node(invocationOnMock.getArgument(0) + "[P2]"));
+                    }
+                });
 
         identity = new Identity(asList(predicate1, predicate2));
     }

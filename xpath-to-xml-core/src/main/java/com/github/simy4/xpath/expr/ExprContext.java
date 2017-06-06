@@ -5,6 +5,12 @@ import com.github.simy4.xpath.navigator.Navigator;
 import javax.annotation.Nonnegative;
 import javax.annotation.concurrent.NotThreadSafe;
 
+/**
+ * XPath expression context.
+ *
+ * @author Alex Simkin
+ * @since 1.0
+ */
 @NotThreadSafe
 public class ExprContext<N> {
 
@@ -13,7 +19,7 @@ public class ExprContext<N> {
     private int position;
 
     public ExprContext(Navigator<N> navigator) {
-        this.navigator = navigator;
+        this(navigator, 0, 0);
     }
 
     /**
@@ -23,13 +29,13 @@ public class ExprContext<N> {
      * @param size      XPath expression context size
      * @param position  XPath expression context position
      */
-    public ExprContext(Navigator<N> navigator, int size, int position) {
+    public ExprContext(Navigator<N> navigator, @Nonnegative int size, @Nonnegative int position) {
         this.navigator = navigator;
         this.size = size;
         this.position = position;
     }
 
-    public Navigator<N> getNavigator() {
+    public final Navigator<N> getNavigator() {
         return navigator;
     }
 
@@ -38,7 +44,7 @@ public class ExprContext<N> {
         return size;
     }
 
-    public void setSize(@Nonnegative int size) {
+    protected void setSize(@Nonnegative int size) {
         this.size = size;
     }
 
@@ -51,7 +57,7 @@ public class ExprContext<N> {
         return this.position == this.size;
     }
 
-    public void advance() {
+    protected void advance() {
         this.position += 1;
     }
 
