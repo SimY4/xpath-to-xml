@@ -33,6 +33,7 @@ import java.util.List;
  * @since 1.0
  */
 @ThreadSafe
+@SuppressWarnings("MethodName")
 public class XPathParser {
 
     private final NamespaceContext namespaceContext;
@@ -100,6 +101,7 @@ public class XPathParser {
                     case IDENTIFIER:
                         RelativePathExpr(context, pathExpr);
                         break;
+                    default:
                 }
                 break;
             case DOUBLE_SLASH:
@@ -184,7 +186,8 @@ public class XPathParser {
                 final Token identifier = context.match(Type.IDENTIFIER);
                 if (Type.COLON == context.tokenAt(1).getType()) {
                     context.match(Type.COLON);
-                    final String prefix, namespaceUri;
+                    final String prefix;
+                    final String namespaceUri;
                     if (null == namespaceContext) {
                         prefix = XMLConstants.DEFAULT_NS_PREFIX;
                         namespaceUri = XMLConstants.NULL_NS_URI;
@@ -197,10 +200,12 @@ public class XPathParser {
                             return new QName(namespaceUri, context.match(Type.STAR).getToken(), prefix);
                         case IDENTIFIER:
                             return new QName(namespaceUri, context.match(Type.IDENTIFIER).getToken(), prefix);
+                        default:
                     }
                 } else {
                     return new QName(identifier.getToken());
                 }
+                // fallthrough
             default:
                 throw new XPathParserException(context.tokenAt(1), Type.STAR, Type.IDENTIFIER);
         }

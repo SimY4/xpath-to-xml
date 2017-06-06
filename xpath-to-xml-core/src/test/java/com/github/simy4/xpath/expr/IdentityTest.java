@@ -1,6 +1,5 @@
 package com.github.simy4.xpath.expr;
 
-import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.NodeWrapper;
 import org.junit.Before;
@@ -80,11 +79,6 @@ public class IdentityTest {
         verify(predicate2, never()).apply(ArgumentMatchers.<ExprContext<String>>any(),
                 ArgumentMatchers.<NodeWrapper<String>>any(), anyBoolean());
         assertThat(predicate1ContextCaptor.getAllValues()).containsExactly(new ExprContext<String>(navigator, 1, 1));
-    }
-
-    @Test(expected = XmlBuilderException.class)
-    public void shouldThrowOnCreateNode() {
-        identity.createNode(new ExprContext<String>(navigator, 3, 1));
     }
 
     @Test

@@ -51,7 +51,8 @@ public class ComparisonExprTest {
 
     @Test
     public void shouldReturnGivenXmlWhenTraversalOfLeftAndRightGivesNothing() {
-        Set<NodeWrapper<String>> result = comparisonExpr.apply(new ExprContext<String>(navigator, 3, 1), node("xml"), false);
+        Set<NodeWrapper<String>> result = comparisonExpr.apply(new ExprContext<String>(navigator, 3, 1), node("xml"),
+                false);
         assertThat(result).containsExactly(node("xml"));
     }
 
@@ -74,7 +75,8 @@ public class ComparisonExprTest {
         when(leftExpr.apply(ArgumentMatchers.<ExprContext<String>>any(), eq(node("xml")), eq(true)))
                 .thenReturn(singleton(node("node1")));
 
-        Set<NodeWrapper<String>> result = comparisonExpr.apply(new ExprContext<String>(navigator, 3, 1), node("xml"), true);
+        Set<NodeWrapper<String>> result = comparisonExpr.apply(new ExprContext<String>(navigator, 3, 1), node("xml"),
+                true);
         assertThat(result).containsExactly(node("xml"));
     }
 

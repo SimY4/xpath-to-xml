@@ -33,11 +33,6 @@ public class RootTest {
         assertThat(result).containsExactly(node("root"));
     }
 
-    @Test(expected = XmlBuilderException.class)
-    public void shouldThrowOnCreateNode() {
-        root.createNode(new ExprContext<String>(navigator, 3, 1));
-    }
-
     @Test
     public void testToString() {
         assertThat(root).hasToString("/");

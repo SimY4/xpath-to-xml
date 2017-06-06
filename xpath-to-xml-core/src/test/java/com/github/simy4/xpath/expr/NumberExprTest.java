@@ -22,7 +22,8 @@ public class NumberExprTest {
 
     @Test
     public void shouldAlwaysReturnSingleNumberNode() {
-        Set<NodeWrapper<String>> result = numberExpr.apply(new ExprContext<String>(navigator, 3, 1), node("xml"), false);
+        Set<NodeWrapper<String>> result = numberExpr.apply(new ExprContext<String>(navigator, 3, 1), node("xml"),
+                false);
         assertThat(result).extracting("number", Number.class).containsExactly(2.0);
     }
 

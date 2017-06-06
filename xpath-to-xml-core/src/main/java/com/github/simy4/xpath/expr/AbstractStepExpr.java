@@ -21,51 +21,51 @@ abstract class AbstractStepExpr implements StepExpr {
     public final <N> Set<NodeWrapper<N>> apply(ExprContext<N> context, NodeWrapper<N> xml, boolean greedy)
             throws XmlBuilderException {
         final ExprContext<N> stepExprContext = new ExprContext<N>(context.getNavigator());
-        Set<NodeWrapper<N>> children = traverse(stepExprContext, xml);
+        Set<NodeWrapper<N>> children = traverse(context, stepExprContext, xml);
         if (children.isEmpty() && context.isLast() && greedy) {
-            final NodeWrapper<N> newNode = createNode(stepExprContext);
+            final NodeWrapper<N> newNode = createNode(context, stepExprContext);
             context.getNavigator().append(xml, newNode);
             children = Collections.singleton(newNode);
         }
         return children;
     }
 
-    @Override
-    public final <N> Set<NodeWrapper<N>> traverse(ExprContext<N> context, NodeWrapper<N> parentNode) {
-        final Set<NodeWrapper<N>> nodes = traverseStep(context, parentNode);
+    abstract <N> Set<NodeWrapper<N>> traverseStep(ExprContext<N> context, NodeWrapper<N> parentNode);
+
+    abstract <N> NodeWrapper<N> createStepNode(ExprContext<N> context) throws XmlBuilderException;
+
+    private <N> Set<NodeWrapper<N>> traverse(ExprContext<N> pathContext, ExprContext<N> stepContext,
+                                             NodeWrapper<N> parentNode) {
+        final Set<NodeWrapper<N>> nodes = traverseStep(pathContext, parentNode);
         final Set<NodeWrapper<N>> result = new LinkedHashSet<NodeWrapper<N>>(nodes.size());
-        context.setSize(nodes.size());
+        stepContext.setSize(nodes.size());
         for (NodeWrapper<N> node : nodes) {
-            context.advance();
+            stepContext.advance();
             final Iterator<Expr> predicatesIterator = predicateList.iterator();
-            if (test(context, node, predicatesIterator)) {
+            if (test(stepContext, node, predicatesIterator)) {
                 result.add(node);
             }
         }
         return result;
     }
 
-    @Override
-    public final <N> NodeWrapper<N> createNode(ExprContext<N> context) throws XmlBuilderException {
-        final NodeWrapper<N> newNode = createStepNode(context);
-        for (Expr predicate : predicateList) {
-            predicate.apply(context, newNode, true);
-        }
-        return newNode;
-    }
-
-    abstract <N> Set<NodeWrapper<N>> traverseStep(ExprContext<N> context, NodeWrapper<N> parentNode);
-
-    abstract <N> NodeWrapper<N> createStepNode(ExprContext<N> context) throws XmlBuilderException;
-
-    private <N> boolean test(ExprContext<N> context, NodeWrapper<N> node, Iterator<Expr> predicateIterator) {
+    private <N> boolean test(ExprContext<N> stepContext, NodeWrapper<N> node, Iterator<Expr> predicateIterator) {
         if (predicateIterator.hasNext()) {
             final Expr predicate = predicateIterator.next();
-            final Set<NodeWrapper<N>> children = predicate.apply(context, node, false);
-            return !children.isEmpty() && test(context, node, predicateIterator);
+            final Set<NodeWrapper<N>> children = predicate.apply(stepContext, node, false);
+            return !children.isEmpty() && test(stepContext, node, predicateIterator);
         } else {
             return true;
         }
+    }
+
+    private <N> NodeWrapper<N> createNode(ExprContext<N> pathContext, ExprContext<N> stepContext)
+            throws XmlBuilderException {
+        final NodeWrapper<N> newNode = createStepNode(pathContext);
+        for (Expr predicate : predicateList) {
+            predicate.apply(stepContext, newNode, true);
+        }
+        return newNode;
     }
 
     @Override

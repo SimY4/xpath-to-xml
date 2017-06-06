@@ -65,7 +65,8 @@ public class AttributeTest {
 
     @Test
     public void shouldMatchAttributesFromAListOfChildNodes() {
-        Set<NodeWrapper<String>> result = attribute.apply(new ExprContext<String>(navigator, 3, 1), node("node"), false);
+        Set<NodeWrapper<String>> result = attribute.apply(new ExprContext<String>(navigator, 3, 1), node("node"),
+                false);
 
         assertThat(result).containsExactly(node("attr"));
         verify(predicate1).apply(predicate1ContextCaptor.capture(), eq(node("attr")), eq(false));
@@ -78,7 +79,8 @@ public class AttributeTest {
     public void shouldShortCircuitWhenStepTraversalReturnsNothing() {
         when(navigator.attributesOf(node("node"))).thenReturn(Collections.<NodeWrapper<String>>emptyList());
 
-        Set<NodeWrapper<String>> result = attribute.apply(new ExprContext<String>(navigator, 3, 1), node("node"), false);
+        Set<NodeWrapper<String>> result = attribute.apply(new ExprContext<String>(navigator, 3, 1), node("node"),
+                false);
         assertThat(result).isEmpty();
         verify(predicate1, never()).apply(ArgumentMatchers.<ExprContext<String>>any(),
                 ArgumentMatchers.<NodeWrapper<String>>any(), anyBoolean());
@@ -91,7 +93,8 @@ public class AttributeTest {
         when(predicate1.apply(predicate1ContextCaptor.capture(), ArgumentMatchers.<NodeWrapper<String>>any(),
                 eq(false))).thenReturn(Collections.<NodeWrapper<String>>emptySet());
 
-        Set<NodeWrapper<String>> result = attribute.apply(new ExprContext<String>(navigator, 3, 1), node("node"), false);
+        Set<NodeWrapper<String>> result = attribute.apply(new ExprContext<String>(navigator, 3, 1), node("node"),
+                false);
         assertThat(result).isEmpty();
         verify(predicate2, never()).apply(ArgumentMatchers.<ExprContext<String>>any(),
                 ArgumentMatchers.<NodeWrapper<String>>any(), anyBoolean());
@@ -129,24 +132,27 @@ public class AttributeTest {
 
     @Test(expected = XmlBuilderException.class)
     public void shouldThrowForAttributesWithWildcardNamespace() {
+        when(navigator.attributesOf(node("node"))).thenReturn(Collections.<NodeWrapper<String>>emptyList());
         attribute = new Attribute(new QName("*", "attr"), Collections.<Expr>emptyList());
 
-        attribute.createNode(new ExprContext<String>(navigator, 0, 0));
+        attribute.apply(new ExprContext<String>(navigator, 1, 1), node("node"), true);
     }
 
     @Test(expected = XmlBuilderException.class)
     public void shouldThrowForAttributesWithWildcardLocalPart() {
+        when(navigator.attributesOf(node("node"))).thenReturn(Collections.<NodeWrapper<String>>emptyList());
         attribute = new Attribute(new QName("http://www.example.com/my", "*", "my"),
                 Collections.<Expr>emptyList());
 
-        attribute.createNode(new ExprContext<String>(navigator, 0, 0));
+        attribute.apply(new ExprContext<String>(navigator, 1, 1), node("node"), true);
     }
 
     @Test(expected = XmlBuilderException.class)
     public void shouldPropagateIfFailedToCreateAttribute() {
+        when(navigator.attributesOf(node("node"))).thenReturn(Collections.<NodeWrapper<String>>emptyList());
         when(navigator.createAttribute(any(QName.class))).thenThrow(XmlBuilderException.class);
 
-        attribute.createNode(new ExprContext<String>(navigator, 0, 0));
+        attribute.apply(new ExprContext<String>(navigator, 1, 1), node("node"), true);
     }
 
     @Test

@@ -16,6 +16,13 @@ public class ExprContext<N> {
         this.navigator = navigator;
     }
 
+    /**
+     * Constructor.
+     *
+     * @param navigator XML model navigator
+     * @param size      XPath expression context size
+     * @param position  XPath expression context position
+     */
     public ExprContext(Navigator<N> navigator, int size, int position) {
         this.navigator = navigator;
         this.size = size;

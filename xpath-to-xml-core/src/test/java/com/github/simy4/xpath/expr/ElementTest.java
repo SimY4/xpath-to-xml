@@ -131,24 +131,27 @@ public class ElementTest {
 
     @Test(expected = XmlBuilderException.class)
     public void shouldThrowForAttributesWithWildcardNamespace() {
+        when(navigator.elementsOf(node("node"))).thenReturn(Collections.<NodeWrapper<String>>emptyList());
         element = new Element(new QName("*", "attr"), Collections.<Expr>emptyList());
 
-        element.createNode(new ExprContext<String>(navigator, 0, 0));
+        element.apply(new ExprContext<String>(navigator, 1, 1), node("node"), true);
     }
 
     @Test(expected = XmlBuilderException.class)
     public void shouldThrowForAttributesWithWildcardLocalPart() {
+        when(navigator.elementsOf(node("node"))).thenReturn(Collections.<NodeWrapper<String>>emptyList());
         element = new Element(new QName("http://www.example.com/my", "*", "my"),
                 Collections.<Expr>emptyList());
 
-        element.createNode(new ExprContext<String>(navigator, 0, 0));
+        element.apply(new ExprContext<String>(navigator, 1, 1), node("node"), true);
     }
 
     @Test(expected = XmlBuilderException.class)
     public void shouldPropagateIfFailedToCreateElement() {
+        when(navigator.elementsOf(node("node"))).thenReturn(Collections.<NodeWrapper<String>>emptyList());
         when(navigator.createElement(any(QName.class))).thenThrow(XmlBuilderException.class);
 
-        element.createNode(new ExprContext<String>(navigator, 0, 0));
+        element.apply(new ExprContext<String>(navigator, 1, 1), node("node"), true);
     }
 
     @Test

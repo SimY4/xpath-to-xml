@@ -18,6 +18,7 @@ import static com.github.simy4.xpath.utils.StringNodeWrapper.node;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -50,7 +51,8 @@ public class PathExprTest {
         when(stepExpr3.apply(stepExpr3ContextCaptor.capture(), eq(node("node3")), eq(false)))
                 .thenReturn(singleton(node("node4")));
 
-        Set<NodeWrapper<String>> result = pathExpr.apply(new ExprContext<String>(navigator, 1, 1), node("node1"), false);
+        Set<NodeWrapper<String>> result = pathExpr.apply(new ExprContext<String>(navigator, 1, 1), node("node1"),
+                false);
         assertThat(result).containsExactly(node("node4"));
         assertThat(stepExpr1ContextCaptor.getAllValues()).containsExactly(new ExprContext<String>(navigator, 1, 1));
         assertThat(stepExpr2ContextCaptor.getAllValues()).containsExactly(new ExprContext<String>(navigator, 1, 1));
@@ -68,7 +70,8 @@ public class PathExprTest {
         when(stepExpr3.apply(stepExpr3ContextCaptor.capture(), eq(node("node3")), eq(false)))
                 .thenReturn(singleton(node("node4")));
 
-        Set<NodeWrapper<String>> result = pathExpr.apply(new ExprContext<String>(navigator, 1, 1), node("node1"), false);
+        Set<NodeWrapper<String>> result = pathExpr.apply(new ExprContext<String>(navigator, 1, 1), node("node1"),
+                false);
         assertThat(result).containsExactly(node("node4"));
         assertThat(stepExpr1ContextCaptor.getAllValues()).containsExactly(new ExprContext<String>(navigator, 1, 1));
         assertThat(stepExpr2ContextCaptor.getAllValues())
@@ -81,10 +84,11 @@ public class PathExprTest {
         when(stepExpr1.apply(stepExpr1ContextCaptor.capture(), eq(node("node1")), eq(false)))
                 .thenReturn(singleton(node("node2")));
 
-        Set<NodeWrapper<String>> result = pathExpr.apply(new ExprContext<String>(navigator, 1, 1), node("node1"), false);
+        Set<NodeWrapper<String>> result = pathExpr.apply(new ExprContext<String>(navigator, 1, 1), node("node1"),
+                false);
         assertThat(result).isEmpty();
-        verify(stepExpr3, never()).traverse(ArgumentMatchers.<ExprContext<String>>any(),
-                ArgumentMatchers.<NodeWrapper<String>>any());
+        verify(stepExpr3, never()).apply(ArgumentMatchers.<ExprContext<String>>any(),
+                ArgumentMatchers.<NodeWrapper<String>>any(), anyBoolean());
     }
 
     @Test
