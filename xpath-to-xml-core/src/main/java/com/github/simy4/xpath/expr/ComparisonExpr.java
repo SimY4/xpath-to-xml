@@ -1,5 +1,6 @@
 package com.github.simy4.xpath.expr;
 
+import com.github.simy4.xpath.expr.op.Op;
 import com.github.simy4.xpath.navigator.NodeWrapper;
 
 import java.util.Collections;
@@ -25,19 +26,19 @@ public class ComparisonExpr implements Expr {
     }
 
     @Override
-    public <N> Set<NodeWrapper<N>> apply(ExprContext<N> context, NodeWrapper<N> xml, boolean greedy) {
-        final ExprContext<N> comparisonContext = new ExprContext<N>(context.getNavigator(), 1, 1);
-        final Set<NodeWrapper<N>> leftNodes = leftExpr.apply(comparisonContext, xml, greedy);
-        final Set<NodeWrapper<N>> rightNodes = rightExpr.apply(comparisonContext, xml, false);
+    public <N> Set<NodeWrapper<N>> resolve(ExprContext<N> context, NodeWrapper<N> xml) {
+        ExprContext<N> leftContext = context.clone(false, 1);
+        Set<NodeWrapper<N>> leftNodes = leftExpr.resolve(leftContext, xml);
+        ExprContext<N> rightContext = context.clone(false, 1);
+        Set<NodeWrapper<N>> rightNodes = rightExpr.resolve(rightContext, xml);
         if (op.test(leftNodes, rightNodes)) {
             return Collections.singleton(xml);
-        } else if (greedy) {
-            if (!rightNodes.isEmpty()) {
-                final NodeWrapper<N> rightNode = rightNodes.iterator().next();
-                for (NodeWrapper<N> leftNode : leftNodes) {
-                    context.getNavigator().setText(leftNode, rightNode.getText());
-                }
-            }
+        } else if (context.shouldCreate()) {
+            leftContext = context.clone(1);
+            leftNodes = leftExpr.resolve(leftContext, xml);
+            rightContext = context.clone(1);
+            rightNodes = rightExpr.resolve(rightContext, xml);
+            op.apply(context.getNavigator(), leftNodes, rightNodes);
             return Collections.singleton(xml);
         } else {
             return Collections.emptySet();

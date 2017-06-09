@@ -3,6 +3,7 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.NodeWrapper;
+import com.github.simy4.xpath.utils.ExprContextMatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,10 +23,11 @@ import static com.github.simy4.xpath.utils.StringNodeWrapper.node;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -45,114 +47,137 @@ public class AttributeTest {
         when(navigator.attributesOf(node("node")))
                 .thenReturn(asList(node("attr"), node("another-attr")));
 
-        when(predicate1.apply(ArgumentMatchers.<ExprContext<String>>any(), ArgumentMatchers.<NodeWrapper<String>>any(),
-                anyBoolean())).thenAnswer(new Answer<Set<NodeWrapper<String>>>() {
-                    @Override
-                    public Set<NodeWrapper<String>> answer(InvocationOnMock invocationOnMock) {
-                        return singleton(node(invocationOnMock.getArgument(0) + "[P1]"));
-                    }
-                });
-        when(predicate2.apply(ArgumentMatchers.<ExprContext<String>>any(), ArgumentMatchers.<NodeWrapper<String>>any(),
-                anyBoolean())).thenAnswer(new Answer<Set<NodeWrapper<String>>>() {
-                    @Override
-                    public Set<NodeWrapper<String>> answer(InvocationOnMock invocationOnMock) {
-                        return singleton(node(invocationOnMock.getArgument(0) + "[P2]"));
-                    }
-                });
+        when(predicate1.resolve(ArgumentMatchers.<ExprContext<String>>any(),
+                ArgumentMatchers.<NodeWrapper<String>>any())).thenAnswer(new Answer<Set<NodeWrapper<String>>>() {
+            @Override
+            public Set<NodeWrapper<String>> answer(InvocationOnMock invocationOnMock) {
+                return singleton(node(invocationOnMock.getArgument(0) + "[P1]"));
+            }
+        });
+        when(predicate2.resolve(ArgumentMatchers.<ExprContext<String>>any(),
+                ArgumentMatchers.<NodeWrapper<String>>any())).thenAnswer(new Answer<Set<NodeWrapper<String>>>() {
+            @Override
+            public Set<NodeWrapper<String>> answer(InvocationOnMock invocationOnMock) {
+                return singleton(node(invocationOnMock.getArgument(0) + "[P2]"));
+            }
+        });
 
         attribute = new Attribute(new QName("attr"), asList(predicate1, predicate2));
     }
 
     @Test
     public void shouldMatchAttributesFromAListOfChildNodes() {
-        Set<NodeWrapper<String>> result = attribute.apply(new ExprContext<String>(navigator, 3, 1), node("node"),
-                false);
+        // when
+        Set<NodeWrapper<String>> result = attribute.resolve(new ExprContext<String>(navigator, false, 3), node("node"));
 
+        // then
         assertThat(result).containsExactly(node("attr"));
-        verify(predicate1).apply(predicate1ContextCaptor.capture(), eq(node("attr")), eq(false));
-        verify(predicate2).apply(predicate2ContextCaptor.capture(), eq(node("attr")), eq(false));
-        assertThat(predicate1ContextCaptor.getAllValues()).containsExactly(new ExprContext<String>(navigator, 1, 1));
-        assertThat(predicate2ContextCaptor.getAllValues()).containsExactly(new ExprContext<String>(navigator, 1, 1));
+        verify(predicate1).resolve(predicate1ContextCaptor.capture(), eq(node("attr")));
+        verify(predicate2).resolve(predicate2ContextCaptor.capture(), eq(node("attr")));
+        assertThat(predicate1ContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
+                .containsExactly(navigator, false, 1, 1);
+        assertThat(predicate2ContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
+                .containsExactly(navigator, false, 1, 1);
     }
 
     @Test
     public void shouldShortCircuitWhenStepTraversalReturnsNothing() {
+        // given
         when(navigator.attributesOf(node("node"))).thenReturn(Collections.<NodeWrapper<String>>emptyList());
 
-        Set<NodeWrapper<String>> result = attribute.apply(new ExprContext<String>(navigator, 3, 1), node("node"),
-                false);
+        // when
+        Set<NodeWrapper<String>> result = attribute.resolve(new ExprContext<String>(navigator, false, 3), node("node"));
+
+        // then
         assertThat(result).isEmpty();
-        verify(predicate1, never()).apply(ArgumentMatchers.<ExprContext<String>>any(),
-                ArgumentMatchers.<NodeWrapper<String>>any(), anyBoolean());
-        verify(predicate2, never()).apply(ArgumentMatchers.<ExprContext<String>>any(),
-                ArgumentMatchers.<NodeWrapper<String>>any(), anyBoolean());
+        verify(predicate1, never()).resolve(ArgumentMatchers.<ExprContext<String>>any(),
+                ArgumentMatchers.<NodeWrapper<String>>any());
+        verify(predicate2, never()).resolve(ArgumentMatchers.<ExprContext<String>>any(),
+                ArgumentMatchers.<NodeWrapper<String>>any());
     }
 
     @Test
     public void shouldShortCircuitWhenPredicateTraversalReturnsNothing() {
-        when(predicate1.apply(predicate1ContextCaptor.capture(), ArgumentMatchers.<NodeWrapper<String>>any(),
-                eq(false))).thenReturn(Collections.<NodeWrapper<String>>emptySet());
+        // given
+        when(predicate1.resolve(ArgumentMatchers.<ExprContext<String>>any(),
+                ArgumentMatchers.<NodeWrapper<String>>any())).thenReturn(Collections.<NodeWrapper<String>>emptySet());
 
-        Set<NodeWrapper<String>> result = attribute.apply(new ExprContext<String>(navigator, 3, 1), node("node"),
-                false);
+        // when
+        Set<NodeWrapper<String>> result = attribute.resolve(new ExprContext<String>(navigator, false, 3), node("node"));
+
+        // then
         assertThat(result).isEmpty();
-        verify(predicate2, never()).apply(ArgumentMatchers.<ExprContext<String>>any(),
-                ArgumentMatchers.<NodeWrapper<String>>any(), anyBoolean());
-        assertThat(predicate1ContextCaptor.getAllValues()).containsExactly(new ExprContext<String>(navigator, 1, 1));
+        verify(predicate2, never()).resolve(ArgumentMatchers.<ExprContext<String>>any(),
+                ArgumentMatchers.<NodeWrapper<String>>any());
     }
 
     @Test
     public void shouldSkipCreatinElementIfNodeIsNotLast() {
-        when(predicate1.apply(predicate1ContextCaptor.capture(), ArgumentMatchers.<NodeWrapper<String>>any(),
-                eq(false))).thenReturn(Collections.<NodeWrapper<String>>emptySet());
+        // given
+        when(predicate1.resolve(ArgumentMatchers.<ExprContext<String>>any(),
+                ArgumentMatchers.<NodeWrapper<String>>any())).thenReturn(Collections.<NodeWrapper<String>>emptySet());
 
-        Set<NodeWrapper<String>> result = attribute.apply(new ExprContext<String>(navigator, 3, 1), node("node"), true);
+        // when
+        Set<NodeWrapper<String>> result = attribute.resolve(new ExprContext<String>(navigator, true, 3), node("node"));
 
+        // then
         assertThat(result).isEmpty();
-        verify(predicate2, never()).apply(ArgumentMatchers.<ExprContext<String>>any(),
-                ArgumentMatchers.<NodeWrapper<String>>any(), anyBoolean());
-        assertThat(predicate1ContextCaptor.getAllValues()).containsExactly(new ExprContext<String>(navigator, 1, 1));
+        verify(predicate2, never()).resolve(ArgumentMatchers.<ExprContext<String>>any(),
+                ArgumentMatchers.<NodeWrapper<String>>any());
     }
 
     @Test
     public void shouldCreateAttribute() {
-        when(predicate1.apply(ArgumentMatchers.<ExprContext<String>>any(), ArgumentMatchers.<NodeWrapper<String>>any(),
-                eq(false))).thenReturn(Collections.<NodeWrapper<String>>emptySet());
+        // given
+        when(predicate1.resolve(ArgumentMatchers.argThat(ExprContextMatcher.<String>needyContext()),
+                ArgumentMatchers.<NodeWrapper<String>>any())).thenReturn(Collections.<NodeWrapper<String>>emptySet());
         when(navigator.createAttribute(new QName("attr"))).thenReturn(node("attr"));
 
-        Set<NodeWrapper<String>> result = attribute.apply(new ExprContext<String>(navigator, 1, 1), node("node"), true);
+        // when
+        Set<NodeWrapper<String>> result = attribute.resolve(new ExprContext<String>(navigator, true, 1), node("node"));
 
+        // then
         assertThat(result).containsExactly(node("attr"));
         verify(navigator).createAttribute(new QName("attr"));
-        verify(predicate1).apply(predicate1ContextCaptor.capture(), eq(node("attr")), eq(true));
-        verify(predicate2).apply(predicate2ContextCaptor.capture(), eq(node("attr")), eq(true));
-        assertThat(predicate1ContextCaptor.getAllValues()).containsExactly(new ExprContext<String>(navigator, 1, 1));
-        assertThat(predicate2ContextCaptor.getAllValues()).containsExactly(new ExprContext<String>(navigator, 1, 1));
+        verify(predicate1, times(2)).resolve(predicate1ContextCaptor.capture(), eq(node("attr")));
+        verify(predicate2).resolve(predicate2ContextCaptor.capture(), eq(node("attr")));
+        assertThat(predicate1ContextCaptor.getAllValues()).extracting("navigator", "greedy", "size", "position")
+                .containsExactly(
+                        tuple(navigator, false, 1, 1),
+                        tuple(navigator, true, 1, 1));
+        assertThat(predicate2ContextCaptor.getAllValues()).extracting("navigator", "greedy", "size", "position")
+                .containsExactly(tuple(navigator, true, 1, 1));
     }
 
     @Test(expected = XmlBuilderException.class)
     public void shouldThrowForAttributesWithWildcardNamespace() {
+        // given
         when(navigator.attributesOf(node("node"))).thenReturn(Collections.<NodeWrapper<String>>emptyList());
         attribute = new Attribute(new QName("*", "attr"), Collections.<Expr>emptyList());
 
-        attribute.apply(new ExprContext<String>(navigator, 1, 1), node("node"), true);
+        // when
+        attribute.resolve(new ExprContext<String>(navigator, true, 1), node("node"));
     }
 
     @Test(expected = XmlBuilderException.class)
     public void shouldThrowForAttributesWithWildcardLocalPart() {
+        // given
         when(navigator.attributesOf(node("node"))).thenReturn(Collections.<NodeWrapper<String>>emptyList());
         attribute = new Attribute(new QName("http://www.example.com/my", "*", "my"),
                 Collections.<Expr>emptyList());
 
-        attribute.apply(new ExprContext<String>(navigator, 1, 1), node("node"), true);
+        // when
+        attribute.resolve(new ExprContext<String>(navigator, true, 1), node("node"));
     }
 
     @Test(expected = XmlBuilderException.class)
     public void shouldPropagateIfFailedToCreateAttribute() {
+        // given
         when(navigator.attributesOf(node("node"))).thenReturn(Collections.<NodeWrapper<String>>emptyList());
         when(navigator.createAttribute(any(QName.class))).thenThrow(XmlBuilderException.class);
 
-        attribute.apply(new ExprContext<String>(navigator, 1, 1), node("node"), true);
+        // when
+        attribute.resolve(new ExprContext<String>(navigator, true, 1), node("node"));
     }
 
     @Test

@@ -20,7 +20,6 @@ import static com.github.simy4.xpath.utils.StringNodeWrapper.node;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -39,15 +38,15 @@ public class IdentityTest {
 
     @Before
     public void setUp() {
-        when(predicate1.apply(ArgumentMatchers.<ExprContext<String>>any(), ArgumentMatchers.<NodeWrapper<String>>any(),
-                anyBoolean())).thenAnswer(new Answer<Set<NodeWrapper<String>>>() {
+        when(predicate1.resolve(ArgumentMatchers.<ExprContext<String>>any(),
+                ArgumentMatchers.<NodeWrapper<String>>any())).thenAnswer(new Answer<Set<NodeWrapper<String>>>() {
                     @Override
                     public Set<NodeWrapper<String>> answer(InvocationOnMock invocationOnMock) {
                         return singleton(node(invocationOnMock.getArgument(0) + "[P1]"));
                     }
                 });
-        when(predicate2.apply(ArgumentMatchers.<ExprContext<String>>any(), ArgumentMatchers.<NodeWrapper<String>>any(),
-                anyBoolean())).thenAnswer(new Answer<Set<NodeWrapper<String>>>() {
+        when(predicate2.resolve(ArgumentMatchers.<ExprContext<String>>any(),
+                ArgumentMatchers.<NodeWrapper<String>>any())).thenAnswer(new Answer<Set<NodeWrapper<String>>>() {
                     @Override
                     public Set<NodeWrapper<String>> answer(InvocationOnMock invocationOnMock) {
                         return singleton(node(invocationOnMock.getArgument(0) + "[P2]"));
@@ -58,27 +57,36 @@ public class IdentityTest {
     }
 
     @Test
-    public void shouldReturnTheSameNodesOnTraverse() {
+    public void shouldReturnTheSameNodesOnResolve() {
+        // given
         NodeWrapper<String> node = node("node");
-        Set<NodeWrapper<String>> result = identity.apply(new ExprContext<String>(navigator, 3, 1), node, true);
 
+        // when
+        Set<NodeWrapper<String>> result = identity.resolve(new ExprContext<String>(navigator, false, 3), node);
+
+        // then
         assertThat(result).containsExactly(node);
-        verify(predicate1).apply(predicate1ContextCaptor.capture(), eq(node("node")), eq(false));
-        verify(predicate2).apply(predicate2ContextCaptor.capture(), eq(node("node")), eq(false));
-        assertThat(predicate1ContextCaptor.getAllValues()).containsExactly(new ExprContext<String>(navigator, 1, 1));
-        assertThat(predicate2ContextCaptor.getAllValues()).containsExactly(new ExprContext<String>(navigator, 1, 1));
+        verify(predicate1).resolve(predicate1ContextCaptor.capture(), eq(node("node")));
+        verify(predicate2).resolve(predicate2ContextCaptor.capture(), eq(node("node")));
+        assertThat(predicate1ContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
+                .containsExactly(navigator, false, 1, 1);
+        assertThat(predicate2ContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
+                .containsExactly(navigator, false, 1, 1);
     }
 
     @Test
     public void shouldShortCircuitWhenPredicateTraversalReturnsNothing() {
-        when(predicate1.apply(predicate1ContextCaptor.capture(), ArgumentMatchers.<NodeWrapper<String>>any(),
-                eq(false))).thenReturn(Collections.<NodeWrapper<String>>emptySet());
+        // given
+        when(predicate1.resolve(ArgumentMatchers.<ExprContext<String>>any(),
+                ArgumentMatchers.<NodeWrapper<String>>any())).thenReturn(Collections.<NodeWrapper<String>>emptySet());
 
-        Set<NodeWrapper<String>> result = identity.apply(new ExprContext<String>(navigator, 3, 1), node("node"), true);
+        // when
+        Set<NodeWrapper<String>> result = identity.resolve(new ExprContext<String>(navigator, false, 3), node("node"));
+
+        // then
         assertThat(result).isEmpty();
-        verify(predicate2, never()).apply(ArgumentMatchers.<ExprContext<String>>any(),
-                ArgumentMatchers.<NodeWrapper<String>>any(), anyBoolean());
-        assertThat(predicate1ContextCaptor.getAllValues()).containsExactly(new ExprContext<String>(navigator, 1, 1));
+        verify(predicate2, never()).resolve(ArgumentMatchers.<ExprContext<String>>any(),
+                ArgumentMatchers.<NodeWrapper<String>>any());
     }
 
     @Test

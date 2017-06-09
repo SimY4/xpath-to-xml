@@ -8,6 +8,7 @@ public class XmlBuilderTest {
 
     @Test(expected = XmlBuilderException.class)
     public void shouldThrowOnBuildWithoutConcreteSpiImplementation() {
+        // when
         xmlBuilder.build(new Object());
     }
 

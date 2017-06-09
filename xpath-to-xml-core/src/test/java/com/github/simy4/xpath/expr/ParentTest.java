@@ -21,7 +21,6 @@ import static com.github.simy4.xpath.utils.StringNodeWrapper.node;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -42,76 +41,93 @@ public class ParentTest {
     public void setUp() {
         when(navigator.parentOf(node("node"))).thenReturn(node("parent"));
 
-        when(predicate1.apply(ArgumentMatchers.<ExprContext<String>>any(), ArgumentMatchers.<NodeWrapper<String>>any(),
-                anyBoolean())).thenAnswer(new Answer<Set<NodeWrapper<String>>>() {
-                    @Override
-                    public Set<NodeWrapper<String>> answer(InvocationOnMock invocationOnMock) {
-                        return singleton(node(invocationOnMock.getArgument(0) + "[P1]"));
-                    }
-                });
-        when(predicate2.apply(ArgumentMatchers.<ExprContext<String>>any(), ArgumentMatchers.<NodeWrapper<String>>any(),
-                anyBoolean())).thenAnswer(new Answer<Set<NodeWrapper<String>>>() {
-                    @Override
-                    public Set<NodeWrapper<String>> answer(InvocationOnMock invocationOnMock) {
-                        return singleton(node(invocationOnMock.getArgument(0) + "[P2]"));
-                    }
-                });
+        when(predicate1.resolve(ArgumentMatchers.<ExprContext<String>>any(),
+                ArgumentMatchers.<NodeWrapper<String>>any())).thenAnswer(new Answer<Set<NodeWrapper<String>>>() {
+            @Override
+            public Set<NodeWrapper<String>> answer(InvocationOnMock invocationOnMock) {
+                return singleton(node(invocationOnMock.getArgument(0) + "[P1]"));
+            }
+        });
+        when(predicate2.resolve(ArgumentMatchers.<ExprContext<String>>any(),
+                ArgumentMatchers.<NodeWrapper<String>>any())).thenAnswer(new Answer<Set<NodeWrapper<String>>>() {
+            @Override
+            public Set<NodeWrapper<String>> answer(InvocationOnMock invocationOnMock) {
+                return singleton(node(invocationOnMock.getArgument(0) + "[P2]"));
+            }
+        });
 
         parent = new Parent(asList(predicate1, predicate2));
     }
 
     @Test
     public void shouldReturnParentNodeOnTraverse() {
-        Set<NodeWrapper<String>> result = parent.apply(new ExprContext<String>(navigator, 3, 1), node("node"), false);
+        // when
+        Set<NodeWrapper<String>> result = parent.resolve(new ExprContext<String>(navigator, false, 3), node("node"));
 
+        // then
         assertThat(result).containsExactly(node("parent"));
-        verify(predicate1).apply(predicate1ContextCaptor.capture(), eq(node("parent")), eq(false));
-        verify(predicate2).apply(predicate2ContextCaptor.capture(), eq(node("parent")), eq(false));
-        assertThat(predicate1ContextCaptor.getAllValues()).containsExactly(new ExprContext<String>(navigator, 1, 1));
-        assertThat(predicate2ContextCaptor.getAllValues()).containsExactly(new ExprContext<String>(navigator, 1, 1));
+        verify(predicate1).resolve(predicate1ContextCaptor.capture(), eq(node("parent")));
+        verify(predicate2).resolve(predicate2ContextCaptor.capture(), eq(node("parent")));
+        assertThat(predicate1ContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
+                .containsExactly(navigator, false, 1, 1);
+        assertThat(predicate2ContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
+                .containsExactly(navigator, false, 1, 1);
     }
 
     @Test
     public void shouldShortCircuitWhenStepTraversalReturnsNothing() {
+        // given
         when(navigator.parentOf(node("node"))).thenReturn(null);
 
-        Set<NodeWrapper<String>> result = parent.apply(new ExprContext<String>(navigator, 3, 1), node("node"), false);
+        // when
+        Set<NodeWrapper<String>> result = parent.resolve(new ExprContext<String>(navigator, false, 3), node("node"));
+
+        // then
         assertThat(result).isEmpty();
-        verify(predicate1, never()).apply(ArgumentMatchers.<ExprContext<String>>any(),
-                ArgumentMatchers.<NodeWrapper<String>>any(), anyBoolean());
-        verify(predicate2, never()).apply(ArgumentMatchers.<ExprContext<String>>any(),
-                ArgumentMatchers.<NodeWrapper<String>>any(), anyBoolean());
+        verify(predicate1, never()).resolve(ArgumentMatchers.<ExprContext<String>>any(),
+                ArgumentMatchers.<NodeWrapper<String>>any());
+        verify(predicate2, never()).resolve(ArgumentMatchers.<ExprContext<String>>any(),
+                ArgumentMatchers.<NodeWrapper<String>>any());
     }
 
     @Test
     public void shouldShortCircuitWhenPredicateTraversalReturnsNothing() {
-        when(predicate1.apply(predicate1ContextCaptor.capture(), ArgumentMatchers.<NodeWrapper<String>>any(),
-                eq(false))).thenReturn(Collections.<NodeWrapper<String>>emptySet());
+        // given
+        when(predicate1.resolve(ArgumentMatchers.<ExprContext<String>>any(),
+                ArgumentMatchers.<NodeWrapper<String>>any())).thenReturn(Collections.<NodeWrapper<String>>emptySet());
 
-        Set<NodeWrapper<String>> result = parent.apply(new ExprContext<String>(navigator, 3, 1), node("node"), false);
+        // when
+        Set<NodeWrapper<String>> result = parent.resolve(new ExprContext<String>(navigator, false, 3), node("node"));
+
+        // then
         assertThat(result).isEmpty();
-        verify(predicate2, never()).apply(ArgumentMatchers.<ExprContext<String>>any(),
-                ArgumentMatchers.<NodeWrapper<String>>any(), anyBoolean());
-        assertThat(predicate1ContextCaptor.getAllValues()).containsExactly(new ExprContext<String>(navigator, 1, 1));
+        verify(predicate2, never()).resolve(ArgumentMatchers.<ExprContext<String>>any(),
+                ArgumentMatchers.<NodeWrapper<String>>any());
     }
 
     @Test
     public void shouldSkipAppendingNodesForNodeThatIsNoLast() {
+        // given
         when(navigator.parentOf(node("node"))).thenReturn(null);
 
-        Set<NodeWrapper<String>> result = parent.apply(new ExprContext<String>(navigator, 3 ,1), node("node"), true);
+        // when
+        Set<NodeWrapper<String>> result = parent.resolve(new ExprContext<String>(navigator, true, 3), node("node"));
+
+        // then
         assertThat(result).isEmpty();
-        verify(predicate1, never()).apply(ArgumentMatchers.<ExprContext<String>>any(),
-                ArgumentMatchers.<NodeWrapper<String>>any(), anyBoolean());
-        verify(predicate2, never()).apply(ArgumentMatchers.<ExprContext<String>>any(),
-                ArgumentMatchers.<NodeWrapper<String>>any(), anyBoolean());
+        verify(predicate1, never()).resolve(ArgumentMatchers.<ExprContext<String>>any(),
+                ArgumentMatchers.<NodeWrapper<String>>any());
+        verify(predicate2, never()).resolve(ArgumentMatchers.<ExprContext<String>>any(),
+                ArgumentMatchers.<NodeWrapper<String>>any());
     }
 
     @Test(expected = XmlBuilderException.class)
     public void shouldThrowOnCreateNode() {
+        // given
         when(navigator.parentOf(node("node"))).thenReturn(null);
 
-        parent.apply(new ExprContext<String>(navigator, 1 ,1), node("node"), true);
+        // when
+        parent.resolve(new ExprContext<String>(navigator, true, 1), node("node"));
     }
 
     @Test

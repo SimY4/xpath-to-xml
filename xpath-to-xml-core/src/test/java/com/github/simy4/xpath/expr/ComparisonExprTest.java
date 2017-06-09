@@ -1,7 +1,9 @@
 package com.github.simy4.xpath.expr;
 
+import com.github.simy4.xpath.expr.op.Op;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.NodeWrapper;
+import com.github.simy4.xpath.utils.ExprContextMatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +18,11 @@ import java.util.Set;
 import static com.github.simy4.xpath.utils.StringNodeWrapper.node;
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -25,6 +31,7 @@ public class ComparisonExprTest {
     @Mock private Navigator<String> navigator;
     @Mock private Expr leftExpr;
     @Mock private Expr rightExpr;
+    @Mock private Op op;
     @Captor private ArgumentCaptor<ExprContext<String>> leftExprContextCaptor;
     @Captor private ArgumentCaptor<ExprContext<String>> rightExprContextCaptor;
 
@@ -32,71 +39,101 @@ public class ComparisonExprTest {
 
     @Before
     public void setUp() {
-        comparisonExpr = new ComparisonExpr(leftExpr, rightExpr, Op.EQ);
+        comparisonExpr = new ComparisonExpr(leftExpr, rightExpr, op);
     }
 
     @Test
-    public void shouldReturnGivenXmlWhenTraversalOfLeftAndRightGivesTheSameValue() {
-        when(leftExpr.apply(leftExprContextCaptor.capture(), eq(node("xml")), eq(false)))
-                .thenReturn(singleton(node("node1")));
-        when(rightExpr.apply(rightExprContextCaptor.capture(), eq(node("xml")), eq(false)))
-                .thenReturn(singleton(node("node1")));
+    public void shouldReturnGivenXmlWhenOpTestReturnsSucceeds() {
+        // given
+        when(op.test(ArgumentMatchers.<NodeWrapper<String>>anySet(), ArgumentMatchers.<NodeWrapper<String>>anySet()))
+                .thenReturn(true);
+        ExprContext<String> context = new ExprContext<String>(navigator, false, 3);
+        context.advance();
 
-        ExprContext<String> context = new ExprContext<String>(navigator, 3, 1);
-        Set<NodeWrapper<String>> result = comparisonExpr.apply(context, node("xml"), false);
+        // when
+        Set<NodeWrapper<String>> result = comparisonExpr.resolve(context, node("xml"));
+
+        // then
+        verify(leftExpr).resolve(leftExprContextCaptor.capture(), eq(node("xml")));
+        verify(rightExpr).resolve(rightExprContextCaptor.capture(), eq(node("xml")));
         assertThat(result).containsExactly(node("xml"));
-        assertThat(leftExprContextCaptor.getValue()).isNotSameAs(context);
-        assertThat(rightExprContextCaptor.getValue()).isNotSameAs(context);
+        assertThat(leftExprContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
+                .containsExactly(navigator, false, 1, 0);
+        assertThat(rightExprContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
+                .containsExactly(navigator, false, 1, 0);
     }
 
     @Test
-    public void shouldReturnGivenXmlWhenTraversalOfLeftAndRightGivesNothing() {
-        Set<NodeWrapper<String>> result = comparisonExpr.apply(new ExprContext<String>(navigator, 3, 1), node("xml"),
-                false);
-        assertThat(result).containsExactly(node("xml"));
-    }
+    public void shouldReturnEmptySetWhenOpTestReturnsFails() {
+        // given
+        ExprContext<String> context = new ExprContext<String>(navigator, false, 3);
+        context.advance();
 
-    @Test
-    public void shouldReturnEmptyListWhenTraversalOfLeftAndRightGivesDifferentValues() {
-        when(leftExpr.apply(leftExprContextCaptor.capture(), eq(node("xml")), eq(false)))
-                .thenReturn(singleton(node("node1")));
-        when(rightExpr.apply(rightExprContextCaptor.capture(), eq(node("xml")), eq(false)))
-                .thenReturn(singleton(node("node2")));
+        // when
+        Set<NodeWrapper<String>> result = comparisonExpr.resolve(context, node("xml"));
 
-        ExprContext<String> context = new ExprContext<String>(navigator, 3, 1);
-        Set<NodeWrapper<String>> result = comparisonExpr.apply(context, node("xml"), false);
+        // then
+        verify(leftExpr).resolve(leftExprContextCaptor.capture(), eq(node("xml")));
+        verify(rightExpr).resolve(rightExprContextCaptor.capture(), eq(node("xml")));
         assertThat(result).isEmpty();
-        assertThat(leftExprContextCaptor.getValue()).isNotSameAs(context);
-        assertThat(rightExprContextCaptor.getValue()).isNotSameAs(context);
+        assertThat(leftExprContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
+                .containsExactly(navigator, false, 1, 0);
+        assertThat(rightExprContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
+                .containsExactly(navigator, false, 1, 0);
     }
 
     @Test
-    public void shouldCreateLeftComparisonBranchDuringGreedyTraversal() {
-        when(leftExpr.apply(ArgumentMatchers.<ExprContext<String>>any(), eq(node("xml")), eq(true)))
-                .thenReturn(singleton(node("node1")));
+    public void shouldReturnEmptySetWhenOpTestReturnsFailsAndExprShouldNotCreate() {
+        // given
+        ExprContext<String> context = new ExprContext<String>(navigator, true, 3);
+        context.advance();
 
-        Set<NodeWrapper<String>> result = comparisonExpr.apply(new ExprContext<String>(navigator, 3, 1), node("xml"),
-                true);
-        assertThat(result).containsExactly(node("xml"));
+        // when
+        Set<NodeWrapper<String>> result = comparisonExpr.resolve(context, node("xml"));
+
+        // then
+        verify(leftExpr).resolve(leftExprContextCaptor.capture(), eq(node("xml")));
+        verify(rightExpr).resolve(rightExprContextCaptor.capture(), eq(node("xml")));
+        verify(op, never()).apply(ArgumentMatchers.<Navigator<String>>any(),
+                ArgumentMatchers.<NodeWrapper<String>>anySet(), ArgumentMatchers.<NodeWrapper<String>>anySet());
+        assertThat(result).isEmpty();
+        assertThat(leftExprContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
+                .containsExactly(navigator, false, 1, 0);
+        assertThat(rightExprContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
+                .containsExactly(navigator, false, 1, 0);
     }
 
     @Test
-    public void shouldCreateLeftComparisonBranchAndSetRightComparisonBranchResultDuringGreedyTraversal() {
-        when(leftExpr.apply(leftExprContextCaptor.capture(), eq(node("xml")), eq(true)))
+    public void shouldCreateBothComparisonBranchesDuringGreedyResolutionWhenNeedyResolutionReturnsEmptySet() {
+        // given
+        when(leftExpr.resolve(ArgumentMatchers.argThat(ExprContextMatcher.<String>greedyContext()), eq(node("xml"))))
                 .thenReturn(singleton(node("node1")));
-        when(rightExpr.apply(rightExprContextCaptor.capture(), eq(node("xml")), eq(false)))
+        when(rightExpr.resolve(ArgumentMatchers.argThat(ExprContextMatcher.<String>greedyContext()), eq(node("xml"))))
                 .thenReturn(singleton(node("node2")));
+        ExprContext<String> context = new ExprContext<String>(navigator, true, 1);
+        context.advance();
 
-        ExprContext<String> context = new ExprContext<String>(navigator, 3, 1);
-        Set<NodeWrapper<String>> result = comparisonExpr.apply(context, node("xml"), true);
+        // when
+        Set<NodeWrapper<String>> result = comparisonExpr.resolve(context, node("xml"));
+
+        // then
+        verify(leftExpr, times(2)).resolve(leftExprContextCaptor.capture(), eq(node("xml")));
+        verify(rightExpr, times(2)).resolve(rightExprContextCaptor.capture(), eq(node("xml")));
+        verify(op).apply(navigator, singleton(node("node1")), singleton(node("node2")));
         assertThat(result).containsExactly(node("xml"));
-        assertThat(leftExprContextCaptor.getValue()).isNotSameAs(context);
-        assertThat(rightExprContextCaptor.getValue()).isNotSameAs(context);
+        assertThat(leftExprContextCaptor.getAllValues()).extracting("navigator", "greedy", "size", "position")
+                .containsExactly(
+                        tuple(navigator, false, 1, 0),
+                        tuple(navigator, true, 1, 0));
+        assertThat(rightExprContextCaptor.getAllValues()).extracting("navigator", "greedy", "size", "position")
+                .containsExactly(
+                        tuple(navigator, false, 1, 0),
+                        tuple(navigator, true, 1, 0));
     }
 
     @Test
     public void testToString() {
-        assertThat(comparisonExpr).hasToString(leftExpr + "=" + rightExpr);
+        assertThat(comparisonExpr).hasToString(leftExpr.toString() + op.toString() + rightExpr.toString());
     }
 
 }

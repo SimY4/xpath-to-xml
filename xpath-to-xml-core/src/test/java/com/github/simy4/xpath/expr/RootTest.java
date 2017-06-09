@@ -1,6 +1,5 @@
 package com.github.simy4.xpath.expr;
 
-import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.NodeWrapper;
 import org.junit.Before;
@@ -29,7 +28,10 @@ public class RootTest {
 
     @Test
     public void shouldReturnSingleRootNodeOnTraverse() {
-        Set<NodeWrapper<String>> result = root.apply(new ExprContext<String>(navigator, 3, 1), node("node"), false);
+        // when
+        Set<NodeWrapper<String>> result = root.resolve(new ExprContext<String>(navigator, false, 1), node("node"));
+
+        // then
         assertThat(result).containsExactly(node("root"));
     }
 

@@ -20,8 +20,8 @@ public class PutValueAction implements Action {
 
     @Override
     public <N> void perform(Navigator<N> navigator) throws XmlBuilderException {
-        final ExprContext<N> context = new ExprContext<N>(navigator, 1, 1);
-        final Set<NodeWrapper<N>> nodes = expr.apply(context, navigator.xml(), true);
+        final ExprContext<N> context = new ExprContext<N>(navigator, true, 1);
+        final Set<NodeWrapper<N>> nodes = expr.resolve(context, navigator.xml());
         for (NodeWrapper<N> node : nodes) {
             navigator.setText(node, value);
         }

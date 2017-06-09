@@ -4,7 +4,6 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.NodeWrapper;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,16 +17,22 @@ abstract class AbstractStepExpr implements StepExpr {
     }
 
     @Override
-    public final <N> Set<NodeWrapper<N>> apply(ExprContext<N> context, NodeWrapper<N> xml, boolean greedy)
+    public final <N> Set<NodeWrapper<N>> resolve(ExprContext<N> context, NodeWrapper<N> xml)
             throws XmlBuilderException {
-        final ExprContext<N> stepExprContext = new ExprContext<N>(context.getNavigator());
-        Set<NodeWrapper<N>> children = traverse(context, stepExprContext, xml);
-        if (children.isEmpty() && context.isLast() && greedy) {
-            final NodeWrapper<N> newNode = createNode(context, stepExprContext);
+        context.advance();
+        final Set<NodeWrapper<N>> stepNodes = traverseStep(context, xml);
+        ExprContext<N> lookupContext = context.clone(false, stepNodes.size());
+        Set<NodeWrapper<N>> result = traverse(lookupContext, stepNodes);
+
+        if (result.isEmpty() && context.shouldCreate()) {
+            final NodeWrapper<N> newNode = createStepNode(context);
+            lookupContext = context.clone(1);
+            lookupContext.advance();
+            createNode(lookupContext, newNode);
+            result = Collections.singleton(newNode);
             context.getNavigator().append(xml, newNode);
-            children = Collections.singleton(newNode);
         }
-        return children;
+        return result;
     }
 
     /**
@@ -50,38 +55,31 @@ abstract class AbstractStepExpr implements StepExpr {
      */
     abstract <N> NodeWrapper<N> createStepNode(ExprContext<N> context) throws XmlBuilderException;
 
-    private <N> Set<NodeWrapper<N>> traverse(ExprContext<N> pathContext, ExprContext<N> stepContext,
-                                             NodeWrapper<N> parentNode) {
-        final Set<NodeWrapper<N>> nodes = traverseStep(pathContext, parentNode);
-        final Set<NodeWrapper<N>> result = new LinkedHashSet<NodeWrapper<N>>(nodes.size());
-        stepContext.setSize(nodes.size());
-        for (NodeWrapper<N> node : nodes) {
-            stepContext.advance();
-            final Iterator<Expr> predicatesIterator = predicateList.iterator();
-            if (test(stepContext, node, predicatesIterator)) {
-                result.add(node);
+    private <N> Set<NodeWrapper<N>> traverse(ExprContext<N> lookupContext, Set<NodeWrapper<N>> stepNodes) {
+        final Set<NodeWrapper<N>> result = new LinkedHashSet<NodeWrapper<N>>(stepNodes.size());
+        for (NodeWrapper<N> child : stepNodes) {
+            lookupContext.advance();
+            if (test(lookupContext, child)) {
+                result.add(child);
             }
         }
         return result;
     }
 
-    private <N> boolean test(ExprContext<N> stepContext, NodeWrapper<N> node, Iterator<Expr> predicateIterator) {
-        if (predicateIterator.hasNext()) {
-            final Expr predicate = predicateIterator.next();
-            final Set<NodeWrapper<N>> children = predicate.apply(stepContext, node, false);
-            return !children.isEmpty() && test(stepContext, node, predicateIterator);
-        } else {
-            return true;
+    private <N> boolean test(ExprContext<N> stepContext, NodeWrapper<N> xml) {
+        for (Expr predicate : predicateList) {
+            Set<NodeWrapper<N>> result = predicate.resolve(stepContext, xml);
+            if (result.isEmpty()) {
+                return false;
+            }
         }
+        return true;
     }
 
-    private <N> NodeWrapper<N> createNode(ExprContext<N> pathContext, ExprContext<N> stepContext)
-            throws XmlBuilderException {
-        final NodeWrapper<N> newNode = createStepNode(pathContext);
+    private <N> void createNode(ExprContext<N> stepContext, NodeWrapper<N> newNode) throws XmlBuilderException {
         for (Expr predicate : predicateList) {
-            predicate.apply(stepContext, newNode, true);
+            predicate.resolve(stepContext, newNode);
         }
-        return newNode;
     }
 
     @Override

@@ -15,8 +15,8 @@ public class PutAction implements Action {
 
     @Override
     public <N> void perform(Navigator<N> navigator) throws XmlBuilderException {
-        final ExprContext<N> context = new ExprContext<N>(navigator, 1, 1);
-        expr.apply(context, navigator.xml(), true);
+        final ExprContext<N> context = new ExprContext<N>(navigator, true, 1);
+        expr.resolve(context, navigator.xml());
     }
 
 }

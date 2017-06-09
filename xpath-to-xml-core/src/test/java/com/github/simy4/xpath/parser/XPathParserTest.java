@@ -6,10 +6,10 @@ import com.github.simy4.xpath.expr.Element;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.expr.Identity;
 import com.github.simy4.xpath.expr.NumberExpr;
-import com.github.simy4.xpath.expr.Op;
 import com.github.simy4.xpath.expr.PathExpr;
 import com.github.simy4.xpath.expr.Root;
 import com.github.simy4.xpath.expr.StepExpr;
+import com.github.simy4.xpath.expr.op.Eq;
 import com.github.simy4.xpath.utils.Pair;
 import com.github.simy4.xpath.utils.SimpleNamespaceContext;
 import com.github.simy4.xpath.utils.Triple;
@@ -63,7 +63,7 @@ public class XPathParserTest {
                                                 new Attribute(new QName("specialty"), NIL)),
                                         pathExpr(
                                                 new Attribute(new QName("style"), NIL)),
-                                        Op.EQ))))),
+                                        new Eq()))))),
                 Pair.of("author/first-name", pathExpr(new Element(new QName("author"), NIL),
                         new Element(new QName("first-name"), NIL))),
                 Pair.of("bookstore//title", pathExpr(

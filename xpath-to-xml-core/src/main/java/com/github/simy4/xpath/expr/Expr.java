@@ -18,12 +18,10 @@ public interface Expr {
      *
      * @param context XPath expression context
      * @param xml     XML model
-     * @param greedy  {@code true} if you want to evaluate expression greedily and {@code false} otherwise
      * @param <N>     XML model type
      * @return list of evaluated node views
      * @throws XmlBuilderException if error occur during XML model modification
      */
-    <N> Set<NodeWrapper<N>> apply(ExprContext<N> context, NodeWrapper<N> xml, boolean greedy)
-            throws XmlBuilderException;
+    <N> Set<NodeWrapper<N>> resolve(ExprContext<N> context, NodeWrapper<N> xml) throws XmlBuilderException;
 
 }

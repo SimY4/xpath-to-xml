@@ -94,6 +94,19 @@ public class XmlBuilderTest {
     }
 
     @Test
+    public void shouldModifyDocumentWhenXPathsAreNotTraversable()
+            throws XPathExpressionException, TransformerException, IOException, SAXException {
+        Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
+        String xml = fixtureAccessor.getPutXml();
+        Document oldDocument = stringToXml(xml);
+        Document builtDocument = new XmlBuilder(namespaceContext)
+                .putAll(xmlProperties)
+                .build(oldDocument);
+
+        assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
+    }
+
+    @Test
     public void shouldNotModifyDocumentWhenAllXPathsTraversable()
             throws XPathExpressionException, TransformerException, IOException, SAXException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();

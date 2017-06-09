@@ -1,6 +1,5 @@
 package com.github.simy4.xpath.expr;
 
-import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.NodeWrapper;
 
 import java.util.Collections;
@@ -9,8 +8,8 @@ import java.util.Set;
 public class Root implements StepExpr {
 
     @Override
-    public <N> Set<NodeWrapper<N>> apply(ExprContext<N> context, NodeWrapper<N> xml, boolean greedy)
-            throws XmlBuilderException {
+    public <N> Set<NodeWrapper<N>> resolve(ExprContext<N> context, NodeWrapper<N> xml) {
+        context.advance();
         return Collections.singleton(context.getNavigator().root());
     }
 

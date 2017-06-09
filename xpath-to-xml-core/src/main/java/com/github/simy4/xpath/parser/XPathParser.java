@@ -7,11 +7,11 @@ import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.expr.Identity;
 import com.github.simy4.xpath.expr.LiteralExpr;
 import com.github.simy4.xpath.expr.NumberExpr;
-import com.github.simy4.xpath.expr.Op;
 import com.github.simy4.xpath.expr.Parent;
 import com.github.simy4.xpath.expr.PathExpr;
 import com.github.simy4.xpath.expr.Root;
 import com.github.simy4.xpath.expr.StepExpr;
+import com.github.simy4.xpath.expr.op.Eq;
 import com.github.simy4.xpath.parser.Token.Type;
 
 import javax.annotation.Nonnegative;
@@ -68,7 +68,7 @@ public class XPathParser {
             case EQUALS:
                 context.match(Type.EQUALS);
                 Expr right = ValueExpr(context);
-                return new ComparisonExpr(left, right, Op.EQ);
+                return new ComparisonExpr(left, right, new Eq());
             default:
                 return left;
         }

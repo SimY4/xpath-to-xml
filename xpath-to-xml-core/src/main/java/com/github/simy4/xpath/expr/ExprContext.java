@@ -15,22 +15,20 @@ import javax.annotation.concurrent.NotThreadSafe;
 public class ExprContext<N> {
 
     private final Navigator<N> navigator;
+    private final boolean greedy;
     private int size;
     private int position;
-
-    public ExprContext(Navigator<N> navigator) {
-        this(navigator, 0, 0);
-    }
 
     /**
      * Constructor.
      *
      * @param navigator XML model navigator
+     * @param greedy    {@code true} if you want to evaluate expression greedily and {@code false} otherwise
      * @param size      XPath expression context size
-     * @param position  XPath expression context position
      */
-    public ExprContext(Navigator<N> navigator, @Nonnegative int size, @Nonnegative int position) {
+    public ExprContext(Navigator<N> navigator, boolean greedy, @Nonnegative int size) {
         this.navigator = navigator;
+        this.greedy = greedy;
         this.size = size;
         this.position = position;
     }
@@ -44,7 +42,7 @@ public class ExprContext<N> {
         return size;
     }
 
-    protected void setSize(@Nonnegative int size) {
+    public void setSize(@Nonnegative int size) {
         this.size = size;
     }
 
@@ -53,40 +51,20 @@ public class ExprContext<N> {
         return position;
     }
 
-    public boolean isLast() {
-        return this.position == this.size;
+    public boolean shouldCreate() {
+        return this.position == this.size && greedy;
     }
 
-    protected void advance() {
+    public void advance() {
         this.position += 1;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        ExprContext<?> that = (ExprContext<?>) o;
-
-        if (size != that.size) {
-            return false;
-        }
-        if (position != that.position) {
-            return false;
-        }
-        return navigator.equals(that.navigator);
+    public ExprContext<N> clone(boolean greedy, @Nonnegative int size) {
+        return new ExprContext<N>(navigator, greedy, size);
     }
 
-    @Override
-    public int hashCode() {
-        int result = navigator.hashCode();
-        result = 31 * result + size;
-        result = 31 * result + position;
-        return result;
+    public ExprContext<N> clone(@Nonnegative int size) {
+        return new ExprContext<N>(navigator, greedy, size);
     }
 
 }

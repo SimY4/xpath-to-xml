@@ -14,7 +14,7 @@ public class NumberExpr implements Expr {
     }
 
     @Override
-    public <N> Set<NodeWrapper<N>> apply(ExprContext<N> context, NodeWrapper<N> xml, boolean greedy) {
+    public <N> Set<NodeWrapper<N>> resolve(ExprContext<N> context, NodeWrapper<N> xml) {
         return Collections.<NodeWrapper<N>>singleton(new NodeWrapper.NumberNodeWrapper<N>(number));
     }
 

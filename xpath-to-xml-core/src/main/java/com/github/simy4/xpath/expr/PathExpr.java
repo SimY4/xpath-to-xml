@@ -17,17 +17,17 @@ public class PathExpr implements Expr {
     }
 
     @Override
-    public <N> Set<NodeWrapper<N>> apply(ExprContext<N> context, NodeWrapper<N> xml, boolean greedy) {
+    public <N> Set<NodeWrapper<N>> resolve(ExprContext<N> context, NodeWrapper<N> xml) {
         final Iterator<StepExpr> pathExprIterator = pathExpr.iterator();
-        ExprContext<N> stepExprContext = context;
         Set<NodeWrapper<N>> nodes = Collections.singleton(xml);
+        ExprContext<N> stepExprContext = context;
         while (pathExprIterator.hasNext() && !nodes.isEmpty()) {
             final StepExpr stepExpr = pathExprIterator.next();
             final Set<NodeWrapper<N>> children = new LinkedHashSet<NodeWrapper<N>>();
             for (NodeWrapper<N> node : nodes) {
-                children.addAll(stepExpr.apply(context, node, greedy));
+                children.addAll(stepExpr.resolve(stepExprContext, node));
             }
-            stepExprContext = new ExprContext<N>(stepExprContext.getNavigator(), children.size(), 1);
+            stepExprContext = stepExprContext.clone(children.size());
             nodes = children;
         }
         return nodes;
