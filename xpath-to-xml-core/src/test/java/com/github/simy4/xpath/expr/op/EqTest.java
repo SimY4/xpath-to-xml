@@ -19,8 +19,8 @@ public class EqTest {
 
     @DataPoints("Nodes")
     public static final Triple[] NODES = new Triple[] {
-            Triple.of(singleton(node("text")), asList(node("text")), true),
-            Triple.of(singleton(node("")), singleton(node("")), true),
+            Triple.of(singleton(node("text")), asList(node("text"), node("another-text")), true),
+            Triple.of(singleton(node("")), asList(node("text"), node("")), true),
             Triple.of(singleton(node(null)), singleton(node(null)), true),
 
             Triple.of(singleton(node("text2")), singleton(node("text1")), false),
@@ -29,8 +29,8 @@ public class EqTest {
     };
 
     @Theory
-    public void shouldTestLeftAndRightNodes(
-            @FromDataPoints("Nodes") Triple<Iterable<NodeWrapper<String>>, Iterable<NodeWrapper<String>>, Boolean> nodes) {
+    public void shouldTestLeftAndRightNodes(@FromDataPoints("Nodes") Triple<Iterable<NodeWrapper<String>>,
+            Iterable<NodeWrapper<String>>, Boolean> nodes) {
         boolean result = new Eq().test(nodes.getFirst(), nodes.getSecond());
         assertThat(result).isEqualTo(nodes.getThird());
 

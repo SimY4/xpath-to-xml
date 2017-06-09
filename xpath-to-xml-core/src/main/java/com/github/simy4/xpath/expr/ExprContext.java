@@ -12,11 +12,11 @@ import javax.annotation.concurrent.NotThreadSafe;
  * @since 1.0
  */
 @NotThreadSafe
-public class ExprContext<N> {
+public final class ExprContext<N> {
 
     private final Navigator<N> navigator;
     private final boolean greedy;
-    private int size;
+    private final int size;
     private int position;
 
     /**
@@ -30,20 +30,14 @@ public class ExprContext<N> {
         this.navigator = navigator;
         this.greedy = greedy;
         this.size = size;
-        this.position = position;
     }
 
-    public final Navigator<N> getNavigator() {
+    public Navigator<N> getNavigator() {
         return navigator;
     }
 
     public int getSize() {
-        assert size > 0 : "ExprContext.getSize was called before context was initialized";
         return size;
-    }
-
-    public void setSize(@Nonnegative int size) {
-        this.size = size;
     }
 
     public int getPosition() {

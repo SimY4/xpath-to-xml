@@ -21,7 +21,8 @@ public class LiteralExprTest {
 
     @Test
     public void shouldAlwaysReturnSingleLiteralNode() {
-        Set<NodeWrapper<String>> result = literalExpr.resolve(new ExprContext<String>(navigator, false, 1), node("xml"));
+        Set<NodeWrapper<String>> result = literalExpr
+                .resolve(new ExprContext<String>(navigator, false, 1), node("xml"));
         assertThat(result).extracting("literal", String.class).containsExactly("value");
     }
 

@@ -142,14 +142,14 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
         setUpResolvableExpr();
         reset(predicate1, predicate2);
         when(predicate1.resolve(ArgumentMatchers.argThat(ExprContextMatcher.<String>greedyContext()),
-                        ArgumentMatchers.<NodeWrapper<String>>any())).thenAnswer(new Answer<Set<NodeWrapper<String>>>() {
+                ArgumentMatchers.<NodeWrapper<String>>any())).thenAnswer(new Answer<Set<NodeWrapper<String>>>() {
                     @Override
                     public Set<NodeWrapper<String>> answer(InvocationOnMock invocationOnMock) {
                         return singleton(node(invocationOnMock.getArgument(0) + "[P1]"));
                     }
                 });
         when(predicate2.resolve(ArgumentMatchers.argThat(ExprContextMatcher.<String>greedyContext()),
-                        ArgumentMatchers.<NodeWrapper<String>>any())).thenAnswer(new Answer<Set<NodeWrapper<String>>>() {
+                ArgumentMatchers.<NodeWrapper<String>>any())).thenAnswer(new Answer<Set<NodeWrapper<String>>>() {
                     @Override
                     public Set<NodeWrapper<String>> answer(InvocationOnMock invocationOnMock) {
                         return singleton(node(invocationOnMock.getArgument(0) + "[P2]"));
