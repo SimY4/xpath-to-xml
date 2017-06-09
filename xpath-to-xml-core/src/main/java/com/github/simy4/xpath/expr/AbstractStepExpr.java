@@ -86,15 +86,11 @@ abstract class AbstractStepExpr implements StepExpr {
 
     @Override
     public String toString() {
-        final StringBuilder stringBuilder = new StringBuilder("[");
-        final Iterator<Expr> predicatesIterator = predicateList.iterator();
-        if (predicatesIterator.hasNext()) {
-            stringBuilder.append(predicatesIterator.next());
-            while (predicatesIterator.hasNext()) {
-                stringBuilder.append("][").append(predicatesIterator.next());
-            }
+        final StringBuilder stringBuilder = new StringBuilder();
+        for (Expr predicate : predicateList) {
+            stringBuilder.append('[').append(predicate).append(']');
         }
-        return stringBuilder.append(']').toString();
+        return stringBuilder.toString();
     }
 
 }
