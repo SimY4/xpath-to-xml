@@ -12,7 +12,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.w3c.dom.Text;
 
 import javax.xml.namespace.QName;
 
@@ -48,6 +47,7 @@ public class DomNavigatorTest {
         when(xml.getParentNode()).thenReturn(root);
         when(xml.getFirstChild()).thenReturn(child1);
         when(xml.getAttributes()).thenReturn(attributes);
+        when(xml.cloneNode(true)).thenReturn(xml);
 
         when(attributes.getLength()).thenReturn(3);
         when(attributes.item(0)).thenReturn(child1);
@@ -140,6 +140,12 @@ public class DomNavigatorTest {
     public void testCreateNsElementFailure() {
         when(root.createElementNS(anyString(), anyString())).thenThrow(DOMException.class);
         navigator.createElement(new QName("http://example.com/my", "elem"));
+    }
+
+    @Test
+    public void testClone() {
+        NodeWrapper<Node> result = navigator.clone(new DomNodeWrapper(xml));
+        assertThat(result).isEqualTo(new DomNodeWrapper(xml));
     }
 
     @Test

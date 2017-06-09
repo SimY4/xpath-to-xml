@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.xml.namespace.QName;
-import java.util.Collections;
 import java.util.Set;
 
 import static com.github.simy4.xpath.utils.StringNodeWrapper.node;
@@ -56,7 +55,7 @@ public class AttributeTest extends AbstractStepExprTest<Attribute> {
     public void shouldThrowForAttributesWithWildcardNamespace() {
         // given
         setUpUnresolvableExpr();
-        expr = new Attribute(new QName("*", "attr"), Collections.<Expr>emptyList());
+        expr = new Attribute(new QName("*", "attr"), asList(predicate1, predicate2));
 
         // when
         expr.resolve(new ExprContext<String>(navigator, true, 1), parentNode);
@@ -66,8 +65,7 @@ public class AttributeTest extends AbstractStepExprTest<Attribute> {
     public void shouldThrowForAttributesWithWildcardLocalPart() {
         // given
         setUpUnresolvableExpr();
-        expr = new Attribute(new QName("http://www.example.com/my", "*", "my"),
-                Collections.<Expr>emptyList());
+        expr = new Attribute(new QName("http://www.example.com/my", "*", "my"), asList(predicate1, predicate2));
 
         // when
         expr.resolve(new ExprContext<String>(navigator, true, 1), parentNode);

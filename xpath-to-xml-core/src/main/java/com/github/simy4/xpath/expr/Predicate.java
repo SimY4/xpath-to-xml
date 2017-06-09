@@ -3,27 +3,23 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.NodeWrapper;
 
-import java.util.Set;
-
 /**
- * XPath expression model.
+ * XPath predicate model.
  *
  * @author Alex Simkin
  * @since 1.0
  */
-public interface Expr {
-
-    Predicate asPredicate();
+public interface Predicate {
 
     /**
-     * Evaluate this expression on given xml model view using given navigator.
+     * Evaluate this predicate on given xml model view using given navigator.
      *
      * @param context XPath expression context
      * @param xml     XML model
      * @param <N>     XML model type
-     * @return ordered set of evaluated node views
+     * @return
      * @throws XmlBuilderException if error occur during XML model modification
      */
-    <N> Set<NodeWrapper<N>> resolve(ExprContext<N> context, NodeWrapper<N> xml) throws XmlBuilderException;
+    <N> boolean apply(ExprContext<N> context, NodeWrapper<N> xml) throws XmlBuilderException;
 
 }

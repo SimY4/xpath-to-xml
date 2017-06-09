@@ -8,11 +8,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-abstract class AbstractStepExpr implements StepExpr {
+abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
 
-    private final List<Expr> predicateList;
+    private final List<Predicate> predicateList;
 
-    AbstractStepExpr(List<Expr> predicateList) {
+    AbstractStepExpr(List<Predicate> predicateList) {
         this.predicateList = predicateList;
     }
 
@@ -41,7 +41,7 @@ abstract class AbstractStepExpr implements StepExpr {
      * @param context    XPath expression context
      * @param parentNode XML node to traverse
      * @param <N>        XML node type
-     * @return list of matching nodes
+     * @return ordered set of matching nodes
      */
     abstract <N> Set<NodeWrapper<N>> traverseStep(ExprContext<N> context, NodeWrapper<N> parentNode);
 
@@ -67,9 +67,8 @@ abstract class AbstractStepExpr implements StepExpr {
     }
 
     private <N> boolean test(ExprContext<N> stepContext, NodeWrapper<N> xml) {
-        for (Expr predicate : predicateList) {
-            Set<NodeWrapper<N>> result = predicate.resolve(stepContext, xml);
-            if (result.isEmpty()) {
+        for (Predicate predicate : predicateList) {
+            if (!predicate.apply(stepContext, xml)) {
                 return false;
             }
         }
@@ -77,15 +76,15 @@ abstract class AbstractStepExpr implements StepExpr {
     }
 
     private <N> void createNode(ExprContext<N> stepContext, NodeWrapper<N> newNode) throws XmlBuilderException {
-        for (Expr predicate : predicateList) {
-            predicate.resolve(stepContext, newNode);
+        for (Predicate predicate : predicateList) {
+            predicate.apply(stepContext, newNode);
         }
     }
 
     @Override
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder();
-        for (Expr predicate : predicateList) {
+        for (Predicate predicate : predicateList) {
             stringBuilder.append('[').append(predicate).append(']');
         }
         return stringBuilder.toString();

@@ -5,7 +5,7 @@ import com.github.simy4.xpath.navigator.NodeWrapper;
 import java.util.Collections;
 import java.util.Set;
 
-public class LiteralExpr implements Expr {
+public class LiteralExpr extends AbstractExpr implements Expr {
 
     private final String literal;
 

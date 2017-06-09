@@ -81,6 +81,11 @@ final class DomNavigator implements Navigator<Node> {
     }
 
     @Override
+    public NodeWrapper<Node> clone(NodeWrapper<Node> toClone) {
+        return new DomNodeWrapper(toClone.getWrappedNode().cloneNode(true));
+    }
+
+    @Override
     public void setText(NodeWrapper<Node> node, String text) {
         try {
             node.getWrappedNode().setTextContent(text);
@@ -95,6 +100,19 @@ final class DomNavigator implements Navigator<Node> {
             parentNode.getWrappedNode().appendChild(child.getWrappedNode());
         } catch (DOMException de) {
             throw new XmlBuilderException("Failed to append child " + child + " to " + parentNode, de);
+        }
+    }
+
+    @Override
+    public void prepend(NodeWrapper<Node> nextNode, NodeWrapper<Node> nodeToPrepend) throws XmlBuilderException {
+        try {
+            NodeWrapper<Node> parent = parentOf(nextNode);
+            if (null == parent) {
+                throw new XmlBuilderException("Failed to prepend - no parent found of " + nextNode);
+            }
+            parent.getWrappedNode().insertBefore(nextNode.getWrappedNode(), nodeToPrepend.getWrappedNode());
+        } catch (DOMException de) {
+            throw new XmlBuilderException("Failed to prepend node " + nodeToPrepend + " to " + nextNode, de);
         }
     }
 

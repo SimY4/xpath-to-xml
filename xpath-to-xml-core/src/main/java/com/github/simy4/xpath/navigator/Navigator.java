@@ -70,6 +70,14 @@ public interface Navigator<N> {
     NodeWrapper<N> createElement(QName element) throws XmlBuilderException;
 
     /**
+     * Clones given node.
+     *
+     * @param toClone XML node to clone
+     * @throws XmlBuilderException if failure occur during node cloning
+     */
+    NodeWrapper<N> clone(NodeWrapper<N> toClone) throws XmlBuilderException;
+
+    /**
      * Sets the given text content to a given node.
      *
      * @param node XML node to modify
@@ -86,6 +94,15 @@ public interface Navigator<N> {
      * @throws XmlBuilderException if failure occur during node appending
      */
     void append(NodeWrapper<N> parentNode, NodeWrapper<N> child) throws XmlBuilderException;
+
+    /**
+     * Prepends given node to given neighbor node.
+     *
+     * @param nextNode  XML node that should be next to prepended node
+     * @param toPrepend XML node to prepend
+     * @throws XmlBuilderException if failure occur during node appending
+     */
+    void prepend(NodeWrapper<N> nextNode, NodeWrapper<N> toPrepend) throws XmlBuilderException;
 
     /**
      * Removes/detaches given node from XML model.

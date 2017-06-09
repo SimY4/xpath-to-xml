@@ -6,7 +6,7 @@ import com.github.simy4.xpath.navigator.NodeWrapper;
 import java.util.Collections;
 import java.util.Set;
 
-public class ComparisonExpr implements Expr {
+public class ComparisonExpr extends AbstractExpr implements Expr {
 
     private final Expr leftExpr;
     private final Expr rightExpr;

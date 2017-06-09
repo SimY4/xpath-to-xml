@@ -8,7 +8,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-public class PathExpr implements Expr {
+public class PathExpr extends AbstractExpr implements Expr {
 
     private final List<StepExpr> pathExpr;
 

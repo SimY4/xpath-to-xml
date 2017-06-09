@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.xml.namespace.QName;
-import java.util.Collections;
 import java.util.Set;
 
 import static com.github.simy4.xpath.utils.StringNodeWrapper.node;
@@ -54,7 +53,7 @@ public class ElementTest extends AbstractStepExprTest<Element> {
     public void shouldThrowForElementsWithWildcardNamespace() {
         // given
         setUpUnresolvableExpr();
-        expr = new Element(new QName("*", "attr"), Collections.<Expr>emptyList());
+        expr = new Element(new QName("*", "attr"), asList(predicate1, predicate2));
 
         // when
         expr.resolve(new ExprContext<String>(navigator, true, 1), parentNode);
@@ -64,8 +63,7 @@ public class ElementTest extends AbstractStepExprTest<Element> {
     public void shouldThrowForElementsWithWildcardLocalPart() {
         // given
         setUpUnresolvableExpr();
-        expr = new Element(new QName("http://www.example.com/my", "*", "my"),
-                Collections.<Expr>emptyList());
+        expr = new Element(new QName("http://www.example.com/my", "*", "my"), asList(predicate1, predicate2));
 
         // when
         expr.resolve(new ExprContext<String>(navigator, true, 1), parentNode);
