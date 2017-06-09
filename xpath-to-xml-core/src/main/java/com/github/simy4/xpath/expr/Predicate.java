@@ -17,7 +17,7 @@ public interface Predicate {
      * @param context XPath expression context
      * @param xml     XML model
      * @param <N>     XML model type
-     * @return
+     * @return {@code true} if predicate resolved truly or {@code false} otherwise
      * @throws XmlBuilderException if error occur during XML model modification
      */
     <N> boolean apply(ExprContext<N> context, NodeWrapper<N> xml) throws XmlBuilderException;

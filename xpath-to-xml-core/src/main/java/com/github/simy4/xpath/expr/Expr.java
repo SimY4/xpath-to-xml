@@ -13,6 +13,11 @@ import java.util.Set;
  */
 public interface Expr {
 
+    /**
+     * Transforms this expression into XPath predicate.
+     *
+     * @return XPath predicate
+     */
     Predicate asPredicate();
 
     /**

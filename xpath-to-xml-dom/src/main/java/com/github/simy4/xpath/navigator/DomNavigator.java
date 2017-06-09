@@ -5,6 +5,8 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import java.util.Iterator;
@@ -30,6 +32,7 @@ final class DomNavigator implements Navigator<Node> {
     }
 
     @Override
+    @Nullable
     public NodeWrapper<Node> parentOf(NodeWrapper<Node> node) {
         Node parent = node.getWrappedNode().getParentNode();
         return null == parent ? null : new DomNodeWrapper(parent);
@@ -38,6 +41,8 @@ final class DomNavigator implements Navigator<Node> {
     @Override
     public Iterable<NodeWrapper<Node>> elementsOf(final NodeWrapper<Node> parent) {
         return new Iterable<NodeWrapper<Node>>() {
+            @Override
+            @Nonnull
             public Iterator<NodeWrapper<Node>> iterator() {
                 return new DomElementsIterator(parent.getWrappedNode());
             }
@@ -47,6 +52,8 @@ final class DomNavigator implements Navigator<Node> {
     @Override
     public Iterable<NodeWrapper<Node>> attributesOf(final NodeWrapper<Node> parent) {
         return new Iterable<NodeWrapper<Node>>() {
+            @Override
+            @Nonnull
             public Iterator<NodeWrapper<Node>> iterator() {
                 return new DomAttributesIterator(parent.getWrappedNode());
             }

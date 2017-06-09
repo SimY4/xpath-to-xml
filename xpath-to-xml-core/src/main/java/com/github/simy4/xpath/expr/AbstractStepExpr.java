@@ -20,15 +20,20 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
     public final <N> Set<NodeWrapper<N>> resolve(ExprContext<N> context, NodeWrapper<N> xml)
             throws XmlBuilderException {
         context.advance();
-        final Set<NodeWrapper<N>> stepNodes = traverseStep(context, xml);
-        ExprContext<N> lookupContext = context.clone(false, stepNodes.size());
-        Set<NodeWrapper<N>> result = traverse(lookupContext, stepNodes);
+        final boolean resolvePredicates = !predicateList.isEmpty();
+        Set<NodeWrapper<N>> result = traverseStep(context, xml);
+        if (resolvePredicates) {
+            final ExprContext<N> lookupContext = context.clone(false, result.size());
+            result = traverse(lookupContext, result);
+        }
 
         if (result.isEmpty() && context.shouldCreate()) {
             final NodeWrapper<N> newNode = createStepNode(context);
-            lookupContext = context.clone(1);
-            lookupContext.advance();
-            createNode(lookupContext, newNode);
+            if (resolvePredicates) {
+                final ExprContext<N> lookupContext = context.clone(1);
+                lookupContext.advance();
+                applyPredicate(lookupContext, newNode);
+            }
             result = Collections.singleton(newNode);
             context.getNavigator().append(xml, newNode);
         }
@@ -75,7 +80,7 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
         return true;
     }
 
-    private <N> void createNode(ExprContext<N> stepContext, NodeWrapper<N> newNode) throws XmlBuilderException {
+    private <N> void applyPredicate(ExprContext<N> stepContext, NodeWrapper<N> newNode) throws XmlBuilderException {
         for (Predicate predicate : predicateList) {
             predicate.apply(stepContext, newNode);
         }

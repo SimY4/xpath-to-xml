@@ -22,7 +22,7 @@ public class NumberExpr implements Expr, Predicate {
             return new Predicate() {
                 @Override
                 public <N> boolean apply(ExprContext<N> context, NodeWrapper<N> xml) {
-                    Set<NodeWrapper<N>> result = NumberExpr.this.resolve(context, xml);
+                    final Set<NodeWrapper<N>> result = NumberExpr.this.resolve(context, xml);
                     return !result.isEmpty();
                 }
             };

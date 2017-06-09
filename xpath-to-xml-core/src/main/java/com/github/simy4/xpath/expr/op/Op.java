@@ -4,6 +4,12 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.NodeWrapper;
 
+/**
+ * Comparison operation model.
+ *
+ * @author Alex Simkin
+ * @since 1.0
+ */
 public interface Op {
 
     <N> boolean test(Iterable<NodeWrapper<N>> left, Iterable<NodeWrapper<N>> right);
