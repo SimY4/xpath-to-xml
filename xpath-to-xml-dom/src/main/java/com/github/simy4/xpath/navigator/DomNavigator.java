@@ -113,11 +113,11 @@ final class DomNavigator implements Navigator<Node> {
     @Override
     public void prepend(NodeWrapper<Node> nextNode, NodeWrapper<Node> nodeToPrepend) throws XmlBuilderException {
         try {
-            NodeWrapper<Node> parent = parentOf(nextNode);
+            final Node parent = nextNode.getWrappedNode().getParentNode();
             if (null == parent) {
                 throw new XmlBuilderException("Failed to prepend - no parent found of " + nextNode);
             }
-            parent.getWrappedNode().insertBefore(nextNode.getWrappedNode(), nodeToPrepend.getWrappedNode());
+            parent.insertBefore(nodeToPrepend.getWrappedNode(), nextNode.getWrappedNode());
         } catch (DOMException de) {
             throw new XmlBuilderException("Failed to prepend node " + nodeToPrepend + " to " + nextNode, de);
         }

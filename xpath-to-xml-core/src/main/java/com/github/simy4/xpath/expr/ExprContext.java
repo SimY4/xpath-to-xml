@@ -27,9 +27,14 @@ public final class ExprContext<N> {
      * @param size      XPath expression context size
      */
     public ExprContext(Navigator<N> navigator, boolean greedy, @Nonnegative int size) {
+        this(navigator, greedy, size, 0);
+    }
+
+    private ExprContext(Navigator<N> navigator, boolean greedy, int size, int position) {
         this.navigator = navigator;
         this.greedy = greedy;
         this.size = size;
+        this.position = position;
     }
 
     public Navigator<N> getNavigator() {
@@ -51,6 +56,10 @@ public final class ExprContext<N> {
 
     public void advance() {
         this.position += 1;
+    }
+
+    public ExprContext<N> clone(boolean greedy, @Nonnegative int size, @Nonnegative int position) {
+        return new ExprContext<N>(navigator, greedy, size, position);
     }
 
     public ExprContext<N> clone(boolean greedy, @Nonnegative int size) {

@@ -147,9 +147,9 @@ public abstract class AbstractStepExprTest<E extends StepExpr> extends AbstractE
         assertThat(predicate1ContextCaptor.getAllValues()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(
                         tuple(navigator, false, 1, 1),
-                        tuple(navigator, true, 1, 1));
+                        tuple(navigator, true, 2, 2));
         assertThat(predicate2ContextCaptor.getAllValues()).extracting("navigator", "greedy", "size", "position")
-                .containsExactly(tuple(navigator, true, 1, 1));
+                .containsExactly(tuple(navigator, true, 2, 2));
     }
 
     void setUpResolvableExpr() {

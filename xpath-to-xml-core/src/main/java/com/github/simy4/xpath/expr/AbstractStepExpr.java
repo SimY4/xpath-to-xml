@@ -20,22 +20,17 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
     public final <N> Set<NodeWrapper<N>> resolve(ExprContext<N> context, NodeWrapper<N> xml)
             throws XmlBuilderException {
         context.advance();
-        final boolean resolvePredicates = !predicateList.isEmpty();
         Set<NodeWrapper<N>> result = traverseStep(context, xml);
-        if (resolvePredicates) {
-            final ExprContext<N> lookupContext = context.clone(false, result.size());
-            result = traverse(lookupContext, result);
-        }
+        ExprContext<N> lookupContext = context.clone(false, result.size());
+        result = traverse(lookupContext, result);
 
         if (result.isEmpty() && context.shouldCreate()) {
             final NodeWrapper<N> newNode = createStepNode(context);
-            if (resolvePredicates) {
-                final ExprContext<N> lookupContext = context.clone(1);
-                lookupContext.advance();
-                applyPredicate(lookupContext, newNode);
-            }
-            result = Collections.singleton(newNode);
             context.getNavigator().append(xml, newNode);
+            final int newSize = lookupContext.getSize() + 1;
+            lookupContext = lookupContext.clone(true, newSize, newSize);
+            applyPredicate(lookupContext, newNode);
+            result = Collections.singleton(newNode);
         }
         return result;
     }
