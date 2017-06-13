@@ -59,26 +59,23 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
         final Set<NodeWrapper<N>> result = new LinkedHashSet<NodeWrapper<N>>(stepNodes.size());
         for (NodeWrapper<N> child : stepNodes) {
             lookupContext.advance();
-            if (test(lookupContext, child)) {
+            if (applyPredicate(lookupContext, child)) {
                 result.add(child);
             }
         }
         return result;
     }
 
-    private <N> boolean test(ExprContext<N> stepContext, NodeWrapper<N> xml) {
+    private <N> boolean applyPredicate(ExprContext<N> lookupContext, NodeWrapper<N> xml) throws XmlBuilderException {
+        ExprContext<N> context = lookupContext;
         for (Predicate predicate : predicateList) {
-            if (!predicate.apply(stepContext, xml)) {
+            if (!predicate.apply(context, xml)) {
                 return false;
             }
+            context = context.clone(1);
+            context.advance();
         }
         return true;
-    }
-
-    private <N> void applyPredicate(ExprContext<N> stepContext, NodeWrapper<N> newNode) throws XmlBuilderException {
-        for (Predicate predicate : predicateList) {
-            predicate.apply(stepContext, newNode);
-        }
     }
 
     @Override

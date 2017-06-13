@@ -26,8 +26,8 @@
     </food>
     <food>
         <name>Homestyle Breakfast</name>
-        <price/>
-        <description/>
+        <price>$6.95</price>
+        <description>Two eggs, bacon or sausage, toast, and our ever-popular hash browns</description>
         <calories/>
     </food>
 </breakfast_menu>

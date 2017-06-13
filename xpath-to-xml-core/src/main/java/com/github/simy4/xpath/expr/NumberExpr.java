@@ -6,27 +6,12 @@ import com.github.simy4.xpath.navigator.NodeWrapper;
 import java.util.Collections;
 import java.util.Set;
 
-public class NumberExpr implements Expr, Predicate {
+public class NumberExpr extends AbstractExpr {
 
     private final Number number;
 
     public NumberExpr(Number number) {
         this.number = number;
-    }
-
-    @Override
-    public Predicate asPredicate() {
-        if (number.doubleValue() == number.longValue()) {
-            return this;
-        } else {
-            return new Predicate() {
-                @Override
-                public <N> boolean apply(ExprContext<N> context, NodeWrapper<N> xml) {
-                    final Set<NodeWrapper<N>> result = NumberExpr.this.resolve(context, xml);
-                    return !result.isEmpty();
-                }
-            };
-        }
     }
 
     @Override
@@ -36,7 +21,9 @@ public class NumberExpr implements Expr, Predicate {
 
     @Override
     public <N> boolean apply(ExprContext<N> context, NodeWrapper<N> xml) throws XmlBuilderException {
-        if (context.getPosition() == number.longValue()) {
+        if (number.doubleValue() != number.longValue()) {
+            return true;
+        } else if (context.getPosition() == number.longValue()) {
             return true;
         } else if (context.shouldCreate()) {
             long numberOfNodesToCreate = number.longValue() - context.getPosition();

@@ -8,7 +8,7 @@ import java.util.Set;
 abstract class AbstractExpr implements Expr, Predicate {
 
     @Override
-    public Predicate asPredicate() {
+    public final Predicate asPredicate() {
         return this;
     }
 
