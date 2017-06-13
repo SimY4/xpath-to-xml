@@ -1,6 +1,7 @@
 package com.github.simy4.xpath;
 
 import com.github.simy4.xpath.fixtures.FixtureAccessor;
+import com.github.simy4.xpath.utils.SimpleNamespaceContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +21,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
@@ -37,14 +39,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(Parameterized.class)
 public class XmlBuilderTest {
 
-    private static final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
     private static final TransformerFactory transformerFactory = TransformerFactory.newInstance();
     private static final XPathFactory xpathFactory = XPathFactory.newInstance();
 
-    @Parameters(name = "With test case data from {0} and namespace {1}")
+    @Parameters(name = "With test fixture: {0} and namespace: {1} and XML factory: {2}")
     public static Collection<Object[]> data() {
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory nsAwareDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
+        nsAwareDocumentBuilderFactory.setNamespaceAware(true);
         return asList(new Object[][] {
-                { "simple", null, },
+                { "simple", null, documentBuilderFactory},
+                { "simple", new SimpleNamespaceContext(), documentBuilderFactory},
+                { "ns-simple", new SimpleNamespaceContext(), nsAwareDocumentBuilderFactory},
         });
     }
 
@@ -52,12 +58,13 @@ public class XmlBuilderTest {
     public String fixtureName;
     @Parameter(1)
     public NamespaceContext namespaceContext;
+    @Parameter(2)
+    public DocumentBuilderFactory documentBuilderFactory;
 
     private DocumentBuilder documentBuilder;
     private FixtureAccessor fixtureAccessor;
 
     @Before
-    @SuppressWarnings("unchecked")
     public void setUp() throws ParserConfigurationException {
         fixtureAccessor = new FixtureAccessor(fixtureName);
         documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -87,8 +94,11 @@ public class XmlBuilderTest {
                 .build(documentBuilder.newDocument());
 
         for (Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
-            XPathExpression xpath = xpathFactory.newXPath().compile(xpathToValuePair.getKey());
-            assertThat(xpath.evaluate(builtDocument, XPathConstants.STRING)).isNotNull();
+            XPath xpath = xpathFactory.newXPath();
+            if (null != namespaceContext) {
+                xpath.setNamespaceContext(namespaceContext);
+            }
+            assertThat(xpath.evaluate(xpathToValuePair.getKey(), builtDocument, XPathConstants.STRING)).isNotNull();
         }
         assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
     }

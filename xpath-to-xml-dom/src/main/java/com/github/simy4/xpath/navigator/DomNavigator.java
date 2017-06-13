@@ -1,8 +1,10 @@
 package com.github.simy4.xpath.navigator;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import javax.annotation.Nonnull;
@@ -66,8 +68,9 @@ final class DomNavigator implements Navigator<Node> {
             if (XMLConstants.NULL_NS_URI.equals(attribute.getNamespaceURI())) {
                 return new DomNodeWrapper(document.createAttribute(attribute.getLocalPart()));
             } else {
-                return new DomNodeWrapper(document.createAttributeNS(attribute.getNamespaceURI(),
-                        attribute.getLocalPart()));
+                final Attr attr = document.createAttributeNS(attribute.getNamespaceURI(), attribute.getLocalPart());
+                attr.setPrefix(attribute.getPrefix());
+                return new DomNodeWrapper(attr);
             }
         } catch (DOMException de) {
             throw new XmlBuilderException("Failed to create attribute: " + attribute, de);
@@ -80,7 +83,9 @@ final class DomNavigator implements Navigator<Node> {
             if (XMLConstants.NULL_NS_URI.equals(element.getNamespaceURI())) {
                 return new DomNodeWrapper(document.createElement(element.getLocalPart()));
             } else {
-                return new DomNodeWrapper(document.createElementNS(element.getNamespaceURI(), element.getLocalPart()));
+                final Element elem = document.createElementNS(element.getNamespaceURI(), element.getLocalPart());
+                elem.setPrefix(element.getPrefix());
+                return new DomNodeWrapper(elem);
             }
         } catch (DOMException de) {
             throw new XmlBuilderException("Failed to create element: " + element, de);

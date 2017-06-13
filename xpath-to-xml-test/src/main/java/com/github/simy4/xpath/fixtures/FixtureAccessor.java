@@ -7,6 +7,9 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+ * XmlBuilder unified fixture accessor.
+ */
 public final class FixtureAccessor {
 
     private static final String XML_PROPERTIES_PATH_FORMAT =
@@ -20,15 +23,23 @@ public final class FixtureAccessor {
         this.fixtureName = fixtureName;
     }
 
+    /**
+     * Reads XPath to Value properties from fixture resource as an ordered map.
+     *
+     * @return ordered XPath to Value mappings
+     * @throws IOException is failed to access fixture resource
+     */
     public Map<String, Object> getXmlProperties() throws IOException {
-        InputStream xpathPropertiesStream = getClass().getResourceAsStream(
+        final InputStream xpathPropertiesStream = getClass().getResourceAsStream(
                 String.format(XML_PROPERTIES_PATH_FORMAT, fixtureName));
         try {
             OrderedProperties xpathProperties = new OrderedProperties();
             xpathProperties.load(xpathPropertiesStream);
             return xpathProperties.toMap();
         } finally {
-            xpathPropertiesStream.close();
+            if (xpathPropertiesStream != null) {
+                xpathPropertiesStream.close();
+            }
         }
     }
 
@@ -41,11 +52,13 @@ public final class FixtureAccessor {
     }
 
     private String getXml(String format) throws IOException {
-        InputStream xmlStream = getClass().getResourceAsStream(String.format(format, fixtureName));
+        final InputStream xmlStream = getClass().getResourceAsStream(String.format(format, fixtureName));
         try {
-            return new Scanner(xmlStream).useDelimiter("\\A").next();
+            return new Scanner(xmlStream, "UTF-8").useDelimiter("\\A").next();
         } finally {
-            xmlStream.close();
+            if (xmlStream != null) {
+                xmlStream.close();
+            }
         }
     }
 

@@ -52,4 +52,9 @@ public final class SimpleNamespaceContext implements NamespaceContext {
         }
     }
 
+    @Override
+    public String toString() {
+        return "{my -> http://www.example.com/my}";
+    }
+
 }

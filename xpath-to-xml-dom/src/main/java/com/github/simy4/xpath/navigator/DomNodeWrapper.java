@@ -20,12 +20,15 @@ final class DomNodeWrapper implements NodeWrapper<Node> {
 
     @Override
     public QName getNodeName() {
-        String ns = XMLConstants.NULL_NS_URI;
-        String localPart = wrappedNode.getNodeName();
-        String prefix = XMLConstants.DEFAULT_NS_PREFIX;
+        String ns;
+        String prefix;
+        String localPart = wrappedNode.getLocalName();
         if (null == localPart) {
+            ns = XMLConstants.NULL_NS_URI;
+            prefix = XMLConstants.DEFAULT_NS_PREFIX;
+            localPart = wrappedNode.getNodeName();
+        } else {
             ns = wrappedNode.getNamespaceURI();
-            localPart = wrappedNode.getLocalName();
             prefix = wrappedNode.getPrefix();
         }
         return new QName(ns, localPart, prefix);

@@ -1,8 +1,10 @@
 package com.github.simy4.xpath.utils;
 
+import javax.annotation.Nullable;
+
 public final class Triple<F, S, T> {
 
-    public static <A, B, C> Triple<A, B, C> of(A first, B second, C third) {
+    public static <A, B, C> Triple<A, B, C> of(@Nullable A first, @Nullable B second, @Nullable C third) {
         return new Triple<A, B, C>(first, second, third);
     }
 
@@ -10,20 +12,30 @@ public final class Triple<F, S, T> {
     private final S second;
     private final T third;
 
-    public Triple(F first, S second, T third) {
+    /**
+     * Constructor.
+     *
+     * @param first  first argument
+     * @param second second argument
+     * @param third  third argument
+     */
+    public Triple(@Nullable F first, @Nullable S second, @Nullable T third) {
         this.first = first;
         this.second = second;
         this.third = third;
     }
 
+    @Nullable
     public F getFirst() {
         return first;
     }
 
+    @Nullable
     public S getSecond() {
         return second;
     }
 
+    @Nullable
     public T getThird() {
         return third;
     }

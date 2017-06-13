@@ -1,23 +1,27 @@
 package com.github.simy4.xpath.utils;
 
+import javax.annotation.Nullable;
+
 public final class Pair<F, S> {
 
-    public static <A, B> Pair<A, B> of(A first, B second) {
+    public static <A, B> Pair<A, B> of(@Nullable A first, @Nullable B second) {
         return new Pair<A, B>(first, second);
     }
 
     private final F first;
     private final S second;
 
-    public Pair(F first, S second) {
+    public Pair(@Nullable F first, @Nullable S second) {
         this.first = first;
         this.second = second;
     }
 
+    @Nullable
     public F getFirst() {
         return first;
     }
 
+    @Nullable
     public S getSecond() {
         return second;
     }
