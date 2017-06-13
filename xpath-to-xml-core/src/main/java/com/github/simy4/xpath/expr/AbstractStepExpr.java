@@ -4,6 +4,7 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.NodeWrapper;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,15 +23,16 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
         context.advance();
         Set<NodeWrapper<N>> result = traverseStep(context, xml);
         ExprContext<N> lookupContext = context.clone(false, result.size());
-        result = traverse(lookupContext, result);
+        Iterator<Predicate> predicateIterator = predicateList.iterator();
+        result = resolvePredicates(lookupContext, result, predicateIterator);
 
         if (result.isEmpty() && context.shouldCreate()) {
             final NodeWrapper<N> newNode = createStepNode(context);
             context.getNavigator().append(xml, newNode);
-            final int newSize = lookupContext.getSize() + 1;
-            lookupContext = lookupContext.clone(true, newSize, newSize);
-            applyPredicate(lookupContext, newNode);
             result = Collections.singleton(newNode);
+            predicateIterator = predicateList.iterator();
+            lookupContext = lookupContext.clone(true, lookupContext.getSize() + 1, lookupContext.getSize());
+            resolvePredicates(lookupContext, result, predicateIterator);
         }
         return result;
     }
@@ -55,27 +57,23 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
      */
     abstract <N> NodeWrapper<N> createStepNode(ExprContext<N> context) throws XmlBuilderException;
 
-    private <N> Set<NodeWrapper<N>> traverse(ExprContext<N> lookupContext, Set<NodeWrapper<N>> stepNodes) {
-        final Set<NodeWrapper<N>> result = new LinkedHashSet<NodeWrapper<N>>(stepNodes.size());
-        for (NodeWrapper<N> child : stepNodes) {
-            lookupContext.advance();
-            if (applyPredicate(lookupContext, child)) {
-                result.add(child);
+    private <N> Set<NodeWrapper<N>> resolvePredicates(ExprContext<N> lookupContext, Set<NodeWrapper<N>> xmlNodes,
+                                                      Iterator<Predicate> predicateIterator)
+            throws XmlBuilderException {
+        if (predicateIterator.hasNext() && !xmlNodes.isEmpty()) {
+            final Set<NodeWrapper<N>> result = new LinkedHashSet<NodeWrapper<N>>(xmlNodes.size());
+            final Predicate nextPredicate = predicateIterator.next();
+            for (NodeWrapper<N> xmlNode : xmlNodes) {
+                lookupContext.advance();
+                if (nextPredicate.apply(lookupContext, xmlNode)) {
+                    result.add(xmlNode);
+                }
             }
+            lookupContext = lookupContext.clone(result.size());
+            return resolvePredicates(lookupContext, result, predicateIterator);
+        } else {
+            return xmlNodes;
         }
-        return result;
-    }
-
-    private <N> boolean applyPredicate(ExprContext<N> lookupContext, NodeWrapper<N> xml) throws XmlBuilderException {
-        ExprContext<N> context = lookupContext;
-        for (Predicate predicate : predicateList) {
-            if (!predicate.apply(context, xml)) {
-                return false;
-            }
-            context = context.clone(1);
-            context.advance();
-        }
-        return true;
     }
 
     @Override
