@@ -37,7 +37,7 @@ public class RootTest {
 
     @Test
     public void testToString() {
-        assertThat(root).hasToString("/");
+        assertThat(root).hasToString("");
     }
 
 }

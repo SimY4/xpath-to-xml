@@ -15,7 +15,7 @@ public class Root extends AbstractExpr implements StepExpr {
 
     @Override
     public String toString() {
-        return "/";
+        return "";
     }
 
 }
