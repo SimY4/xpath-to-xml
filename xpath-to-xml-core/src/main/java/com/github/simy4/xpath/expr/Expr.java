@@ -1,7 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.navigator.NodeWrapper;
+import com.github.simy4.xpath.navigator.view.NodeView;
 
 import java.util.Set;
 
@@ -29,6 +29,6 @@ public interface Expr {
      * @return ordered set of evaluated node views
      * @throws XmlBuilderException if error occur during XML model modification
      */
-    <N> Set<NodeWrapper<N>> resolve(ExprContext<N> context, NodeWrapper<N> xml) throws XmlBuilderException;
+    <N> Set<NodeView<N>> resolve(ExprContext<N> context, NodeView<N> xml) throws XmlBuilderException;
 
 }

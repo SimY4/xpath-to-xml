@@ -1,6 +1,6 @@
 package com.github.simy4.xpath.expr.op;
 
-import com.github.simy4.xpath.navigator.NodeWrapper;
+import com.github.simy4.xpath.navigator.view.NodeView;
 import com.github.simy4.xpath.utils.Triple;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoints;
@@ -9,7 +9,7 @@ import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 
-import static com.github.simy4.xpath.utils.StringNodeWrapper.node;
+import static com.github.simy4.xpath.utils.StringNodeView.node;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,8 +29,8 @@ public class EqTest {
     };
 
     @Theory
-    public void shouldTestLeftAndRightNodes(@FromDataPoints("Nodes") Triple<Iterable<NodeWrapper<String>>,
-            Iterable<NodeWrapper<String>>, Boolean> nodes) {
+    public void shouldTestLeftAndRightNodes(@FromDataPoints("Nodes") Triple<Iterable<NodeView<String>>,
+            Iterable<NodeView<String>>, Boolean> nodes) {
         boolean result = new Eq().test(nodes.getFirst(), nodes.getSecond());
         assertThat(result).isEqualTo(nodes.getThird());
 

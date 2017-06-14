@@ -1,7 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.expr.op.Op;
-import com.github.simy4.xpath.navigator.NodeWrapper;
+import com.github.simy4.xpath.navigator.view.NodeView;
 
 import java.util.Collections;
 import java.util.Set;
@@ -26,11 +26,11 @@ public class ComparisonExpr extends AbstractExpr {
     }
 
     @Override
-    public <N> Set<NodeWrapper<N>> resolve(ExprContext<N> context, NodeWrapper<N> xml) {
+    public <N> Set<NodeView<N>> resolve(ExprContext<N> context, NodeView<N> xml) {
         ExprContext<N> leftContext = context.clone(false, 1);
-        Set<NodeWrapper<N>> leftNodes = leftExpr.resolve(leftContext, xml);
+        Set<NodeView<N>> leftNodes = leftExpr.resolve(leftContext, xml);
         ExprContext<N> rightContext = context.clone(false, 1);
-        Set<NodeWrapper<N>> rightNodes = rightExpr.resolve(rightContext, xml);
+        Set<NodeView<N>> rightNodes = rightExpr.resolve(rightContext, xml);
         if (op.test(leftNodes, rightNodes)) {
             return Collections.singleton(xml);
         } else if (context.shouldCreate()) {

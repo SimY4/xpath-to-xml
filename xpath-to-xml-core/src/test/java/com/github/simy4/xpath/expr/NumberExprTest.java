@@ -1,7 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.NodeWrapper;
+import com.github.simy4.xpath.navigator.view.NodeView;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -9,7 +9,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Set;
 
-import static com.github.simy4.xpath.utils.StringNodeWrapper.node;
+import static com.github.simy4.xpath.utils.StringNodeView.node;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -22,7 +22,7 @@ public class NumberExprTest {
 
     @Test
     public void shouldAlwaysReturnSingleNumberNode() {
-        Set<NodeWrapper<String>> result = numberExpr.resolve(new ExprContext<String>(navigator, false, 1), node("xml"));
+        Set<NodeView<String>> result = numberExpr.resolve(new ExprContext<String>(navigator, false, 1), node("xml"));
         assertThat(result).extracting("number", Number.class).containsExactly(2.5);
     }
 

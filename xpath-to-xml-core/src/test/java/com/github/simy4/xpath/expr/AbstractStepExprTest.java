@@ -1,7 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.navigator.NodeWrapper;
+import com.github.simy4.xpath.navigator.view.NodeView;
 import com.github.simy4.xpath.utils.ExprContextMatcher;
 import org.junit.Rule;
 import org.junit.Test;
@@ -40,12 +40,12 @@ public abstract class AbstractStepExprTest<E extends StepExpr> extends AbstractE
         setUpResolvableExpr();
 
         // when
-        Set<NodeWrapper<String>> result = expr.resolve(new ExprContext<String>(navigator, false, 3), parentNode);
+        Set<NodeView<String>> result = expr.resolve(new ExprContext<String>(navigator, false, 3), parentNode);
 
         // then
         assertThat(result).isNotEmpty();
-        verify(predicate1).apply(predicate1ContextCaptor.capture(), ArgumentMatchers.<NodeWrapper<String>>any());
-        verify(predicate2).apply(predicate2ContextCaptor.capture(), ArgumentMatchers.<NodeWrapper<String>>any());
+        verify(predicate1).apply(predicate1ContextCaptor.capture(), ArgumentMatchers.<NodeView<String>>any());
+        verify(predicate2).apply(predicate2ContextCaptor.capture(), ArgumentMatchers.<NodeView<String>>any());
         assertThat(predicate1ContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(navigator, false, 1, 1);
         assertThat(predicate2ContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
@@ -59,7 +59,7 @@ public abstract class AbstractStepExprTest<E extends StepExpr> extends AbstractE
         setUpUnresolvableExpr();
 
         // when
-        Set<NodeWrapper<String>> result = expr.resolve(new ExprContext<String>(navigator, false, 3), parentNode);
+        Set<NodeView<String>> result = expr.resolve(new ExprContext<String>(navigator, false, 3), parentNode);
 
         // then
         assertThat(result).isEmpty();
@@ -70,15 +70,15 @@ public abstract class AbstractStepExprTest<E extends StepExpr> extends AbstractE
         // given
         setUpResolvableExpr();
         when(predicate1.apply(ArgumentMatchers.<ExprContext<String>>any(),
-                ArgumentMatchers.<NodeWrapper<String>>any())).thenReturn(false);
+                ArgumentMatchers.<NodeView<String>>any())).thenReturn(false);
 
         // when
-        Set<NodeWrapper<String>> result = expr.resolve(new ExprContext<String>(navigator, false, 3), parentNode);
+        Set<NodeView<String>> result = expr.resolve(new ExprContext<String>(navigator, false, 3), parentNode);
 
         // then
         assertThat(result).isEmpty();
         verify(predicate2, never()).apply(ArgumentMatchers.<ExprContext<String>>any(),
-                ArgumentMatchers.<NodeWrapper<String>>any());
+                ArgumentMatchers.<NodeView<String>>any());
     }
 
     @Test
@@ -86,15 +86,15 @@ public abstract class AbstractStepExprTest<E extends StepExpr> extends AbstractE
         // given
         setUpResolvableExpr();
         when(predicate1.apply(ArgumentMatchers.<ExprContext<String>>any(),
-                ArgumentMatchers.<NodeWrapper<String>>any())).thenReturn(false);
+                ArgumentMatchers.<NodeView<String>>any())).thenReturn(false);
 
         // when
-        Set<NodeWrapper<String>> result = expr.resolve(new ExprContext<String>(navigator, true, 3), parentNode);
+        Set<NodeView<String>> result = expr.resolve(new ExprContext<String>(navigator, true, 3), parentNode);
 
         // then
         assertThat(result).isEmpty();
         verify(predicate2, never()).apply(ArgumentMatchers.<ExprContext<String>>any(),
-                ArgumentMatchers.<NodeWrapper<String>>any());
+                ArgumentMatchers.<NodeView<String>>any());
     }
 
     @Test
@@ -108,13 +108,13 @@ public abstract class AbstractStepExprTest<E extends StepExpr> extends AbstractE
         setUpUnresolvableExpr();
 
         // when
-        Set<NodeWrapper<String>> result = expr.resolve(new ExprContext<String>(navigator, true, 1), parentNode);
+        Set<NodeView<String>> result = expr.resolve(new ExprContext<String>(navigator, true, 1), parentNode);
 
         // then
         assertThat(result).isNotEmpty();
         verify(predicate1).apply(predicate1ContextCaptor.capture(),
-                ArgumentMatchers.<NodeWrapper<String>>any());
-        verify(predicate2).apply(predicate2ContextCaptor.capture(), ArgumentMatchers.<NodeWrapper<String>>any());
+                ArgumentMatchers.<NodeView<String>>any());
+        verify(predicate2).apply(predicate2ContextCaptor.capture(), ArgumentMatchers.<NodeView<String>>any());
         assertThat(predicate1ContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(navigator, true, 1, 1);
         assertThat(predicate2ContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
@@ -132,18 +132,18 @@ public abstract class AbstractStepExprTest<E extends StepExpr> extends AbstractE
         setUpResolvableExpr();
         reset(predicate1, predicate2);
         when(predicate1.apply(ArgumentMatchers.argThat(ExprContextMatcher.<String>greedyContext()),
-                ArgumentMatchers.<NodeWrapper<String>>any())).thenReturn(true);
+                ArgumentMatchers.<NodeView<String>>any())).thenReturn(true);
         when(predicate2.apply(ArgumentMatchers.argThat(ExprContextMatcher.<String>greedyContext()),
-                ArgumentMatchers.<NodeWrapper<String>>any())).thenReturn(true);
+                ArgumentMatchers.<NodeView<String>>any())).thenReturn(true);
 
         // when
-        Set<NodeWrapper<String>> result = expr.resolve(new ExprContext<String>(navigator, true, 1), parentNode);
+        Set<NodeView<String>> result = expr.resolve(new ExprContext<String>(navigator, true, 1), parentNode);
 
         // then
         assertThat(result).isNotEmpty();
         verify(predicate1, times(2)).apply(predicate1ContextCaptor.capture(),
-                ArgumentMatchers.<NodeWrapper<String>>any());
-        verify(predicate2).apply(predicate2ContextCaptor.capture(), ArgumentMatchers.<NodeWrapper<String>>any());
+                ArgumentMatchers.<NodeView<String>>any());
+        verify(predicate2).apply(predicate2ContextCaptor.capture(), ArgumentMatchers.<NodeView<String>>any());
         assertThat(predicate1ContextCaptor.getAllValues()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(
                         tuple(navigator, false, 1, 1),
@@ -154,16 +154,16 @@ public abstract class AbstractStepExprTest<E extends StepExpr> extends AbstractE
 
     void setUpResolvableExpr() {
         when(predicate1.apply(ArgumentMatchers.<ExprContext<String>>any(),
-                ArgumentMatchers.<NodeWrapper<String>>any())).thenReturn(true);
+                ArgumentMatchers.<NodeView<String>>any())).thenReturn(true);
         when(predicate2.apply(ArgumentMatchers.<ExprContext<String>>any(),
-                ArgumentMatchers.<NodeWrapper<String>>any())).thenReturn(true);
+                ArgumentMatchers.<NodeView<String>>any())).thenReturn(true);
     }
 
     void setUpUnresolvableExpr() {
         when(predicate1.apply(ArgumentMatchers.argThat(ExprContextMatcher.<String>greedyContext()),
-                ArgumentMatchers.<NodeWrapper<String>>any())).thenReturn(true);
+                ArgumentMatchers.<NodeView<String>>any())).thenReturn(true);
         when(predicate2.apply(ArgumentMatchers.argThat(ExprContextMatcher.<String>greedyContext()),
-                ArgumentMatchers.<NodeWrapper<String>>any())).thenReturn(true);
+                ArgumentMatchers.<NodeView<String>>any())).thenReturn(true);
     }
 
 }

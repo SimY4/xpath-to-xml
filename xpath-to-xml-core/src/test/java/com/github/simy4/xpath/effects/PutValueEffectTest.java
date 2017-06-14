@@ -4,7 +4,7 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.NodeWrapper;
+import com.github.simy4.xpath.navigator.view.NodeView;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +16,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.LinkedHashSet;
 
-import static com.github.simy4.xpath.utils.StringNodeWrapper.node;
+import static com.github.simy4.xpath.utils.StringNodeView.node;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -38,7 +38,7 @@ public class PutValueEffectTest {
     public void setUp() {
         when(navigator.xml()).thenReturn(node("xml"));
         when(expr.resolve(ArgumentMatchers.<ExprContext<String>>any(), eq(node("xml"))))
-                .thenReturn(new LinkedHashSet<NodeWrapper<String>>(asList(node("1"), node("2"), node("3"))));
+                .thenReturn(new LinkedHashSet<NodeView<String>>(asList(node("1"), node("2"), node("3"))));
 
         putValueEffect = new PutValueEffect(expr, "value");
     }
@@ -61,7 +61,7 @@ public class PutValueEffectTest {
     public void shouldPropagateOnAnyException() {
         // given
         doThrow(XmlBuilderException.class).when(navigator)
-                .setText(ArgumentMatchers.<NodeWrapper<String>>any(), anyString());
+                .setText(ArgumentMatchers.<NodeView<String>>any(), anyString());
 
         // when
         putValueEffect.perform(navigator);

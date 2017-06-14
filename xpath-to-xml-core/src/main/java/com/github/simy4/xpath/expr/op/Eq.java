@@ -2,16 +2,16 @@ package com.github.simy4.xpath.expr.op;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.NodeWrapper;
+import com.github.simy4.xpath.navigator.view.NodeView;
 
 import java.util.Comparator;
 
-public class Eq implements Op, Comparator<NodeWrapper<?>> {
+public class Eq implements Op, Comparator<NodeView<?>> {
 
     @Override
-    public <N> boolean test(Iterable<NodeWrapper<N>> left, Iterable<NodeWrapper<N>> right) {
-        for (NodeWrapper<N> leftNode : left) {
-            for (NodeWrapper<N> rightNode : right) {
+    public <N> boolean test(Iterable<NodeView<N>> left, Iterable<NodeView<N>> right) {
+        for (NodeView<N> leftNode : left) {
+            for (NodeView<N> rightNode : right) {
                 if (0 == compare(leftNode, rightNode)) {
                     return true;
                 }
@@ -21,16 +21,16 @@ public class Eq implements Op, Comparator<NodeWrapper<?>> {
     }
 
     @Override
-    public <N> void apply(Navigator<N> navigator, Iterable<NodeWrapper<N>> left, Iterable<NodeWrapper<N>> right)
+    public <N> void apply(Navigator<N> navigator, Iterable<NodeView<N>> left, Iterable<NodeView<N>> right)
             throws XmlBuilderException {
-        NodeWrapper<N> rightNode = right.iterator().next();
-        for (NodeWrapper<N> leftNode : left) {
+        NodeView<N> rightNode = right.iterator().next();
+        for (NodeView<N> leftNode : left) {
             navigator.setText(leftNode, rightNode.getText());
         }
     }
 
     @Override
-    public int compare(NodeWrapper<?> left, NodeWrapper<?> right) {
+    public int compare(NodeView<?> left, NodeView<?> right) {
         final String leftText = left.getText();
         final String rightText = right.getText();
         if (null == leftText) {

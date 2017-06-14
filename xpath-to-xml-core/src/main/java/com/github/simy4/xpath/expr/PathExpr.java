@@ -1,6 +1,6 @@
 package com.github.simy4.xpath.expr;
 
-import com.github.simy4.xpath.navigator.NodeWrapper;
+import com.github.simy4.xpath.navigator.view.NodeView;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -17,14 +17,14 @@ public class PathExpr extends AbstractExpr {
     }
 
     @Override
-    public <N> Set<NodeWrapper<N>> resolve(ExprContext<N> context, NodeWrapper<N> xml) {
+    public <N> Set<NodeView<N>> resolve(ExprContext<N> context, NodeView<N> xml) {
         final Iterator<StepExpr> pathExprIterator = pathExpr.iterator();
-        Set<NodeWrapper<N>> nodes = Collections.singleton(xml);
+        Set<NodeView<N>> nodes = Collections.singleton(xml);
         ExprContext<N> stepExprContext = context;
         while (pathExprIterator.hasNext() && !nodes.isEmpty()) {
             final StepExpr stepExpr = pathExprIterator.next();
-            final Set<NodeWrapper<N>> children = new LinkedHashSet<NodeWrapper<N>>();
-            for (NodeWrapper<N> node : nodes) {
+            final Set<NodeView<N>> children = new LinkedHashSet<NodeView<N>>();
+            for (NodeView<N> node : nodes) {
                 children.addAll(stepExpr.resolve(stepExprContext, node));
             }
             stepExprContext = stepExprContext.clone(children.size());

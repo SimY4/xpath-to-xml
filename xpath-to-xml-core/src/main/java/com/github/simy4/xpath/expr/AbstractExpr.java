@@ -1,7 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.navigator.NodeWrapper;
+import com.github.simy4.xpath.navigator.view.NodeView;
 
 import java.util.Set;
 
@@ -13,8 +13,8 @@ abstract class AbstractExpr implements Expr, Predicate {
     }
 
     @Override
-    public <N> boolean apply(ExprContext<N> context, NodeWrapper<N> xml) throws XmlBuilderException {
-        final Set<NodeWrapper<N>> result = resolve(context, xml);
+    public <N> boolean apply(ExprContext<N> context, NodeView<N> xml) throws XmlBuilderException {
+        final Set<NodeView<N>> result = resolve(context, xml);
         return !result.isEmpty();
     }
 

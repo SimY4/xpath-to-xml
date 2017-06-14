@@ -1,7 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.NodeWrapper;
+import com.github.simy4.xpath.navigator.view.NodeView;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,7 +10,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Set;
 
-import static com.github.simy4.xpath.utils.StringNodeWrapper.node;
+import static com.github.simy4.xpath.utils.StringNodeView.node;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -29,7 +29,7 @@ public class RootTest {
     @Test
     public void shouldReturnSingleRootNodeOnTraverse() {
         // when
-        Set<NodeWrapper<String>> result = root.resolve(new ExprContext<String>(navigator, false, 1), node("node"));
+        Set<NodeView<String>> result = root.resolve(new ExprContext<String>(navigator, false, 1), node("node"));
 
         // then
         assertThat(result).containsExactly(node("root"));

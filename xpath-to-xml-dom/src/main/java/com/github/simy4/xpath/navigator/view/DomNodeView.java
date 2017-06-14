@@ -1,15 +1,16 @@
-package com.github.simy4.xpath.navigator;
+package com.github.simy4.xpath.navigator.view;
 
+import com.github.simy4.xpath.XmlBuilderException;
 import org.w3c.dom.Node;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
-final class DomNodeWrapper implements NodeWrapper<Node> {
+public final class DomNodeView implements NodeView<Node> {
 
     private final Node wrappedNode;
 
-    DomNodeWrapper(Node wrappedNode) {
+    public DomNodeView(Node wrappedNode) {
         this.wrappedNode = wrappedNode;
     }
 
@@ -40,6 +41,11 @@ final class DomNodeWrapper implements NodeWrapper<Node> {
     }
 
     @Override
+    public void visit(ViewVisitor<Node> visitor) throws XmlBuilderException {
+        visitor.visit(this);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -48,7 +54,7 @@ final class DomNodeWrapper implements NodeWrapper<Node> {
             return false;
         }
 
-        DomNodeWrapper that = (DomNodeWrapper) o;
+        DomNodeView that = (DomNodeView) o;
 
         return wrappedNode.equals(that.wrappedNode);
     }

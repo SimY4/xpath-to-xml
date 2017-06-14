@@ -1,7 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.navigator.NodeWrapper;
+import com.github.simy4.xpath.navigator.view.NodeView;
 
 /**
  * XPath predicate model.
@@ -20,6 +20,6 @@ public interface Predicate {
      * @return {@code true} if predicate resolved truly or {@code false} otherwise
      * @throws XmlBuilderException if error occur during XML model modification
      */
-    <N> boolean apply(ExprContext<N> context, NodeWrapper<N> xml) throws XmlBuilderException;
+    <N> boolean apply(ExprContext<N> context, NodeView<N> xml) throws XmlBuilderException;
 
 }

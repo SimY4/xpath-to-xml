@@ -1,7 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.navigator.NodeWrapper;
+import com.github.simy4.xpath.navigator.view.NodeView;
 
 import java.util.Collections;
 import java.util.Set;
@@ -15,19 +15,19 @@ public class NumberExpr extends AbstractExpr {
     }
 
     @Override
-    public <N> Set<NodeWrapper<N>> resolve(ExprContext<N> context, NodeWrapper<N> xml) {
-        return Collections.<NodeWrapper<N>>singleton(new NodeWrapper.NumberNodeWrapper<N>(number));
+    public <N> Set<NodeView<N>> resolve(ExprContext<N> context, NodeView<N> xml) {
+        return Collections.<NodeView<N>>singleton(new NodeView.NumberNodeView<N>(number));
     }
 
     @Override
-    public <N> boolean apply(ExprContext<N> context, NodeWrapper<N> xml) throws XmlBuilderException {
+    public <N> boolean apply(ExprContext<N> context, NodeView<N> xml) throws XmlBuilderException {
         if (number.doubleValue() != number.longValue()) {
             return true;
         } else if (context.getPosition() == number.longValue()) {
             return true;
         } else if (context.shouldCreate()) {
             long numberOfNodesToCreate = number.longValue() - context.getPosition();
-            NodeWrapper<N> lastNode;
+            NodeView<N> lastNode;
             do {
                 lastNode = context.getNavigator().clone(xml);
                 context.getNavigator().prepend(xml, lastNode);

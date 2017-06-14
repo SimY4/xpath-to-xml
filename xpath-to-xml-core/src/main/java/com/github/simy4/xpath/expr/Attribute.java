@@ -1,7 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.navigator.NodeWrapper;
+import com.github.simy4.xpath.navigator.view.NodeView;
 
 import javax.xml.namespace.QName;
 import java.util.LinkedHashSet;
@@ -18,9 +18,9 @@ public class Attribute extends AbstractStepExpr {
     }
 
     @Override
-    <N> Set<NodeWrapper<N>> traverseStep(ExprContext<N> context, NodeWrapper<N> parentNode) {
-        final Set<NodeWrapper<N>> nodes = new LinkedHashSet<NodeWrapper<N>>();
-        for (NodeWrapper<N> attribute : context.getNavigator().attributesOf(parentNode)) {
+    <N> Set<NodeView<N>> traverseStep(ExprContext<N> context, NodeView<N> parentNode) {
+        final Set<NodeView<N>> nodes = new LinkedHashSet<NodeView<N>>();
+        for (NodeView<N> attribute : context.getNavigator().attributesOf(parentNode)) {
             if (0 == qnameComparator.compare(this.attribute, attribute.getNodeName())) {
                 nodes.add(attribute);
             }
@@ -29,7 +29,7 @@ public class Attribute extends AbstractStepExpr {
     }
 
     @Override
-    <N> NodeWrapper<N> createStepNode(ExprContext<N> context) {
+    <N> NodeView<N> createStepNode(ExprContext<N> context) {
         if ("*".equals(attribute.getNamespaceURI()) || "*".equals(attribute.getLocalPart())) {
             throw new XmlBuilderException("Wildcard attribute cannot be created");
         }

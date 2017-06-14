@@ -1,18 +1,18 @@
 package com.github.simy4.xpath.utils;
 
-import com.github.simy4.xpath.navigator.NodeWrapper;
+import com.github.simy4.xpath.navigator.view.NodeView;
 
 import javax.xml.namespace.QName;
 
-public final class StringNodeWrapper implements NodeWrapper<String> {
+public final class StringNodeView implements NodeView<String> {
 
-    public static NodeWrapper<String> node(String value) {
-        return new StringNodeWrapper(value);
+    public static NodeView<String> node(String value) {
+        return new StringNodeView(value);
     }
 
     private final String value;
 
-    private StringNodeWrapper(String value) {
+    private StringNodeView(String value) {
         this.value = value;
     }
 
@@ -40,7 +40,7 @@ public final class StringNodeWrapper implements NodeWrapper<String> {
             return false;
         }
 
-        StringNodeWrapper that = (StringNodeWrapper) o;
+        StringNodeView that = (StringNodeView) o;
         return value.equals(that.value);
     }
 

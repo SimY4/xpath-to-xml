@@ -1,7 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.NodeWrapper;
+import com.github.simy4.xpath.navigator.view.NodeView;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer1;
 
-import static com.github.simy4.xpath.utils.StringNodeWrapper.node;
+import static com.github.simy4.xpath.utils.StringNodeView.node;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -28,10 +28,10 @@ public class NumberPredicateTest {
 
     @Before
     public void setUp() throws Exception {
-        when(navigator.clone(ArgumentMatchers.<NodeWrapper<String>>any()))
-                .thenAnswer(AdditionalAnswers.answer(new Answer1<NodeWrapper<String>, NodeWrapper<String>>() {
+        when(navigator.clone(ArgumentMatchers.<NodeView<String>>any()))
+                .thenAnswer(AdditionalAnswers.answer(new Answer1<NodeView<String>, NodeView<String>>() {
                     @Override
-                    public NodeWrapper<String> answer(NodeWrapper<String> toClone) {
+                    public NodeView<String> answer(NodeView<String> toClone) {
                         return node("clone-" + toClone);
                     }
                 }));
@@ -92,7 +92,7 @@ public class NumberPredicateTest {
         assertThat(result).isTrue();
         verify(navigator, times(2)).clone(node("node"));
         verify(navigator, times(2))
-                .prepend(eq(node("node")), ArgumentMatchers.<NodeWrapper<String>>any());
+                .prepend(eq(node("node")), ArgumentMatchers.<NodeView<String>>any());
     }
 
 }

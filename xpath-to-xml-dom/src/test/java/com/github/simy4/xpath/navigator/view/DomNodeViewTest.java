@@ -1,4 +1,4 @@
-package com.github.simy4.xpath.navigator;
+package com.github.simy4.xpath.navigator.view;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,23 +14,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DomNodeWrapperTest {
+public class DomNodeViewTest {
 
     @Mock private Node node;
 
-    private NodeWrapper<Node> nodeWrapper;
+    private NodeView<Node> nodeView;
 
     @Before
     public void setUp() {
         when(node.getTextContent()).thenReturn("text");
 
-        nodeWrapper = new DomNodeWrapper(node);
+        nodeView = new DomNodeView(node);
     }
 
     @Test
     public void shouldReturnNodeNameForNamespaceUnawareNode() {
         when(node.getNodeName()).thenReturn("node");
-        QName result = nodeWrapper.getNodeName();
+        QName result = nodeView.getNodeName();
         assertThat(result).extracting("namespaceURI", "localPart", "prefix")
                 .containsExactly(XMLConstants.NULL_NS_URI, "node", XMLConstants.DEFAULT_NS_PREFIX);
     }
@@ -40,14 +40,14 @@ public class DomNodeWrapperTest {
         when(node.getNamespaceURI()).thenReturn("http://www.example.com/my");
         when(node.getLocalName()).thenReturn("node");
         when(node.getPrefix()).thenReturn("my");
-        QName result = nodeWrapper.getNodeName();
+        QName result = nodeView.getNodeName();
         assertThat(result).extracting("namespaceURI", "localPart", "prefix")
                 .containsExactly("http://www.example.com/my", "node", "my");
     }
 
     @Test
     public void shouldReturnNodeTextContent() {
-        assertThat(nodeWrapper.getText()).isEqualTo("text");
+        assertThat(nodeView.getText()).isEqualTo("text");
     }
 
 }

@@ -1,7 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.NodeWrapper;
+import com.github.simy4.xpath.navigator.view.NodeView;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +14,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import static com.github.simy4.xpath.utils.StringNodeWrapper.node;
+import static com.github.simy4.xpath.utils.StringNodeView.node;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,7 +46,7 @@ public class PathExprTest {
     public void shouldTraverseStepsOneByOneToGetTheResultingList() {
         // given
         when(stepExpr1.resolve(stepExpr1ContextCaptor.capture(), eq(node("node1"))))
-                .thenReturn(new LinkedHashSet<NodeWrapper<String>>(asList(node("node21"), node("node22"))));
+                .thenReturn(new LinkedHashSet<NodeView<String>>(asList(node("node21"), node("node22"))));
         when(stepExpr2.resolve(stepExpr2ContextCaptor.capture(), eq(node("node21"))))
                 .thenReturn(singleton(node("node3")));
         when(stepExpr2.resolve(stepExpr2ContextCaptor.capture(), eq(node("node22"))))
@@ -55,7 +55,7 @@ public class PathExprTest {
                 .thenReturn(singleton(node("node4")));
 
         // when
-        Set<NodeWrapper<String>> result = pathExpr.resolve(new ExprContext<String>(navigator, false, 1), node("node1"));
+        Set<NodeView<String>> result = pathExpr.resolve(new ExprContext<String>(navigator, false, 1), node("node1"));
 
         // then
         assertThat(result).containsExactly(node("node4"));
@@ -76,12 +76,12 @@ public class PathExprTest {
                 .thenReturn(singleton(node("node2")));
 
         // when
-        Set<NodeWrapper<String>> result = pathExpr.resolve(new ExprContext<String>(navigator, false, 1), node("node1"));
+        Set<NodeView<String>> result = pathExpr.resolve(new ExprContext<String>(navigator, false, 1), node("node1"));
 
         // then
         assertThat(result).isEmpty();
         verify(stepExpr3, never()).resolve(ArgumentMatchers.<ExprContext<String>>any(),
-                ArgumentMatchers.<NodeWrapper<String>>any());
+                ArgumentMatchers.<NodeView<String>>any());
     }
 
     @Test

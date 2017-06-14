@@ -1,6 +1,7 @@
 package com.github.simy4.xpath.navigator;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.navigator.view.NodeView;
 
 import javax.annotation.Nullable;
 import javax.xml.namespace.QName;
@@ -19,14 +20,14 @@ public interface Navigator<N> {
      *
      * @return initial XML node
      */
-    NodeWrapper<N> xml();
+    NodeView<N> xml();
 
     /**
      * Wrapped XML root.
      *
      * @return XML root
      */
-    NodeWrapper<N> root();
+    NodeView<N> root();
 
     /**
      * Wrapped parent of given XML node.
@@ -35,7 +36,7 @@ public interface Navigator<N> {
      * @return XML node parent
      */
     @Nullable
-    NodeWrapper<N> parentOf(NodeWrapper<N> node);
+    NodeView<N> parentOf(NodeView<N> node);
 
     /**
      * Child element nodes of given XML node.
@@ -43,7 +44,7 @@ public interface Navigator<N> {
      * @param parent XML node to scan
      * @return child element nodes
      */
-    Iterable<NodeWrapper<N>> elementsOf(NodeWrapper<N> parent);
+    Iterable<NodeView<N>> elementsOf(NodeView<N> parent);
 
     /**
      * Child attribute nodes of given XML node.
@@ -51,7 +52,7 @@ public interface Navigator<N> {
      * @param parent XML node to scan
      * @return child attribute nodes
      */
-    Iterable<NodeWrapper<N>> attributesOf(NodeWrapper<N> parent);
+    Iterable<NodeView<N>> attributesOf(NodeView<N> parent);
 
     /**
      * Creates detached XML attribute node.
@@ -60,7 +61,7 @@ public interface Navigator<N> {
      * @return newly created attribute node
      * @throws XmlBuilderException if failure occur during XML attribute creation
      */
-    NodeWrapper<N> createAttribute(QName attribute) throws XmlBuilderException;
+    NodeView<N> createAttribute(QName attribute) throws XmlBuilderException;
 
     /**
      * Creates detached XML element node.
@@ -69,7 +70,7 @@ public interface Navigator<N> {
      * @return newly created element node
      * @throws XmlBuilderException if failure occur during XML element creation
      */
-    NodeWrapper<N> createElement(QName element) throws XmlBuilderException;
+    NodeView<N> createElement(QName element) throws XmlBuilderException;
 
     /**
      * Clones given node.
@@ -77,7 +78,7 @@ public interface Navigator<N> {
      * @param toClone XML node to clone
      * @throws XmlBuilderException if failure occur during node cloning
      */
-    NodeWrapper<N> clone(NodeWrapper<N> toClone) throws XmlBuilderException;
+    NodeView<N> clone(NodeView<N> toClone) throws XmlBuilderException;
 
     /**
      * Sets the given text content to a given node.
@@ -86,7 +87,7 @@ public interface Navigator<N> {
      * @param text text content to set
      * @throws XmlBuilderException if failure occur during setting the text content
      */
-    void setText(NodeWrapper<N> node, String text) throws XmlBuilderException;
+    void setText(NodeView<N> node, String text) throws XmlBuilderException;
 
     /**
      * Appends given node to given parent.
@@ -95,7 +96,7 @@ public interface Navigator<N> {
      * @param child      XML node to append
      * @throws XmlBuilderException if failure occur during node appending
      */
-    void append(NodeWrapper<N> parentNode, NodeWrapper<N> child) throws XmlBuilderException;
+    void append(NodeView<N> parentNode, NodeView<N> child) throws XmlBuilderException;
 
     /**
      * Prepends given node to given neighbor node.
@@ -104,7 +105,7 @@ public interface Navigator<N> {
      * @param toPrepend XML node to prepend
      * @throws XmlBuilderException if failure occur during node appending
      */
-    void prepend(NodeWrapper<N> nextNode, NodeWrapper<N> toPrepend) throws XmlBuilderException;
+    void prepend(NodeView<N> nextNode, NodeView<N> toPrepend) throws XmlBuilderException;
 
     /**
      * Removes/detaches given node from XML model.
@@ -112,6 +113,6 @@ public interface Navigator<N> {
      * @param node node to remove
      * @throws XmlBuilderException if failure occur during node removal
      */
-    void remove(NodeWrapper<N> node) throws XmlBuilderException;
+    void remove(NodeView<N> node) throws XmlBuilderException;
 
 }

@@ -1,7 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.navigator.NodeWrapper;
+import com.github.simy4.xpath.navigator.view.NodeView;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,13 +14,13 @@ public class Parent extends AbstractStepExpr {
     }
 
     @Override
-    <N> Set<NodeWrapper<N>> traverseStep(ExprContext<N> context, NodeWrapper<N> node) {
-        NodeWrapper<N> parent = context.getNavigator().parentOf(node);
-        return null == parent ? Collections.<NodeWrapper<N>>emptySet() : Collections.singleton(parent);
+    <N> Set<NodeView<N>> traverseStep(ExprContext<N> context, NodeView<N> node) {
+        NodeView<N> parent = context.getNavigator().parentOf(node);
+        return null == parent ? Collections.<NodeView<N>>emptySet() : Collections.singleton(parent);
     }
 
     @Override
-    <N> NodeWrapper<N> createStepNode(ExprContext<N> context) {
+    <N> NodeView<N> createStepNode(ExprContext<N> context) {
         throw new XmlBuilderException("Parent node cannot modify XML model");
     }
 
