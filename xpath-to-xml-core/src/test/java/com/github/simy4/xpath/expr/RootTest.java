@@ -29,11 +29,11 @@ public class RootTest {
     @DataPoints("parent nodes") public static View[] parentNodes = {
             new LiteralView("literal"),
             new NumberView(2.0),
-            new NodeView<String>(node("node")),
+            new NodeView<>(node("node")),
             BooleanView.truthy(),
             BooleanView.falsy(),
             NodeSetView.empty(),
-            NodeSetView.singleton(new NodeView<String>(node("node"))),
+            NodeSetView.singleton(new NodeView<>(node("node"))),
     };
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -50,10 +50,10 @@ public class RootTest {
     @Theory
     public void shouldReturnSingleRootNodeOnTraverse(@FromDataPoints("parent nodes") View<String> parentView) {
         // when
-        NodeSetView<String> result = root.resolve(new ExprContext<String>(navigator, false, 1), parentView);
+        NodeSetView<String> result = root.resolve(new ExprContext<>(navigator, false, 1), parentView);
 
         // then
-        assertThat((Iterable<?>) result).containsExactly(new NodeView<String>(node("root")));
+        assertThat((Iterable<View<String>>) result).containsExactly(new NodeView<>(node("root")));
     }
 
     @Test

@@ -121,7 +121,7 @@ public class XPathParser {
     }
 
     private Expr PathExpr(Context context) throws XPathExpressionException {
-        final List<StepExpr> pathExpr = new ArrayList<StepExpr>();
+        final List<StepExpr> pathExpr = new ArrayList<>();
         switch (context.tokenAt(1).getType()) {
             case SLASH:
                 context.match(Type.SLASH);
@@ -234,7 +234,7 @@ public class XPathParser {
     }
 
     private List<Expr> PredicateList(Context context) throws XPathExpressionException {
-        final List<Expr> predicateList = new ArrayList<Expr>();
+        final List<Expr> predicateList = new ArrayList<>();
         Type type = context.tokenAt(1).getType();
         while (Type.LEFT_BRACKET == type) {
             predicateList.add(Predicate(context));
@@ -254,7 +254,7 @@ public class XPathParser {
     private static final class Context {
 
         private final XPathLexer lexer;
-        private final List<Token> tokens = new ArrayList<Token>();
+        private final List<Token> tokens = new ArrayList<>();
 
         Context(String xpath) {
             this.lexer = new XPathLexer(xpath);

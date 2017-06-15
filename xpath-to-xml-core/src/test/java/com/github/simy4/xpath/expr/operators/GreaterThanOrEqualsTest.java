@@ -31,24 +31,23 @@ public class GreaterThanOrEqualsTest {
     public static final View[] LESSER = {
             new LiteralView("1.0"),
             new NumberView(1.0),
-            new NodeView<String>(node("1.0")),
-            singleton(new LiteralView("1.0")),
-            singleton(new NumberView(1.0)),
-            singleton(new NodeView<String>(node("1.0"))),
+            new NodeView<>(node("1.0")),
+            singleton(new LiteralView<>("1.0")),
+            singleton(new NumberView<>(1.0)),
+            singleton(new NodeView<>(node("1.0"))),
     };
 
     @DataPoints("greater")
     public static final View[] GREATER = {
             new LiteralView("2.0"),
             new NumberView(2.0),
-            new NodeView<String>(node("2.0")),
-            singleton(new LiteralView("2.0")),
-            singleton(new NumberView(2.0)),
-            singleton(new NodeView<String>(node("2.0"))),
+            new NodeView<>(node("2.0")),
+            singleton(new LiteralView<>("2.0")),
+            singleton(new NumberView<>(2.0)),
+            singleton(new NodeView<>(node("2.0"))),
     };
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
+    @Rule public ExpectedException expectedException = ExpectedException.none();
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
@@ -58,7 +57,7 @@ public class GreaterThanOrEqualsTest {
     public void shouldResolveToTrueWhenLeftIsGreaterThanRight(@FromDataPoints("less") View<String> less,
                                                               @FromDataPoints("greater") View<String> greater) {
         // given
-        ExprContext<String> context = new ExprContext<String>(navigator, false, 1);
+        ExprContext<String> context = new ExprContext<>(navigator, false, 1);
 
         // when
         View<String> result = Operator.greaterThanOrEquals.resolve(context, greater, less);
@@ -71,7 +70,7 @@ public class GreaterThanOrEqualsTest {
     public void shouldResolveToFalseWhenLeftIsLessThanRight(@FromDataPoints("less") View<String> less,
                                                             @FromDataPoints("greater") View<String> greater) {
         // given
-        ExprContext<String> context = new ExprContext<String>(navigator, false, 1);
+        ExprContext<String> context = new ExprContext<>(navigator, false, 1);
 
         // when
         View<String> result = Operator.greaterThanOrEquals.resolve(context, less, greater);
@@ -84,7 +83,7 @@ public class GreaterThanOrEqualsTest {
     public void shouldResolveToTrueWhenLeftIsEqualToRight(@FromDataPoints("less") View<String> left,
                                                            @FromDataPoints("less") View<String> right) {
         // given
-        ExprContext<String> context = new ExprContext<String>(navigator, false, 1);
+        ExprContext<String> context = new ExprContext<>(navigator, false, 1);
 
         // when
         View<String> result = Operator.greaterThanOrEquals.resolve(context, left, right);
@@ -98,7 +97,7 @@ public class GreaterThanOrEqualsTest {
                                                              @FromDataPoints("greater") View<String> greater) {
         // given
         expectedException.expect(XmlBuilderException.class);
-        ExprContext<String> context = new ExprContext<String>(navigator, true, 1);
+        ExprContext<String> context = new ExprContext<>(navigator, true, 1);
         context.advance();
 
         // when

@@ -7,7 +7,7 @@ import javax.annotation.concurrent.Immutable;
 public final class Pair<F, S> {
 
     public static <A, B> Pair<A, B> of(@Nullable A first, @Nullable B second) {
-        return new Pair<A, B>(first, second);
+        return new Pair<>(first, second);
     }
 
     private final F first;

@@ -59,15 +59,15 @@ public final class ExprContext<N> {
     }
 
     public ExprContext<N> clone(boolean greedy, @Nonnegative int size, @Nonnegative int position) {
-        return new ExprContext<N>(navigator, greedy, size, position);
+        return new ExprContext<>(navigator, greedy, size, position);
     }
 
     public ExprContext<N> clone(boolean greedy, @Nonnegative int size) {
-        return new ExprContext<N>(navigator, greedy, size);
+        return new ExprContext<>(navigator, greedy, size);
     }
 
     public ExprContext<N> clone(@Nonnegative int size) {
-        return new ExprContext<N>(navigator, greedy, size);
+        return new ExprContext<>(navigator, greedy, size);
     }
 
 }

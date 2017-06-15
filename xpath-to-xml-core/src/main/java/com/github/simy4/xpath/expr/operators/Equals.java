@@ -15,7 +15,7 @@ class Equals implements Operator {
     public <N> View<N> resolve(ExprContext<N> context, View<N> left, View<N> right) throws XmlBuilderException {
         boolean eq = 0 == left.compareTo(right);
         if (!eq && context.shouldCreate()) {
-            left.visit(new ApplicationVisitor<N>(context.getNavigator(), right));
+            left.visit(new ApplicationVisitor<>(context.getNavigator(), right));
             eq = true;
         }
         return BooleanView.of(eq);

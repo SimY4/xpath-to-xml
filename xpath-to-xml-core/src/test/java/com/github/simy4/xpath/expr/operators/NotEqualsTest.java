@@ -3,7 +3,6 @@ package com.github.simy4.xpath.expr.operators;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeSetView;
@@ -18,7 +17,6 @@ import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
@@ -27,6 +25,7 @@ import static com.github.simy4.xpath.utils.StringNode.node;
 import static com.github.simy4.xpath.view.NodeSetView.empty;
 import static com.github.simy4.xpath.view.NodeSetView.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
@@ -37,22 +36,22 @@ public class NotEqualsTest {
     public static final View[] EQ_TEST = {
             new LiteralView("2.0"),
             new NumberView(2.0),
-            new NodeView<String>(node("2.0")),
-            singleton(new LiteralView("2.0")),
-            singleton(new NumberView(2.0)),
-            singleton(new NodeView<String>(node("2.0"))),
+            new NodeView<>(node("2.0")),
+            singleton(new LiteralView<>("2.0")),
+            singleton(new NumberView<>(2.0)),
+            singleton(new NodeView<>(node("2.0"))),
     };
 
     @DataPoints("ne right")
     public static final View[] NE_TEST = {
             new LiteralView("literal"),
             new NumberView(10.0),
-            new NodeView<String>(node("node")),
+            new NodeView<>(node("node")),
             BooleanView.falsy(),
             empty(),
-            singleton(new LiteralView("literal")),
-            singleton(new NumberView(10.0)),
-            singleton(new NodeView<String>(node("node"))),
+            singleton(new LiteralView<>("literal")),
+            singleton(new NumberView<>(10.0)),
+            singleton(new NodeView<>(node("node"))),
             singleton(BooleanView.falsy()),
     };
 
@@ -65,7 +64,7 @@ public class NotEqualsTest {
     public void shouldAssociativelyResolveEqualViewsToFalse(@FromDataPoints("ne left") View<String> left,
                                                             @FromDataPoints("ne left") View<String> right) {
         // given
-        ExprContext<String> context = new ExprContext<String>(navigator, false, 1);
+        ExprContext<String> context = new ExprContext<>(navigator, false, 1);
 
         // when
         View<String> leftToRight = Operator.notEquals.resolve(context, left, right);
@@ -80,7 +79,7 @@ public class NotEqualsTest {
     public void shouldAssociativelyResolveNonEqualViewsToTrue(@FromDataPoints("ne left") View<String> left,
                                                               @FromDataPoints("ne right") View<String> right) {
         // given
-        ExprContext<String> context = new ExprContext<String>(navigator, false, 1);
+        ExprContext<String> context = new ExprContext<>(navigator, false, 1);
 
         // when
         View<String> leftToRight = Operator.notEquals.resolve(context, left, right);
@@ -99,7 +98,7 @@ public class NotEqualsTest {
                 && (!(left instanceof NodeSetView) || !(((NodeSetView) left).iterator().next() instanceof NodeView))) {
             expectedException.expect(XmlBuilderException.class);
         }
-        ExprContext<String> context = new ExprContext<String>(navigator, true, 1);
+        ExprContext<String> context = new ExprContext<>(navigator, true, 1);
         context.advance();
 
         // when
@@ -107,7 +106,7 @@ public class NotEqualsTest {
 
         // then
         assertThat(result).isEqualTo(BooleanView.truthy());
-        verify(navigator).setText(ArgumentMatchers.<Node<String>>any(), eq(Boolean.toString(!right.toBoolean())));
+        verify(navigator).setText(any(), eq(Boolean.toString(!right.toBoolean())));
     }
 
     @Test

@@ -5,6 +5,7 @@ import com.github.simy4.xpath.navigator.Node;
 import javax.annotation.concurrent.Immutable;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
+import java.util.Objects;
 
 @Immutable
 final class DomNode implements Node<org.w3c.dom.Node> {
@@ -52,12 +53,12 @@ final class DomNode implements Node<org.w3c.dom.Node> {
 
         DomNode that = (DomNode) o;
 
-        return wrappedNode.equals(that.wrappedNode);
+        return Objects.equals(wrappedNode,that.wrappedNode);
     }
 
     @Override
     public int hashCode() {
-        return wrappedNode.hashCode();
+        return Objects.hash(wrappedNode);
     }
 
     @Override

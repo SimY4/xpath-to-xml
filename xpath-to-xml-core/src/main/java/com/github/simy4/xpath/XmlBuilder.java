@@ -37,7 +37,7 @@ public class XmlBuilder {
     }
 
     public XmlBuilder(@Nullable NamespaceContext namespaceContext) {
-        this(new XPathParser(namespaceContext), Collections.<Effect>emptyList());
+        this(new XPathParser(namespaceContext), Collections.emptyList());
     }
 
     private XmlBuilder(XPathParser parser, Collection<Effect> effects) {
@@ -93,7 +93,7 @@ public class XmlBuilder {
      * @see #putAll(String...)
      */
     public XmlBuilder putAll(Iterable<String> xpaths) throws XPathExpressionException {
-        final Collection<Effect> effects = new ArrayList<Effect>(this.effects);
+        final Collection<Effect> effects = new ArrayList<>(this.effects);
         for (String xpath : xpaths) {
             final Expr expr = parser.parse(xpath);
             effects.add(new PutEffect(expr));
@@ -111,7 +111,7 @@ public class XmlBuilder {
      * @see #put(String, Object)
      */
     public XmlBuilder putAll(Map<String, Object> xpathToValueMap) throws XPathExpressionException {
-        final Collection<Effect> effects = new ArrayList<Effect>(this.effects);
+        final Collection<Effect> effects = new ArrayList<>(this.effects);
         for (Entry<String, Object> xpathToValuePair : xpathToValueMap.entrySet()) {
             final Expr expr = parser.parse(xpathToValuePair.getKey());
             effects.add(new PutValueEffect(expr, xpathToValuePair.getValue()));
@@ -153,7 +153,7 @@ public class XmlBuilder {
      * @see #removeAll(String...)
      */
     public XmlBuilder removeAll(Iterable<String> xpaths) throws XPathExpressionException {
-        final Collection<Effect> effects = new ArrayList<Effect>(this.effects);
+        final Collection<Effect> effects = new ArrayList<>(this.effects);
         for (String xpath : xpaths) {
             final Expr expr = parser.parse(xpath);
             effects.add(new RemoveEffect(expr));

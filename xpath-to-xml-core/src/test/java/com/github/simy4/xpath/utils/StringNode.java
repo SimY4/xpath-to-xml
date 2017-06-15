@@ -33,7 +33,7 @@ public final class StringNode implements Node<String> {
     }
 
     public NodeView<String> view() {
-        return new NodeView<String>(this);
+        return new NodeView<>(this);
     }
 
     @Override

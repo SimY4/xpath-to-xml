@@ -19,7 +19,7 @@ public class ExprContextMatcher<N> implements ArgumentMatcher<ExprContext<N>> {
     }
 
     public static <T> ArgumentMatcher<ExprContext<T>> greedyContext() {
-        return new ExprContextMatcher<T>(true);
+        return new ExprContextMatcher<>(true);
     }
 
     private final boolean greedy;

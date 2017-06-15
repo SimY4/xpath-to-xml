@@ -14,7 +14,7 @@ public class UnaryExpr implements Expr {
 
     @Override
     public <N> View<N> resolve(ExprContext<N> context, View<N> xml) throws XmlBuilderException {
-        return new NumberView<N>(-valueExpr.resolve(context, xml).toNumber());
+        return new NumberView<>(-valueExpr.resolve(context, xml).toNumber());
     }
 
     @Override

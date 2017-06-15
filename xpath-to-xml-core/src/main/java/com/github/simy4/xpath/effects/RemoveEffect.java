@@ -19,9 +19,9 @@ public class RemoveEffect implements Effect {
 
     @Override
     public <N> void perform(Navigator<N> navigator) throws XmlBuilderException {
-        final ExprContext<N> context = new ExprContext<N>(navigator, false, 1);
-        final View<N> view = expr.resolve(context, new NodeView<N>(navigator.xml()));
-        view.visit(new RemoveVisitor<N>(navigator));
+        final ExprContext<N> context = new ExprContext<>(navigator, false, 1);
+        final View<N> view = expr.resolve(context, new NodeView<>(navigator.xml()));
+        view.visit(new RemoveVisitor<>(navigator));
     }
 
     private static final class RemoveVisitor<N> extends AbstractViewVisitor<N, Void> {

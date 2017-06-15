@@ -30,16 +30,11 @@ public final class FixtureAccessor {
      * @throws IOException is failed to access fixture resource
      */
     public Map<String, Object> getXmlProperties() throws IOException {
-        final InputStream xpathPropertiesStream = getClass().getResourceAsStream(
-                String.format(XML_PROPERTIES_PATH_FORMAT, fixtureName));
-        try {
+        try (InputStream xpathPropertiesStream = getClass().getResourceAsStream(
+                String.format(XML_PROPERTIES_PATH_FORMAT, fixtureName))) {
             OrderedProperties xpathProperties = new OrderedProperties();
             xpathProperties.load(xpathPropertiesStream);
             return xpathProperties.toMap();
-        } finally {
-            if (xpathPropertiesStream != null) {
-                xpathPropertiesStream.close();
-            }
         }
     }
 
@@ -52,13 +47,8 @@ public final class FixtureAccessor {
     }
 
     private String getXml(String format) throws IOException {
-        final InputStream xmlStream = getClass().getResourceAsStream(String.format(format, fixtureName));
-        try {
+        try (InputStream xmlStream = getClass().getResourceAsStream(String.format(format, fixtureName))) {
             return new Scanner(xmlStream, "UTF-8").useDelimiter("\\A").next();
-        } finally {
-            if (xmlStream != null) {
-                xmlStream.close();
-            }
         }
     }
 

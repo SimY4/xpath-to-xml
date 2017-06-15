@@ -21,15 +21,15 @@ public final class NodeSetView<N> implements View<N>, Iterable<View<N>> {
     }
 
     public static <T> NodeSetView<T> singleton(View<T> node) {
-        return new NodeSetView<T>(Collections.singleton(node));
+        return new NodeSetView<>(Collections.singleton(node));
     }
 
     public static <T> NodeSetView.Builder<T> builder() {
-        return new NodeSetView.Builder<T>();
+        return new NodeSetView.Builder<>();
     }
 
     public static <T> NodeSetView.Builder<T> builder(int initialCapacity) {
-        return new NodeSetView.Builder<T>(initialCapacity);
+        return new NodeSetView.Builder<>(initialCapacity);
     }
 
     private final Set<View<N>> nodeSet;
@@ -108,11 +108,11 @@ public final class NodeSetView<N> implements View<N>, Iterable<View<N>> {
         private final Set<View<T>> nodeSet;
 
         private Builder() {
-            nodeSet = new LinkedHashSet<View<T>>();
+            nodeSet = new LinkedHashSet<>();
         }
 
         private Builder(int initialCapacity) {
-            nodeSet = new LinkedHashSet<View<T>>(initialCapacity);
+            nodeSet = new LinkedHashSet<>(initialCapacity);
         }
 
         /**
@@ -131,7 +131,7 @@ public final class NodeSetView<N> implements View<N>, Iterable<View<N>> {
         }
 
         public NodeSetView<T> build() {
-            return new NodeSetView<T>(Collections.unmodifiableSet(nodeSet));
+            return new NodeSetView<>(Collections.unmodifiableSet(nodeSet));
         }
 
     }

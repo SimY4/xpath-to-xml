@@ -14,7 +14,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -22,6 +21,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static com.github.simy4.xpath.utils.StringNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
@@ -31,7 +32,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.Silent.class)
 public abstract class AbstractStepExprTest<E extends StepExpr> {
 
-    protected static final NodeView<String> parentNode = new NodeView<String>(node("node"));
+    protected static final NodeView<String> parentNode = new NodeView<>(node("node"));
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -50,12 +51,12 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
         setUpResolvableExpr();
 
         // when
-        NodeSetView<String> result = expr.resolve(new ExprContext<String>(navigator, false, 3), parentNode);
+        NodeSetView<String> result = expr.resolve(new ExprContext<>(navigator, false, 3), parentNode);
 
         // then
-        assertThat((Iterable<?>) result).isNotEmpty();
-        verify(predicate1).resolve(predicate1ContextCaptor.capture(), ArgumentMatchers.<View<String>>any());
-        verify(predicate2).resolve(predicate2ContextCaptor.capture(), ArgumentMatchers.<View<String>>any());
+        assertThat((Iterable<View<String>>) result).isNotEmpty();
+        verify(predicate1).resolve(predicate1ContextCaptor.capture(), any());
+        verify(predicate2).resolve(predicate2ContextCaptor.capture(), any());
         assertThat(predicate1ContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(navigator, false, 1, 1);
         assertThat(predicate2ContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
@@ -69,42 +70,38 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
         setUpUnresolvableExpr();
 
         // when
-        NodeSetView<String> result = expr.resolve(new ExprContext<String>(navigator, false, 3), parentNode);
+        NodeSetView<String> result = expr.resolve(new ExprContext<>(navigator, false, 3), parentNode);
 
         // then
-        assertThat((Iterable<?>) result).isEmpty();
+        assertThat((Iterable<View<String>>) result).isEmpty();
     }
 
     @Test
     public void shouldShortCircuitWhenPredicateTraversalReturnsNothing() {
         // given
         setUpResolvableExpr();
-        when(predicate1.resolve(ArgumentMatchers.<ExprContext<String>>any(), ArgumentMatchers.<View<String>>any()))
-                .thenReturn(BooleanView.<String>falsy());
+        when(predicate1.resolve(any(), any())).thenReturn(BooleanView.falsy());
 
         // when
-        NodeSetView<String> result = expr.resolve(new ExprContext<String>(navigator, false, 3), parentNode);
+        NodeSetView<String> result = expr.resolve(new ExprContext<>(navigator, false, 3), parentNode);
 
         // then
         assertThat((Iterable<?>) result).isEmpty();
-        verify(predicate2, never()).resolve(ArgumentMatchers.<ExprContext<String>>any(),
-                ArgumentMatchers.<NodeView<String>>any());
+        verify(predicate2, never()).resolve(any(), any());
     }
 
     @Test
     public void shouldSkipCreatingNodeIfContextForbids() {
         // given
         setUpResolvableExpr();
-        when(predicate1.resolve(ArgumentMatchers.<ExprContext<String>>any(), ArgumentMatchers.<View<String>>any()))
-                .thenReturn(BooleanView.<String>falsy());
+        when(predicate1.resolve(any(), any())).thenReturn(BooleanView.falsy());
 
         // when
-        NodeSetView<String> result = expr.resolve(new ExprContext<String>(navigator, true, 3), parentNode);
+        NodeSetView<String> result = expr.resolve(new ExprContext<>(navigator, true, 3), parentNode);
 
         // then
         assertThat((Iterable<?>) result).isEmpty();
-        verify(predicate2, never()).resolve(ArgumentMatchers.<ExprContext<String>>any(),
-                ArgumentMatchers.<View<String>>any());
+        verify(predicate2, never()).resolve(any(), any());
     }
 
     @Test
@@ -118,12 +115,12 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
         setUpUnresolvableExpr();
 
         // when
-        NodeSetView<String> result = expr.resolve(new ExprContext<String>(navigator, true, 1), parentNode);
+        NodeSetView<String> result = expr.resolve(new ExprContext<>(navigator, true, 1), parentNode);
 
         // then
         assertThat((Iterable<?>) result).isNotEmpty();
-        verify(predicate1).resolve(predicate1ContextCaptor.capture(), ArgumentMatchers.<View<String>>any());
-        verify(predicate2).resolve(predicate2ContextCaptor.capture(), ArgumentMatchers.<View<String>>any());
+        verify(predicate1).resolve(predicate1ContextCaptor.capture(), any());
+        verify(predicate2).resolve(predicate2ContextCaptor.capture(), any());
         assertThat(predicate1ContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(navigator, true, 1, 1);
         assertThat(predicate2ContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
@@ -140,23 +137,18 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
 
         setUpResolvableExpr();
         reset(predicate1, predicate2);
-        when(predicate1.resolve(ArgumentMatchers.<ExprContext<String>>any(), ArgumentMatchers.<View<String>>any()))
-                .thenReturn(BooleanView.<String>falsy());
-        when(predicate2.resolve(ArgumentMatchers.<ExprContext<String>>any(), ArgumentMatchers.<View<String>>any()))
-                .thenReturn(BooleanView.<String>falsy());
-        when(predicate1.resolve(ArgumentMatchers.argThat(ExprContextMatcher.<String>greedyContext()),
-                ArgumentMatchers.<View<String>>any())).thenReturn(BooleanView.<String>truthy());
-        when(predicate2.resolve(ArgumentMatchers.argThat(ExprContextMatcher.<String>greedyContext()),
-                ArgumentMatchers.<View<String>>any())).thenReturn(BooleanView.<String>truthy());
+        when(predicate1.resolve(any(), any())).thenReturn(BooleanView.falsy());
+        when(predicate2.resolve(any(), any())).thenReturn(BooleanView.falsy());
+        when(predicate1.resolve(argThat(ExprContextMatcher.greedyContext()), any())).thenReturn(BooleanView.truthy());
+        when(predicate2.resolve(argThat(ExprContextMatcher.greedyContext()), any())).thenReturn(BooleanView.truthy());
 
         // when
-        NodeSetView<String> result = expr.resolve(new ExprContext<String>(navigator, true, 1), parentNode);
+        NodeSetView<String> result = expr.resolve(new ExprContext<>(navigator, true, 1), parentNode);
 
         // then
         assertThat((Iterable<?>) result).isNotEmpty();
-        verify(predicate1, times(2)).resolve(predicate1ContextCaptor.capture(),
-                ArgumentMatchers.<NodeView<String>>any());
-        verify(predicate2).resolve(predicate2ContextCaptor.capture(), ArgumentMatchers.<View<String>>any());
+        verify(predicate1, times(2)).resolve(predicate1ContextCaptor.capture(), any());
+        verify(predicate2).resolve(predicate2ContextCaptor.capture(), any());
         assertThat(predicate1ContextCaptor.getAllValues()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(
                         tuple(navigator, false, 1, 1),
@@ -171,8 +163,8 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
         setUpUnresolvableExpr();
 
         // when
-        NodeSetView<String> result = expr.resolve(new ExprContext<String>(navigator, false, 3),
-                new LiteralView<String>("literal"));
+        NodeSetView<String> result = expr.resolve(new ExprContext<>(navigator, false, 3),
+                new LiteralView<>("literal"));
 
         // then
         assertThat((Iterable<?>) result).isEmpty();
@@ -184,7 +176,7 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
         setUpUnresolvableExpr();
 
         // when
-        expr.resolve(new ExprContext<String>(navigator, true, 1), new LiteralView<String>("literal"));
+        expr.resolve(new ExprContext<>(navigator, true, 1), new LiteralView<>("literal"));
     }
 
     @Test(expected = XmlBuilderException.class)
@@ -193,25 +185,19 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
         setUpUnresolvableExpr();
 
         // when
-        expr.resolve(new ExprContext<String>(navigator, true, 1), new NumberView<String>(2.0));
+        expr.resolve(new ExprContext<>(navigator, true, 1), new NumberView<>(2.0));
     }
 
     void setUpResolvableExpr() {
-        when(predicate1.resolve(ArgumentMatchers.<ExprContext<String>>any(), ArgumentMatchers.<View<String>>any()))
-                .thenReturn(BooleanView.<String>truthy());
-        when(predicate2.resolve(ArgumentMatchers.<ExprContext<String>>any(), ArgumentMatchers.<View<String>>any()))
-                .thenReturn(BooleanView.<String>truthy());
+        when(predicate1.resolve(any(), any())).thenReturn(BooleanView.truthy());
+        when(predicate2.resolve(any(), any())).thenReturn(BooleanView.truthy());
     }
 
     void setUpUnresolvableExpr() {
-        when(predicate1.resolve(ArgumentMatchers.<ExprContext<String>>any(), ArgumentMatchers.<View<String>>any()))
-                .thenReturn(BooleanView.<String>falsy());
-        when(predicate2.resolve(ArgumentMatchers.<ExprContext<String>>any(), ArgumentMatchers.<View<String>>any()))
-                .thenReturn(BooleanView.<String>falsy());
-        when(predicate1.resolve(ArgumentMatchers.argThat(ExprContextMatcher.<String>greedyContext()),
-                ArgumentMatchers.<View<String>>any())).thenReturn(BooleanView.<String>truthy());
-        when(predicate2.resolve(ArgumentMatchers.argThat(ExprContextMatcher.<String>greedyContext()),
-                ArgumentMatchers.<View<String>>any())).thenReturn(BooleanView.<String>truthy());
+        when(predicate1.resolve(any(), any())).thenReturn(BooleanView.falsy());
+        when(predicate2.resolve(any(), any())).thenReturn(BooleanView.falsy());
+        when(predicate1.resolve(argThat(ExprContextMatcher.greedyContext()), any())).thenReturn(BooleanView.truthy());
+        when(predicate2.resolve(argThat(ExprContextMatcher.greedyContext()), any())).thenReturn(BooleanView.truthy());
     }
 
 }

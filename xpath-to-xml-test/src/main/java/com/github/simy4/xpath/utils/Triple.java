@@ -7,7 +7,7 @@ import javax.annotation.concurrent.Immutable;
 public final class Triple<F, S, T> {
 
     public static <A, B, C> Triple<A, B, C> of(@Nullable A first, @Nullable B second, @Nullable C third) {
-        return new Triple<A, B, C>(first, second, third);
+        return new Triple<>(first, second, third);
     }
 
     private final F first;

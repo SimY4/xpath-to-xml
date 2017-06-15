@@ -1,6 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.view.NodeSetView;
+import com.github.simy4.xpath.view.View;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,10 +21,10 @@ public class IdentityTest extends AbstractStepExprTest<Identity> {
         setUpResolvableExpr();
 
         // when
-        NodeSetView<String> result = expr.resolve(new ExprContext<String>(navigator, false, 3), parentNode);
+        NodeSetView<String> result = expr.resolve(new ExprContext<>(navigator, false, 3), parentNode);
 
         // then
-        assertThat((Iterable<?>) result).containsExactly(parentNode);
+        assertThat((Iterable<View<String>>) result).containsExactly(parentNode);
     }
 
     @Test

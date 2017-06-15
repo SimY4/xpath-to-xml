@@ -22,7 +22,7 @@ public class Attribute extends AbstractStepExpr {
         final NodeSetView.Builder<N> builder = NodeSetView.builder();
         for (Node<N> attribute : context.getNavigator().attributesOf(parentNode.getNode())) {
             if (0 == qnameComparator.compare(this.attribute, attribute.getNodeName())) {
-                builder.add(new NodeView<N>(attribute));
+                builder.add(new NodeView<>(attribute));
             }
         }
         return builder.build();
@@ -33,7 +33,7 @@ public class Attribute extends AbstractStepExpr {
         if ("*".equals(attribute.getNamespaceURI()) || "*".equals(attribute.getLocalPart())) {
             throw new XmlBuilderException("Wildcard attribute cannot be created");
         }
-        return new NodeView<N>(context.getNavigator().createAttribute(attribute));
+        return new NodeView<>(context.getNavigator().createAttribute(attribute));
     }
 
     @Override

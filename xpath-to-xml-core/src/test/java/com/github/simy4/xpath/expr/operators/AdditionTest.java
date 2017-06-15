@@ -28,10 +28,10 @@ public class AdditionTest {
     public static final View[] NUMBERS = {
             new LiteralView("3.0"),
             new NumberView(3.0),
-            new NodeView<String>(node("3.0")),
-            singleton(new LiteralView("3.0")),
-            singleton(new NumberView(3.0)),
-            singleton(new NodeView<String>(node("3.0"))),
+            new NodeView<>(node("3.0")),
+            singleton(new LiteralView<>("3.0")),
+            singleton(new NumberView<>(3.0)),
+            singleton(new NodeView<>(node("3.0"))),
     };
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -42,7 +42,7 @@ public class AdditionTest {
     public void shouldAddLeftViewToRightView(@FromDataPoints("3.0") View<String> left,
                                              @FromDataPoints("3.0") View<String> right) {
         // given
-        ExprContext<String> context = new ExprContext<String>(navigator, false, 1);
+        ExprContext<String> context = new ExprContext<>(navigator, false, 1);
 
         // when
         assertThat(Operator.addition.resolve(context, left, right)).isEqualTo(new NumberView<String>(6.0));

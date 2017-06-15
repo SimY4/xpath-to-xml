@@ -3,6 +3,7 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
+import com.github.simy4.xpath.view.View;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,7 +14,7 @@ import static org.mockito.Mockito.when;
 
 public class ParentTest extends AbstractStepExprTest<Parent> {
 
-    private static final NodeView<String> parentNode = new NodeView<String>(node("node"));
+    private static final NodeView<String> parentNode = new NodeView<>(node("node"));
 
     @Before
     public void setUp() {
@@ -28,10 +29,10 @@ public class ParentTest extends AbstractStepExprTest<Parent> {
         setUpResolvableExpr();
 
         // when
-        NodeSetView<String> result = expr.resolve(new ExprContext<String>(navigator, false, 3), parentNode);
+        NodeSetView<String> result = expr.resolve(new ExprContext<>(navigator, false, 3), parentNode);
 
         // then
-        assertThat((Iterable<?>) result).containsExactly(new NodeView<String>(node("parent")));
+        assertThat((Iterable<View<String>>) result).containsExactly(new NodeView<>(node("parent")));
     }
 
     @Test(expected = XmlBuilderException.class)
@@ -40,7 +41,7 @@ public class ParentTest extends AbstractStepExprTest<Parent> {
         setUpUnresolvableExpr();
 
         // when
-        expr.resolve(new ExprContext<String>(navigator, true, 1), parentNode);
+        expr.resolve(new ExprContext<>(navigator, true, 1), parentNode);
     }
 
     @Test

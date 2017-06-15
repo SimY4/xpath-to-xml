@@ -15,7 +15,7 @@ import java.util.Set;
  */
 public class OrderedProperties extends Properties {
 
-    private final Set<Object> keys = new LinkedHashSet<Object>();
+    private final Set<Object> keys = new LinkedHashSet<>();
 
     /**
      * Transforms properties to linked hash map.
@@ -23,7 +23,7 @@ public class OrderedProperties extends Properties {
      * @return linked hash map of property values
      */
     public synchronized Map<String, Object> toMap() {
-        Map<String, Object> map = new LinkedHashMap<String, Object>(keys.size());
+        Map<String, Object> map = new LinkedHashMap<>(keys.size());
         for (Object orderedKey : keys) {
             map.put(String.valueOf(orderedKey), get(orderedKey));
         }

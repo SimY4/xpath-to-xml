@@ -19,7 +19,7 @@ abstract class AbstractStepExpr implements StepExpr {
 
     @Override
     public final <N> NodeSetView<N> resolve(ExprContext<N> context, View<N> xml) throws XmlBuilderException {
-        return xml.visit(new StepNodeVisitor<N>(context));
+        return xml.visit(new StepNodeVisitor<>(context));
     }
 
     /**

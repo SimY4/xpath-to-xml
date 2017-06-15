@@ -24,7 +24,6 @@ import org.junit.runner.RunWith;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.xpath.XPathExpressionException;
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -54,15 +53,14 @@ public class XPathParserTest {
                 Pair.of("first.name", pathExpr(new Element(new QName("first.name"), NIL))),
                 Pair.of("/bookstore", pathExpr(new Root(), new Element(new QName("bookstore"), NIL))),
                 Pair.of("book[/bookstore/@specialty=@style]",
-                        pathExpr(new Element(new QName("book"), Collections.<Expr>singletonList(
-                                new OperationExpr(
-                                        pathExpr(
-                                                new Root(),
-                                                new Element(new QName("bookstore"), NIL),
-                                                new Attribute(new QName("specialty"), NIL)),
-                                        pathExpr(
-                                                new Attribute(new QName("style"), NIL)),
-                                        Operator.equals))))),
+                        pathExpr(new Element(new QName("book"), singletonList(new OperationExpr(
+                                pathExpr(
+                                        new Root(),
+                                        new Element(new QName("bookstore"), NIL),
+                                        new Attribute(new QName("specialty"), NIL)),
+                                pathExpr(
+                                        new Attribute(new QName("style"), NIL)),
+                                Operator.equals))))),
                 Pair.of("author/first-name", pathExpr(new Element(new QName("author"), NIL),
                         new Element(new QName("first-name"), NIL))),
                 Pair.of("bookstore/*/title", pathExpr(new Element(new QName("bookstore"), NIL),
@@ -91,8 +89,7 @@ public class XPathParserTest {
                 Pair.of("./first-name", pathExpr(new Identity(NIL),
                         new Element(new QName("first-name"), NIL))),
                 Pair.of("first-name", pathExpr(new Element(new QName("first-name"), NIL))),
-                Pair.of("author[1]", pathExpr(new Element(new QName("author"),
-                        Collections.<Expr>singletonList(new NumberExpr(1.0))))),
+                Pair.of("author[1]", pathExpr(new Element(new QName("author"), singletonList(new NumberExpr(1.0))))),
                 Pair.of("author[first-name][3]", pathExpr(new Element(new QName("author"), asList(
                         pathExpr(new Element(new QName("first-name"), NIL)),
                         new NumberExpr(3.0))))),

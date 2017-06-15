@@ -4,20 +4,19 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static com.github.simy4.xpath.utils.StringNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -36,8 +35,8 @@ public class PutValueEffectTest {
     @Before
     public void setUp() {
         when(navigator.xml()).thenReturn(node("xml"));
-        when(expr.resolve(ArgumentMatchers.<ExprContext<String>>any(), eq(new NodeView<String>(node("xml")))))
-                .thenReturn(NodeSetView.singleton(new NodeView<String>(node("node"))));
+        when(expr.resolve(any(), eq(new NodeView<>(node("xml")))))
+                .thenReturn(NodeSetView.singleton(new NodeView<>(node("node"))));
 
         putValueEffect = new PutValueEffect(expr, "value");
     }
@@ -48,7 +47,7 @@ public class PutValueEffectTest {
         putValueEffect.perform(navigator);
 
         // then
-        verify(expr).resolve(contextCaptor.capture(), eq(new NodeView<String>(node("xml"))));
+        verify(expr).resolve(contextCaptor.capture(), eq(new NodeView<>(node("xml"))));
         verify(navigator).setText(node("node"), "value");
         assertThat(contextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(navigator, true, 1, 0);
@@ -57,7 +56,7 @@ public class PutValueEffectTest {
     @Test(expected = XmlBuilderException.class)
     public void shouldPropagateOnAnyException() {
         // given
-        doThrow(XmlBuilderException.class).when(navigator).setText(ArgumentMatchers.<Node<String>>any(), anyString());
+        doThrow(XmlBuilderException.class).when(navigator).setText(any(), anyString());
 
         // when
         putValueEffect.perform(navigator);

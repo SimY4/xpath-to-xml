@@ -21,9 +21,9 @@ public class PutValueEffect implements Effect {
 
     @Override
     public <N> void perform(Navigator<N> navigator) throws XmlBuilderException {
-        final ExprContext<N> context = new ExprContext<N>(navigator, true, 1);
-        final View<N> view = expr.resolve(context, new NodeView<N>(navigator.xml()));
-        view.visit(new PutValueVisitor<N>(navigator, value));
+        final ExprContext<N> context = new ExprContext<>(navigator, true, 1);
+        final View<N> view = expr.resolve(context, new NodeView<>(navigator.xml()));
+        view.visit(new PutValueVisitor<>(navigator, value));
     }
 
     private static final class PutValueVisitor<N> extends AbstractViewVisitor<N, Void> {

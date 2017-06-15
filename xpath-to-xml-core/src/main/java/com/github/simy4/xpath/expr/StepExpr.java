@@ -13,6 +13,7 @@ import java.util.Comparator;
  * @author Alex Simkin
  * @since 1.0
  */
+@FunctionalInterface
 public interface StepExpr extends Expr {
 
     /**

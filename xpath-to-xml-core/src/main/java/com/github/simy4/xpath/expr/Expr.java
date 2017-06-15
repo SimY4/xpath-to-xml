@@ -9,6 +9,7 @@ import com.github.simy4.xpath.view.View;
  * @author Alex Simkin
  * @since 1.0
  */
+@FunctionalInterface
 public interface Expr {
 
     /**

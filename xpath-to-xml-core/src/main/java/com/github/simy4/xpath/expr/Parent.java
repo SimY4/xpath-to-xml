@@ -16,7 +16,7 @@ public class Parent extends AbstractStepExpr {
     @Override
     <N> NodeSetView<N> traverseStep(ExprContext<N> context, NodeView<N> node) {
         final Node<N> parent = context.getNavigator().parentOf(node.getNode());
-        return null == parent ? NodeSetView.<N>empty() : NodeSetView.singleton(new NodeView<N>(parent));
+        return null == parent ? NodeSetView.empty() : NodeSetView.singleton(new NodeView<>(parent));
     }
 
     @Override

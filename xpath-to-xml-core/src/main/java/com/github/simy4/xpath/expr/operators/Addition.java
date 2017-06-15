@@ -8,7 +8,7 @@ class Addition implements Operator {
 
     @Override
     public <N> View<N> resolve(ExprContext<N> context, View<N> left, View<N> right) {
-        return new NumberView<N>(left.toNumber() + right.toNumber());
+        return new NumberView<>(left.toNumber() + right.toNumber());
     }
 
     @Override

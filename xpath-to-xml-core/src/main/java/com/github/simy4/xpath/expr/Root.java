@@ -9,7 +9,7 @@ public class Root implements StepExpr {
     @Override
     public <N> NodeSetView<N> resolve(ExprContext<N> context, View<N> xml) {
         context.advance();
-        return NodeSetView.singleton(new NodeView<N>(context.getNavigator().root()));
+        return NodeSetView.singleton(new NodeView<>(context.getNavigator().root()));
     }
 
     @Override
