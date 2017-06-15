@@ -40,8 +40,8 @@ public final class StringNodeView implements NodeView<String> {
     }
 
     @Override
-    public int compareTo(View<String> o) {
-        return 0;
+    public int compareTo(View<String> other) {
+        return -other.compareTo(this);
     }
 
     @Override

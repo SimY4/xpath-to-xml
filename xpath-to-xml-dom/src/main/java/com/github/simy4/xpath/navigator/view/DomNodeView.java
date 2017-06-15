@@ -46,6 +46,11 @@ public final class DomNodeView implements NodeView<Node> {
     }
 
     @Override
+    public int compareTo(View<Node> other) {
+        return -other.compareTo(this);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

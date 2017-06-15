@@ -66,7 +66,11 @@ public final class LiteralView<N> implements View<N> {
 
         @Override
         public void visit(NodeSetView<N> nodeSet) {
-            nodeSet.iterator().next().visit(this);
+            if (nodeSet.isEmpty()) {
+                result = 1;
+            } else {
+                nodeSet.iterator().next().visit(this);
+            }
         }
 
         @Override

@@ -143,12 +143,12 @@ public final class NodeSetView<N> implements View<N>, Iterable<View<N>> {
 
         @Override
         public void visit(LiteralView<N> literal) {
-            result = nodeSet.iterator().next().compareTo(literal);
+            result = nodeSet.isEmpty() ? -1 : nodeSet.iterator().next().compareTo(literal);
         }
 
         @Override
         public void visit(NumberView<N> number) {
-            result = nodeSet.iterator().next().compareTo(number);
+            result = nodeSet.isEmpty() ? -1 : nodeSet.iterator().next().compareTo(number);
         }
 
         @Override
