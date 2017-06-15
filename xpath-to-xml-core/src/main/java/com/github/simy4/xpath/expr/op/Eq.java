@@ -2,49 +2,138 @@ package com.github.simy4.xpath.expr.op;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.navigator.view.LiteralView;
+import com.github.simy4.xpath.navigator.view.NodeSetView;
 import com.github.simy4.xpath.navigator.view.NodeView;
+import com.github.simy4.xpath.navigator.view.NumberView;
+import com.github.simy4.xpath.navigator.view.View;
+import com.github.simy4.xpath.navigator.view.ViewVisitor;
 
-import java.util.Comparator;
-
-public class Eq implements Op, Comparator<NodeView<?>> {
+public class Eq implements Op {
 
     @Override
-    public <N> boolean test(Iterable<NodeView<N>> left, Iterable<NodeView<N>> right) {
-        for (NodeView<N> leftNode : left) {
-            for (NodeView<N> rightNode : right) {
-                if (0 == compare(leftNode, rightNode)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    public <N> boolean test(View<N> left, View<N> right) {
+        return 0 == left.compareTo(right);
     }
 
     @Override
-    public <N> void apply(Navigator<N> navigator, Iterable<NodeView<N>> left, Iterable<NodeView<N>> right)
-            throws XmlBuilderException {
-        NodeView<N> rightNode = right.iterator().next();
-        for (NodeView<N> leftNode : left) {
-            navigator.setText(leftNode, rightNode.getText());
-        }
-    }
-
-    @Override
-    public int compare(NodeView<?> left, NodeView<?> right) {
-        final String leftText = left.getText();
-        final String rightText = right.getText();
-        if (null == leftText) {
-            return null == rightText ? 0 : -1;
-        } else if (null == rightText) {
-            return 1;
-        } else {
-            return leftText.compareTo(rightText);
-        }
+    public <N> void apply(Navigator<N> navigator, View<N> left, View<N> right) throws XmlBuilderException {
+        left.visit(new EqLeftApplicationVisitor<N>(right));
     }
 
     @Override
     public String toString() {
         return "=";
+    }
+
+    private static final class EqLeftApplicationVisitor<N> implements ViewVisitor<N> {
+
+        private final View<N> right;
+
+        private EqLeftApplicationVisitor(View<N> right) {
+            this.right = right;
+        }
+
+        @Override
+        public void visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
+            right.visit(new ViewVisitor<N>() {
+                @Override
+                public void visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
+
+                }
+
+                @Override
+                public void visit(LiteralView<N> literal) throws XmlBuilderException {
+
+                }
+
+                @Override
+                public void visit(NumberView<N> number) throws XmlBuilderException {
+
+                }
+
+                @Override
+                public void visit(NodeView<N> node) throws XmlBuilderException {
+
+                }
+            });
+        }
+
+        @Override
+        public void visit(LiteralView<N> literal) throws XmlBuilderException {
+            right.visit(new ViewVisitor<N>() {
+                @Override
+                public void visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
+
+                }
+
+                @Override
+                public void visit(LiteralView<N> literal) throws XmlBuilderException {
+
+                }
+
+                @Override
+                public void visit(NumberView<N> number) throws XmlBuilderException {
+
+                }
+
+                @Override
+                public void visit(NodeView<N> node) throws XmlBuilderException {
+
+                }
+            });
+        }
+
+        @Override
+        public void visit(NumberView<N> number) throws XmlBuilderException {
+            right.visit(new ViewVisitor<N>() {
+                @Override
+                public void visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
+
+                }
+
+                @Override
+                public void visit(LiteralView<N> literal) throws XmlBuilderException {
+
+                }
+
+                @Override
+                public void visit(NumberView<N> number) throws XmlBuilderException {
+
+                }
+
+                @Override
+                public void visit(NodeView<N> node) throws XmlBuilderException {
+
+                }
+            });
+        }
+
+        @Override
+        public void visit(NodeView<N> node) throws XmlBuilderException {
+            right.visit(new ViewVisitor<N>() {
+                @Override
+                public void visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
+
+                }
+
+                @Override
+                public void visit(LiteralView<N> literal) throws XmlBuilderException {
+
+                }
+
+                @Override
+                public void visit(NumberView<N> number) throws XmlBuilderException {
+
+                }
+
+                @Override
+                public void visit(NodeView<N> node) throws XmlBuilderException {
+
+                }
+            });
+        }
+
     }
 
 }

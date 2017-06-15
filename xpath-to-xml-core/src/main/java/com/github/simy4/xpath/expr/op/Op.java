@@ -2,7 +2,7 @@ package com.github.simy4.xpath.expr.op;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.view.NodeView;
+import com.github.simy4.xpath.navigator.view.View;
 
 /**
  * Comparison operation model.
@@ -12,9 +12,8 @@ import com.github.simy4.xpath.navigator.view.NodeView;
  */
 public interface Op {
 
-    <N> boolean test(Iterable<NodeView<N>> left, Iterable<NodeView<N>> right);
+    <N> boolean test(View<N> left, View<N> right);
 
-    <N> void apply(Navigator<N> navigator, Iterable<NodeView<N>> left, Iterable<NodeView<N>> right)
-            throws XmlBuilderException;
+    <N> void apply(Navigator<N> navigator, View<N> left, View<N> right) throws XmlBuilderException;
 
 }

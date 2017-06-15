@@ -1,13 +1,11 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.view.NodeView;
+import com.github.simy4.xpath.navigator.view.View;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.Set;
 
 import static com.github.simy4.xpath.utils.StringNodeView.node;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,14 +20,8 @@ public class NumberExprTest {
 
     @Test
     public void shouldAlwaysReturnSingleNumberNode() {
-        Set<NodeView<String>> result = numberExpr.resolve(new ExprContext<String>(navigator, false, 1), node("xml"));
-        assertThat(result).extracting("number", Number.class).containsExactly(2.5);
-    }
-
-    @Test
-    public void shouldAlwaysReturnTrueAsLiteralPredicate() {
-        boolean result = numberExpr.asPredicate().apply(new ExprContext<String>(navigator, false, 1), node("xml"));
-        assertThat(result).isTrue();
+        View<String> result = numberExpr.resolve(new ExprContext<String>(navigator, false, 1), node("xml"));
+        assertThat(result).extracting("number").containsExactly(2.5);
     }
 
     @Test

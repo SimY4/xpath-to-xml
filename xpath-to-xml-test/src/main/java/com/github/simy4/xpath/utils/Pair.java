@@ -1,7 +1,9 @@
 package com.github.simy4.xpath.utils;
 
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 
+@Immutable
 public final class Pair<F, S> {
 
     public static <A, B> Pair<A, B> of(@Nullable A first, @Nullable B second) {

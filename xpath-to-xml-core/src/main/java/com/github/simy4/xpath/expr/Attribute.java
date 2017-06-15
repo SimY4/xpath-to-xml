@@ -1,31 +1,30 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.navigator.view.NodeSetView;
 import com.github.simy4.xpath.navigator.view.NodeView;
 
 import javax.xml.namespace.QName;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 public class Attribute extends AbstractStepExpr {
 
     private final QName attribute;
 
-    public Attribute(QName attribute, List<Predicate> predicates) {
+    public Attribute(QName attribute, List<Expr> predicates) {
         super(predicates);
         this.attribute = attribute;
     }
 
     @Override
-    <N> Set<NodeView<N>> traverseStep(ExprContext<N> context, NodeView<N> parentNode) {
-        final Set<NodeView<N>> nodes = new LinkedHashSet<NodeView<N>>();
+    <N> NodeSetView<N> traverseStep(ExprContext<N> context, NodeView<N> parentNode) {
+        final NodeSetView.Builder<N> builder = NodeSetView.builder();
         for (NodeView<N> attribute : context.getNavigator().attributesOf(parentNode)) {
             if (0 == qnameComparator.compare(this.attribute, attribute.getNodeName())) {
-                nodes.add(attribute);
+                builder.add(attribute);
             }
         }
-        return nodes;
+        return builder.build();
     }
 
     @Override

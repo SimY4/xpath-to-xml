@@ -1,12 +1,10 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.expr.op.Op;
-import com.github.simy4.xpath.navigator.view.NodeView;
+import com.github.simy4.xpath.navigator.view.NodeSetView;
+import com.github.simy4.xpath.navigator.view.View;
 
-import java.util.Collections;
-import java.util.Set;
-
-public class ComparisonExpr extends AbstractExpr {
+public class ComparisonExpr implements Expr {
 
     private final Expr leftExpr;
     private final Expr rightExpr;
@@ -26,22 +24,22 @@ public class ComparisonExpr extends AbstractExpr {
     }
 
     @Override
-    public <N> Set<NodeView<N>> resolve(ExprContext<N> context, NodeView<N> xml) {
+    public <N> View<N> resolve(ExprContext<N> context, View<N> xml) {
         ExprContext<N> leftContext = context.clone(false, 1);
-        Set<NodeView<N>> leftNodes = leftExpr.resolve(leftContext, xml);
+        View<N> leftView = leftExpr.resolve(leftContext, xml);
         ExprContext<N> rightContext = context.clone(false, 1);
-        Set<NodeView<N>> rightNodes = rightExpr.resolve(rightContext, xml);
-        if (op.test(leftNodes, rightNodes)) {
-            return Collections.singleton(xml);
+        View<N> rightView = rightExpr.resolve(rightContext, xml);
+        if (op.test(leftView, rightView)) {
+            return xml;
         } else if (context.shouldCreate()) {
             leftContext = context.clone(1);
-            leftNodes = leftExpr.resolve(leftContext, xml);
+            leftView = leftExpr.resolve(leftContext, xml);
             rightContext = context.clone(1);
-            rightNodes = rightExpr.resolve(rightContext, xml);
-            op.apply(context.getNavigator(), leftNodes, rightNodes);
-            return Collections.singleton(xml);
+            rightView = rightExpr.resolve(rightContext, xml);
+            op.apply(context.getNavigator(), leftView, rightView);
+            return xml;
         } else {
-            return Collections.emptySet();
+            return NodeSetView.empty();
         }
     }
 

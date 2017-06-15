@@ -2,7 +2,7 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.expr.op.Op;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.view.NodeView;
+import com.github.simy4.xpath.navigator.view.View;
 import com.github.simy4.xpath.utils.ExprContextMatcher;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,10 +13,8 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.Set;
-
+import static com.github.simy4.xpath.navigator.view.NodeSetView.singleton;
 import static com.github.simy4.xpath.utils.StringNodeView.node;
-import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.eq;
@@ -45,18 +43,17 @@ public class ComparisonExprTest {
     @Test
     public void shouldReturnGivenXmlWhenOpTestReturnsSucceeds() {
         // given
-        when(op.test(ArgumentMatchers.<NodeView<String>>anySet(), ArgumentMatchers.<NodeView<String>>anySet()))
-                .thenReturn(true);
+        when(op.test(ArgumentMatchers.<View<String>>any(), ArgumentMatchers.<View<String>>any())).thenReturn(true);
         ExprContext<String> context = new ExprContext<String>(navigator, false, 3);
         context.advance();
 
         // when
-        Set<NodeView<String>> result = comparisonExpr.resolve(context, node("xml"));
+        View<String> result = comparisonExpr.resolve(context, node("xml"));
 
         // then
         verify(leftExpr).resolve(leftExprContextCaptor.capture(), eq(node("xml")));
         verify(rightExpr).resolve(rightExprContextCaptor.capture(), eq(node("xml")));
-        assertThat(result).containsExactly(node("xml"));
+        assertThat(result).isEqualTo(node("xml"));
         assertThat(leftExprContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(navigator, false, 1, 0);
         assertThat(rightExprContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
@@ -70,12 +67,12 @@ public class ComparisonExprTest {
         context.advance();
 
         // when
-        Set<NodeView<String>> result = comparisonExpr.resolve(context, node("xml"));
+        View<String> result = comparisonExpr.resolve(context, node("xml"));
 
         // then
         verify(leftExpr).resolve(leftExprContextCaptor.capture(), eq(node("xml")));
         verify(rightExpr).resolve(rightExprContextCaptor.capture(), eq(node("xml")));
-        assertThat(result).isEmpty();
+        assertThat(result).isNotEqualTo(node("xml"));
         assertThat(leftExprContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(navigator, false, 1, 0);
         assertThat(rightExprContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
@@ -89,14 +86,14 @@ public class ComparisonExprTest {
         context.advance();
 
         // when
-        Set<NodeView<String>> result = comparisonExpr.resolve(context, node("xml"));
+        View<String> result = comparisonExpr.resolve(context, node("xml"));
 
         // then
         verify(leftExpr).resolve(leftExprContextCaptor.capture(), eq(node("xml")));
         verify(rightExpr).resolve(rightExprContextCaptor.capture(), eq(node("xml")));
         verify(op, never()).apply(ArgumentMatchers.<Navigator<String>>any(),
-                ArgumentMatchers.<NodeView<String>>anySet(), ArgumentMatchers.<NodeView<String>>anySet());
-        assertThat(result).isEmpty();
+                ArgumentMatchers.<View<String>>any(), ArgumentMatchers.<View<String>>any());
+        assertThat(result).isNotEqualTo(node("xml"));
         assertThat(leftExprContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(navigator, false, 1, 0);
         assertThat(rightExprContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
@@ -114,13 +111,13 @@ public class ComparisonExprTest {
         context.advance();
 
         // when
-        Set<NodeView<String>> result = comparisonExpr.resolve(context, node("xml"));
+        View<String> result = comparisonExpr.resolve(context, node("xml"));
 
         // then
         verify(leftExpr, times(2)).resolve(leftExprContextCaptor.capture(), eq(node("xml")));
         verify(rightExpr, times(2)).resolve(rightExprContextCaptor.capture(), eq(node("xml")));
         verify(op).apply(navigator, singleton(node("node1")), singleton(node("node2")));
-        assertThat(result).containsExactly(node("xml"));
+        assertThat(result).isEqualTo(node("xml"));
         assertThat(leftExprContextCaptor.getAllValues()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(
                         tuple(navigator, false, 1, 0),

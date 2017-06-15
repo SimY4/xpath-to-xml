@@ -1,10 +1,8 @@
 package com.github.simy4.xpath.expr;
 
-import com.github.simy4.xpath.navigator.view.NodeView;
+import com.github.simy4.xpath.navigator.view.NodeSetView;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,10 +20,10 @@ public class IdentityTest extends AbstractStepExprTest<Identity> {
         setUpResolvableExpr();
 
         // when
-        Set<NodeView<String>> result = expr.resolve(new ExprContext<String>(navigator, false, 3), parentNode);
+        NodeSetView<String> result = expr.resolve(new ExprContext<String>(navigator, false, 3), parentNode);
 
         // then
-        assertThat(result).containsExactly(parentNode);
+        assertThat((Iterable<?>) result).containsExactly(parentNode);
     }
 
     @Test

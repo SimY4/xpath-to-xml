@@ -4,6 +4,7 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.navigator.view.NodeSetView;
 import com.github.simy4.xpath.navigator.view.NodeView;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,10 +15,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.LinkedHashSet;
-
 import static com.github.simy4.xpath.utils.StringNodeView.node;
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -37,7 +35,7 @@ public class RemoveEffectTest {
     public void setUp() {
         when(navigator.xml()).thenReturn(node("xml"));
         when(expr.resolve(ArgumentMatchers.<ExprContext<String>>any(), eq(node("xml"))))
-                .thenReturn(new LinkedHashSet<NodeView<String>>(asList(node("1"), node("2"), node("3"))));
+                .thenReturn(NodeSetView.singleton(node("node")));
 
         removeEffect = new RemoveEffect(expr);
     }
@@ -49,9 +47,7 @@ public class RemoveEffectTest {
 
         // then
         verify(expr).resolve(contextCaptor.capture(), eq(node("xml")));
-        verify(navigator).remove(node("1"));
-        verify(navigator).remove(node("2"));
-        verify(navigator).remove(node("3"));
+        verify(navigator).remove(node("node"));
         assertThat(contextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(navigator, false, 1, 0);
     }

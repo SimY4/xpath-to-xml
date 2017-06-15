@@ -1,14 +1,12 @@
 package com.github.simy4.xpath.expr;
 
-import com.github.simy4.xpath.navigator.view.NodeView;
+import com.github.simy4.xpath.navigator.view.NodeSetView;
+import com.github.simy4.xpath.navigator.view.View;
 
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
-public class PathExpr extends AbstractExpr {
+public class PathExpr implements Expr {
 
     private final List<StepExpr> pathExpr;
 
@@ -17,20 +15,17 @@ public class PathExpr extends AbstractExpr {
     }
 
     @Override
-    public <N> Set<NodeView<N>> resolve(ExprContext<N> context, NodeView<N> xml) {
+    public <N> View<N> resolve(ExprContext<N> context, View<N> xml) {
         final Iterator<StepExpr> pathExprIterator = pathExpr.iterator();
-        Set<NodeView<N>> nodes = Collections.singleton(xml);
         ExprContext<N> stepExprContext = context;
-        while (pathExprIterator.hasNext() && !nodes.isEmpty()) {
+        NodeSetView<N> children;
+        do {
             final StepExpr stepExpr = pathExprIterator.next();
-            final Set<NodeView<N>> children = new LinkedHashSet<NodeView<N>>();
-            for (NodeView<N> node : nodes) {
-                children.addAll(stepExpr.resolve(stepExprContext, node));
-            }
+            children = stepExpr.resolve(stepExprContext, xml);
             stepExprContext = stepExprContext.clone(children.size());
-            nodes = children;
-        }
-        return nodes;
+            xml = children;
+        } while (pathExprIterator.hasNext() && !children.isEmpty());
+        return xml;
     }
 
     @Override

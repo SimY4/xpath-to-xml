@@ -9,7 +9,6 @@ import com.github.simy4.xpath.expr.LiteralExpr;
 import com.github.simy4.xpath.expr.NumberExpr;
 import com.github.simy4.xpath.expr.Parent;
 import com.github.simy4.xpath.expr.PathExpr;
-import com.github.simy4.xpath.expr.Predicate;
 import com.github.simy4.xpath.expr.Root;
 import com.github.simy4.xpath.expr.StepExpr;
 import com.github.simy4.xpath.expr.op.Eq;
@@ -108,7 +107,7 @@ public class XPathParser {
             case DOUBLE_SLASH:
                 context.match(Type.DOUBLE_SLASH);
                 pathExpr.add(new Root());
-                pathExpr.add(new Element(new QName("*"), Collections.<Predicate>emptyList())); // TODO
+                pathExpr.add(new Element(new QName("*"), Collections.<Expr>emptyList())); // TODO
                 RelativePathExpr(context, pathExpr);
                 break;
             default:
@@ -129,7 +128,7 @@ public class XPathParser {
                     break;
                 case DOUBLE_SLASH:
                     context.match(Type.DOUBLE_SLASH);
-                    pathExpr.add(new Element(new QName("*"), Collections.<Predicate>emptyList())); // TODO
+                    pathExpr.add(new Element(new QName("*"), Collections.<Expr>emptyList())); // TODO
                     pathExpr.add(StepExpr(context));
                     break;
                 default:
@@ -141,7 +140,7 @@ public class XPathParser {
 
     private StepExpr StepExpr(Context context) throws XPathExpressionException {
         final QName nodeTest;
-        final List<Predicate> predicateList;
+        final List<Expr> predicateList;
         final StepExpr stepExpr;
         switch (context.tokenAt(1).getType()) {
             case DOT:
@@ -212,8 +211,8 @@ public class XPathParser {
         }
     }
 
-    private List<Predicate> PredicateList(Context context) throws XPathExpressionException {
-        final List<Predicate> predicateList = new ArrayList<Predicate>();
+    private List<Expr> PredicateList(Context context) throws XPathExpressionException {
+        final List<Expr> predicateList = new ArrayList<Expr>();
         Type type = context.tokenAt(1).getType();
         while (Type.LEFT_BRACKET == type) {
             predicateList.add(Predicate(context));
@@ -222,11 +221,11 @@ public class XPathParser {
         return predicateList;
     }
 
-    private Predicate Predicate(Context context) throws XPathExpressionException {
+    private Expr Predicate(Context context) throws XPathExpressionException {
         context.match(Type.LEFT_BRACKET);
         Expr predicate = Expr(context);
         context.match(Type.RIGHT_BRACKET);
-        return predicate.asPredicate();
+        return predicate;
     }
 
     @NotThreadSafe

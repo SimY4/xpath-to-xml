@@ -1,11 +1,9 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.navigator.view.NodeView;
+import com.github.simy4.xpath.navigator.view.NodeSetView;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Set;
 
 import static com.github.simy4.xpath.utils.StringNodeView.node;
 import static java.util.Arrays.asList;
@@ -27,10 +25,10 @@ public class ParentTest extends AbstractStepExprTest<Parent> {
         setUpResolvableExpr();
 
         // when
-        Set<NodeView<String>> result = expr.resolve(new ExprContext<String>(navigator, false, 3), node("node"));
+        NodeSetView<String> result = expr.resolve(new ExprContext<String>(navigator, false, 3), node("node"));
 
         // then
-        assertThat(result).containsExactly(node("parent"));
+        assertThat((Iterable<?>) result).containsExactly(node("parent"));
     }
 
     @Test(expected = XmlBuilderException.class)

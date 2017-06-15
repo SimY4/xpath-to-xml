@@ -1,7 +1,9 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.navigator.view.NodeSetView;
 import com.github.simy4.xpath.navigator.view.NodeView;
+import com.github.simy4.xpath.navigator.view.View;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,12 +13,9 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
+import static com.github.simy4.xpath.navigator.view.NodeSetView.singleton;
 import static com.github.simy4.xpath.utils.StringNodeView.node;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.eq;
@@ -45,26 +44,22 @@ public class PathExprTest {
     @Test
     public void shouldTraverseStepsOneByOneToGetTheResultingList() {
         // given
-        when(stepExpr1.resolve(stepExpr1ContextCaptor.capture(), eq(node("node1"))))
-                .thenReturn(new LinkedHashSet<NodeView<String>>(asList(node("node21"), node("node22"))));
-        when(stepExpr2.resolve(stepExpr2ContextCaptor.capture(), eq(node("node21"))))
+        when(stepExpr1.resolve(stepExpr1ContextCaptor.capture(), eq(singleton(node("node1")))))
+                .thenReturn(singleton(node("node2")));
+        when(stepExpr2.resolve(stepExpr2ContextCaptor.capture(), eq(singleton(node("node2")))))
                 .thenReturn(singleton(node("node3")));
-        when(stepExpr2.resolve(stepExpr2ContextCaptor.capture(), eq(node("node22"))))
-                .thenReturn(singleton(node("node3")));
-        when(stepExpr3.resolve(stepExpr3ContextCaptor.capture(), eq(node("node3"))))
+        when(stepExpr3.resolve(stepExpr3ContextCaptor.capture(), eq(singleton(node("node3")))))
                 .thenReturn(singleton(node("node4")));
 
         // when
-        Set<NodeView<String>> result = pathExpr.resolve(new ExprContext<String>(navigator, false, 1), node("node1"));
+        View<String> result = pathExpr.resolve(new ExprContext<String>(navigator, false, 1), singleton(node("node1")));
 
         // then
-        assertThat(result).containsExactly(node("node4"));
+        assertThat(result).isEqualTo(singleton(node("node4")));
         assertThat(stepExpr1ContextCaptor.getAllValues()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(tuple(navigator, false, 1, 0));
         assertThat(stepExpr2ContextCaptor.getAllValues()).extracting("navigator", "greedy", "size", "position")
-                .containsExactly(
-                        tuple(navigator, false, 2, 0),
-                        tuple(navigator, false, 2, 0));
+                .containsExactly(tuple(navigator, false, 1, 0));
         assertThat(stepExpr3ContextCaptor.getAllValues()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(tuple(navigator, false, 1, 0));
     }
@@ -72,14 +67,16 @@ public class PathExprTest {
     @Test
     public void shouldShortCircuitNonGreedyTraversalWhenStepTraversalReturnsNothing() {
         // given
-        when(stepExpr1.resolve(ArgumentMatchers.<ExprContext<String>>any(), eq(node("node1"))))
+        when(stepExpr1.resolve(ArgumentMatchers.<ExprContext<String>>any(), eq(singleton(node("node1")))))
                 .thenReturn(singleton(node("node2")));
+        when(stepExpr2.resolve(stepExpr2ContextCaptor.capture(), eq(singleton(node("node2")))))
+                .thenReturn(NodeSetView.<String>empty());
 
         // when
-        Set<NodeView<String>> result = pathExpr.resolve(new ExprContext<String>(navigator, false, 1), node("node1"));
+        View<String> result = pathExpr.resolve(new ExprContext<String>(navigator, false, 1), singleton(node("node1")));
 
         // then
-        assertThat(result).isEmpty();
+        assertThat(result).isEqualTo(NodeSetView.empty());
         verify(stepExpr3, never()).resolve(ArgumentMatchers.<ExprContext<String>>any(),
                 ArgumentMatchers.<NodeView<String>>any());
     }

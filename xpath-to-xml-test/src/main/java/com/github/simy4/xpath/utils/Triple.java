@@ -1,7 +1,9 @@
 package com.github.simy4.xpath.utils;
 
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 
+@Immutable
 public final class Triple<F, S, T> {
 
     public static <A, B, C> Triple<A, B, C> of(@Nullable A first, @Nullable B second, @Nullable C third) {

@@ -9,7 +9,7 @@ import com.github.simy4.xpath.XmlBuilderException;
  * @author Alex Simkin
  * @since 1.0
  */
-public interface View<N> {
+public interface View<N> extends Comparable<View<N>> {
 
     void visit(ViewVisitor<N> visitor) throws XmlBuilderException;
 

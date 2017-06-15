@@ -1,9 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.navigator.view.NodeView;
-
-import java.util.Set;
+import com.github.simy4.xpath.navigator.view.View;
 
 /**
  * XPath expression model.
@@ -14,13 +12,6 @@ import java.util.Set;
 public interface Expr {
 
     /**
-     * Transforms this expression into XPath predicate.
-     *
-     * @return XPath predicate
-     */
-    Predicate asPredicate();
-
-    /**
      * Evaluate this expression on given xml model view using given navigator.
      *
      * @param context XPath expression context
@@ -29,6 +20,6 @@ public interface Expr {
      * @return ordered set of evaluated node views
      * @throws XmlBuilderException if error occur during XML model modification
      */
-    <N> Set<NodeView<N>> resolve(ExprContext<N> context, NodeView<N> xml) throws XmlBuilderException;
+    <N> View<N> resolve(ExprContext<N> context, View<N> xml) throws XmlBuilderException;
 
 }

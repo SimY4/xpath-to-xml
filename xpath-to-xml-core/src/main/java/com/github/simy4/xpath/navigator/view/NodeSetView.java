@@ -3,6 +3,7 @@ package com.github.simy4.xpath.navigator.view;
 import com.github.simy4.xpath.XmlBuilderException;
 
 import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.NotThreadSafe;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -35,6 +36,13 @@ public final class NodeSetView<N> implements View<N>, Iterable<View<N>> {
 
     private NodeSetView(Set<View<N>> nodeSet) {
         this.nodeSet = nodeSet;
+    }
+
+    @Override
+    public int compareTo(View<N> other) {
+        final NodeSetComparatorVisitor<N> comparatorVisitor = new NodeSetComparatorVisitor<N>(nodeSet);
+        other.visit(comparatorVisitor);
+        return comparatorVisitor.getResult();
     }
 
     @Override
@@ -78,6 +86,11 @@ public final class NodeSetView<N> implements View<N>, Iterable<View<N>> {
         return nodeSet.hashCode();
     }
 
+    @Override
+    public String toString() {
+        return nodeSet.toString();
+    }
+
     public static final class Builder<T> {
 
         private final Set<View<T>> nodeSet;
@@ -90,13 +103,61 @@ public final class NodeSetView<N> implements View<N>, Iterable<View<N>> {
             nodeSet = new LinkedHashSet<View<T>>(initialCapacity);
         }
 
-        public Builder<T> add(NodeView<T> node) {
-            nodeSet.add(node);
-            return this;
+        /**
+         * Adds new view to a constructing set. Flattens view if necessary.
+         *
+         * @param node node to add
+         */
+        public void add(View<T> node) {
+            if (node instanceof NodeSetView) {
+                for (View<T> n : (NodeSetView<T>) node) {
+                    add(n);
+                }
+            } else {
+                nodeSet.add(node);
+            }
         }
 
         public NodeSetView<T> build() {
             return new NodeSetView<T>(Collections.unmodifiableSet(nodeSet));
+        }
+
+    }
+
+    @NotThreadSafe
+    private static final class NodeSetComparatorVisitor<N> implements ViewVisitor<N> {
+
+        private final Set<View<N>> nodeSet;
+        private int result;
+
+        private NodeSetComparatorVisitor(Set<View<N>> nodeSet) {
+            this.nodeSet = nodeSet;
+        }
+
+        @Override
+        public void visit(NodeSetView<N> nodeSet) {
+            int thisSize = this.nodeSet.size();
+            int thatSize = nodeSet.size();
+            result = (thisSize < thatSize) ? -1 : ((thisSize == thatSize) ? 0 : 1);
+        }
+
+        @Override
+        public void visit(LiteralView<N> literal) {
+            result = nodeSet.iterator().next().compareTo(literal);
+        }
+
+        @Override
+        public void visit(NumberView<N> number) {
+            result = nodeSet.iterator().next().compareTo(number);
+        }
+
+        @Override
+        public void visit(NodeView<N> node) {
+            result = nodeSet.isEmpty() ? -1 : nodeSet.size() == 1 ? 0 : 1;
+        }
+
+        private int getResult() {
+            return result;
         }
 
     }

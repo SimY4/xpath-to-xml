@@ -1,26 +1,25 @@
 package com.github.simy4.xpath.expr;
 
-import com.github.simy4.xpath.navigator.view.NodeView;
+import com.github.simy4.xpath.navigator.view.LiteralView;
+import com.github.simy4.xpath.navigator.view.View;
 
-import java.util.Collections;
-import java.util.Set;
+public class LiteralExpr implements Expr {
 
-public class LiteralExpr extends AbstractExpr {
-
-    private final String literal;
+    private final LiteralView literal;
 
     public LiteralExpr(String literal) {
-        this.literal = literal;
+        this.literal = new LiteralView(literal);
     }
 
     @Override
-    public <N> Set<NodeView<N>> resolve(ExprContext<N> context, NodeView<N> xml) {
-        return Collections.<NodeView<N>>singleton(new NodeView.LiteralNodeView<N>(literal));
+    @SuppressWarnings("unchecked")
+    public <N> LiteralView<N> resolve(ExprContext<N> context, View<N> xml) {
+        return (LiteralView<N>) literal;
     }
 
     @Override
     public String toString() {
-        return "'" + literal + "'";
+        return literal.toString();
     }
 
 }

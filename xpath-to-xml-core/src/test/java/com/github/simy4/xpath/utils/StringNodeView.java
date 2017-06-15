@@ -1,6 +1,9 @@
 package com.github.simy4.xpath.utils;
 
+import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.view.NodeView;
+import com.github.simy4.xpath.navigator.view.View;
+import com.github.simy4.xpath.navigator.view.ViewVisitor;
 
 import javax.xml.namespace.QName;
 
@@ -29,6 +32,16 @@ public final class StringNodeView implements NodeView<String> {
     @Override
     public String getText() {
         return value;
+    }
+
+    @Override
+    public void visit(ViewVisitor<String> visitor) throws XmlBuilderException {
+        visitor.visit(this);
+    }
+
+    @Override
+    public int compareTo(View<String> o) {
+        return 0;
     }
 
     @Override
