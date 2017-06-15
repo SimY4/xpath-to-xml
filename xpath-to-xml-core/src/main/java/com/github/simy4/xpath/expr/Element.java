@@ -21,7 +21,7 @@ public class Element extends AbstractStepExpr {
     <N> Set<NodeWrapper<N>> traverseStep(ExprContext<N> navigator, NodeWrapper<N> parentNode) {
         final Set<NodeWrapper<N>> nodes = new LinkedHashSet<NodeWrapper<N>>();
         for (NodeWrapper<N> element : navigator.getNavigator().elementsOf(parentNode)) {
-            if (0 == Comparators.QNAME_COMPARATOR.compare(this.element, element.getNodeName())) {
+            if (0 == qnameComparator.compare(this.element, element.getNodeName())) {
                 nodes.add(element);
             }
         }

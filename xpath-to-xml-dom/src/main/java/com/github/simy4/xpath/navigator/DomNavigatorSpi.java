@@ -1,6 +1,6 @@
 package com.github.simy4.xpath.navigator;
 
-import com.github.simy4.xpath.action.Action;
+import com.github.simy4.xpath.effects.Effect;
 import org.w3c.dom.Node;
 
 public class DomNavigatorSpi implements NavigatorSpi {
@@ -11,14 +11,14 @@ public class DomNavigatorSpi implements NavigatorSpi {
     }
 
     @Override
-    public <T> T process(T xml, Iterable<Action> actions) {
+    public <T> T process(T xml, Iterable<Effect> effects) {
         if (!canHandle(xml)) {
             throw new IllegalArgumentException("XML model is not supported");
         }
         final Node xmlNode = (Node) xml;
         final Navigator<Node> navigator = new DomNavigator(xmlNode);
-        for (Action action : actions) {
-            action.perform(navigator);
+        for (Effect effect : effects) {
+            effect.perform(navigator);
         }
         return xml;
     }

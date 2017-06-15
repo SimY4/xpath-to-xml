@@ -1,6 +1,6 @@
 package com.github.simy4.xpath.navigator;
 
-import com.github.simy4.xpath.action.Action;
+import com.github.simy4.xpath.effects.Effect;
 
 /**
  * Navigator extension SPI.
@@ -21,10 +21,10 @@ public interface NavigatorSpi {
     /**
      * Applies expression modifications to a given XML model.
      *
-     * @param xml   XML model to modify
-     * @param exprs XPath expressions to apply
+     * @param xml     XML model to modify
+     * @param effects effects to apply
      * @return modified XML model
      */
-    <T> T process(T xml, Iterable<Action> exprs);
+    <T> T process(T xml, Iterable<Effect> effects);
 
 }

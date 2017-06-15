@@ -1,4 +1,4 @@
-package com.github.simy4.xpath.action;
+package com.github.simy4.xpath.effects;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.Expr;
@@ -8,20 +8,22 @@ import com.github.simy4.xpath.navigator.NodeWrapper;
 
 import java.util.Set;
 
-public class RemoveAction implements Action {
+public class PutValueEffect implements Effect {
 
     private final Expr expr;
+    private final String value;
 
-    public RemoveAction(Expr expr) {
+    public PutValueEffect(Expr expr, Object value) {
         this.expr = expr;
+        this.value = String.valueOf(value);
     }
 
     @Override
     public <N> void perform(Navigator<N> navigator) throws XmlBuilderException {
-        final ExprContext<N> context = new ExprContext<N>(navigator, false, 1);
+        final ExprContext<N> context = new ExprContext<N>(navigator, true, 1);
         final Set<NodeWrapper<N>> nodes = expr.resolve(context, navigator.xml());
         for (NodeWrapper<N> node : nodes) {
-            navigator.remove(node);
+            navigator.setText(node, value);
         }
     }
 

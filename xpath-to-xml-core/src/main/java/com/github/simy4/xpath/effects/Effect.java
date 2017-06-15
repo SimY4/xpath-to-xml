@@ -1,18 +1,18 @@
-package com.github.simy4.xpath.action;
+package com.github.simy4.xpath.effects;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 
 /**
- * Recorded XML model modification action.
+ * XML model modification effect.
  *
  * @author Alex Simkin
  * @since 1.0
  */
-public interface Action {
+public interface Effect {
 
     /**
-     * Performs action against particular XML model {@link Navigator} instance.
+     * Performs effect on a particular {@link Navigator} instance.
      *
      * @param navigator XML model navigator
      * @param <N> XML model type

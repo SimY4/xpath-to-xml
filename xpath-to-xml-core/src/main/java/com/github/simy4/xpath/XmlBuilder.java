@@ -1,9 +1,9 @@
 package com.github.simy4.xpath;
 
-import com.github.simy4.xpath.action.Action;
-import com.github.simy4.xpath.action.PutAction;
-import com.github.simy4.xpath.action.RemoveAction;
-import com.github.simy4.xpath.action.PutValueAction;
+import com.github.simy4.xpath.effects.Effect;
+import com.github.simy4.xpath.effects.PutEffect;
+import com.github.simy4.xpath.effects.PutValueEffect;
+import com.github.simy4.xpath.effects.RemoveEffect;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.navigator.NavigatorSpi;
 import com.github.simy4.xpath.parser.XPathParser;
@@ -32,19 +32,19 @@ public class XmlBuilder {
     private static final Iterable<NavigatorSpi> NAVIGATOR_SPIS = ServiceLoader.load(NavigatorSpi.class);
 
     private final XPathParser parser;
-    private final Collection<Action> actions;
+    private final Collection<Effect> effects;
 
     public XmlBuilder() {
         this(null);
     }
 
     public XmlBuilder(@Nullable NamespaceContext namespaceContext) {
-        this(new XPathParser(namespaceContext), Collections.<Action>emptyList());
+        this(new XPathParser(namespaceContext), Collections.<Effect>emptyList());
     }
 
-    private XmlBuilder(XPathParser parser, Collection<Action> actions) {
+    private XmlBuilder(XPathParser parser, Collection<Effect> effects) {
         this.parser = parser;
-        this.actions = actions;
+        this.effects = effects;
     }
 
     /**
@@ -95,12 +95,12 @@ public class XmlBuilder {
      * @see #putAll(String...)
      */
     public XmlBuilder putAll(Iterable<String> xpaths) throws XPathExpressionException {
-        final Collection<Action> exprs = new ArrayList<Action>(this.actions);
+        final Collection<Effect> effects = new ArrayList<Effect>(this.effects);
         for (String xpath : xpaths) {
             final Expr expr = parser.parse(xpath);
-            exprs.add(new PutAction(expr));
+            effects.add(new PutEffect(expr));
         }
-        return new XmlBuilder(parser, exprs);
+        return new XmlBuilder(parser, effects);
     }
 
     /**
@@ -113,12 +113,12 @@ public class XmlBuilder {
      * @see #put(String, Object)
      */
     public XmlBuilder putAll(Map<String, Object> xpathToValueMap) throws XPathExpressionException {
-        final Collection<Action> exprs = new ArrayList<Action>(this.actions);
+        final Collection<Effect> effects = new ArrayList<Effect>(this.effects);
         for (Entry<String, Object> xpathToValuePair : xpathToValueMap.entrySet()) {
             final Expr expr = parser.parse(xpathToValuePair.getKey());
-            exprs.add(new PutValueAction(expr, xpathToValuePair.getValue()));
+            effects.add(new PutValueEffect(expr, xpathToValuePair.getValue()));
         }
-        return new XmlBuilder(parser, exprs);
+        return new XmlBuilder(parser, effects);
     }
 
     /**
@@ -155,16 +155,16 @@ public class XmlBuilder {
      * @see #removeAll(String...)
      */
     public XmlBuilder removeAll(Iterable<String> xpaths) throws XPathExpressionException {
-        final Collection<Action> exprs = new ArrayList<Action>(this.actions);
+        final Collection<Effect> effects = new ArrayList<Effect>(this.effects);
         for (String xpath : xpaths) {
             final Expr expr = parser.parse(xpath);
-            exprs.add(new RemoveAction(expr));
+            effects.add(new RemoveEffect(expr));
         }
-        return new XmlBuilder(parser, exprs);
+        return new XmlBuilder(parser, effects);
     }
 
     /**
-     * Evaluates collected XPath actions on a given XML model object.
+     * Evaluates collected XPath effects on a given XML model object.
      *
      * @param xml XML to process
      * @param <T> XML model type
@@ -174,7 +174,7 @@ public class XmlBuilder {
     public <T> T build(T xml) throws XmlBuilderException {
         for (NavigatorSpi navigatorSpi : NAVIGATOR_SPIS) {
             if (navigatorSpi.canHandle(xml)) {
-                return navigatorSpi.process(xml, actions);
+                return navigatorSpi.process(xml, effects);
             }
         }
         throw new XmlBuilderException("Unsupported xml model");

@@ -1,4 +1,4 @@
-package com.github.simy4.xpath.action;
+package com.github.simy4.xpath.effects;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.Expr;
@@ -21,25 +21,25 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PutActionTest {
+public class PutEffectTest {
 
     @Mock private Navigator<String> navigator;
     @Mock private Expr expr;
     @Captor private ArgumentCaptor<ExprContext<String>> contextCaptor;
 
-    private Action putAction;
+    private Effect putEffect;
 
     @Before
     public void setUp() {
         when(navigator.xml()).thenReturn(node("xml"));
 
-        putAction = new PutAction(expr);
+        putEffect = new PutEffect(expr);
     }
 
     @Test
     public void shouldGreedilyResolveExpr() {
         // when
-        putAction.perform(navigator);
+        putEffect.perform(navigator);
 
         // then
         verify(expr).resolve(contextCaptor.capture(), eq(node("xml")));
@@ -54,7 +54,7 @@ public class PutActionTest {
                 .thenThrow(XmlBuilderException.class);
 
         // then
-        putAction.perform(navigator);
+        putEffect.perform(navigator);
     }
 
 }

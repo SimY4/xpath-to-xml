@@ -12,7 +12,7 @@ import javax.xml.namespace.QName;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Theories.class)
-public class ComparatorsTest {
+public class QnameComparatorTest {
 
     @DataPoints("QNames")
     public static final Triple[] Q_NAMES = new Triple[] {
@@ -44,13 +44,13 @@ public class ComparatorsTest {
 
     @Theory
     public void shouldCompareLeftAndRightQNames(@FromDataPoints("QNames") Triple<QName, QName, Integer> qnames) {
-        int result = Comparators.QNAME_COMPARATOR.compare(qnames.getFirst(), qnames.getSecond());
+        int result = StepExpr.qnameComparator.compare(qnames.getFirst(), qnames.getSecond());
         assertThat(result).isEqualTo(qnames.getThird());
     }
 
     @Theory
     public void shouldCompareRightAndLeftQNames(@FromDataPoints("QNames") Triple<QName, QName, Integer> qnames) {
-        int result = Comparators.QNAME_COMPARATOR.compare(qnames.getSecond(), qnames.getFirst());
+        int result = StepExpr.qnameComparator.compare(qnames.getSecond(), qnames.getFirst());
         assertThat(result).isEqualTo(-qnames.getThird());
     }
 

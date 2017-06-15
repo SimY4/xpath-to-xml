@@ -1,15 +1,15 @@
-package com.github.simy4.xpath.action;
+package com.github.simy4.xpath.effects;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
 
-public class PutAction implements Action {
+public class PutEffect implements Effect {
 
     private final Expr expr;
 
-    public PutAction(Expr expr) {
+    public PutEffect(Expr expr) {
         this.expr = expr;
     }
 
