@@ -11,15 +11,20 @@ import java.util.List;
 
 abstract class AbstractStepExpr implements StepExpr {
 
-    private final List<Expr> predicateList;
+    private final List<Predicate> predicateList;
 
-    AbstractStepExpr(List<Expr> predicateList) {
+    AbstractStepExpr(List<Predicate> predicateList) {
         this.predicateList = predicateList;
     }
 
     @Override
     public final <N> NodeSetView<N> resolve(ExprContext<N> context, View<N> xml) throws XmlBuilderException {
         return xml.visit(new StepNodeVisitor<N>(context));
+    }
+
+    @Override
+    public final <N> boolean match(ExprContext<N> context, View<N> xml) {
+        return !resolve(context, xml).isEmpty();
     }
 
     /**
@@ -43,15 +48,13 @@ abstract class AbstractStepExpr implements StepExpr {
     abstract <N> NodeView<N> createStepNode(ExprContext<N> context) throws XmlBuilderException;
 
     private <N> NodeSetView<N> resolvePredicates(ExprContext<N> lookupContext, NodeSetView<N> xmlNodes,
-                                                 Iterator<Expr> predicateIterator) throws XmlBuilderException {
+                                                 Iterator<Predicate> predicateIterator) throws XmlBuilderException {
         if (predicateIterator.hasNext() && !xmlNodes.isEmpty()) {
             final NodeSetView.Builder<N> builder = NodeSetView.builder(xmlNodes.size());
-            final Expr nextPredicate = predicateIterator.next();
+            final Predicate nextPredicate = predicateIterator.next();
             for (View<N> xmlNode : xmlNodes) {
                 lookupContext.advance();
-                final View<N> lookup = nextPredicate.resolve(lookupContext, xmlNode);
-                final Predicate<N> predicate = new Predicate<N>(lookupContext, xmlNode);
-                if (lookup.visit(predicate)) {
+                if (nextPredicate.match(lookupContext, xmlNode)) {
                     builder.add(xmlNode);
                 }
             }
@@ -66,7 +69,7 @@ abstract class AbstractStepExpr implements StepExpr {
     @Override
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder();
-        for (Expr predicate : predicateList) {
+        for (Predicate predicate : predicateList) {
             stringBuilder.append('[').append(predicate).append(']');
         }
         return stringBuilder.toString();
@@ -94,7 +97,7 @@ abstract class AbstractStepExpr implements StepExpr {
             context.advance();
             NodeSetView<N> result = traverseStep(context, node);
             ExprContext<N> lookupContext = context.clone(false, result.size());
-            Iterator<Expr> predicateIterator = predicateList.iterator();
+            Iterator<Predicate> predicateIterator = predicateList.iterator();
             result = resolvePredicates(lookupContext, result, predicateIterator);
 
             if (result.isEmpty() && context.shouldCreate()) {

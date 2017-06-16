@@ -44,6 +44,11 @@ public class ComparisonExpr implements Expr {
     }
 
     @Override
+    public <N> boolean match(ExprContext<N> context, View<N> xml) {
+        return !resolve(context, xml).isEmpty();
+    }
+
+    @Override
     public String toString() {
         return leftExpr.toString() + op.toString() + rightExpr.toString();
     }

@@ -9,7 +9,7 @@ import com.github.simy4.xpath.navigator.view.View;
  * @author Alex Simkin
  * @since 1.0
  */
-public interface Expr {
+public interface Expr extends Predicate {
 
     /**
      * Evaluate this expression on given xml model view using given navigator.

@@ -19,6 +19,11 @@ public final class LiteralView<N> implements View<N> {
     }
 
     @Override
+    public boolean isEmpty() {
+        return literal.isEmpty();
+    }
+
+    @Override
     public <T> T visit(ViewVisitor<N, T> visitor) throws XmlBuilderException {
         return visitor.visit(this);
     }

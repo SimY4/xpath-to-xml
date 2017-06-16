@@ -11,6 +11,8 @@ import com.github.simy4.xpath.XmlBuilderException;
  */
 public interface View<N> extends Comparable<View<N>> {
 
+    boolean isEmpty();
+
     /**
      * Visits current XML element.
      *

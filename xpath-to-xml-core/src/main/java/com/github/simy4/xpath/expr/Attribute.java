@@ -12,7 +12,7 @@ public class Attribute extends AbstractStepExpr {
 
     private final QName attribute;
 
-    public Attribute(QName attribute, List<Expr> predicates) {
+    public Attribute(QName attribute, List<Predicate> predicates) {
         super(predicates);
         this.attribute = attribute;
     }

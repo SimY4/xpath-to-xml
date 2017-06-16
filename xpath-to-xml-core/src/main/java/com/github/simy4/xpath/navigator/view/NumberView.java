@@ -19,6 +19,11 @@ public final class NumberView<N> implements View<N> {
     }
 
     @Override
+    public boolean isEmpty() {
+        return 0 == Double.compare(0.0, number.doubleValue());
+    }
+
+    @Override
     public <T> T visit(ViewVisitor<N, T> visitor) throws XmlBuilderException {
         return visitor.visit(this);
     }

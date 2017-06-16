@@ -87,7 +87,7 @@ public class Eq implements Op {
 
     }
 
-    private static abstract class EqLeftApplicationVisitor<N> extends AbstractViewVisitor<N, Void> {
+    private abstract static class EqLeftApplicationVisitor<N> extends AbstractViewVisitor<N, Void> {
 
         @Override
         public final Void visit(NodeSetView<N> nodeSet) throws XmlBuilderException {

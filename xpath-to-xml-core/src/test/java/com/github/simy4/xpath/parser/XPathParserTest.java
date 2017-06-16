@@ -7,6 +7,7 @@ import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.expr.Identity;
 import com.github.simy4.xpath.expr.NumberExpr;
 import com.github.simy4.xpath.expr.PathExpr;
+import com.github.simy4.xpath.expr.Predicate;
 import com.github.simy4.xpath.expr.Root;
 import com.github.simy4.xpath.expr.StepExpr;
 import com.github.simy4.xpath.expr.op.Eq;
@@ -24,18 +25,18 @@ import org.junit.runner.RunWith;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.xpath.XPathExpressionException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Theories.class)
 public class XPathParserTest {
 
-    private static final List<Expr> NIL = emptyList();
+    private static final List<Predicate> NIL = emptyList();
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -56,7 +57,7 @@ public class XPathParserTest {
                 Pair.of("//author", pathExpr(new Root(), new Element(new QName("*"), NIL),
                         new Element(new QName("author"), NIL))),
                 Pair.of("book[/bookstore/@specialty=@style]",
-                        pathExpr(new Element(new QName("book"), Collections.<Expr>singletonList(
+                        pathExpr(new Element(new QName("book"), Collections.<Predicate>singletonList(
                                 new ComparisonExpr(
                                         pathExpr(
                                                 new Root(),
@@ -89,16 +90,18 @@ public class XPathParserTest {
                         new Element(new QName("last-name"), NIL))),
                 Pair.of("*/*", pathExpr(new Element(new QName("*"), NIL),
                         new Element(new QName("*"), NIL))),
-                Pair.of("*[@specialty]", pathExpr(new Element(new QName("*"), singletonList(
-                        pathExpr(new Attribute(new QName("specialty"), NIL)))))),
+                Pair.of("*[@specialty]", pathExpr(new Element(new QName("*"),
+                        Collections.<Predicate>singletonList(
+                                pathExpr(new Attribute(new QName("specialty"), NIL)))))),
                 Pair.of("@style", pathExpr(new Attribute(new QName("style"), NIL))),
                 Pair.of("price/@exchange", pathExpr(new Element(new QName("price"), NIL),
                         new Attribute(new QName("exchange"), NIL))),
                 Pair.of("price/@exchange/total", pathExpr(new Element(new QName("price"), NIL),
                         new Attribute(new QName("exchange"), NIL),
                         new Element(new QName("total"), NIL))),
-                Pair.of("book[@style]", pathExpr(new Element(new QName("book"), singletonList(
-                        pathExpr(new Attribute(new QName("style"), NIL)))))),
+                Pair.of("book[@style]", pathExpr(new Element(new QName("book"),
+                        Collections.<Predicate>singletonList(
+                                pathExpr(new Attribute(new QName("style"), NIL)))))),
                 Pair.of("book/@style", pathExpr(new Element(new QName("book"), NIL),
                         new Attribute(new QName("style"), NIL))),
                 Pair.of("@*", pathExpr(new Attribute(new QName("*"), NIL))),
@@ -106,10 +109,11 @@ public class XPathParserTest {
                         new Element(new QName("first-name"), NIL))),
                 Pair.of("first-name", pathExpr(new Element(new QName("first-name"), NIL))),
                 Pair.of("author[1]", pathExpr(new Element(new QName("author"),
-                        Collections.<Expr>singletonList(new NumberExpr(1.0))))),
-                Pair.of("author[first-name][3]", pathExpr(new Element(new QName("author"), asList(
-                        pathExpr(new Element(new QName("first-name"), NIL)),
-                        new NumberExpr(3.0))))),
+                        Collections.<Predicate>singletonList(new NumberExpr(1.0))))),
+                Pair.of("author[first-name][3]", pathExpr(new Element(new QName("author"),
+                        Arrays.<Predicate>asList(
+                                pathExpr(new Element(new QName("first-name"), NIL)),
+                                new NumberExpr(3.0))))),
         };
     }
 

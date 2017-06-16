@@ -44,6 +44,11 @@ public final class NodeSetView<N> implements View<N>, Iterable<View<N>> {
     }
 
     @Override
+    public boolean isEmpty() {
+        return nodeSet.isEmpty();
+    }
+
+    @Override
     public <T> T visit(ViewVisitor<N, T> visitor) throws XmlBuilderException {
         return visitor.visit(this);
     }
@@ -51,10 +56,6 @@ public final class NodeSetView<N> implements View<N>, Iterable<View<N>> {
     @Override
     public Iterator<View<N>> iterator() {
         return nodeSet.iterator();
-    }
-
-    public boolean isEmpty() {
-        return nodeSet.isEmpty();
     }
 
     public int size() {
