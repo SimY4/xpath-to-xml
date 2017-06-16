@@ -113,6 +113,7 @@ abstract class AbstractStepExpr implements StepExpr {
 
         @Override
         protected NodeSetView<N> returnDefault(View<N> view) throws XmlBuilderException {
+            context.advance();
             if (context.shouldCreate()) {
                 throw new XmlBuilderException("Can not modify read-only node: " + view);
             }

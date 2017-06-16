@@ -78,8 +78,9 @@ public class EqTest {
     }
 
     @Theory
-    public void shouldMismatchLeftNonEqualViewToRightNonEqualViewOnTest(@FromDataPoints("eq left") View<String> left,
-                                                                        @FromDataPoints("eq right") View<String> right) {
+    public void shouldMismatchLeftNonEqualViewToRightNonEqualViewOnTest(
+            @FromDataPoints("eq left") View<String> left,
+            @FromDataPoints("eq right") View<String> right) {
         // when
         boolean result = new Eq().test(left, right);
 
@@ -88,8 +89,9 @@ public class EqTest {
     }
 
     @Theory
-    public void shouldMismatchRightNonEqualViewToLeftNonEqualViewOnTest(@FromDataPoints("eq left") View<String> left,
-                                                                        @FromDataPoints("eq right") View<String> right) {
+    public void shouldMismatchRightNonEqualViewToLeftNonEqualViewOnTest(
+            @FromDataPoints("eq left") View<String> left,
+            @FromDataPoints("eq right") View<String> right) {
         // when
         boolean result = new Eq().test(right, left);
 

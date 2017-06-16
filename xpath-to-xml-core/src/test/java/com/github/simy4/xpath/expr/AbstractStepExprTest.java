@@ -3,8 +3,10 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.utils.ExprContextMatcher;
+import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
+import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
 import org.junit.Rule;
 import org.junit.Test;
@@ -17,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static com.github.simy4.xpath.utils.StringNode.node;
+import static com.github.simy4.xpath.view.NodeSetView.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.Mockito.never;
@@ -40,6 +43,36 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
     @Captor private ArgumentCaptor<ExprContext<String>> predicate2ContextCaptor;
 
     protected E expr;
+
+    @Test
+    public void shouldMatchPredicateResultWithExpressionResultOnResolvableStep() {
+        // given
+        setUpResolvableExpr();
+        ExprContext<String> context = new ExprContext<String>(navigator, false, 3);
+
+        // when
+        NodeSetView<String> result = expr.resolve(context, singleton(parentNode));
+        boolean match = expr.match(context, parentNode);
+
+        // then
+        assertThat(match).isTrue();
+        assertThat(result.toBoolean()).isEqualTo(match);
+    }
+
+    @Test
+    public void shouldMatchPredicateResultWithExpressionResultOnNonResolvableStep() {
+        // given
+        setUpUnresolvableExpr();
+        ExprContext<String> context = new ExprContext<String>(navigator, false, 3);
+
+        // when
+        NodeSetView<String> result = expr.resolve(context, singleton(parentNode));
+        boolean match = expr.match(context, parentNode);
+
+        // then
+        assertThat(match).isFalse();
+        assertThat(result.toBoolean()).isEqualTo(match);
+    }
 
     @Test
     public void shouldMatchAttributesFromAListOfChildNodes() {
@@ -156,6 +189,37 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
                         tuple(navigator, true, 2, 2));
         assertThat(predicate2ContextCaptor.getAllValues()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(tuple(navigator, true, 1, 1));
+    }
+
+    @Test
+    public void shouldReturnEmptySetWhenReadonlyViewPassedAsParentAndShouldNotCreate() {
+        // given
+        setUpUnresolvableExpr();
+
+        // when
+        NodeSetView<String> result = expr.resolve(new ExprContext<String>(navigator, false, 3),
+                new LiteralView<String>("literal"));
+
+        // then
+        assertThat((Iterable<?>) result).isEmpty();
+    }
+
+    @Test(expected = XmlBuilderException.class)
+    public void shouldThrowWhenLiteralViewPassedAsParent() {
+        // given
+        setUpUnresolvableExpr();
+
+        // when
+        expr.resolve(new ExprContext<String>(navigator, true, 1), new LiteralView<String>("literal"));
+    }
+
+    @Test(expected = XmlBuilderException.class)
+    public void shouldThrowWhenNumberViewPassedAsParent() {
+        // given
+        setUpUnresolvableExpr();
+
+        // when
+        expr.resolve(new ExprContext<String>(navigator, true, 1), new NumberView<String>(2.0));
     }
 
     void setUpResolvableExpr() {
