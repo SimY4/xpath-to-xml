@@ -1,6 +1,6 @@
 package com.github.simy4.xpath.expr;
 
-import com.github.simy4.xpath.navigator.view.NodeSetView;
+import com.github.simy4.xpath.view.NodeSetView;
 import org.junit.Before;
 import org.junit.Test;
 

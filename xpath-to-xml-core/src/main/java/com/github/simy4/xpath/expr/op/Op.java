@@ -2,7 +2,7 @@ package com.github.simy4.xpath.expr.op;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.view.View;
+import com.github.simy4.xpath.view.View;
 
 /**
  * Comparison operation model.

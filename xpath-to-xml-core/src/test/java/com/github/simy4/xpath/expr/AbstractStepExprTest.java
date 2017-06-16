@@ -2,10 +2,10 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.view.NodeSetView;
-import com.github.simy4.xpath.navigator.view.NodeView;
-import com.github.simy4.xpath.navigator.view.View;
 import com.github.simy4.xpath.utils.ExprContextMatcher;
+import com.github.simy4.xpath.view.NodeSetView;
+import com.github.simy4.xpath.view.NodeView;
+import com.github.simy4.xpath.view.View;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

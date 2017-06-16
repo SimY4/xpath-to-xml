@@ -2,9 +2,9 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.expr.op.Op;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.view.NodeView;
-import com.github.simy4.xpath.navigator.view.View;
 import com.github.simy4.xpath.utils.ExprContextMatcher;
+import com.github.simy4.xpath.view.NodeView;
+import com.github.simy4.xpath.view.View;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,8 +14,8 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static com.github.simy4.xpath.navigator.view.NodeSetView.singleton;
 import static com.github.simy4.xpath.utils.StringNode.node;
+import static com.github.simy4.xpath.view.NodeSetView.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.eq;

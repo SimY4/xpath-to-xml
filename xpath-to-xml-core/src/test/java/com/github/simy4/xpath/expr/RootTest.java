@@ -1,11 +1,11 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.view.LiteralView;
-import com.github.simy4.xpath.navigator.view.NodeSetView;
-import com.github.simy4.xpath.navigator.view.NodeView;
-import com.github.simy4.xpath.navigator.view.NumberView;
-import com.github.simy4.xpath.navigator.view.View;
+import com.github.simy4.xpath.view.LiteralView;
+import com.github.simy4.xpath.view.NodeSetView;
+import com.github.simy4.xpath.view.NodeView;
+import com.github.simy4.xpath.view.NumberView;
+import com.github.simy4.xpath.view.View;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

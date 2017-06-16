@@ -4,10 +4,10 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.view.AbstractViewVisitor;
-import com.github.simy4.xpath.navigator.view.NodeSetView;
-import com.github.simy4.xpath.navigator.view.NodeView;
-import com.github.simy4.xpath.navigator.view.View;
+import com.github.simy4.xpath.view.AbstractViewVisitor;
+import com.github.simy4.xpath.view.NodeSetView;
+import com.github.simy4.xpath.view.NodeView;
+import com.github.simy4.xpath.view.View;
 
 public class PutValueEffect implements Effect {
 

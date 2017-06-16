@@ -1,10 +1,10 @@
 package com.github.simy4.xpath.expr.op;
 
-import com.github.simy4.xpath.navigator.view.LiteralView;
-import com.github.simy4.xpath.navigator.view.NodeSetView;
-import com.github.simy4.xpath.navigator.view.NumberView;
-import com.github.simy4.xpath.navigator.view.View;
 import com.github.simy4.xpath.utils.Triple;
+import com.github.simy4.xpath.view.LiteralView;
+import com.github.simy4.xpath.view.NodeSetView;
+import com.github.simy4.xpath.view.NumberView;
+import com.github.simy4.xpath.view.View;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.FromDataPoints;
@@ -12,7 +12,7 @@ import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 
-import static com.github.simy4.xpath.navigator.view.NodeSetView.singleton;
+import static com.github.simy4.xpath.view.NodeSetView.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Theories.class)

@@ -1,8 +1,8 @@
 package com.github.simy4.xpath.expr;
 
-import com.github.simy4.xpath.navigator.view.NodeSetView;
-import com.github.simy4.xpath.navigator.view.NodeView;
-import com.github.simy4.xpath.navigator.view.View;
+import com.github.simy4.xpath.view.NodeSetView;
+import com.github.simy4.xpath.view.NodeView;
+import com.github.simy4.xpath.view.View;
 
 public class Root implements StepExpr, Predicate {
 

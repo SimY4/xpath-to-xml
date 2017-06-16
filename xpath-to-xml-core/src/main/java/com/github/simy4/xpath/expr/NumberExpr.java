@@ -2,9 +2,9 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.navigator.view.NodeView;
-import com.github.simy4.xpath.navigator.view.NumberView;
-import com.github.simy4.xpath.navigator.view.View;
+import com.github.simy4.xpath.view.NodeView;
+import com.github.simy4.xpath.view.NumberView;
+import com.github.simy4.xpath.view.View;
 
 public class NumberExpr implements Expr {
 

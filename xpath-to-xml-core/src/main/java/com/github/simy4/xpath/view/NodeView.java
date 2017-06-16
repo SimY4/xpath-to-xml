@@ -1,4 +1,4 @@
-package com.github.simy4.xpath.navigator.view;
+package com.github.simy4.xpath.view;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;

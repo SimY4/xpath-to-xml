@@ -4,7 +4,7 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.view.NodeView;
+import com.github.simy4.xpath.view.NodeView;
 
 public class PutEffect implements Effect {
 

@@ -2,13 +2,13 @@ package com.github.simy4.xpath.expr.op;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.view.AbstractViewVisitor;
-import com.github.simy4.xpath.navigator.view.LiteralView;
-import com.github.simy4.xpath.navigator.view.NodeSetView;
-import com.github.simy4.xpath.navigator.view.NodeView;
-import com.github.simy4.xpath.navigator.view.NumberView;
-import com.github.simy4.xpath.navigator.view.View;
-import com.github.simy4.xpath.navigator.view.ViewVisitor;
+import com.github.simy4.xpath.view.AbstractViewVisitor;
+import com.github.simy4.xpath.view.LiteralView;
+import com.github.simy4.xpath.view.NodeSetView;
+import com.github.simy4.xpath.view.NodeView;
+import com.github.simy4.xpath.view.NumberView;
+import com.github.simy4.xpath.view.View;
+import com.github.simy4.xpath.view.ViewVisitor;
 
 public class Eq implements Op {
 

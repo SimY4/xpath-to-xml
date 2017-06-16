@@ -1,7 +1,7 @@
 package com.github.simy4.xpath.utils;
 
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.navigator.view.NodeView;
+import com.github.simy4.xpath.view.NodeView;
 
 import javax.xml.namespace.QName;
 

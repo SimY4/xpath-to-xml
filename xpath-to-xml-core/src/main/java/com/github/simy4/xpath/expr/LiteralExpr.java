@@ -1,7 +1,7 @@
 package com.github.simy4.xpath.expr;
 
-import com.github.simy4.xpath.navigator.view.LiteralView;
-import com.github.simy4.xpath.navigator.view.View;
+import com.github.simy4.xpath.view.LiteralView;
+import com.github.simy4.xpath.view.View;
 
 public class LiteralExpr implements Expr, Predicate {
 
