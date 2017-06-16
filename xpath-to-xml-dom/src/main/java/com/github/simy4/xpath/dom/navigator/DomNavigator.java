@@ -1,5 +1,7 @@
-package com.github.simy4.xpath.navigator;
+package com.github.simy4.xpath.dom.navigator;
 
+import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.XmlBuilderException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;

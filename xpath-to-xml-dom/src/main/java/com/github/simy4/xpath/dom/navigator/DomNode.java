@@ -1,4 +1,6 @@
-package com.github.simy4.xpath.navigator;
+package com.github.simy4.xpath.dom.navigator;
+
+import com.github.simy4.xpath.navigator.Node;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;

@@ -1,5 +1,6 @@
-package com.github.simy4.xpath.navigator;
+package com.github.simy4.xpath.dom.navigator;
 
+import com.github.simy4.xpath.navigator.Node;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

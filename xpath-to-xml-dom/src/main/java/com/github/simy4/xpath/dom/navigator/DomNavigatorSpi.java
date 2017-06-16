@@ -1,6 +1,8 @@
-package com.github.simy4.xpath.navigator;
+package com.github.simy4.xpath.dom.navigator;
 
 import com.github.simy4.xpath.effects.Effect;
+import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.navigator.NavigatorSpi;
 import org.w3c.dom.Node;
 
 public class DomNavigatorSpi implements NavigatorSpi {
