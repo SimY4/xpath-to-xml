@@ -20,8 +20,22 @@ public final class NodeView<N> implements View<N> {
     }
 
     @Override
-    public boolean isEmpty() {
-        return false;
+    public boolean toBoolean() {
+        return true;
+    }
+
+    @Override
+    public Number toNumber() {
+        try {
+            return Double.parseDouble(node.getText());
+        } catch (NumberFormatException nfe) {
+            return Double.NaN;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return node.getText();
     }
 
     @Override
@@ -50,11 +64,6 @@ public final class NodeView<N> implements View<N> {
     @Override
     public int hashCode() {
         return node.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return node.toString();
     }
 
 }

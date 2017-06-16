@@ -11,7 +11,26 @@ import com.github.simy4.xpath.XmlBuilderException;
  */
 public interface View<N> extends Comparable<View<N>> {
 
-    boolean isEmpty();
+    /**
+     * Converts this view to a boolean value.
+     *
+     * @return boolean value
+     */
+    boolean toBoolean();
+
+    /**
+     * Converts this view to a numeric value.
+     *
+     * @return numeric value
+     */
+    Number toNumber();
+
+    /**
+     * Converts this view to a string value.
+     *
+     * @return string value
+     */
+    String toString();
 
     /**
      * Visits current XML element.

@@ -3,7 +3,6 @@ package com.github.simy4.xpath.view;
 import com.github.simy4.xpath.XmlBuilderException;
 
 import javax.annotation.concurrent.Immutable;
-import javax.annotation.concurrent.NotThreadSafe;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -40,12 +39,34 @@ public final class NodeSetView<N> implements View<N>, Iterable<View<N>> {
 
     @Override
     public int compareTo(View<N> other) {
-        return other.visit(new NodeSetComparatorVisitor());
+        if (nodeSet.isEmpty()) {
+            return other.toBoolean() ? -1 : 0;
+        } else {
+            return nodeSet.iterator().next().compareTo(other);
+        }
     }
 
     @Override
-    public boolean isEmpty() {
-        return nodeSet.isEmpty();
+    public boolean toBoolean() {
+        return !nodeSet.isEmpty();
+    }
+
+    @Override
+    public Number toNumber() {
+        if (nodeSet.isEmpty()) {
+            return Double.NaN;
+        } else {
+            return nodeSet.iterator().next().toNumber();
+        }
+    }
+
+    @Override
+    public String toString() {
+        if (nodeSet.isEmpty()) {
+            return "";
+        } else {
+            return nodeSet.iterator().next().toString();
+        }
     }
 
     @Override
@@ -81,11 +102,6 @@ public final class NodeSetView<N> implements View<N>, Iterable<View<N>> {
         return nodeSet.hashCode();
     }
 
-    @Override
-    public String toString() {
-        return nodeSet.toString();
-    }
-
     public static final class Builder<T> {
 
         private final Set<View<T>> nodeSet;
@@ -115,36 +131,6 @@ public final class NodeSetView<N> implements View<N>, Iterable<View<N>> {
 
         public NodeSetView<T> build() {
             return new NodeSetView<T>(Collections.unmodifiableSet(nodeSet));
-        }
-
-    }
-
-    @NotThreadSafe
-    private final class NodeSetComparatorVisitor implements ViewVisitor<N, Integer> {
-
-        @Override
-        public Integer visit(NodeSetView<N> nodeSet) {
-            int thisSize = NodeSetView.this.nodeSet.size();
-            int thatSize = nodeSet.size();
-            return (thisSize < thatSize) ? -1 : ((thisSize == thatSize) ? 0 : 1);
-        }
-
-        @Override
-        public Integer visit(LiteralView<N> literal) {
-            return NodeSetView.this.nodeSet.isEmpty() ? -1
-                    : NodeSetView.this.nodeSet.iterator().next().compareTo(literal);
-        }
-
-        @Override
-        public Integer visit(NumberView<N> number) {
-            return NodeSetView.this.nodeSet.isEmpty() ? -1
-                    : NodeSetView.this.nodeSet.iterator().next().compareTo(number);
-        }
-
-        @Override
-        public Integer visit(NodeView<N> node) {
-            return NodeSetView.this.nodeSet.isEmpty() ? -1
-                    : NodeSetView.this.nodeSet.iterator().next().compareTo(node);
         }
 
     }

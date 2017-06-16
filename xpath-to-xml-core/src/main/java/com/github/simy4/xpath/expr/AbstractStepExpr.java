@@ -24,7 +24,7 @@ abstract class AbstractStepExpr implements StepExpr {
 
     @Override
     public final <N> boolean match(ExprContext<N> context, View<N> xml) {
-        return !resolve(context, xml).isEmpty();
+        return resolve(context, xml).toBoolean();
     }
 
     /**
@@ -49,7 +49,7 @@ abstract class AbstractStepExpr implements StepExpr {
 
     private <N> NodeSetView<N> resolvePredicates(ExprContext<N> lookupContext, NodeSetView<N> xmlNodes,
                                                  Iterator<Predicate> predicateIterator) throws XmlBuilderException {
-        if (predicateIterator.hasNext() && !xmlNodes.isEmpty()) {
+        if (predicateIterator.hasNext() && xmlNodes.toBoolean()) {
             final NodeSetView.Builder<N> builder = NodeSetView.builder(xmlNodes.size());
             final Predicate nextPredicate = predicateIterator.next();
             for (View<N> xmlNode : xmlNodes) {
@@ -100,7 +100,7 @@ abstract class AbstractStepExpr implements StepExpr {
             Iterator<Predicate> predicateIterator = predicateList.iterator();
             result = resolvePredicates(lookupContext, result, predicateIterator);
 
-            if (result.isEmpty() && context.shouldCreate()) {
+            if (!result.toBoolean() && context.shouldCreate()) {
                 final NodeView<N> newNode = createStepNode(context);
                 context.getNavigator().append(node.getNode(), newNode.getNode());
                 result = NodeSetView.singleton(newNode);

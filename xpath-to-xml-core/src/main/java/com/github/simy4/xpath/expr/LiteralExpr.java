@@ -19,12 +19,12 @@ public class LiteralExpr implements Expr, Predicate {
 
     @Override
     public <N> boolean match(ExprContext<N> context, View<N> xml) {
-        return !literal.isEmpty();
+        return literal.toBoolean();
     }
 
     @Override
     public String toString() {
-        return literal.toString();
+        return "'" + literal.toString() + "'";
     }
 
 }

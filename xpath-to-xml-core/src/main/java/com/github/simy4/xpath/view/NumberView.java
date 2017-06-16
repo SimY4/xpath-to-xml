@@ -15,12 +15,22 @@ public final class NumberView<N> implements View<N> {
 
     @Override
     public int compareTo(View<N> other) {
-        return other.visit(new NumberComparatorVisitor());
+        return Double.compare(number.doubleValue(), other.toNumber().doubleValue());
     }
 
     @Override
-    public boolean isEmpty() {
-        return 0 == Double.compare(0.0, number.doubleValue());
+    public boolean toBoolean() {
+        return 0 != Double.compare(0.0, number.doubleValue());
+    }
+
+    @Override
+    public Number toNumber() {
+        return number;
+    }
+
+    @Override
+    public String toString() {
+        return number.toString();
     }
 
     @Override
@@ -49,48 +59,6 @@ public final class NumberView<N> implements View<N> {
     @Override
     public int hashCode() {
         return number.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return number.toString();
-    }
-
-    private final class NumberComparatorVisitor implements ViewVisitor<N, Integer> {
-
-        @Override
-        public Integer visit(NodeSetView<N> nodeSet) {
-            if (nodeSet.isEmpty()) {
-                return 1;
-            } else {
-                return nodeSet.iterator().next().visit(this);
-            }
-        }
-
-        @Override
-        public Integer visit(LiteralView<N> literal) {
-            try {
-                return Double.compare(NumberView.this.number.doubleValue(), Double.parseDouble(literal.getLiteral()));
-            } catch (NumberFormatException nfe) {
-                return Double.compare(NumberView.this.number.doubleValue(), Double.NaN);
-            }
-        }
-
-        @Override
-        public Integer visit(NumberView<N> number) {
-            return Double.compare(NumberView.this.number.doubleValue(), number.getNumber().doubleValue());
-        }
-
-        @Override
-        public Integer visit(NodeView<N> node) {
-            try {
-                return Double.compare(NumberView.this.number.doubleValue(),
-                        Double.parseDouble(node.getNode().getText()));
-            } catch (NumberFormatException nfe) {
-                return Double.compare(NumberView.this.number.doubleValue(), Double.NaN);
-            }
-        }
-
     }
 
 }

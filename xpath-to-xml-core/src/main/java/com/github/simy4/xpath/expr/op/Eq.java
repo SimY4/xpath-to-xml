@@ -39,10 +39,10 @@ public class Eq implements Op {
 
         @Override
         public Void visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
-            if (nodeSet.isEmpty()) {
-                throw new XmlBuilderException("Can not modify empty node set");
+            if (nodeSet.toBoolean()) {
+                return nodeSet.iterator().next().visit(this);
             }
-            return nodeSet.iterator().next().visit(this);
+            throw new XmlBuilderException("Can not modify empty node set");
         }
 
         @Override
@@ -91,7 +91,7 @@ public class Eq implements Op {
 
         @Override
         public final Void visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
-            if (nodeSet.isEmpty()) {
+            if (!nodeSet.toBoolean()) {
                 return returnDefault(nodeSet);
             }
             for (View<N> node : nodeSet) {

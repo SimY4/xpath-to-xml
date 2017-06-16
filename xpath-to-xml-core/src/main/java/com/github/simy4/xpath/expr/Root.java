@@ -14,7 +14,7 @@ public class Root implements StepExpr, Predicate {
 
     @Override
     public <N> boolean match(ExprContext<N> context, View<N> xml) {
-        return !resolve(context, xml).isEmpty();
+        return resolve(context, xml).toBoolean();
     }
 
     @Override

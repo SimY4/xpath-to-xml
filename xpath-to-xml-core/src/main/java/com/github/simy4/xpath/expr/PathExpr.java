@@ -24,13 +24,13 @@ public class PathExpr implements Expr {
             children = stepExpr.resolve(stepExprContext, xml);
             stepExprContext = stepExprContext.clone(children.size());
             xml = children;
-        } while (pathExprIterator.hasNext() && !children.isEmpty());
+        } while (pathExprIterator.hasNext() && children.toBoolean());
         return xml;
     }
 
     @Override
     public <N> boolean match(ExprContext<N> context, View<N> xml) {
-        return !resolve(context, xml).isEmpty();
+        return resolve(context, xml).toBoolean();
     }
 
     @Override
