@@ -106,7 +106,7 @@ abstract class AbstractStepExpr implements StepExpr {
 
             if (result.isEmpty() && context.shouldCreate()) {
                 final NodeView<N> newNode = createStepNode(context);
-                context.getNavigator().append(node, newNode);
+                context.getNavigator().append(node.getNode(), newNode.getNode());
                 result = NodeSetView.singleton(newNode);
                 predicateIterator = predicateList.iterator();
                 lookupContext = lookupContext.clone(true, lookupContext.getSize() + 1, lookupContext.getSize());

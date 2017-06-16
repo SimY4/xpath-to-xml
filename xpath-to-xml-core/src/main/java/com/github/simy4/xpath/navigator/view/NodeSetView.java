@@ -63,10 +63,6 @@ public final class NodeSetView<N> implements View<N>, Iterable<View<N>> {
         return nodeSet.size();
     }
 
-    public Set<View<N>> getNodeSet() {
-        return nodeSet;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

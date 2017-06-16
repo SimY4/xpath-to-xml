@@ -4,6 +4,7 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.navigator.view.NodeSetView;
 import com.github.simy4.xpath.navigator.view.NodeView;
 import org.junit.Before;
@@ -15,7 +16,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static com.github.simy4.xpath.utils.StringNodeView.node;
+import static com.github.simy4.xpath.utils.StringNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -34,8 +35,8 @@ public class RemoveEffectTest {
     @Before
     public void setUp() {
         when(navigator.xml()).thenReturn(node("xml"));
-        when(expr.resolve(ArgumentMatchers.<ExprContext<String>>any(), eq(node("xml"))))
-                .thenReturn(NodeSetView.singleton(node("node")));
+        when(expr.resolve(ArgumentMatchers.<ExprContext<String>>any(), eq(new NodeView<String>(node("xml")))))
+                .thenReturn(NodeSetView.singleton(new NodeView<String>(node("node"))));
 
         removeEffect = new RemoveEffect(expr);
     }
@@ -46,7 +47,7 @@ public class RemoveEffectTest {
         removeEffect.perform(navigator);
 
         // then
-        verify(expr).resolve(contextCaptor.capture(), eq(node("xml")));
+        verify(expr).resolve(contextCaptor.capture(), eq(new NodeView<String>(node("xml"))));
         verify(navigator).remove(node("node"));
         assertThat(contextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(navigator, false, 1, 0);
@@ -55,7 +56,7 @@ public class RemoveEffectTest {
     @Test(expected = XmlBuilderException.class)
     public void shouldPropagateOnAnyException() {
         // given
-        doThrow(XmlBuilderException.class).when(navigator).remove(ArgumentMatchers.<NodeView<String>>any());
+        doThrow(XmlBuilderException.class).when(navigator).remove(ArgumentMatchers.<Node<String>>any());
 
         // when
         removeEffect.perform(navigator);

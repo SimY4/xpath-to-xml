@@ -1,21 +1,19 @@
 package com.github.simy4.xpath.utils;
 
-import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.navigator.view.NodeView;
-import com.github.simy4.xpath.navigator.view.View;
-import com.github.simy4.xpath.navigator.view.ViewVisitor;
 
 import javax.xml.namespace.QName;
 
-public final class StringNodeView implements NodeView<String> {
+public final class StringNode implements Node<String> {
 
-    public static NodeView<String> node(String value) {
-        return new StringNodeView(value);
+    public static Node<String> node(String value) {
+        return new StringNode(value);
     }
 
     private final String value;
 
-    private StringNodeView(String value) {
+    private StringNode(String value) {
         this.value = value;
     }
 
@@ -34,14 +32,8 @@ public final class StringNodeView implements NodeView<String> {
         return value;
     }
 
-    @Override
-    public void visit(ViewVisitor<String> visitor) throws XmlBuilderException {
-        visitor.visit(this);
-    }
-
-    @Override
-    public int compareTo(View<String> other) {
-        return -other.compareTo(this);
+    public NodeView<String> view() {
+        return new NodeView<String>(this);
     }
 
     @Override
@@ -53,7 +45,7 @@ public final class StringNodeView implements NodeView<String> {
             return false;
         }
 
-        StringNodeView that = (StringNodeView) o;
+        StringNode that = (StringNode) o;
         return value.equals(that.value);
     }
 

@@ -1,8 +1,6 @@
 package com.github.simy4.xpath.navigator;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.navigator.view.DomNodeView;
-import com.github.simy4.xpath.navigator.view.NodeView;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +11,6 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
 
 import javax.xml.namespace.QName;
 
@@ -29,13 +26,13 @@ import static org.mockito.Mockito.when;
 public class DomNavigatorTest {
 
     @Mock private Document root;
-    @Mock private Node xml;
+    @Mock private org.w3c.dom.Node xml;
     @Mock private NamedNodeMap attributes;
-    @Mock private Node child1;
-    @Mock private Node child2;
-    @Mock private Node child3;
+    @Mock private org.w3c.dom.Node child1;
+    @Mock private org.w3c.dom.Node child2;
+    @Mock private org.w3c.dom.Node child3;
 
-    private Navigator<Node> navigator;
+    private Navigator<org.w3c.dom.Node> navigator;
 
     @Before
     public void setUp() {
@@ -44,7 +41,7 @@ public class DomNavigatorTest {
         when(root.createElement(anyString())).thenReturn(mock(Element.class));
         when(root.createElementNS(anyString(), anyString())).thenReturn(mock(Element.class));
 
-        when(xml.getNodeType()).thenReturn(Node.ELEMENT_NODE);
+        when(xml.getNodeType()).thenReturn(org.w3c.dom.Node.ELEMENT_NODE);
         when(xml.getOwnerDocument()).thenReturn(root);
         when(xml.getParentNode()).thenReturn(root);
         when(xml.getFirstChild()).thenReturn(child1);
@@ -74,25 +71,25 @@ public class DomNavigatorTest {
 
     @Test
     public void testParentOfRegularNode() {
-        assertThat(navigator.parentOf(new DomNodeView(xml))).hasFieldOrPropertyWithValue("wrappedNode", root);
+        assertThat(navigator.parentOf(new DomNode(xml))).hasFieldOrPropertyWithValue("wrappedNode", root);
     }
 
     @Test
     public void testParentOfRootNode() {
-        assertThat(navigator.parentOf(new DomNodeView(root))).isNull();
+        assertThat(navigator.parentOf(new DomNode(root))).isNull();
     }
 
     @Test
     public void testElementsOf() {
-        assertThat(navigator.elementsOf(new DomNodeView(xml)))
-                .extracting("wrappedNode", Node.class)
+        assertThat(navigator.elementsOf(new DomNode(xml)))
+                .extracting("wrappedNode", org.w3c.dom.Node.class)
                 .containsExactly(child1, child2, child3);
     }
 
     @Test
     public void testAttributesOf() {
-        assertThat(navigator.attributesOf(new DomNodeView(xml)))
-                .extracting("wrappedNode", Node.class)
+        assertThat(navigator.attributesOf(new DomNode(xml)))
+                .extracting("wrappedNode", org.w3c.dom.Node.class)
                 .containsExactly(child1, child2, child3);
     }
 
@@ -146,44 +143,44 @@ public class DomNavigatorTest {
 
     @Test
     public void testClone() {
-        NodeView<Node> result = navigator.clone(new DomNodeView(xml));
-        assertThat(result).isEqualTo(new DomNodeView(xml));
+        Node<org.w3c.dom.Node> result = navigator.clone(new DomNode(xml));
+        assertThat(result).isEqualTo(new DomNode(xml));
     }
 
     @Test
     public void testSetTextSuccess() {
-        navigator.setText(new DomNodeView(xml), "text");
+        navigator.setText(new DomNode(xml), "text");
         verify(xml).setTextContent("text");
     }
 
     @Test(expected = XmlBuilderException.class)
     public void testSetTextFailure() {
         doThrow(DOMException.class).when(xml).setTextContent(anyString());
-        navigator.setText(new DomNodeView(xml), "text");
+        navigator.setText(new DomNode(xml), "text");
     }
 
     @Test
     public void testAppendSuccess() {
-        navigator.append(new DomNodeView(root), new DomNodeView(xml));
+        navigator.append(new DomNode(root), new DomNode(xml));
         verify(root).appendChild(xml);
     }
 
     @Test(expected = XmlBuilderException.class)
     public void testAppendFailure() {
-        when(root.appendChild(any(Node.class))).thenThrow(DOMException.class);
-        navigator.append(new DomNodeView(root), new DomNodeView(xml));
+        when(root.appendChild(any(org.w3c.dom.Node.class))).thenThrow(DOMException.class);
+        navigator.append(new DomNode(root), new DomNode(xml));
     }
 
     @Test
     public void testRemoveSuccess() {
-        navigator.remove(new DomNodeView(xml));
+        navigator.remove(new DomNode(xml));
         verify(root).removeChild(xml);
     }
 
     @Test(expected = XmlBuilderException.class)
     public void testRemoveFailure() {
-        when(root.removeChild(any(Node.class))).thenThrow(DOMException.class);
-        navigator.remove(new DomNodeView(xml));
+        when(root.removeChild(any(org.w3c.dom.Node.class))).thenThrow(DOMException.class);
+        navigator.remove(new DomNode(xml));
     }
 
 }

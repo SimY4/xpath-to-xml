@@ -20,7 +20,7 @@ public class RemoveEffect implements Effect {
     @Override
     public <N> void perform(Navigator<N> navigator) throws XmlBuilderException {
         final ExprContext<N> context = new ExprContext<N>(navigator, false, 1);
-        final View<N> view = expr.resolve(context, navigator.xml());
+        final View<N> view = expr.resolve(context, new NodeView<N>(navigator.xml()));
         view.visit(new RemoveVisitor<N>(navigator));
     }
 
@@ -41,7 +41,7 @@ public class RemoveEffect implements Effect {
 
         @Override
         public void visit(NodeView<N> node) throws XmlBuilderException {
-            navigator.remove(node);
+            navigator.remove(node.getNode());
         }
 
     }

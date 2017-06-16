@@ -1,11 +1,10 @@
-package com.github.simy4.xpath.navigator.view;
+package com.github.simy4.xpath.navigator;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.w3c.dom.Node;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -14,17 +13,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DomNodeViewTest {
+public class DomNodeTest {
 
-    @Mock private Node node;
+    @Mock private org.w3c.dom.Node node;
 
-    private NodeView<Node> nodeView;
+    private Node<org.w3c.dom.Node> nodeView;
 
     @Before
     public void setUp() {
         when(node.getTextContent()).thenReturn("text");
 
-        nodeView = new DomNodeView(node);
+        nodeView = new DomNode(node);
     }
 
     @Test

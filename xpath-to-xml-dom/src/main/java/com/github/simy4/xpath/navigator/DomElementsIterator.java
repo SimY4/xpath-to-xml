@@ -1,17 +1,13 @@
 package com.github.simy4.xpath.navigator;
 
-import com.github.simy4.xpath.navigator.view.DomNodeView;
-import com.github.simy4.xpath.navigator.view.NodeView;
-import org.w3c.dom.Node;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-final class DomElementsIterator implements Iterator<NodeView<Node>> {
+final class DomElementsIterator implements Iterator<Node<org.w3c.dom.Node>> {
 
-    private Node child;
+    private org.w3c.dom.Node child;
 
-    DomElementsIterator(Node parent) {
+    DomElementsIterator(org.w3c.dom.Node parent) {
         this.child = parent.getFirstChild();
     }
 
@@ -21,13 +17,13 @@ final class DomElementsIterator implements Iterator<NodeView<Node>> {
     }
 
     @Override
-    public NodeView<Node> next() {
+    public Node<org.w3c.dom.Node> next() {
         if (!hasNext()) {
             throw new NoSuchElementException("No more elements");
         }
-        final Node next = child;
+        final org.w3c.dom.Node next = child;
         child = next.getNextSibling();
-        return new DomNodeView(next);
+        return new DomNode(next);
     }
 
     @Override

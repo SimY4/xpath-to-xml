@@ -2,12 +2,13 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.view.NodeSetView;
+import com.github.simy4.xpath.navigator.view.NodeView;
 import org.junit.Before;
 import org.junit.Test;
 
 import javax.xml.namespace.QName;
 
-import static com.github.simy4.xpath.utils.StringNodeView.node;
+import static com.github.simy4.xpath.utils.StringNode.node;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,7 +35,7 @@ public class AttributeTest extends AbstractStepExprTest<Attribute> {
         NodeSetView<String> result = expr.resolve(new ExprContext<String>(navigator, false, 3), parentNode);
 
         // then
-        assertThat((Iterable<?>) result).containsExactly(node("attr"));
+        assertThat((Iterable<?>) result).containsExactly(new NodeView<String>(node("attr")));
     }
 
     @Test
@@ -46,7 +47,7 @@ public class AttributeTest extends AbstractStepExprTest<Attribute> {
         NodeSetView<String> result = expr.resolve(new ExprContext<String>(navigator, true, 1), parentNode);
 
         // then
-        assertThat((Iterable<?>) result).containsExactly(node("attr"));
+        assertThat((Iterable<?>) result).containsExactly(new NodeView<String>(node("attr")));
         verify(navigator).createAttribute(new QName("attr"));
     }
 
@@ -87,7 +88,7 @@ public class AttributeTest extends AbstractStepExprTest<Attribute> {
 
     @Override
     void setUpResolvableExpr() {
-        when(navigator.attributesOf(parentNode)).thenReturn(asList(node("attr"), node("another-attr")));
+        when(navigator.attributesOf(parentNode.getNode())).thenReturn(asList(node("attr"), node("another-attr")));
         super.setUpResolvableExpr();
     }
 

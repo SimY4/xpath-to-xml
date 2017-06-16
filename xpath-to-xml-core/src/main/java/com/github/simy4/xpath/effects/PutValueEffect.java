@@ -22,7 +22,7 @@ public class PutValueEffect implements Effect {
     @Override
     public <N> void perform(Navigator<N> navigator) throws XmlBuilderException {
         final ExprContext<N> context = new ExprContext<N>(navigator, true, 1);
-        final View<N> view = expr.resolve(context, navigator.xml());
+        final View<N> view = expr.resolve(context, new NodeView<N>(navigator.xml()));
         view.visit(new PutValueVisitor<N>(navigator, value));
     }
 
@@ -45,7 +45,7 @@ public class PutValueEffect implements Effect {
 
         @Override
         public void visit(NodeView<N> node) throws XmlBuilderException {
-            navigator.setText(node, value);
+            navigator.setText(node.getNode(), value);
         }
 
     }

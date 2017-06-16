@@ -85,7 +85,7 @@ public final class LiteralView<N> implements View<N> {
 
         @Override
         public void visit(NodeView<N> node) {
-            result = literal.compareTo(node.getText());
+            result = literal.compareTo(node.getNode().getText());
         }
 
         private int getResult() {

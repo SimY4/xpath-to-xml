@@ -90,7 +90,7 @@ public final class NumberView<N> implements View<N> {
         @Override
         public void visit(NodeView<N> node) {
             try {
-                result = Double.compare(number.doubleValue(), Double.parseDouble(node.getText()));
+                result = Double.compare(number.doubleValue(), Double.parseDouble(node.getNode().getText()));
             } catch (NumberFormatException nfe) {
                 result = Double.compare(number.doubleValue(), Double.NaN);
             }

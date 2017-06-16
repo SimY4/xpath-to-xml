@@ -1,35 +1,52 @@
 package com.github.simy4.xpath.navigator.view;
 
-import javax.xml.namespace.QName;
+import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.navigator.Node;
 
-/**
- * XML node contract.
- *
- * @param <N> XML node type
- * @author Alex Simkin
- * @since 1.0
- */
-public interface NodeView<N> extends View<N> {
+public final class NodeView<N> implements View<N> {
 
-    /**
-     * Original node.
-     *
-     * @return node.
-     */
-    N getWrappedNode();
+    private final Node<N> node;
 
-    /**
-     * XML node name.
-     *
-     * @return node name.
-     */
-    QName getNodeName();
+    public NodeView(Node<N> node) {
+        this.node = node;
+    }
 
-    /**
-     * XML node text content.
-     *
-     * @return text content.
-     */
-    String getText();
+    @Override
+    public int compareTo(View<N> other) {
+        return -other.compareTo(this);
+    }
+
+    @Override
+    public void visit(ViewVisitor<N> visitor) throws XmlBuilderException {
+        visitor.visit(this);
+    }
+
+    public Node<N> getNode() {
+        return node;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        NodeView<?> nodeView = (NodeView<?>) o;
+
+        return node.equals(nodeView.node);
+    }
+
+    @Override
+    public int hashCode() {
+        return node.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return node.toString();
+    }
 
 }

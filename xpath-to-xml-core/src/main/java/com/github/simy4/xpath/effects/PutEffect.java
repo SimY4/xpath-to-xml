@@ -4,6 +4,7 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.navigator.view.NodeView;
 
 public class PutEffect implements Effect {
 
@@ -16,7 +17,7 @@ public class PutEffect implements Effect {
     @Override
     public <N> void perform(Navigator<N> navigator) throws XmlBuilderException {
         final ExprContext<N> context = new ExprContext<N>(navigator, true, 1);
-        expr.resolve(context, navigator.xml());
+        expr.resolve(context, new NodeView<N>(navigator.xml()));
     }
 
 }
