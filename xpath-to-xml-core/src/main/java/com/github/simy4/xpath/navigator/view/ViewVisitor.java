@@ -2,14 +2,22 @@ package com.github.simy4.xpath.navigator.view;
 
 import com.github.simy4.xpath.XmlBuilderException;
 
-public interface ViewVisitor<N> {
+/**
+ * XML elements view visitor.
+ *
+ * @param <N> XML node type
+ * @param <T> visitor return type
+ * @author Alex Simkin
+ * @since 1.0
+ */
+public interface ViewVisitor<N, T> {
 
-    void visit(NodeSetView<N> nodeSet) throws XmlBuilderException;
+    T visit(NodeSetView<N> nodeSet) throws XmlBuilderException;
 
-    void visit(LiteralView<N> literal) throws XmlBuilderException;
+    T visit(LiteralView<N> literal) throws XmlBuilderException;
 
-    void visit(NumberView<N> number) throws XmlBuilderException;
+    T visit(NumberView<N> number) throws XmlBuilderException;
 
-    void visit(NodeView<N> node) throws XmlBuilderException;
+    T visit(NodeView<N> node) throws XmlBuilderException;
 
 }

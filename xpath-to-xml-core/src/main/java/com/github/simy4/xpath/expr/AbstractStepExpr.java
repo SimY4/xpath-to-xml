@@ -2,14 +2,10 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.view.AbstractViewVisitor;
-import com.github.simy4.xpath.navigator.view.LiteralView;
 import com.github.simy4.xpath.navigator.view.NodeSetView;
 import com.github.simy4.xpath.navigator.view.NodeView;
-import com.github.simy4.xpath.navigator.view.NumberView;
 import com.github.simy4.xpath.navigator.view.View;
-import com.github.simy4.xpath.navigator.view.ViewVisitor;
 
-import javax.annotation.concurrent.NotThreadSafe;
 import java.util.Iterator;
 import java.util.List;
 
@@ -23,9 +19,7 @@ abstract class AbstractStepExpr implements StepExpr {
 
     @Override
     public final <N> NodeSetView<N> resolve(ExprContext<N> context, View<N> xml) throws XmlBuilderException {
-        final StepNodeVisitor<N> stepNodeVisitor = new StepNodeVisitor<N>(context);
-        xml.visit(stepNodeVisitor);
-        return stepNodeVisitor.getNodeSetView();
+        return xml.visit(new StepNodeVisitor<N>(context));
     }
 
     /**
@@ -56,9 +50,8 @@ abstract class AbstractStepExpr implements StepExpr {
             for (View<N> xmlNode : xmlNodes) {
                 lookupContext.advance();
                 final View<N> lookup = nextPredicate.resolve(lookupContext, xmlNode);
-                final PredicateVisitor<N> predicateVisitor = new PredicateVisitor<N>();
-                lookup.visit(predicateVisitor);
-                if (predicateVisitor.isMatch()) {
+                final Predicate<N> predicate = new Predicate<N>(lookupContext, xmlNode);
+                if (lookup.visit(predicate)) {
                     builder.add(xmlNode);
                 }
             }
@@ -79,25 +72,25 @@ abstract class AbstractStepExpr implements StepExpr {
         return stringBuilder.toString();
     }
 
-    @NotThreadSafe
-    private final class StepNodeVisitor<N> extends AbstractViewVisitor<N> {
+    private final class StepNodeVisitor<N> extends AbstractViewVisitor<N, NodeSetView<N>> {
 
         private final ExprContext<N> context;
-        private final NodeSetView.Builder<N> builder = NodeSetView.builder();
 
         private StepNodeVisitor(ExprContext<N> context) {
             this.context = context;
         }
 
         @Override
-        public void visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
+        public NodeSetView<N> visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
+            final NodeSetView.Builder<N> builder = NodeSetView.builder();
             for (View<N> node : nodeSet) {
-                node.visit(this);
+                builder.add(node.visit(this));
             }
+            return builder.build();
         }
 
         @Override
-        public void visit(NodeView<N> node) {
+        public NodeSetView<N> visit(NodeView<N> node) throws XmlBuilderException {
             context.advance();
             NodeSetView<N> result = traverseStep(context, node);
             ExprContext<N> lookupContext = context.clone(false, result.size());
@@ -112,42 +105,15 @@ abstract class AbstractStepExpr implements StepExpr {
                 lookupContext = lookupContext.clone(true, lookupContext.getSize() + 1, lookupContext.getSize());
                 resolvePredicates(lookupContext, result, predicateIterator);
             }
-            builder.add(result);
-        }
-
-        private NodeSetView<N> getNodeSetView() {
-            return builder.build();
-        }
-
-    }
-
-    @NotThreadSafe
-    private static final class PredicateVisitor<N> implements ViewVisitor<N> {
-
-        private boolean match;
-
-        @Override
-        public void visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
-            match = !nodeSet.isEmpty();
+            return result;
         }
 
         @Override
-        public void visit(LiteralView<N> literal) {
-            match = !literal.getLiteral().isEmpty();
-        }
-
-        @Override
-        public void visit(NumberView<N> number) {
-            match = 0 != Double.compare(0.0, number.getNumber().doubleValue());
-        }
-
-        @Override
-        public void visit(NodeView<N> node) {
-            match = true;
-        }
-
-        private boolean isMatch() {
-            return match;
+        protected NodeSetView<N> returnDefault(View<N> view) throws XmlBuilderException {
+            if (context.shouldCreate()) {
+                throw new XmlBuilderException("Can not modify read-only node: " + view);
+            }
+            return NodeSetView.empty();
         }
 
     }

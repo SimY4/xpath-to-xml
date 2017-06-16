@@ -3,7 +3,6 @@ package com.github.simy4.xpath.navigator.view;
 import com.github.simy4.xpath.XmlBuilderException;
 
 import javax.annotation.concurrent.Immutable;
-import javax.annotation.concurrent.NotThreadSafe;
 
 @Immutable
 public final class LiteralView<N> implements View<N> {
@@ -16,14 +15,12 @@ public final class LiteralView<N> implements View<N> {
 
     @Override
     public int compareTo(View<N> other) {
-        final LiteralComparatorVisitor<N> comparatorVisitor = new LiteralComparatorVisitor<N>(literal);
-        other.visit(comparatorVisitor);
-        return comparatorVisitor.getResult();
+        return other.visit(new LiteralComparatorVisitor());
     }
 
     @Override
-    public void visit(ViewVisitor<N> visitor) throws XmlBuilderException {
-        visitor.visit(this);
+    public <T> T visit(ViewVisitor<N, T> visitor) throws XmlBuilderException {
+        return visitor.visit(this);
     }
 
     public String getLiteral() {
@@ -54,42 +51,30 @@ public final class LiteralView<N> implements View<N> {
         return "'" + literal + "'";
     }
 
-    @NotThreadSafe
-    private static final class LiteralComparatorVisitor<N> implements ViewVisitor<N> {
-
-        private final String literal;
-        private int result;
-
-        private LiteralComparatorVisitor(String literal) {
-            this.literal = literal;
-        }
+    private final class LiteralComparatorVisitor implements ViewVisitor<N, Integer> {
 
         @Override
-        public void visit(NodeSetView<N> nodeSet) {
+        public Integer visit(NodeSetView<N> nodeSet) {
             if (nodeSet.isEmpty()) {
-                result = 1;
+                return 1;
             } else {
-                nodeSet.iterator().next().visit(this);
+                return nodeSet.iterator().next().visit(this);
             }
         }
 
         @Override
-        public void visit(LiteralView<N> literal) {
-            result = this.literal.compareTo(literal.getLiteral());
+        public Integer visit(LiteralView<N> literal) {
+            return LiteralView.this.literal.compareTo(literal.getLiteral());
         }
 
         @Override
-        public void visit(NumberView<N> number) {
-            result = literal.compareTo(number.getNumber().toString());
+        public Integer visit(NumberView<N> number) {
+            return LiteralView.this.literal.compareTo(number.getNumber().toString());
         }
 
         @Override
-        public void visit(NodeView<N> node) {
-            result = literal.compareTo(node.getNode().getText());
-        }
-
-        private int getResult() {
-            return result;
+        public Integer visit(NodeView<N> node) {
+            return LiteralView.this.literal.compareTo(node.getNode().getText());
         }
 
     }

@@ -1,17 +1,29 @@
 package com.github.simy4.xpath.navigator.view;
 
-public abstract class AbstractViewVisitor<N> implements ViewVisitor<N> {
+import com.github.simy4.xpath.XmlBuilderException;
+
+public abstract class AbstractViewVisitor<N, T> implements ViewVisitor<N, T> {
 
     @Override
-    public void visit(NodeSetView<N> nodeSet) { /* NO OP */ }
+    public T visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
+        return returnDefault(nodeSet);
+    }
 
     @Override
-    public void visit(LiteralView<N> literal) { /* NO OP */ }
+    public T visit(LiteralView<N> literal) throws XmlBuilderException {
+        return returnDefault(literal);
+    }
 
     @Override
-    public void visit(NumberView<N> number) { /* NO OP */ }
+    public T visit(NumberView<N> number) throws XmlBuilderException {
+        return returnDefault(number);
+    }
 
     @Override
-    public void visit(NodeView<N> node) { /* NO OP */ }
+    public T visit(NodeView<N> node) throws XmlBuilderException {
+        return returnDefault(node);
+    }
+
+    protected abstract T returnDefault(View<N> view) throws XmlBuilderException;
 
 }

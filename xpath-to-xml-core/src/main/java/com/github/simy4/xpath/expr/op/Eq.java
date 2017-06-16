@@ -2,6 +2,7 @@ package com.github.simy4.xpath.expr.op;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.navigator.view.AbstractViewVisitor;
 import com.github.simy4.xpath.navigator.view.LiteralView;
 import com.github.simy4.xpath.navigator.view.NodeSetView;
 import com.github.simy4.xpath.navigator.view.NodeView;
@@ -18,7 +19,7 @@ public class Eq implements Op {
 
     @Override
     public <N> void apply(Navigator<N> navigator, View<N> left, View<N> right) throws XmlBuilderException {
-        left.visit(new EqLeftApplicationVisitor<N>(right));
+        right.visit(new EqRightApplicationVisitor<N>(navigator, left));
     }
 
     @Override
@@ -26,112 +27,82 @@ public class Eq implements Op {
         return "=";
     }
 
-    private static final class EqLeftApplicationVisitor<N> implements ViewVisitor<N> {
+    private static final class EqRightApplicationVisitor<N> implements ViewVisitor<N, Void> {
 
-        private final View<N> right;
+        private final Navigator<N> navigator;
+        private final View<N> left;
 
-        private EqLeftApplicationVisitor(View<N> right) {
-            this.right = right;
+        private EqRightApplicationVisitor(Navigator<N> navigator, View<N> left) {
+            this.navigator = navigator;
+            this.left = left;
         }
 
         @Override
-        public void visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
-            right.visit(new ViewVisitor<N>() {
-                @Override
-                public void visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
+        public Void visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
+            if (nodeSet.isEmpty()) {
+                throw new XmlBuilderException("Can not modify empty node set");
+            }
+            return nodeSet.iterator().next().visit(this);
+        }
 
-                }
-
-                @Override
-                public void visit(LiteralView<N> literal) throws XmlBuilderException {
-
-                }
-
-                @Override
-                public void visit(NumberView<N> number) throws XmlBuilderException {
-
-                }
+        @Override
+        public Void visit(final LiteralView<N> literal) throws XmlBuilderException {
+            return left.visit(new EqLeftApplicationVisitor<N>() {
 
                 @Override
-                public void visit(NodeView<N> node) throws XmlBuilderException {
-
+                public Void visit(NodeView<N> node) throws XmlBuilderException {
+                    navigator.setText(node.getNode(), literal.getLiteral());
+                    return null;
                 }
+
             });
         }
 
         @Override
-        public void visit(LiteralView<N> literal) throws XmlBuilderException {
-            right.visit(new ViewVisitor<N>() {
-                @Override
-                public void visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
-
-                }
+        public Void visit(final NumberView<N> number) throws XmlBuilderException {
+            return left.visit(new EqLeftApplicationVisitor<N>() {
 
                 @Override
-                public void visit(LiteralView<N> literal) throws XmlBuilderException {
-
+                public Void visit(NodeView<N> node) throws XmlBuilderException {
+                    navigator.setText(node.getNode(), number.getNumber().toString());
+                    return null;
                 }
 
-                @Override
-                public void visit(NumberView<N> number) throws XmlBuilderException {
-
-                }
-
-                @Override
-                public void visit(NodeView<N> node) throws XmlBuilderException {
-
-                }
             });
         }
 
         @Override
-        public void visit(NumberView<N> number) throws XmlBuilderException {
-            right.visit(new ViewVisitor<N>() {
-                @Override
-                public void visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
-
-                }
+        public Void visit(final NodeView<N> rightNode) throws XmlBuilderException {
+            return left.visit(new EqLeftApplicationVisitor<N>() {
 
                 @Override
-                public void visit(LiteralView<N> literal) throws XmlBuilderException {
-
+                public Void visit(NodeView<N> leftNode) throws XmlBuilderException {
+                    navigator.setText(leftNode.getNode(), rightNode.getNode().getText());
+                    return null;
                 }
 
-                @Override
-                public void visit(NumberView<N> number) throws XmlBuilderException {
-
-                }
-
-                @Override
-                public void visit(NodeView<N> node) throws XmlBuilderException {
-
-                }
             });
+
+        }
+
+    }
+
+    private static abstract class EqLeftApplicationVisitor<N> extends AbstractViewVisitor<N, Void> {
+
+        @Override
+        public final Void visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
+            if (nodeSet.isEmpty()) {
+                return returnDefault(nodeSet);
+            }
+            for (View<N> node : nodeSet) {
+                node.visit(this);
+            }
+            return null;
         }
 
         @Override
-        public void visit(NodeView<N> node) throws XmlBuilderException {
-            right.visit(new ViewVisitor<N>() {
-                @Override
-                public void visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
-
-                }
-
-                @Override
-                public void visit(LiteralView<N> literal) throws XmlBuilderException {
-
-                }
-
-                @Override
-                public void visit(NumberView<N> number) throws XmlBuilderException {
-
-                }
-
-                @Override
-                public void visit(NodeView<N> node) throws XmlBuilderException {
-
-                }
-            });
+        protected final Void returnDefault(View<N> view) throws XmlBuilderException {
+            throw new XmlBuilderException("Can not modify read-only node: " + view);
         }
 
     }

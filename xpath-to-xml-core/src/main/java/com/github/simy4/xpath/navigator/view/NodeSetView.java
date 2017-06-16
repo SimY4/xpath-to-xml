@@ -40,14 +40,12 @@ public final class NodeSetView<N> implements View<N>, Iterable<View<N>> {
 
     @Override
     public int compareTo(View<N> other) {
-        final NodeSetComparatorVisitor<N> comparatorVisitor = new NodeSetComparatorVisitor<N>(nodeSet);
-        other.visit(comparatorVisitor);
-        return comparatorVisitor.getResult();
+        return other.visit(new NodeSetComparatorVisitor());
     }
 
     @Override
-    public void visit(ViewVisitor<N> visitor) throws XmlBuilderException {
-        visitor.visit(this);
+    public <T> T visit(ViewVisitor<N, T> visitor) throws XmlBuilderException {
+        return visitor.visit(this);
     }
 
     @Override
@@ -121,39 +119,31 @@ public final class NodeSetView<N> implements View<N>, Iterable<View<N>> {
     }
 
     @NotThreadSafe
-    private static final class NodeSetComparatorVisitor<N> implements ViewVisitor<N> {
-
-        private final Set<View<N>> nodeSet;
-        private int result;
-
-        private NodeSetComparatorVisitor(Set<View<N>> nodeSet) {
-            this.nodeSet = nodeSet;
-        }
+    private final class NodeSetComparatorVisitor implements ViewVisitor<N, Integer> {
 
         @Override
-        public void visit(NodeSetView<N> nodeSet) {
-            int thisSize = this.nodeSet.size();
+        public Integer visit(NodeSetView<N> nodeSet) {
+            int thisSize = NodeSetView.this.nodeSet.size();
             int thatSize = nodeSet.size();
-            result = (thisSize < thatSize) ? -1 : ((thisSize == thatSize) ? 0 : 1);
+            return (thisSize < thatSize) ? -1 : ((thisSize == thatSize) ? 0 : 1);
         }
 
         @Override
-        public void visit(LiteralView<N> literal) {
-            result = nodeSet.isEmpty() ? -1 : nodeSet.iterator().next().compareTo(literal);
+        public Integer visit(LiteralView<N> literal) {
+            return NodeSetView.this.nodeSet.isEmpty() ? -1
+                    : NodeSetView.this.nodeSet.iterator().next().compareTo(literal);
         }
 
         @Override
-        public void visit(NumberView<N> number) {
-            result = nodeSet.isEmpty() ? -1 : nodeSet.iterator().next().compareTo(number);
+        public Integer visit(NumberView<N> number) {
+            return NodeSetView.this.nodeSet.isEmpty() ? -1
+                    : NodeSetView.this.nodeSet.iterator().next().compareTo(number);
         }
 
         @Override
-        public void visit(NodeView<N> node) {
-            result = nodeSet.isEmpty() ? -1 : nodeSet.size() == 1 ? 0 : 1;
-        }
-
-        private int getResult() {
-            return result;
+        public Integer visit(NodeView<N> node) {
+            return NodeSetView.this.nodeSet.isEmpty() ? -1
+                    : NodeSetView.this.nodeSet.iterator().next().compareTo(node);
         }
 
     }

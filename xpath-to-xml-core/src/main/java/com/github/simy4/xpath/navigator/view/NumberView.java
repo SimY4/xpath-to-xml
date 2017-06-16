@@ -3,7 +3,6 @@ package com.github.simy4.xpath.navigator.view;
 import com.github.simy4.xpath.XmlBuilderException;
 
 import javax.annotation.concurrent.Immutable;
-import javax.annotation.concurrent.NotThreadSafe;
 
 @Immutable
 public final class NumberView<N> implements View<N> {
@@ -16,14 +15,12 @@ public final class NumberView<N> implements View<N> {
 
     @Override
     public int compareTo(View<N> other) {
-        final NumberComparatorVisitor<N> comparatorVisitor = new NumberComparatorVisitor<N>(number);
-        other.visit(comparatorVisitor);
-        return comparatorVisitor.getResult();
+        return other.visit(new NumberComparatorVisitor());
     }
 
     @Override
-    public void visit(ViewVisitor<N> visitor) throws XmlBuilderException {
-        visitor.visit(this);
+    public <T> T visit(ViewVisitor<N, T> visitor) throws XmlBuilderException {
+        return visitor.visit(this);
     }
 
     public Number getNumber() {
@@ -54,50 +51,39 @@ public final class NumberView<N> implements View<N> {
         return number.toString();
     }
 
-    @NotThreadSafe
-    private static final class NumberComparatorVisitor<N> implements ViewVisitor<N> {
-
-        private final Number number;
-        private int result;
-
-        private NumberComparatorVisitor(Number number) {
-            this.number = number;
-        }
+    private final class NumberComparatorVisitor implements ViewVisitor<N, Integer> {
 
         @Override
-        public void visit(NodeSetView<N> nodeSet) {
+        public Integer visit(NodeSetView<N> nodeSet) {
             if (nodeSet.isEmpty()) {
-                result = 1;
+                return 1;
             } else {
-                nodeSet.iterator().next().visit(this);
+                return nodeSet.iterator().next().visit(this);
             }
         }
 
         @Override
-        public void visit(LiteralView<N> literal) {
+        public Integer visit(LiteralView<N> literal) {
             try {
-                result = Double.compare(number.doubleValue(), Double.parseDouble(literal.getLiteral()));
+                return Double.compare(NumberView.this.number.doubleValue(), Double.parseDouble(literal.getLiteral()));
             } catch (NumberFormatException nfe) {
-                result = Double.compare(number.doubleValue(), Double.NaN);
+                return Double.compare(NumberView.this.number.doubleValue(), Double.NaN);
             }
         }
 
         @Override
-        public void visit(NumberView<N> number) {
-            result = Double.compare(this.number.doubleValue(), number.getNumber().doubleValue());
+        public Integer visit(NumberView<N> number) {
+            return Double.compare(NumberView.this.number.doubleValue(), number.getNumber().doubleValue());
         }
 
         @Override
-        public void visit(NodeView<N> node) {
+        public Integer visit(NodeView<N> node) {
             try {
-                result = Double.compare(number.doubleValue(), Double.parseDouble(node.getNode().getText()));
+                return Double.compare(NumberView.this.number.doubleValue(),
+                        Double.parseDouble(node.getNode().getText()));
             } catch (NumberFormatException nfe) {
-                result = Double.compare(number.doubleValue(), Double.NaN);
+                return Double.compare(NumberView.this.number.doubleValue(), Double.NaN);
             }
-        }
-
-        private int getResult() {
-            return result;
         }
 
     }

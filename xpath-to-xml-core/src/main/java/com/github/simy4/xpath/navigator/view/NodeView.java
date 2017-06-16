@@ -3,6 +3,9 @@ package com.github.simy4.xpath.navigator.view;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
 
+import javax.annotation.concurrent.Immutable;
+
+@Immutable
 public final class NodeView<N> implements View<N> {
 
     private final Node<N> node;
@@ -17,8 +20,8 @@ public final class NodeView<N> implements View<N> {
     }
 
     @Override
-    public void visit(ViewVisitor<N> visitor) throws XmlBuilderException {
-        visitor.visit(this);
+    public <T> T visit(ViewVisitor<N, T> visitor) throws XmlBuilderException {
+        return visitor.visit(this);
     }
 
     public Node<N> getNode() {

@@ -24,7 +24,7 @@ public class RemoveEffect implements Effect {
         view.visit(new RemoveVisitor<N>(navigator));
     }
 
-    private static final class RemoveVisitor<N> extends AbstractViewVisitor<N> {
+    private static final class RemoveVisitor<N> extends AbstractViewVisitor<N, Void> {
 
         private final Navigator<N> navigator;
 
@@ -33,15 +33,22 @@ public class RemoveEffect implements Effect {
         }
 
         @Override
-        public void visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
+        public Void visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
             for (View<N> node : nodeSet) {
                 node.visit(this);
             }
+            return returnDefault(nodeSet);
         }
 
         @Override
-        public void visit(NodeView<N> node) throws XmlBuilderException {
+        public Void visit(NodeView<N> node) throws XmlBuilderException {
             navigator.remove(node.getNode());
+            return returnDefault(node);
+        }
+
+        @Override
+        protected Void returnDefault(View<N> ignored) {
+            return null; /* NO OP */
         }
 
     }
