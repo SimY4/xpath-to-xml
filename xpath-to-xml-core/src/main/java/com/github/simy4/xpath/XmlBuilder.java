@@ -9,7 +9,6 @@ import com.github.simy4.xpath.navigator.NavigatorSpi;
 import com.github.simy4.xpath.parser.XPathParser;
 
 import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPathExpressionException;
 import java.util.ArrayList;
@@ -26,10 +25,9 @@ import java.util.ServiceLoader;
  * @author Alex Simkin
  * @since 1.0
  */
-@Immutable
 public class XmlBuilder {
 
-    private static final Iterable<NavigatorSpi> NAVIGATOR_SPIS = ServiceLoader.load(NavigatorSpi.class);
+    private static final Iterable<NavigatorSpi> navigatorSpis = ServiceLoader.load(NavigatorSpi.class);
 
     private final XPathParser parser;
     private final Collection<Effect> effects;
@@ -172,7 +170,7 @@ public class XmlBuilder {
      * @throws XmlBuilderException if XML model modification failed
      */
     public <T> T build(T xml) throws XmlBuilderException {
-        for (NavigatorSpi navigatorSpi : NAVIGATOR_SPIS) {
+        for (NavigatorSpi navigatorSpi : navigatorSpis) {
             if (navigatorSpi.canHandle(xml)) {
                 return navigatorSpi.process(xml, effects);
             }
