@@ -3,12 +3,9 @@ package com.github.simy4.xpath.expr.op;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.view.AbstractViewVisitor;
-import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
-import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
-import com.github.simy4.xpath.view.ViewVisitor;
 
 public class Eq implements Op {
 
@@ -19,7 +16,7 @@ public class Eq implements Op {
 
     @Override
     public <N> void apply(Navigator<N> navigator, View<N> left, View<N> right) throws XmlBuilderException {
-        right.visit(new EqRightApplicationVisitor<N>(navigator, left));
+        left.visit(new EqLeftApplicationVisitor<N>(navigator, right));
     }
 
     @Override
@@ -27,76 +24,27 @@ public class Eq implements Op {
         return "=";
     }
 
-    private static final class EqRightApplicationVisitor<N> implements ViewVisitor<N, Void> {
+    private static final class EqLeftApplicationVisitor<N> extends AbstractViewVisitor<N, Void> {
 
         private final Navigator<N> navigator;
-        private final View<N> left;
+        private final View<N> right;
 
-        private EqRightApplicationVisitor(Navigator<N> navigator, View<N> left) {
+        private EqLeftApplicationVisitor(Navigator<N> navigator, View<N> right) {
             this.navigator = navigator;
-            this.left = left;
+            this.right = right;
         }
-
-        @Override
-        public Void visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
-            if (nodeSet.toBoolean()) {
-                return nodeSet.iterator().next().visit(this);
-            }
-            throw new XmlBuilderException("Can not modify empty node set");
-        }
-
-        @Override
-        public Void visit(final LiteralView<N> literal) throws XmlBuilderException {
-            return left.visit(new EqLeftApplicationVisitor<N>() {
-
-                @Override
-                public Void visit(NodeView<N> node) throws XmlBuilderException {
-                    navigator.setText(node.getNode(), literal.getLiteral());
-                    return null;
-                }
-
-            });
-        }
-
-        @Override
-        public Void visit(final NumberView<N> number) throws XmlBuilderException {
-            return left.visit(new EqLeftApplicationVisitor<N>() {
-
-                @Override
-                public Void visit(NodeView<N> node) throws XmlBuilderException {
-                    navigator.setText(node.getNode(), number.getNumber().toString());
-                    return null;
-                }
-
-            });
-        }
-
-        @Override
-        public Void visit(final NodeView<N> rightNode) throws XmlBuilderException {
-            return left.visit(new EqLeftApplicationVisitor<N>() {
-
-                @Override
-                public Void visit(NodeView<N> leftNode) throws XmlBuilderException {
-                    navigator.setText(leftNode.getNode(), rightNode.getNode().getText());
-                    return null;
-                }
-
-            });
-
-        }
-
-    }
-
-    private abstract static class EqLeftApplicationVisitor<N> extends AbstractViewVisitor<N, Void> {
 
         @Override
         public final Void visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
-            if (!nodeSet.toBoolean()) {
-                return returnDefault(nodeSet);
-            }
             for (View<N> node : nodeSet) {
                 node.visit(this);
             }
+            return null;
+        }
+
+        @Override
+        public Void visit(NodeView<N> node) throws XmlBuilderException {
+            navigator.setText(node.getNode(), right.toString());
             return null;
         }
 
