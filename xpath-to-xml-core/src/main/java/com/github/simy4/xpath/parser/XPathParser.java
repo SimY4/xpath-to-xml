@@ -12,6 +12,7 @@ import com.github.simy4.xpath.expr.PathExpr;
 import com.github.simy4.xpath.expr.Predicate;
 import com.github.simy4.xpath.expr.Root;
 import com.github.simy4.xpath.expr.StepExpr;
+import com.github.simy4.xpath.expr.UnaryExpr;
 import com.github.simy4.xpath.expr.op.Eq;
 import com.github.simy4.xpath.parser.Token.Type;
 
@@ -64,14 +65,25 @@ public class XPathParser {
     }
 
     private Expr ComparisonExpr(Context context) throws XPathExpressionException {
-        Expr left = ValueExpr(context);
+        Expr left = UnaryExpr(context);
         switch (context.tokenAt(1).getType()) {
             case EQUALS:
                 context.match(Type.EQUALS);
-                Expr right = ValueExpr(context);
+                Expr right = UnaryExpr(context);
                 return new ComparisonExpr(left, right, new Eq());
             default:
                 return left;
+        }
+    }
+
+    private Expr UnaryExpr(Context context) throws XPathExpressionException {
+        switch (context.tokenAt(1).getType()) {
+            case MINUS:
+                context.match(Type.MINUS);
+                final Expr expr = UnaryExpr(context);
+                return new UnaryExpr(expr);
+            default:
+                return ValueExpr(context);
         }
     }
 

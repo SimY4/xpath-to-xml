@@ -55,6 +55,10 @@ class XPathLexer implements Iterator<Token> {
                     token = new Token(Type.COLON, xpath, cursor, cursor + 1);
                     cursor += 1;
                     break;
+                case '-':
+                    token = new Token(Type.MINUS, xpath, cursor, cursor + 1);
+                    cursor += 1;
+                    break;
                 case '*':
                     token = new Token(Type.STAR, xpath, cursor, cursor + 1);
                     cursor += 1;

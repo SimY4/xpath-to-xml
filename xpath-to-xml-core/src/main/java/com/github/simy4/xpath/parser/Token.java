@@ -38,6 +38,7 @@ final class Token {
 
         EQUALS,
 
+        MINUS,
         STAR,
 
         SLASH,

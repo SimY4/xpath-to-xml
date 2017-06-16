@@ -23,9 +23,7 @@ public class NumberExpr implements Expr {
     @Override
     public <N> boolean match(ExprContext<N> context, View<N> xml) {
         Number number = this.number.getNumber();
-        if (number.doubleValue() != number.longValue()) {
-            return this.number.isEmpty();
-        } else if (context.getPosition() == number.longValue()) {
+        if (context.getPosition() == number.intValue()) {
             return true;
         } else if (context.shouldCreate()) {
             if (xml instanceof NodeView) {
