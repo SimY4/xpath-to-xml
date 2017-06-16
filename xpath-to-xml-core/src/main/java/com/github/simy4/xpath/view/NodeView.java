@@ -16,7 +16,11 @@ public final class NodeView<N> implements View<N> {
 
     @Override
     public int compareTo(View<N> other) {
-        return -other.compareTo(this);
+        if (other instanceof NodeView) {
+            return node.getText().compareTo(((NodeView) other).getNode().getText());
+        } else {
+            return -other.compareTo(this);
+        }
     }
 
     @Override
