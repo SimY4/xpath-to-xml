@@ -24,7 +24,7 @@ public final class LiteralView<N> implements View<N> {
     }
 
     @Override
-    public Number toNumber() {
+    public double toNumber() {
         try {
             return Double.parseDouble(literal);
         } catch (NumberFormatException nfe) {
@@ -40,10 +40,6 @@ public final class LiteralView<N> implements View<N> {
     @Override
     public <T> T visit(ViewVisitor<N, T> visitor) throws XmlBuilderException {
         return visitor.visit(this);
-    }
-
-    public String getLiteral() {
-        return literal;
     }
 
     @Override

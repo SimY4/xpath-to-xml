@@ -29,7 +29,7 @@ public final class NodeView<N> implements View<N> {
     }
 
     @Override
-    public Number toNumber() {
+    public double toNumber() {
         try {
             return Double.parseDouble(node.getText());
         } catch (NumberFormatException nfe) {

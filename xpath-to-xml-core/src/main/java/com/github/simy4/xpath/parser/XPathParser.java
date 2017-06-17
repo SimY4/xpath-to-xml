@@ -88,13 +88,14 @@ public class XPathParser {
     }
 
     private Expr ValueExpr(Context context) throws XPathExpressionException {
+        final String token;
         switch (context.tokenAt(1).getType()) {
             case LITERAL:
-                String token = context.match(Type.LITERAL).getToken();
+                token = context.match(Type.LITERAL).getToken();
                 return new LiteralExpr(token);
             case DOUBLE:
-                double d = Double.parseDouble(context.match(Type.DOUBLE).getToken());
-                return new NumberExpr(d);
+                token = context.match(Type.DOUBLE).getToken();
+                return new NumberExpr(Double.parseDouble(token));
             default:
                 return PathExpr(context);
         }

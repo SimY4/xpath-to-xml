@@ -10,7 +10,7 @@ public class NumberExpr implements Expr {
 
     private final NumberView number;
 
-    public NumberExpr(Number number) {
+    public NumberExpr(double number) {
         this.number = new NumberView(number);
     }
 
@@ -22,8 +22,8 @@ public class NumberExpr implements Expr {
 
     @Override
     public <N> boolean match(ExprContext<N> context, View<N> xml) {
-        Number number = this.number.getNumber();
-        if (context.getPosition() == number.intValue()) {
+        double number = this.number.toNumber();
+        if (context.getPosition() == number) {
             return true;
         } else if (context.shouldCreate()) {
             if (xml instanceof NodeView) {
@@ -49,7 +49,7 @@ public class NumberExpr implements Expr {
 
     @Override
     public String toString() {
-        return this.number.toString();
+        return number.toString();
     }
 
 }

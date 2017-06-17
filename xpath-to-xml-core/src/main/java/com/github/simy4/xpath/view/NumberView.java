@@ -7,39 +7,35 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public final class NumberView<N> implements View<N> {
 
-    private final Number number;
+    private final double number;
 
-    public NumberView(Number number) {
+    public NumberView(double number) {
         this.number = number;
     }
 
     @Override
     public int compareTo(View<N> other) {
-        return Double.compare(number.doubleValue(), other.toNumber().doubleValue());
+        return Double.compare(number, other.toNumber());
     }
 
     @Override
     public boolean toBoolean() {
-        return 0 != Double.compare(0.0, number.doubleValue());
+        return 0 != Double.compare(0.0, number);
     }
 
     @Override
-    public Number toNumber() {
+    public double toNumber() {
         return number;
     }
 
     @Override
     public String toString() {
-        return number.toString();
+        return Double.toString(number);
     }
 
     @Override
     public <T> T visit(ViewVisitor<N, T> visitor) throws XmlBuilderException {
         return visitor.visit(this);
-    }
-
-    public Number getNumber() {
-        return number;
     }
 
     @Override
@@ -53,12 +49,13 @@ public final class NumberView<N> implements View<N> {
 
         NumberView<?> that = (NumberView<?>) o;
 
-        return number.equals(that.number);
+        return Double.compare(that.number, number) == 0;
     }
 
     @Override
     public int hashCode() {
-        return number.hashCode();
+        long temp = Double.doubleToLongBits(number);
+        return (int) (temp ^ (temp >>> 32));
     }
 
 }

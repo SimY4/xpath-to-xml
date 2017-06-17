@@ -23,7 +23,7 @@ public interface View<N> extends Comparable<View<N>> {
      *
      * @return numeric value
      */
-    Number toNumber();
+    double toNumber();
 
     /**
      * Converts this view to a string value.

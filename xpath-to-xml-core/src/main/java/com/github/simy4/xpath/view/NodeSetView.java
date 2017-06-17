@@ -52,7 +52,7 @@ public final class NodeSetView<N> implements View<N>, Iterable<View<N>> {
     }
 
     @Override
-    public Number toNumber() {
+    public double toNumber() {
         if (nodeSet.isEmpty()) {
             return Double.NaN;
         } else {
