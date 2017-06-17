@@ -1,7 +1,7 @@
 package com.github.simy4.xpath.expr.operators;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.view.View;
 
 /**
@@ -24,8 +24,8 @@ public interface Operator {
 
     Operator greaterThanOrEquals = new GreaterThanOrEquals();
 
-    <N> boolean test(View<N> left, View<N> right);
+    <N> View<N> resolve(View<N> left, View<N> right);
 
-    <N> void apply(Navigator<N> navigator, View<N> left, View<N> right) throws XmlBuilderException;
+    <N> View<N> apply(ExprContext<N> context, View<N> left, View<N> right) throws XmlBuilderException;
 
 }

@@ -1,8 +1,10 @@
 package com.github.simy4.xpath.expr.operators;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.view.AbstractViewVisitor;
+import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
@@ -10,13 +12,13 @@ import com.github.simy4.xpath.view.View;
 class Equals implements Operator {
 
     @Override
-    public <N> boolean test(View<N> left, View<N> right) {
-        return 0 == left.compareTo(right);
+    public <N> View<N> resolve(View<N> left, View<N> right) {
+        return new BooleanView<N>(0 == left.compareTo(right));
     }
 
     @Override
-    public <N> void apply(Navigator<N> navigator, View<N> left, View<N> right) throws XmlBuilderException {
-        left.visit(new EqualsApplicationVisitor<N>(navigator, right));
+    public <N> View<N> apply(ExprContext<N> context, View<N> left, View<N> right) throws XmlBuilderException {
+        return left.visit(new EqualsApplicationVisitor<N>(context.getNavigator(), right));
     }
 
     @Override
@@ -24,7 +26,7 @@ class Equals implements Operator {
         return "=";
     }
 
-    private static final class EqualsApplicationVisitor<N> extends AbstractViewVisitor<N, Void> {
+    private static final class EqualsApplicationVisitor<N> extends AbstractViewVisitor<N, View<N>> {
 
         private final Navigator<N> navigator;
         private final View<N> right;
@@ -35,21 +37,21 @@ class Equals implements Operator {
         }
 
         @Override
-        public final Void visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
+        public View<N> visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
             for (View<N> node : nodeSet) {
                 node.visit(this);
             }
-            return null;
+            return nodeSet;
         }
 
         @Override
-        public Void visit(NodeView<N> node) throws XmlBuilderException {
+        public View<N> visit(NodeView<N> node) throws XmlBuilderException {
             navigator.setText(node.getNode(), right.toString());
-            return null;
+            return node;
         }
 
         @Override
-        protected final Void returnDefault(View<N> view) throws XmlBuilderException {
+        protected View<N> returnDefault(View<N> view) throws XmlBuilderException {
             throw new XmlBuilderException("Can not modify read-only node: " + view);
         }
 

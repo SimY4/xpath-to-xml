@@ -1,8 +1,10 @@
 package com.github.simy4.xpath.expr.operators;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
+import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
@@ -61,20 +63,20 @@ public class EqualsTest {
     public void shouldMatchLeftEqualViewToRightEqualViewOnTest(@FromDataPoints("eq left") View<String> left,
                                                                @FromDataPoints("eq left") View<String> right) {
         // when
-        boolean result = Operator.equals.test(left, right);
+        View<String> result = Operator.equals.resolve(left, right);
 
         // then
-        assertThat(result).isEqualTo(true);
+        assertThat(result).isEqualTo(new BooleanView<String>(true));
     }
 
     @Theory
     public void shouldMatchRightEqualViewToLeftEqualViewOnTest(@FromDataPoints("eq left") View<String> left,
                                                                @FromDataPoints("eq left") View<String> right) {
         // when
-        boolean result = Operator.equals.test(right, left);
+        View<String> result = Operator.equals.resolve(right, left);
 
         // then
-        assertThat(result).isEqualTo(true);
+        assertThat(result).isEqualTo(new BooleanView<String>(true));
     }
 
     @Theory
@@ -82,10 +84,10 @@ public class EqualsTest {
             @FromDataPoints("eq left") View<String> left,
             @FromDataPoints("eq right") View<String> right) {
         // when
-        boolean result = Operator.equals.test(left, right);
+        View<String> result = Operator.equals.resolve(left, right);
 
         // then
-        assertThat(result).isEqualTo(false);
+        assertThat(result).isEqualTo(new BooleanView<String>(false));
     }
 
     @Theory
@@ -93,10 +95,10 @@ public class EqualsTest {
             @FromDataPoints("eq left") View<String> left,
             @FromDataPoints("eq right") View<String> right) {
         // when
-        boolean result = Operator.equals.test(right, left);
+        View<String> result = Operator.equals.resolve(right, left);
 
         // then
-        assertThat(result).isEqualTo(false);
+        assertThat(result).isEqualTo(new BooleanView<String>(false));
     }
 
     @Theory
@@ -105,9 +107,11 @@ public class EqualsTest {
         // given
         assumeTrue(left instanceof NodeView
                 || (left instanceof NodeSetView && ((NodeSetView) left).iterator().next() instanceof NodeView));
+        ExprContext<String> context = new ExprContext<String>(navigator, true, 1);
+        context.advance();
 
         // when
-        Operator.equals.apply(navigator, left, right);
+        Operator.equals.apply(context, left, right);
 
         // then
         verify(navigator).setText(ArgumentMatchers.<Node<String>>any(), eq(right.toString()));
@@ -118,12 +122,14 @@ public class EqualsTest {
         // given
         assumeFalse(left instanceof NodeView
                 || (left instanceof NodeSetView && ((NodeSetView) left).iterator().next() instanceof NodeView));
+        ExprContext<String> context = new ExprContext<String>(navigator, true, 1);
+        context.advance();
 
         // given
         expectedException.expect(XmlBuilderException.class);
 
         // when
-        Operator.equals.apply(navigator, left, left);
+        Operator.equals.apply(context, left, left);
     }
 
     @Test

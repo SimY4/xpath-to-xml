@@ -29,14 +29,14 @@ public class ComparisonExpr implements Expr {
         View<N> leftView = leftExpr.resolve(leftContext, xml);
         ExprContext<N> rightContext = context.clone(false, 1);
         View<N> rightView = rightExpr.resolve(rightContext, xml);
-        if (operator.test(leftView, rightView)) {
+        if (operator.resolve(leftView, rightView).toBoolean()) {
             return xml;
         } else if (context.shouldCreate()) {
             leftContext = context.clone(1);
             leftView = leftExpr.resolve(leftContext, xml);
             rightContext = context.clone(1);
             rightView = rightExpr.resolve(rightContext, xml);
-            operator.apply(context.getNavigator(), leftView, rightView);
+            operator.apply(context, leftView, rightView);
             return xml;
         } else {
             return NodeSetView.empty();
