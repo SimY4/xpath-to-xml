@@ -24,6 +24,12 @@ public interface Operator {
 
     Operator greaterThanOrEquals = new GreaterThanOrEquals();
 
+    Operator addition = new Addition();
+
+    Operator subtraction = new Subtraction();
+
+    Operator multiplication = new Multiplication();
+
     <N> View<N> resolve(View<N> left, View<N> right);
 
     <N> View<N> apply(ExprContext<N> context, View<N> left, View<N> right) throws XmlBuilderException;
