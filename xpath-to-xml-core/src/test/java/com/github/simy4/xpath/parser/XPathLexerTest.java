@@ -39,10 +39,6 @@ public class XPathLexerTest {
                         asList(token(Type.SLASH, "/"), token(Type.IDENTIFIER, "bookstore"))
                 },
                 {
-                        "//author",
-                        asList(token(Type.DOUBLE_SLASH, "//"), token(Type.IDENTIFIER, "author"))
-                },
-                {
                         "book[/bookstore/@specialty=@style]",
                         asList(token(Type.IDENTIFIER, "book"), token(Type.LEFT_BRACKET, "["), token(Type.SLASH, "/"),
                                 token(Type.IDENTIFIER, "bookstore"), token(Type.SLASH, "/"), token(Type.AT, "@"),
@@ -55,25 +51,9 @@ public class XPathLexerTest {
                                 token(Type.IDENTIFIER, "first-name"))
                 },
                 {
-                        "bookstore//title",
-                        asList(token(Type.IDENTIFIER, "bookstore"), token(Type.DOUBLE_SLASH, "//"),
-                                token(Type.IDENTIFIER, "title"))
-                },
-                {
                         "bookstore/*/title",
                         asList(token(Type.IDENTIFIER, "bookstore"), token(Type.SLASH, "/"), token(Type.STAR, "*"),
                                 token(Type.SLASH, "/"), token(Type.IDENTIFIER, "title"))
-                },
-                {
-                        "bookstore//book/excerpt//emph",
-                        asList(token(Type.IDENTIFIER, "bookstore"), token(Type.DOUBLE_SLASH, "//"),
-                                token(Type.IDENTIFIER, "book"), token(Type.SLASH, "/"),
-                                token(Type.IDENTIFIER, "excerpt"), token(Type.DOUBLE_SLASH, "//"),
-                                token(Type.IDENTIFIER, "emph"))
-                },
-                {
-                        ".//title",
-                        asList(token(Type.DOT, "."), token(Type.DOUBLE_SLASH, "//"), token(Type.IDENTIFIER, "title"))
                 },
                 {
                         "author/*",

@@ -37,12 +37,18 @@ final class Token {
         ERROR,
 
         EQUALS,
+        NOT_EQUALS,
 
+        LESS_THAN,
+        LESS_THAN_OR_EQUALS,
+        GREATER_THAN,
+        GREATER_THAN_OR_EQUALS,
+
+        PLUS,
         MINUS,
         STAR,
 
         SLASH,
-        DOUBLE_SLASH,
         DOT,
         DOUBLE_DOT,
 

@@ -13,7 +13,7 @@ import com.github.simy4.xpath.expr.Predicate;
 import com.github.simy4.xpath.expr.Root;
 import com.github.simy4.xpath.expr.StepExpr;
 import com.github.simy4.xpath.expr.UnaryExpr;
-import com.github.simy4.xpath.expr.op.Eq;
+import com.github.simy4.xpath.expr.operators.Operator;
 import com.github.simy4.xpath.parser.Token.Type;
 
 import javax.annotation.Nonnegative;
@@ -25,7 +25,6 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.xpath.XPathExpressionException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -53,7 +52,7 @@ public class XPathParser {
      */
     public Expr parse(String xpath) throws XPathExpressionException {
         final Context context = new Context(xpath);
-        Expr expr = Expr(context);
+        final Expr expr = Expr(context);
         if (context.hasMoreElements()) {
             throw new XPathParserException(context.tokenAt(1));
         }
@@ -65,12 +64,33 @@ public class XPathParser {
     }
 
     private Expr ComparisonExpr(Context context) throws XPathExpressionException {
-        Expr left = UnaryExpr(context);
+        final Expr left = UnaryExpr(context);
+        final Expr right;
         switch (context.tokenAt(1).getType()) {
             case EQUALS:
                 context.match(Type.EQUALS);
-                Expr right = UnaryExpr(context);
-                return new ComparisonExpr(left, right, new Eq());
+                right = UnaryExpr(context);
+                return new ComparisonExpr(left, right, Operator.equals);
+            case NOT_EQUALS:
+                context.match(Type.NOT_EQUALS);
+                right = UnaryExpr(context);
+                return new ComparisonExpr(left, right, Operator.notEquals);
+            case LESS_THAN_OR_EQUALS:
+                context.match(Type.LESS_THAN_OR_EQUALS);
+                right = UnaryExpr(context);
+                return new ComparisonExpr(left, right, Operator.lessThanOrEquals);
+            case LESS_THAN:
+                context.match(Type.LESS_THAN);
+                right = UnaryExpr(context);
+                return new ComparisonExpr(left, right, Operator.lessThan);
+            case GREATER_THAN_OR_EQUALS:
+                context.match(Type.GREATER_THAN_OR_EQUALS);
+                right = UnaryExpr(context);
+                return new ComparisonExpr(left, right, Operator.greaterThanOrEquals);
+            case GREATER_THAN:
+                context.match(Type.GREATER_THAN);
+                right = UnaryExpr(context);
+                return new ComparisonExpr(left, right, Operator.greaterThan);
             default:
                 return left;
         }
@@ -118,12 +138,6 @@ public class XPathParser {
                     default:
                 }
                 break;
-            case DOUBLE_SLASH:
-                context.match(Type.DOUBLE_SLASH);
-                pathExpr.add(new Root());
-                pathExpr.add(new Element(new QName("*"), Collections.<Predicate>emptyList())); // TODO
-                RelativePathExpr(context, pathExpr);
-                break;
             default:
                 RelativePathExpr(context, pathExpr);
                 break;
@@ -134,19 +148,14 @@ public class XPathParser {
     private void RelativePathExpr(Context context, List<StepExpr> pathExpr) throws XPathExpressionException {
         pathExpr.add(StepExpr(context));
         Type type = context.tokenAt(1).getType();
-        while (Type.SLASH == type || Type.DOUBLE_SLASH == type) {
+        while (Type.SLASH == type) {
             switch (context.tokenAt(1).getType()) {
                 case SLASH:
                     context.match(Type.SLASH);
                     pathExpr.add(StepExpr(context));
                     break;
-                case DOUBLE_SLASH:
-                    context.match(Type.DOUBLE_SLASH);
-                    pathExpr.add(new Element(new QName("*"), Collections.<Predicate>emptyList())); // TODO
-                    pathExpr.add(StepExpr(context));
-                    break;
                 default:
-                    throw new XPathParserException(context.tokenAt(1), Type.SLASH, Type.DOUBLE_SLASH);
+                    throw new XPathParserException(context.tokenAt(1), Type.SLASH);
             }
             type = context.tokenAt(1).getType();
         }

@@ -1,4 +1,4 @@
-package com.github.simy4.xpath.expr.op;
+package com.github.simy4.xpath.expr.operators;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
@@ -7,7 +7,7 @@ import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
 
-public class Eq implements Op {
+class Equals implements Operator {
 
     @Override
     public <N> boolean test(View<N> left, View<N> right) {
@@ -16,7 +16,7 @@ public class Eq implements Op {
 
     @Override
     public <N> void apply(Navigator<N> navigator, View<N> left, View<N> right) throws XmlBuilderException {
-        left.visit(new EqLeftApplicationVisitor<N>(navigator, right));
+        left.visit(new EqualsApplicationVisitor<N>(navigator, right));
     }
 
     @Override
@@ -24,12 +24,12 @@ public class Eq implements Op {
         return "=";
     }
 
-    private static final class EqLeftApplicationVisitor<N> extends AbstractViewVisitor<N, Void> {
+    private static final class EqualsApplicationVisitor<N> extends AbstractViewVisitor<N, Void> {
 
         private final Navigator<N> navigator;
         private final View<N> right;
 
-        private EqLeftApplicationVisitor(Navigator<N> navigator, View<N> right) {
+        private EqualsApplicationVisitor(Navigator<N> navigator, View<N> right) {
             this.navigator = navigator;
             this.right = right;
         }

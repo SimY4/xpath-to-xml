@@ -33,7 +33,8 @@ class XPathLexer implements Iterator<Token> {
                     token = literal();
                     break;
                 case '/':
-                    token = token2('/', Type.SLASH, Type.DOUBLE_SLASH);
+                    token = new Token(Type.SLASH, xpath, cursor, cursor + 1);
+                    cursor += 1;
                     break;
                 case '[':
                     token = new Token(Type.LEFT_BRACKET, xpath, cursor, cursor + 1);
@@ -43,9 +44,29 @@ class XPathLexer implements Iterator<Token> {
                     token = new Token(Type.RIGHT_BRACKET, xpath, cursor, cursor + 1);
                     cursor += 1;
                     break;
+                case '+':
+                    token = new Token(Type.PLUS, xpath, cursor, cursor + 1);
+                    cursor += 1;
+                    break;
+                case '-':
+                    token = new Token(Type.MINUS, xpath, cursor, cursor + 1);
+                    cursor += 1;
+                    break;
+                case '<':
+                case '>':
+                    token = relationalOperator();
+                    break;
                 case '=':
                     token = new Token(Type.EQUALS, xpath, cursor, cursor + 1);
                     cursor += 1;
+                    break;
+                case '!':
+                    if ('=' == charAt(2)) {
+                        token = new Token(Type.NOT_EQUALS, xpath, cursor, cursor + 2);
+                        cursor += 2;
+                    } else {
+                        token = null;
+                    }
                     break;
                 case '@':
                     token = new Token(Type.AT, xpath, cursor, cursor + 1);
@@ -53,10 +74,6 @@ class XPathLexer implements Iterator<Token> {
                     break;
                 case ':':
                     token = new Token(Type.COLON, xpath, cursor, cursor + 1);
-                    cursor += 1;
-                    break;
-                case '-':
-                    token = new Token(Type.MINUS, xpath, cursor, cursor + 1);
                     cursor += 1;
                     break;
                 case '*':
@@ -178,6 +195,35 @@ class XPathLexer implements Iterator<Token> {
             }
         }
         return new Token(Type.DOUBLE, xpath, start, cursor);
+    }
+
+    @Nullable
+    private Token relationalOperator() {
+        final Token token;
+        switch (charAt(1)) {
+            case '<':
+                if ('=' == charAt(2)) {
+                    token = new Token(Type.LESS_THAN_OR_EQUALS, xpath, cursor, cursor + 2);
+                    cursor += 1;
+                } else {
+                    token = new Token(Type.LESS_THAN, xpath, cursor, cursor + 1);
+                }
+                cursor += 1;
+                break;
+            case '>':
+                if ('=' == charAt(2)) {
+                    token = new Token(Type.GREATER_THAN_OR_EQUALS, xpath, cursor, cursor + 2);
+                    cursor += 1;
+                } else {
+                    token = new Token(Type.GREATER_THAN, xpath, cursor, cursor + 1);
+                }
+                cursor += 1;
+                break;
+            default:
+                token = null;
+                break;
+        }
+        return token;
     }
 
     private Token whitespace() {

@@ -1,4 +1,4 @@
-package com.github.simy4.xpath.expr.op;
+package com.github.simy4.xpath.expr.operators;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
@@ -30,7 +30,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 @RunWith(Theories.class)
-public class EqTest {
+public class EqualsTest {
 
     @DataPoints("eq left")
     public static final View[] EQ_TEST = {
@@ -61,7 +61,7 @@ public class EqTest {
     public void shouldMatchLeftEqualViewToRightEqualViewOnTest(@FromDataPoints("eq left") View<String> left,
                                                                @FromDataPoints("eq left") View<String> right) {
         // when
-        boolean result = new Eq().test(left, right);
+        boolean result = Operator.equals.test(left, right);
 
         // then
         assertThat(result).isEqualTo(true);
@@ -71,7 +71,7 @@ public class EqTest {
     public void shouldMatchRightEqualViewToLeftEqualViewOnTest(@FromDataPoints("eq left") View<String> left,
                                                                @FromDataPoints("eq left") View<String> right) {
         // when
-        boolean result = new Eq().test(right, left);
+        boolean result = Operator.equals.test(right, left);
 
         // then
         assertThat(result).isEqualTo(true);
@@ -82,7 +82,7 @@ public class EqTest {
             @FromDataPoints("eq left") View<String> left,
             @FromDataPoints("eq right") View<String> right) {
         // when
-        boolean result = new Eq().test(left, right);
+        boolean result = Operator.equals.test(left, right);
 
         // then
         assertThat(result).isEqualTo(false);
@@ -93,7 +93,7 @@ public class EqTest {
             @FromDataPoints("eq left") View<String> left,
             @FromDataPoints("eq right") View<String> right) {
         // when
-        boolean result = new Eq().test(right, left);
+        boolean result = Operator.equals.test(right, left);
 
         // then
         assertThat(result).isEqualTo(false);
@@ -107,7 +107,7 @@ public class EqTest {
                 || (left instanceof NodeSetView && ((NodeSetView) left).iterator().next() instanceof NodeView));
 
         // when
-        new Eq().apply(navigator, left, right);
+        Operator.equals.apply(navigator, left, right);
 
         // then
         verify(navigator).setText(ArgumentMatchers.<Node<String>>any(), eq(right.toString()));
@@ -123,12 +123,12 @@ public class EqTest {
         expectedException.expect(XmlBuilderException.class);
 
         // when
-        new Eq().apply(navigator, left, left);
+        Operator.equals.apply(navigator, left, left);
     }
 
     @Test
     public void testToString() {
-        assertThat(new Eq()).hasToString("=");
+        assertThat(Operator.equals).hasToString("=");
     }
 
 }

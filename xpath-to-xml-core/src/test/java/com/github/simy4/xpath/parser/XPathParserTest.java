@@ -10,7 +10,7 @@ import com.github.simy4.xpath.expr.PathExpr;
 import com.github.simy4.xpath.expr.Predicate;
 import com.github.simy4.xpath.expr.Root;
 import com.github.simy4.xpath.expr.StepExpr;
-import com.github.simy4.xpath.expr.op.Eq;
+import com.github.simy4.xpath.expr.operators.Operator;
 import com.github.simy4.xpath.utils.Pair;
 import com.github.simy4.xpath.utils.SimpleNamespaceContext;
 import com.github.simy4.xpath.utils.Triple;
@@ -54,8 +54,6 @@ public class XPathParserTest {
                 Pair.of("author", pathExpr(new Element(new QName("author"), NIL))),
                 Pair.of("first.name", pathExpr(new Element(new QName("first.name"), NIL))),
                 Pair.of("/bookstore", pathExpr(new Root(), new Element(new QName("bookstore"), NIL))),
-                Pair.of("//author", pathExpr(new Root(), new Element(new QName("*"), NIL),
-                        new Element(new QName("author"), NIL))),
                 Pair.of("book[/bookstore/@specialty=@style]",
                         pathExpr(new Element(new QName("book"), Collections.<Predicate>singletonList(
                                 new ComparisonExpr(
@@ -65,23 +63,11 @@ public class XPathParserTest {
                                                 new Attribute(new QName("specialty"), NIL)),
                                         pathExpr(
                                                 new Attribute(new QName("style"), NIL)),
-                                        new Eq()))))),
+                                        Operator.equals))))),
                 Pair.of("author/first-name", pathExpr(new Element(new QName("author"), NIL),
                         new Element(new QName("first-name"), NIL))),
-                Pair.of("bookstore//title", pathExpr(
-                        new Element(new QName("bookstore"), NIL),
-                        new Element(new QName("*"), NIL),
-                        new Element(new QName("title"), NIL))),
                 Pair.of("bookstore/*/title", pathExpr(new Element(new QName("bookstore"), NIL),
                         new Element(new QName("*"), NIL),
-                        new Element(new QName("title"), NIL))),
-                Pair.of("bookstore//book/excerpt//emph", pathExpr(new Element(new QName("bookstore"), NIL),
-                        new Element(new QName("*"), NIL),
-                        new Element(new QName("book"), NIL),
-                        new Element(new QName("excerpt"), NIL),
-                        new Element(new QName("*"), NIL),
-                        new Element(new QName("emph"), NIL))),
-                Pair.of(".//title", pathExpr(new Identity(NIL), new Element(new QName("*"), NIL),
                         new Element(new QName("title"), NIL))),
                 Pair.of("author/*", pathExpr(new Element(new QName("author"), NIL),
                         new Element(new QName("*"), NIL))),

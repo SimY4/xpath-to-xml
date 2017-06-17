@@ -1,6 +1,6 @@
 package com.github.simy4.xpath.expr;
 
-import com.github.simy4.xpath.expr.op.Op;
+import com.github.simy4.xpath.expr.operators.Operator;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.utils.ExprContextMatcher;
 import com.github.simy4.xpath.view.NodeView;
@@ -32,7 +32,7 @@ public class ComparisonExprTest {
     @Mock private Navigator<String> navigator;
     @Mock private Expr leftExpr;
     @Mock private Expr rightExpr;
-    @Mock private Op op;
+    @Mock private Operator operator;
     @Captor private ArgumentCaptor<ExprContext<String>> leftExprContextCaptor;
     @Captor private ArgumentCaptor<ExprContext<String>> rightExprContextCaptor;
 
@@ -40,13 +40,14 @@ public class ComparisonExprTest {
 
     @Before
     public void setUp() {
-        comparisonExpr = new ComparisonExpr(leftExpr, rightExpr, op);
+        comparisonExpr = new ComparisonExpr(leftExpr, rightExpr, operator);
     }
 
     @Test
     public void shouldReturnGivenXmlWhenOpTestReturnsSucceeds() {
         // given
-        when(op.test(ArgumentMatchers.<View<String>>any(), ArgumentMatchers.<View<String>>any())).thenReturn(true);
+        when(operator.test(ArgumentMatchers.<View<String>>any(), ArgumentMatchers.<View<String>>any()))
+                .thenReturn(true);
         ExprContext<String> context = new ExprContext<String>(navigator, false, 3);
         context.advance();
 
@@ -94,7 +95,7 @@ public class ComparisonExprTest {
         // then
         verify(leftExpr).resolve(leftExprContextCaptor.capture(), eq(parentNode));
         verify(rightExpr).resolve(rightExprContextCaptor.capture(), eq(parentNode));
-        verify(op, never()).apply(ArgumentMatchers.<Navigator<String>>any(),
+        verify(operator, never()).apply(ArgumentMatchers.<Navigator<String>>any(),
                 ArgumentMatchers.<View<String>>any(), ArgumentMatchers.<View<String>>any());
         assertThat(result).isNotEqualTo(parentNode);
         assertThat(leftExprContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
@@ -119,7 +120,7 @@ public class ComparisonExprTest {
         // then
         verify(leftExpr, times(2)).resolve(leftExprContextCaptor.capture(), eq(parentNode));
         verify(rightExpr, times(2)).resolve(rightExprContextCaptor.capture(), eq(parentNode));
-        verify(op).apply(navigator, singleton(new NodeView<String>(node("node1"))),
+        verify(operator).apply(navigator, singleton(new NodeView<String>(node("node1"))),
                 singleton(new NodeView<String>(node("node2"))));
         assertThat(result).isEqualTo(parentNode);
         assertThat(leftExprContextCaptor.getAllValues()).extracting("navigator", "greedy", "size", "position")
@@ -134,7 +135,7 @@ public class ComparisonExprTest {
 
     @Test
     public void testToString() {
-        assertThat(comparisonExpr).hasToString(leftExpr.toString() + op.toString() + rightExpr.toString());
+        assertThat(comparisonExpr).hasToString(leftExpr.toString() + operator.toString() + rightExpr.toString());
     }
 
 }
