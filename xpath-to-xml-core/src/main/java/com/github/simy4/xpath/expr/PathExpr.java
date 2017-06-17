@@ -29,11 +29,6 @@ public class PathExpr implements Expr {
     }
 
     @Override
-    public <N> boolean match(ExprContext<N> context, View<N> xml) {
-        return resolve(context, xml).toBoolean();
-    }
-
-    @Override
     public String toString() {
         final Iterator<StepExpr> pathExprIterator = pathExpr.iterator();
         final StringBuilder stringBuilder = new StringBuilder();

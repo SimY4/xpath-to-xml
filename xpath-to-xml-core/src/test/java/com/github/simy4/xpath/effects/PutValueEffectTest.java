@@ -57,8 +57,7 @@ public class PutValueEffectTest {
     @Test(expected = XmlBuilderException.class)
     public void shouldPropagateOnAnyException() {
         // given
-        doThrow(XmlBuilderException.class).when(navigator)
-                .setText(ArgumentMatchers.<Node<String>>any(), anyString());
+        doThrow(XmlBuilderException.class).when(navigator).setText(ArgumentMatchers.<Node<String>>any(), anyString());
 
         // when
         putValueEffect.perform(navigator);

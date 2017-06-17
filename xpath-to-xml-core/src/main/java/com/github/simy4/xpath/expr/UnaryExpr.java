@@ -18,11 +18,6 @@ public class UnaryExpr implements Expr {
     }
 
     @Override
-    public <N> boolean match(ExprContext<N> context, View<N> xml) {
-        return resolve(context, xml).toBoolean();
-    }
-
-    @Override
     public String toString() {
         return "-(" + valueExpr + ')';
     }

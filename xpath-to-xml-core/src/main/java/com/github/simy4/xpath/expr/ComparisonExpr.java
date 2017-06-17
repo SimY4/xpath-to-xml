@@ -1,7 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.expr.operators.Operator;
-import com.github.simy4.xpath.view.NodeSetView;
+import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.View;
 
 public class ComparisonExpr implements Expr {
@@ -30,22 +30,17 @@ public class ComparisonExpr implements Expr {
         ExprContext<N> rightContext = context.clone(false, 1);
         View<N> rightView = rightExpr.resolve(rightContext, xml);
         if (operator.resolve(leftView, rightView).toBoolean()) {
-            return xml;
+            return BooleanView.truthy();
         } else if (context.shouldCreate()) {
             leftContext = context.clone(1);
             leftView = leftExpr.resolve(leftContext, xml);
             rightContext = context.clone(1);
             rightView = rightExpr.resolve(rightContext, xml);
             operator.apply(context, leftView, rightView);
-            return xml;
+            return BooleanView.truthy();
         } else {
-            return NodeSetView.empty();
+            return BooleanView.falsy();
         }
-    }
-
-    @Override
-    public <N> boolean match(ExprContext<N> context, View<N> xml) {
-        return resolve(context, xml).toBoolean();
     }
 
     @Override

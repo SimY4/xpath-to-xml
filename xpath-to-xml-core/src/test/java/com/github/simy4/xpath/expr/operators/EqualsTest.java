@@ -24,6 +24,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import static com.github.simy4.xpath.utils.StringNode.node;
+import static com.github.simy4.xpath.view.NodeSetView.empty;
 import static com.github.simy4.xpath.view.NodeSetView.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
@@ -49,6 +50,8 @@ public class EqualsTest {
             new LiteralView("literal"),
             new NumberView(10.0),
             new NodeView<String>(node("node")),
+            BooleanView.falsy(),
+            empty(),
             singleton(new LiteralView("literal")),
             singleton(new NumberView(10.0)),
             singleton(new NodeView<String>(node("node"))),
@@ -66,7 +69,7 @@ public class EqualsTest {
         View<String> result = Operator.equals.resolve(left, right);
 
         // then
-        assertThat(result).isEqualTo(new BooleanView<String>(true));
+        assertThat(result).isEqualTo(BooleanView.truthy());
     }
 
     @Theory
@@ -76,7 +79,7 @@ public class EqualsTest {
         View<String> result = Operator.equals.resolve(right, left);
 
         // then
-        assertThat(result).isEqualTo(new BooleanView<String>(true));
+        assertThat(result).isEqualTo(BooleanView.truthy());
     }
 
     @Theory
@@ -87,7 +90,7 @@ public class EqualsTest {
         View<String> result = Operator.equals.resolve(left, right);
 
         // then
-        assertThat(result).isEqualTo(new BooleanView<String>(false));
+        assertThat(result).isEqualTo(BooleanView.falsy());
     }
 
     @Theory
@@ -98,7 +101,7 @@ public class EqualsTest {
         View<String> result = Operator.equals.resolve(right, left);
 
         // then
-        assertThat(result).isEqualTo(new BooleanView<String>(false));
+        assertThat(result).isEqualTo(BooleanView.falsy());
     }
 
     @Theory

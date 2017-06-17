@@ -3,7 +3,7 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.View;
 
-public class LiteralExpr implements Expr, Predicate {
+public class LiteralExpr implements Expr {
 
     private final LiteralView literal;
 
@@ -15,11 +15,6 @@ public class LiteralExpr implements Expr, Predicate {
     @SuppressWarnings("unchecked")
     public <N> LiteralView<N> resolve(ExprContext<N> context, View<N> xml) {
         return (LiteralView<N>) literal;
-    }
-
-    @Override
-    public <N> boolean match(ExprContext<N> context, View<N> xml) {
-        return literal.toBoolean();
     }
 
     @Override

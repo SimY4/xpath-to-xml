@@ -9,7 +9,7 @@ class GreaterThan implements Operator {
 
     @Override
     public <N> View<N> resolve(View<N> left, View<N> right) {
-        return new BooleanView<N>(0 > left.compareTo(right));
+        return BooleanView.of(0 > left.compareTo(right));
     }
 
     @Override

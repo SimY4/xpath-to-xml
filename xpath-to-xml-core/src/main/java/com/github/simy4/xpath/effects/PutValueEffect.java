@@ -41,18 +41,18 @@ public class PutValueEffect implements Effect {
             for (View<N> node : nodeSet) {
                 node.visit(this);
             }
-            return returnDefault(nodeSet);
+            return null;
         }
 
         @Override
         public Void visit(NodeView<N> node) throws XmlBuilderException {
             navigator.setText(node.getNode(), value);
-            return returnDefault(node);
+            return null;
         }
 
         @Override
-        protected Void returnDefault(View<N> ignored) {
-            return null; /* NO OP */
+        protected Void returnDefault(View<N> view) throws XmlBuilderException {
+            throw new XmlBuilderException("Failed to put value into XML. Read-only view was resolved: " + view);
         }
 
     }

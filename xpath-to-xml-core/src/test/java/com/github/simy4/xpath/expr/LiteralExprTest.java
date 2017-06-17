@@ -1,6 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
@@ -27,6 +28,8 @@ public class LiteralExprTest {
             new LiteralView("literal"),
             new NumberView(2.0),
             new NodeView<String>(node("node")),
+            BooleanView.truthy(),
+            BooleanView.falsy(),
             NodeSetView.empty(),
             NodeSetView.singleton(new NodeView<String>(node("node"))),
     };
@@ -40,7 +43,7 @@ public class LiteralExprTest {
     @Theory
     public void shouldAlwaysReturnSingleLiteralNode(@FromDataPoints("parent nodes") View<String> parentView) {
         View<String> result = literalExpr.resolve(new ExprContext<String>(navigator, false, 1), parentView);
-        assertThat(result).extracting("literal").containsExactly("value");
+        assertThat(result).isEqualTo(new LiteralView<String>("value"));
     }
 
     @Test

@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Parent extends AbstractStepExpr {
 
-    public Parent(List<Predicate> predicateList) {
+    public Parent(List<Expr> predicateList) {
         super(predicateList);
     }
 

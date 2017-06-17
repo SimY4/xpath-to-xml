@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Identity extends AbstractStepExpr {
 
-    public Identity(List<Predicate> predicateList) {
+    public Identity(List<Expr> predicateList) {
         super(predicateList);
     }
 

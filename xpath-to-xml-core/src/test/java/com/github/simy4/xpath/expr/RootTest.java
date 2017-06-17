@@ -1,6 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
@@ -29,6 +30,8 @@ public class RootTest {
             new LiteralView("literal"),
             new NumberView(2.0),
             new NodeView<String>(node("node")),
+            BooleanView.truthy(),
+            BooleanView.falsy(),
             NodeSetView.empty(),
             NodeSetView.singleton(new NodeView<String>(node("node"))),
     };
