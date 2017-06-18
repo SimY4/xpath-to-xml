@@ -8,13 +8,8 @@ import com.github.simy4.xpath.view.View;
 class Subtraction implements Operator {
 
     @Override
-    public <N> View<N> resolve(View<N> left, View<N> right) {
+    public <N> View<N> resolve(ExprContext<N> context, View<N> left, View<N> right) throws XmlBuilderException {
         return new NumberView<N>(left.toNumber() - right.toNumber());
-    }
-
-    @Override
-    public <N> View<N> apply(ExprContext<N> context, View<N> left, View<N> right) throws XmlBuilderException {
-        throw new XmlBuilderException("Can not apply a 'subtract' operator to: " + left + " and: " + right);
     }
 
     @Override

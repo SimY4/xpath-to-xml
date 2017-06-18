@@ -1,12 +1,12 @@
 package com.github.simy4.xpath.parser;
 
 import com.github.simy4.xpath.expr.Attribute;
-import com.github.simy4.xpath.expr.ComparisonExpr;
 import com.github.simy4.xpath.expr.Element;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.expr.Identity;
 import com.github.simy4.xpath.expr.LiteralExpr;
 import com.github.simy4.xpath.expr.NumberExpr;
+import com.github.simy4.xpath.expr.OperationExpr;
 import com.github.simy4.xpath.expr.Parent;
 import com.github.simy4.xpath.expr.PathExpr;
 import com.github.simy4.xpath.expr.Root;
@@ -69,27 +69,27 @@ public class XPathParser {
             case EQUALS:
                 context.match(Type.EQUALS);
                 right = UnaryExpr(context);
-                return new ComparisonExpr(left, right, Operator.equals);
+                return new OperationExpr(left, right, Operator.equals);
             case NOT_EQUALS:
                 context.match(Type.NOT_EQUALS);
                 right = UnaryExpr(context);
-                return new ComparisonExpr(left, right, Operator.notEquals);
+                return new OperationExpr(left, right, Operator.notEquals);
             case LESS_THAN_OR_EQUALS:
                 context.match(Type.LESS_THAN_OR_EQUALS);
                 right = UnaryExpr(context);
-                return new ComparisonExpr(left, right, Operator.lessThanOrEquals);
+                return new OperationExpr(left, right, Operator.lessThanOrEquals);
             case LESS_THAN:
                 context.match(Type.LESS_THAN);
                 right = UnaryExpr(context);
-                return new ComparisonExpr(left, right, Operator.lessThan);
+                return new OperationExpr(left, right, Operator.lessThan);
             case GREATER_THAN_OR_EQUALS:
                 context.match(Type.GREATER_THAN_OR_EQUALS);
                 right = UnaryExpr(context);
-                return new ComparisonExpr(left, right, Operator.greaterThanOrEquals);
+                return new OperationExpr(left, right, Operator.greaterThanOrEquals);
             case GREATER_THAN:
                 context.match(Type.GREATER_THAN);
                 right = UnaryExpr(context);
-                return new ComparisonExpr(left, right, Operator.greaterThan);
+                return new OperationExpr(left, right, Operator.greaterThan);
             default:
                 return left;
         }

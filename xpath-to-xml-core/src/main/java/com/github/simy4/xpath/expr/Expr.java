@@ -12,12 +12,12 @@ import com.github.simy4.xpath.view.View;
 public interface Expr {
 
     /**
-     * Evaluate this expression on given xml model view using given navigator.
+     * Evaluate this expression on given xml model view using given context.
      *
      * @param context XPath expression context
      * @param xml     XML model
      * @param <N>     XML model type
-     * @return ordered set of evaluated node views
+     * @return evaluated XML node view
      * @throws XmlBuilderException if error occur during XML model modification
      */
     <N> View<N> resolve(ExprContext<N> context, View<N> xml) throws XmlBuilderException;

@@ -30,8 +30,16 @@ public interface Operator {
 
     Operator multiplication = new Multiplication();
 
-    <N> View<N> resolve(View<N> left, View<N> right);
-
-    <N> View<N> apply(ExprContext<N> context, View<N> left, View<N> right) throws XmlBuilderException;
+    /**
+     * Evaluate this operator on two given xml model views using given context.
+     *
+     * @param context XPath expression context
+     * @param left    left XML model
+     * @param right   right XML model
+     * @param <N>     XML model type
+     * @return evaluated XML node view
+     * @throws XmlBuilderException if error occur during XML model modification
+     */
+    <N> View<N> resolve(ExprContext<N> context, View<N> left, View<N> right) throws XmlBuilderException;
 
 }

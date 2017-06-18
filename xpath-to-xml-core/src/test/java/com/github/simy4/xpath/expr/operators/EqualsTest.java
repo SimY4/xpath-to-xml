@@ -65,8 +65,11 @@ public class EqualsTest {
     @Theory
     public void shouldMatchLeftEqualViewToRightEqualViewOnTest(@FromDataPoints("eq left") View<String> left,
                                                                @FromDataPoints("eq left") View<String> right) {
+        // given
+        ExprContext<String> context = new ExprContext<String>(navigator, false, 1);
+
         // when
-        View<String> result = Operator.equals.resolve(left, right);
+        View<String> result = Operator.equals.resolve(context, left, right);
 
         // then
         assertThat(result).isEqualTo(BooleanView.truthy());
@@ -75,8 +78,11 @@ public class EqualsTest {
     @Theory
     public void shouldMatchRightEqualViewToLeftEqualViewOnTest(@FromDataPoints("eq left") View<String> left,
                                                                @FromDataPoints("eq left") View<String> right) {
+        // given
+        ExprContext<String> context = new ExprContext<String>(navigator, false, 1);
+
         // when
-        View<String> result = Operator.equals.resolve(right, left);
+        View<String> result = Operator.equals.resolve(context, right, left);
 
         // then
         assertThat(result).isEqualTo(BooleanView.truthy());
@@ -86,8 +92,11 @@ public class EqualsTest {
     public void shouldMismatchLeftNonEqualViewToRightNonEqualViewOnTest(
             @FromDataPoints("eq left") View<String> left,
             @FromDataPoints("eq right") View<String> right) {
+        // given
+        ExprContext<String> context = new ExprContext<String>(navigator, false, 1);
+
         // when
-        View<String> result = Operator.equals.resolve(left, right);
+        View<String> result = Operator.equals.resolve(context, left, right);
 
         // then
         assertThat(result).isEqualTo(BooleanView.falsy());
@@ -97,8 +106,11 @@ public class EqualsTest {
     public void shouldMismatchRightNonEqualViewToLeftNonEqualViewOnTest(
             @FromDataPoints("eq left") View<String> left,
             @FromDataPoints("eq right") View<String> right) {
+        // given
+        ExprContext<String> context = new ExprContext<String>(navigator, false, 1);
+
         // when
-        View<String> result = Operator.equals.resolve(right, left);
+        View<String> result = Operator.equals.resolve(context, right, left);
 
         // then
         assertThat(result).isEqualTo(BooleanView.falsy());
@@ -114,14 +126,15 @@ public class EqualsTest {
         context.advance();
 
         // when
-        Operator.equals.apply(context, left, right);
+        Operator.equals.resolve(context, left, right);
 
         // then
         verify(navigator).setText(ArgumentMatchers.<Node<String>>any(), eq(right.toString()));
     }
 
     @Theory
-    public void shouldFailToApplyOp(@FromDataPoints("eq left") View<String> left) {
+    public void shouldFailToApplyOp(@FromDataPoints("eq left") View<String> left,
+                                    @FromDataPoints("eq right") View<String> right) {
         // given
         assumeFalse(left instanceof NodeView
                 || (left instanceof NodeSetView && ((NodeSetView) left).iterator().next() instanceof NodeView));
@@ -132,7 +145,7 @@ public class EqualsTest {
         expectedException.expect(XmlBuilderException.class);
 
         // when
-        Operator.equals.apply(context, left, left);
+        Operator.equals.resolve(context, left, right);
     }
 
     @Test

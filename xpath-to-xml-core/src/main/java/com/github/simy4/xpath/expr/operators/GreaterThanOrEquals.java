@@ -8,14 +8,13 @@ import com.github.simy4.xpath.view.View;
 class GreaterThanOrEquals implements Operator {
 
     @Override
-    public <N> View<N> resolve(View<N> left, View<N> right) {
-        return BooleanView.of(0 >= left.compareTo(right));
-    }
-
-    @Override
-    public <N> View<N> apply(ExprContext<N> context, View<N> left, View<N> right) throws XmlBuilderException {
-        throw new XmlBuilderException("Can not apply a 'greater than or equals' operator "
-                + "to: " + left + " and: " + right);
+    public <N> View<N> resolve(ExprContext<N> context, View<N> left, View<N> right) throws XmlBuilderException {
+        boolean ge = 0 >= left.compareTo(right);
+        if (!ge && context.shouldCreate()) {
+            throw new XmlBuilderException("Can not apply a 'greater than or equals' operator "
+                    + "to: " + left + " and: " + right);
+        }
+        return BooleanView.of(ge);
     }
 
     @Override

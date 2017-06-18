@@ -1,11 +1,11 @@
 package com.github.simy4.xpath.parser;
 
 import com.github.simy4.xpath.expr.Attribute;
-import com.github.simy4.xpath.expr.ComparisonExpr;
 import com.github.simy4.xpath.expr.Element;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.expr.Identity;
 import com.github.simy4.xpath.expr.NumberExpr;
+import com.github.simy4.xpath.expr.OperationExpr;
 import com.github.simy4.xpath.expr.PathExpr;
 import com.github.simy4.xpath.expr.Root;
 import com.github.simy4.xpath.expr.StepExpr;
@@ -55,7 +55,7 @@ public class XPathParserTest {
                 Pair.of("/bookstore", pathExpr(new Root(), new Element(new QName("bookstore"), NIL))),
                 Pair.of("book[/bookstore/@specialty=@style]",
                         pathExpr(new Element(new QName("book"), Collections.<Expr>singletonList(
-                                new ComparisonExpr(
+                                new OperationExpr(
                                         pathExpr(
                                                 new Root(),
                                                 new Element(new QName("bookstore"), NIL),

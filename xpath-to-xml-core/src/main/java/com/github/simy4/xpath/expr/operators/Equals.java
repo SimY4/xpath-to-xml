@@ -12,13 +12,13 @@ import com.github.simy4.xpath.view.View;
 class Equals implements Operator {
 
     @Override
-    public <N> View<N> resolve(View<N> left, View<N> right) {
-        return BooleanView.of(0 == left.compareTo(right));
-    }
-
-    @Override
-    public <N> View<N> apply(ExprContext<N> context, View<N> left, View<N> right) throws XmlBuilderException {
-        return left.visit(new EqualsApplicationVisitor<N>(context.getNavigator(), right));
+    public <N> View<N> resolve(ExprContext<N> context, View<N> left, View<N> right) throws XmlBuilderException {
+        boolean eq = 0 == left.compareTo(right);
+        if (!eq && context.shouldCreate()) {
+            left.visit(new ApplicationVisitor<N>(context.getNavigator(), right));
+            eq = true;
+        }
+        return BooleanView.of(eq);
     }
 
     @Override
@@ -26,12 +26,12 @@ class Equals implements Operator {
         return "=";
     }
 
-    private static final class EqualsApplicationVisitor<N> extends AbstractViewVisitor<N, View<N>> {
+    private static final class ApplicationVisitor<N> extends AbstractViewVisitor<N, View<N>> {
 
         private final Navigator<N> navigator;
         private final View<N> right;
 
-        private EqualsApplicationVisitor(Navigator<N> navigator, View<N> right) {
+        private ApplicationVisitor(Navigator<N> navigator, View<N> right) {
             this.navigator = navigator;
             this.right = right;
         }

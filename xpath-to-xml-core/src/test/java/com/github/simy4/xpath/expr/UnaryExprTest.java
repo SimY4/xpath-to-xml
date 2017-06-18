@@ -2,6 +2,7 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.utils.Pair;
+import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
@@ -34,6 +35,8 @@ public class UnaryExprTest {
             Pair.of(new LiteralView("literal"), new NumberView(Double.NaN)),
             Pair.of(new NodeView<String>(node("2.0")), new NumberView(-2.0)),
             Pair.of(new NodeView<String>(node("node")), new NumberView(Double.NaN)),
+            Pair.of(BooleanView.truthy(), new NumberView<String>(-1.0)),
+            Pair.of(BooleanView.falsy(), new NumberView<String>(-0.0)),
             Pair.of(NodeSetView.empty(), new NumberView(Double.NaN)),
             Pair.of(NodeSetView.singleton(new NodeView<String>(node("2.0"))), new NumberView(-2.0)),
             Pair.of(NodeSetView.singleton(new NodeView<String>(node("node"))), new NumberView(Double.NaN)),
