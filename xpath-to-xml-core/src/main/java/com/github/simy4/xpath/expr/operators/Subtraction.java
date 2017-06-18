@@ -14,7 +14,7 @@ class Subtraction implements Operator {
 
     @Override
     public String toString() {
-        return "+";
+        return "-";
     }
 
 }
