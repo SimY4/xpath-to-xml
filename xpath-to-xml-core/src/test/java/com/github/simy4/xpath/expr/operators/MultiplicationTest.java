@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MultiplicationTest {
 
     @DataPoints("3.0")
-    public static final View[] EQ_TEST = {
+    public static final View[] NUMBERS = {
             new LiteralView("3.0"),
             new NumberView(3.0),
             new NodeView<String>(node("3.0")),

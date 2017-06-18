@@ -9,7 +9,7 @@ class GreaterThan implements Operator {
 
     @Override
     public <N> View<N> resolve(ExprContext<N> context, View<N> left, View<N> right) throws XmlBuilderException {
-        boolean gt = 0 > left.compareTo(right);
+        boolean gt = 0 < Double.compare(left.toNumber(), right.toNumber());
         if (!gt && context.shouldCreate()) {
             throw new XmlBuilderException("Can not apply a 'greater than' operator to: " + left + " and: " + right);
         }

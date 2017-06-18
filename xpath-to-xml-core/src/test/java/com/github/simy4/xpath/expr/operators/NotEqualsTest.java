@@ -56,12 +56,10 @@ public class NotEqualsTest {
             singleton(BooleanView.falsy()),
     };
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
+    @Rule public ExpectedException expectedException = ExpectedException.none();
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
-    @Mock
-    private Navigator<String> navigator;
+    @Mock private Navigator<String> navigator;
 
     @Theory
     public void shouldAssociativelyResolveEqualViewsToFalse(@FromDataPoints("ne left") View<String> left,
