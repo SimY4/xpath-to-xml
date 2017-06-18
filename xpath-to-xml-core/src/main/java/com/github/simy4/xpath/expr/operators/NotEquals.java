@@ -16,14 +16,14 @@ class NotEquals implements Operator {
         boolean eq = 0 == left.compareTo(right);
         if (eq && context.shouldCreate()) {
             left.visit(new ApplicationVisitor<N>(context.getNavigator(), right));
-            eq = true;
+            eq = false;
         }
-        return BooleanView.of(eq);
+        return BooleanView.of(!eq);
     }
 
     @Override
     public String toString() {
-        return "!" + super.toString();
+        return "!=";
     }
 
     private static final class ApplicationVisitor<N> extends AbstractViewVisitor<N, View<N>> {

@@ -31,9 +31,9 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 @RunWith(Theories.class)
-public class EqualsTest {
+public class NotEqualsTest {
 
-    @DataPoints("eq left")
+    @DataPoints("ne left")
     public static final View[] EQ_TEST = {
             new LiteralView("2.0"),
             new NumberView(2.0),
@@ -43,7 +43,7 @@ public class EqualsTest {
             singleton(new NodeView<String>(node("2.0"))),
     };
 
-    @DataPoints("eq right")
+    @DataPoints("ne right")
     public static final View[] NE_TEST = {
             new LiteralView("literal"),
             new NumberView(10.0),
@@ -56,35 +56,22 @@ public class EqualsTest {
             singleton(BooleanView.falsy()),
     };
 
-    @Rule public ExpectedException expectedException = ExpectedException.none();
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
-    @Mock private Navigator<String> navigator;
+    @Mock
+    private Navigator<String> navigator;
 
     @Theory
-    public void shouldAssociativelyResolveEqualViewsToTrue(@FromDataPoints("eq left") View<String> left,
-                                                           @FromDataPoints("eq left") View<String> right) {
+    public void shouldAssociativelyResolveEqualViewsToFalse(@FromDataPoints("ne left") View<String> left,
+                                                            @FromDataPoints("ne left") View<String> right) {
         // given
         ExprContext<String> context = new ExprContext<String>(navigator, false, 1);
 
         // when
-        View<String> leftToRight = Operator.equals.resolve(context, left, right);
-        View<String> rightToLeft = Operator.equals.resolve(context, right, left);
-
-        // then
-        assertThat(leftToRight).isEqualTo(BooleanView.truthy());
-        assertThat(rightToLeft).isEqualTo(BooleanView.truthy());
-    }
-
-    @Theory
-    public void shouldAssociativelyResolveNonEqualViewsToFalse(@FromDataPoints("eq left") View<String> left,
-                                                               @FromDataPoints("eq right") View<String> right) {
-        // given
-        ExprContext<String> context = new ExprContext<String>(navigator, false, 1);
-
-        // when
-        View<String> leftToRight = Operator.equals.resolve(context, left, right);
-        View<String> rightToLeft = Operator.equals.resolve(context, right, left);
+        View<String> leftToRight = Operator.notEquals.resolve(context, left, right);
+        View<String> rightToLeft = Operator.notEquals.resolve(context, right, left);
 
         // then
         assertThat(leftToRight).isEqualTo(BooleanView.falsy());
@@ -92,8 +79,23 @@ public class EqualsTest {
     }
 
     @Theory
-    public void shouldApplyRightViewToLeftViewWhenShouldCreate(@FromDataPoints("eq left") View<String> left,
-                                                               @FromDataPoints("eq right") View<String> right) {
+    public void shouldAssociativelyResolveNonEqualViewsToTrue(@FromDataPoints("ne left") View<String> left,
+                                                              @FromDataPoints("ne right") View<String> right) {
+        // given
+        ExprContext<String> context = new ExprContext<String>(navigator, false, 1);
+
+        // when
+        View<String> leftToRight = Operator.notEquals.resolve(context, left, right);
+        View<String> rightToLeft = Operator.notEquals.resolve(context, right, left);
+
+        // then
+        assertThat(leftToRight).isEqualTo(BooleanView.truthy());
+        assertThat(rightToLeft).isEqualTo(BooleanView.truthy());
+    }
+
+    @Theory
+    public void shouldApplyRightViewToLeftViewWhenShouldCreate(@FromDataPoints("ne left") View<String> left,
+                                                               @FromDataPoints("ne left") View<String> right) {
         // given
         if (!(left instanceof NodeView)
                 && (!(left instanceof NodeSetView) || !(((NodeSetView) left).iterator().next() instanceof NodeView))) {
@@ -103,16 +105,16 @@ public class EqualsTest {
         context.advance();
 
         // when
-        View<String> result = Operator.equals.resolve(context, left, right);
+        View<String> result = Operator.notEquals.resolve(context, left, right);
 
         // then
         assertThat(result).isEqualTo(BooleanView.truthy());
-        verify(navigator).setText(ArgumentMatchers.<Node<String>>any(), eq(right.toString()));
+        verify(navigator).setText(ArgumentMatchers.<Node<String>>any(), eq(Boolean.toString(!right.toBoolean())));
     }
 
     @Test
     public void testToString() {
-        assertThat(Operator.equals).hasToString("=");
+        assertThat(Operator.notEquals).hasToString("!=");
     }
 
 }
