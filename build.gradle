@@ -1,6 +1,6 @@
 allprojects {
     group 'com.github.simy4'
-    version '0.1-SNAPSHOT'
+    version '0.9-SNAPSHOT'
 }
 
 subprojects {

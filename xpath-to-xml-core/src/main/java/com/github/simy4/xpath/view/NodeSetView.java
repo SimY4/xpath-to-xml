@@ -2,6 +2,7 @@ package com.github.simy4.xpath.view;
 
 import com.github.simy4.xpath.XmlBuilderException;
 
+import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 import java.util.Collections;
 import java.util.Iterator;
@@ -38,7 +39,7 @@ public final class NodeSetView<N> implements View<N>, Iterable<View<N>> {
     }
 
     @Override
-    public int compareTo(View<N> other) {
+    public int compareTo(@Nonnull View<N> other) {
         if (nodeSet.isEmpty()) {
             return other.toBoolean() ? -1 : 0;
         } else {

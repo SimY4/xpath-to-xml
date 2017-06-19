@@ -2,6 +2,7 @@ package com.github.simy4.xpath.view;
 
 import com.github.simy4.xpath.XmlBuilderException;
 
+import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
 @Immutable
@@ -32,7 +33,7 @@ public final class BooleanView<N> implements View<N> {
     }
 
     @Override
-    public int compareTo(View<N> other) {
+    public int compareTo(@Nonnull View<N> other) {
         final boolean thatBool = other.toBoolean();
         return (bool == thatBool) ? 0 : (bool ? 1 : -1);
     }
