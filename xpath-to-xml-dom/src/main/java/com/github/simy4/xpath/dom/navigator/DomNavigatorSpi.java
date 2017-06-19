@@ -1,5 +1,6 @@
 package com.github.simy4.xpath.dom.navigator;
 
+import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.effects.Effect;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.NavigatorSpi;
@@ -13,7 +14,7 @@ public class DomNavigatorSpi implements NavigatorSpi {
     }
 
     @Override
-    public <T> T process(T xml, Iterable<Effect> effects) {
+    public <T> T process(T xml, Iterable<Effect> effects) throws XmlBuilderException {
         if (!canHandle(xml)) {
             throw new IllegalArgumentException("XML model is not supported");
         }

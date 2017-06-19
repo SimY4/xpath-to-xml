@@ -1,5 +1,6 @@
 package com.github.simy4.xpath.navigator;
 
+import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.effects.Effect;
 
 /**
@@ -24,7 +25,8 @@ public interface NavigatorSpi {
      * @param xml     XML model to modify
      * @param effects effects to apply
      * @return modified XML model
+     * @throws XmlBuilderException if error occur during XML model modification
      */
-    <T> T process(T xml, Iterable<Effect> effects);
+    <T> T process(T xml, Iterable<Effect> effects) throws XmlBuilderException;
 
 }
