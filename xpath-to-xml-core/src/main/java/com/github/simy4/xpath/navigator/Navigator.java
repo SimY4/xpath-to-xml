@@ -43,7 +43,7 @@ public interface Navigator<N> {
      * @param parent XML node to scan
      * @return child element nodes
      */
-    Iterable<Node<N>> elementsOf(Node<N> parent);
+    Iterable<? extends Node<N>> elementsOf(Node<N> parent);
 
     /**
      * Child attribute nodes of given XML node.
@@ -51,7 +51,7 @@ public interface Navigator<N> {
      * @param parent XML node to scan
      * @return child attribute nodes
      */
-    Iterable<Node<N>> attributesOf(Node<N> parent);
+    Iterable<? extends Node<N>> attributesOf(Node<N> parent);
 
     /**
      * Creates detached XML attribute node.

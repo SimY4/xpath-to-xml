@@ -12,6 +12,7 @@ import static com.github.simy4.xpath.utils.StringNode.node;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -86,7 +87,7 @@ public class ElementTest extends AbstractStepExprTest<Element> {
 
     @Override
     void setUpResolvableExpr() {
-        when(navigator.elementsOf(parentNode.getNode())).thenReturn(asList(node("elem"), node("another-elem")));
+        doReturn(asList(node("elem"), node("another-elem"))).when(navigator).elementsOf(parentNode.getNode());
         super.setUpResolvableExpr();
     }
 

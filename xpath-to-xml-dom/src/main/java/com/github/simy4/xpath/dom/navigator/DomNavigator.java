@@ -1,8 +1,8 @@
 package com.github.simy4.xpath.dom.navigator;
 
+import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.XmlBuilderException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -17,7 +17,7 @@ import java.util.Iterator;
 final class DomNavigator implements Navigator<org.w3c.dom.Node> {
 
     private final Document document;
-    private final Node<org.w3c.dom.Node> xml;
+    private final DomNode xml;
 
     DomNavigator(org.w3c.dom.Node xml) {
         this.xml = new DomNode(xml);
@@ -25,46 +25,46 @@ final class DomNavigator implements Navigator<org.w3c.dom.Node> {
     }
 
     @Override
-    public Node<org.w3c.dom.Node> xml() {
+    public DomNode xml() {
         return xml;
     }
 
     @Override
-    public Node<org.w3c.dom.Node> root() {
+    public DomNode root() {
         return new DomNode(document);
     }
 
     @Override
     @Nullable
-    public Node<org.w3c.dom.Node> parentOf(Node<org.w3c.dom.Node> node) {
+    public DomNode parentOf(Node<org.w3c.dom.Node> node) {
         org.w3c.dom.Node parent = node.getWrappedNode().getParentNode();
         return null == parent ? null : new DomNode(parent);
     }
 
     @Override
-    public Iterable<Node<org.w3c.dom.Node>> elementsOf(final Node<org.w3c.dom.Node> parent) {
-        return new Iterable<Node<org.w3c.dom.Node>>() {
+    public Iterable<DomNode> elementsOf(final Node<org.w3c.dom.Node> parent) {
+        return new Iterable<DomNode>() {
             @Override
             @Nonnull
-            public Iterator<Node<org.w3c.dom.Node>> iterator() {
+            public Iterator<DomNode> iterator() {
                 return new DomElementsIterator(parent.getWrappedNode());
             }
         };
     }
 
     @Override
-    public Iterable<Node<org.w3c.dom.Node>> attributesOf(final Node<org.w3c.dom.Node> parent) {
-        return new Iterable<Node<org.w3c.dom.Node>>() {
+    public Iterable<DomNode> attributesOf(final Node<org.w3c.dom.Node> parent) {
+        return new Iterable<DomNode>() {
             @Override
             @Nonnull
-            public Iterator<Node<org.w3c.dom.Node>> iterator() {
+            public Iterator<DomNode> iterator() {
                 return new DomAttributesIterator(parent.getWrappedNode());
             }
         };
     }
 
     @Override
-    public Node<org.w3c.dom.Node> createAttribute(QName attribute) throws XmlBuilderException {
+    public DomNode createAttribute(QName attribute) throws XmlBuilderException {
         try {
             if (XMLConstants.NULL_NS_URI.equals(attribute.getNamespaceURI())) {
                 return new DomNode(document.createAttribute(attribute.getLocalPart()));
@@ -79,7 +79,7 @@ final class DomNavigator implements Navigator<org.w3c.dom.Node> {
     }
 
     @Override
-    public Node<org.w3c.dom.Node> createElement(QName element) throws XmlBuilderException {
+    public DomNode createElement(QName element) throws XmlBuilderException {
         try {
             if (XMLConstants.NULL_NS_URI.equals(element.getNamespaceURI())) {
                 return new DomNode(document.createElement(element.getLocalPart()));
@@ -94,7 +94,7 @@ final class DomNavigator implements Navigator<org.w3c.dom.Node> {
     }
 
     @Override
-    public Node<org.w3c.dom.Node> clone(Node<org.w3c.dom.Node> toClone) {
+    public DomNode clone(Node<org.w3c.dom.Node> toClone) {
         return new DomNode(toClone.getWrappedNode().cloneNode(true));
     }
 

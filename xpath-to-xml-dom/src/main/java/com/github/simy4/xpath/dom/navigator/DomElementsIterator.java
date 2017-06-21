@@ -1,11 +1,9 @@
 package com.github.simy4.xpath.dom.navigator;
 
-import com.github.simy4.xpath.navigator.Node;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-final class DomElementsIterator implements Iterator<Node<org.w3c.dom.Node>> {
+final class DomElementsIterator implements Iterator<DomNode> {
 
     private org.w3c.dom.Node child;
 
@@ -19,7 +17,7 @@ final class DomElementsIterator implements Iterator<Node<org.w3c.dom.Node>> {
     }
 
     @Override
-    public Node<org.w3c.dom.Node> next() {
+    public DomNode next() {
         if (!hasNext()) {
             throw new NoSuchElementException("No more elements");
         }

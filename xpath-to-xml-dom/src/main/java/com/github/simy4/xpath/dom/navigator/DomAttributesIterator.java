@@ -1,12 +1,11 @@
 package com.github.simy4.xpath.dom.navigator;
 
-import com.github.simy4.xpath.navigator.Node;
 import org.w3c.dom.NamedNodeMap;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-final class DomAttributesIterator implements Iterator<Node<org.w3c.dom.Node>> {
+final class DomAttributesIterator implements Iterator<DomNode> {
 
     private final NamedNodeMap attributes;
     private int cursor;
@@ -21,7 +20,7 @@ final class DomAttributesIterator implements Iterator<Node<org.w3c.dom.Node>> {
     }
 
     @Override
-    public Node<org.w3c.dom.Node> next() {
+    public DomNode next() {
         if (!hasNext()) {
             throw new NoSuchElementException("No more attributes");
         }
