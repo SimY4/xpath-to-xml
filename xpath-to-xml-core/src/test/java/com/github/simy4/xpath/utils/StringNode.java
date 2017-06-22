@@ -1,7 +1,6 @@
 package com.github.simy4.xpath.utils;
 
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.view.NodeView;
 
 import javax.xml.namespace.QName;
 
@@ -30,10 +29,6 @@ public final class StringNode implements Node<String> {
     @Override
     public String getText() {
         return value;
-    }
-
-    public NodeView<String> view() {
-        return new NodeView<String>(this);
     }
 
     @Override

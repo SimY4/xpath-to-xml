@@ -108,11 +108,18 @@ final class DomNavigator implements Navigator<org.w3c.dom.Node> {
     }
 
     @Override
-    public void append(Node<org.w3c.dom.Node> parentNode, Node<org.w3c.dom.Node> child) throws XmlBuilderException {
+    public void append(Node<org.w3c.dom.Node> parent, Node<org.w3c.dom.Node> child) throws XmlBuilderException {
         try {
-            parentNode.getWrappedNode().appendChild(child.getWrappedNode());
+            final org.w3c.dom.Node parentNode = parent.getWrappedNode();
+            final org.w3c.dom.Node childNode = child.getWrappedNode();
+            if (org.w3c.dom.Node.ELEMENT_NODE == parentNode.getNodeType()
+                    && org.w3c.dom.Node.ATTRIBUTE_NODE == childNode.getNodeType()) {
+                ((Element) parentNode).setAttributeNode((Attr) childNode);
+            } else {
+                parentNode.appendChild(childNode);
+            }
         } catch (DOMException de) {
-            throw new XmlBuilderException("Failed to append child " + child + " to " + parentNode, de);
+            throw new XmlBuilderException("Failed to append child " + child + " to " + parent, de);
         }
     }
 

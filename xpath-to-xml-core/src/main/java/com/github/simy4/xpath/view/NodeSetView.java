@@ -40,33 +40,33 @@ public final class NodeSetView<N> implements View<N>, Iterable<View<N>> {
 
     @Override
     public int compareTo(@Nonnull View<N> other) {
-        if (nodeSet.isEmpty()) {
+        if (isEmpty()) {
             return other.toBoolean() ? -1 : 0;
         } else {
-            return nodeSet.iterator().next().compareTo(other);
+            return iterator().next().compareTo(other);
         }
     }
 
     @Override
     public boolean toBoolean() {
-        return !nodeSet.isEmpty();
+        return !isEmpty();
     }
 
     @Override
     public double toNumber() {
-        if (nodeSet.isEmpty()) {
+        if (isEmpty()) {
             return Double.NaN;
         } else {
-            return nodeSet.iterator().next().toNumber();
+            return iterator().next().toNumber();
         }
     }
 
     @Override
     public String toString() {
-        if (nodeSet.isEmpty()) {
+        if (isEmpty()) {
             return "";
         } else {
-            return nodeSet.iterator().next().toString();
+            return iterator().next().toString();
         }
     }
 
@@ -78,6 +78,10 @@ public final class NodeSetView<N> implements View<N>, Iterable<View<N>> {
     @Override
     public Iterator<View<N>> iterator() {
         return nodeSet.iterator();
+    }
+
+    public boolean isEmpty() {
+        return nodeSet.isEmpty();
     }
 
     public int size() {

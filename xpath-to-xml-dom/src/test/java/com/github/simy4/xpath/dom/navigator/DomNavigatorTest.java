@@ -1,8 +1,8 @@
 package com.github.simy4.xpath.dom.navigator;
 
+import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.XmlBuilderException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +28,8 @@ import static org.mockito.Mockito.when;
 public class DomNavigatorTest {
 
     @Mock private Document root;
-    @Mock private org.w3c.dom.Node xml;
+    @Mock private Element xml;
+    @Mock private Attr attr;
     @Mock private NamedNodeMap attributes;
     @Mock private org.w3c.dom.Node child1;
     @Mock private org.w3c.dom.Node child2;
@@ -49,6 +50,8 @@ public class DomNavigatorTest {
         when(xml.getFirstChild()).thenReturn(child1);
         when(xml.getAttributes()).thenReturn(attributes);
         when(xml.cloneNode(true)).thenReturn(xml);
+
+        when(attr.getNodeType()).thenReturn(org.w3c.dom.Node.ATTRIBUTE_NODE);
 
         when(attributes.getLength()).thenReturn(3);
         when(attributes.item(0)).thenReturn(child1);
@@ -162,9 +165,15 @@ public class DomNavigatorTest {
     }
 
     @Test
-    public void testAppendSuccess() {
+    public void testAppendNodeToNodeSuccess() {
         navigator.append(new DomNode(root), new DomNode(xml));
         verify(root).appendChild(xml);
+    }
+
+    @Test
+    public void testAppendAttrToElementSuccess() {
+        navigator.append(new DomNode(xml), new DomNode(attr));
+        verify(xml).setAttributeNode(attr);
     }
 
     @Test(expected = XmlBuilderException.class)

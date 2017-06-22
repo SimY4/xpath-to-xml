@@ -51,6 +51,8 @@ public class XmlBuilderTest {
                 { "simple", null, documentBuilderFactory},
                 { "simple", new SimpleNamespaceContext(), documentBuilderFactory},
                 { "ns-simple", new SimpleNamespaceContext(), nsAwareDocumentBuilderFactory},
+                { "attr", null, documentBuilderFactory},
+                { "attr", new SimpleNamespaceContext(), documentBuilderFactory},
         });
     }
 

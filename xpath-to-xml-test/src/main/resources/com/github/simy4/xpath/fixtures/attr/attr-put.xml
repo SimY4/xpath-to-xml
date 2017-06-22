@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<breakfast_menu>
+    <food calories="" description="" name="Belgian Waffles" price=""/>
+    <food calories="" description="" name="Strawberry Belgian Waffles" price=""/>
+    <food calories="" description="" name="Berry-Berry Belgian Waffles" price=""/>
+    <food calories="" description="" name="French Toast" price=""/>
+    <food calories="" description="Two eggs, bacon or sausage, toast, and our ever-popular hash browns" name="Homestyle Breakfast" price="$6.95"/>
+</breakfast_menu>
