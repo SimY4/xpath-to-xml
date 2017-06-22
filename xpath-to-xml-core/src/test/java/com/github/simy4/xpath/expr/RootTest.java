@@ -30,8 +30,8 @@ public class RootTest {
             new LiteralView("literal"),
             new NumberView(2.0),
             new NodeView<String>(node("node")),
-            BooleanView.truthy(),
-            BooleanView.falsy(),
+            BooleanView.of(true),
+            BooleanView.of(false),
             NodeSetView.empty(),
             NodeSetView.singleton(new NodeView<String>(node("node"))),
     };

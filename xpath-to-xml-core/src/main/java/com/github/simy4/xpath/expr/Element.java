@@ -12,7 +12,7 @@ public class Element extends AbstractStepExpr {
 
     private final QName element;
 
-    public Element(QName element, List<Expr> predicateList) {
+    public Element(QName element, List<Predicate> predicateList) {
         super(predicateList);
         this.element = element;
     }

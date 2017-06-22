@@ -48,12 +48,12 @@ public class NotEqualsTest {
             new LiteralView("literal"),
             new NumberView(10.0),
             new NodeView<String>(node("node")),
-            BooleanView.falsy(),
+            BooleanView.of(false),
             empty(),
             singleton(new LiteralView("literal")),
             singleton(new NumberView(10.0)),
             singleton(new NodeView<String>(node("node"))),
-            singleton(BooleanView.falsy()),
+            singleton(BooleanView.of(false)),
     };
 
     @Rule public ExpectedException expectedException = ExpectedException.none();
@@ -72,8 +72,8 @@ public class NotEqualsTest {
         View<String> rightToLeft = Operator.notEquals.resolve(context, right, left);
 
         // then
-        assertThat(leftToRight).isEqualTo(BooleanView.falsy());
-        assertThat(rightToLeft).isEqualTo(BooleanView.falsy());
+        assertThat(leftToRight).isEqualTo(BooleanView.of(false));
+        assertThat(rightToLeft).isEqualTo(BooleanView.of(false));
     }
 
     @Theory
@@ -87,8 +87,8 @@ public class NotEqualsTest {
         View<String> rightToLeft = Operator.notEquals.resolve(context, right, left);
 
         // then
-        assertThat(leftToRight).isEqualTo(BooleanView.truthy());
-        assertThat(rightToLeft).isEqualTo(BooleanView.truthy());
+        assertThat(leftToRight).isEqualTo(BooleanView.of(true));
+        assertThat(rightToLeft).isEqualTo(BooleanView.of(true));
     }
 
     @Theory
@@ -106,7 +106,7 @@ public class NotEqualsTest {
         View<String> result = Operator.notEquals.resolve(context, left, right);
 
         // then
-        assertThat(result).isEqualTo(BooleanView.truthy());
+        assertThat(result).isEqualTo(BooleanView.of(true));
         verify(navigator).setText(ArgumentMatchers.<Node<String>>any(), eq(Boolean.toString(!right.toBoolean())));
     }
 

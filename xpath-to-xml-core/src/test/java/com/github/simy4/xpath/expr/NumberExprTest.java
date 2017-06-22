@@ -33,8 +33,8 @@ public class NumberExprTest {
             new LiteralView("literal"),
             new NumberView(2.0),
             new NodeView<String>(node("node")),
-            BooleanView.truthy(),
-            BooleanView.falsy(),
+            BooleanView.of(true),
+            BooleanView.of(false),
             NodeSetView.empty(),
             NodeSetView.singleton(new NodeView<String>(node("node"))),
     };
@@ -53,16 +53,16 @@ public class NumberExprTest {
     }
 
     @Test
-    public void shouldPrependMissingNodesAndReturnNumberOnGreedyApplication() {
+    public void shouldPrependMissingNodesAndReturnNumberOnGreedyMatching() {
         // given
         ExprContext<String> context = new ExprContext<String>(navigator, true, 1);
         context.advance();
 
         // when
-        View<String> result = numberExpr.resolve(context, new NodeView<String>(node("node")));
+        boolean result = numberExpr.match(context, new NodeView<String>(node("node")));
 
         // then
-        assertThat(result).isEqualTo(new NumberView<String>(3.0));
+        assertThat(result).isEqualTo(true);
         verify(navigator, times(2)).clone(node("node"));
         verify(navigator, times(2))
                 .prepend(eq(node("node")), ArgumentMatchers.<Node<String>>any());

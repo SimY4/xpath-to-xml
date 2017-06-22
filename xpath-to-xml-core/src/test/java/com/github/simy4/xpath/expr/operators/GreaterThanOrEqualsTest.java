@@ -64,7 +64,7 @@ public class GreaterThanOrEqualsTest {
         View<String> result = Operator.greaterThanOrEquals.resolve(context, greater, less);
 
         // then
-        assertThat(result).isEqualTo(BooleanView.truthy());
+        assertThat(result).isEqualTo(BooleanView.of(true));
     }
 
     @Theory
@@ -77,7 +77,7 @@ public class GreaterThanOrEqualsTest {
         View<String> result = Operator.greaterThanOrEquals.resolve(context, less, greater);
 
         // then
-        assertThat(result).isEqualTo(BooleanView.falsy());
+        assertThat(result).isEqualTo(BooleanView.of(false));
     }
 
     @Theory
@@ -90,7 +90,7 @@ public class GreaterThanOrEqualsTest {
         View<String> result = Operator.greaterThanOrEquals.resolve(context, left, right);
 
         // then
-        assertThat(result).isEqualTo(BooleanView.truthy());
+        assertThat(result).isEqualTo(BooleanView.of(true));
     }
 
     @Theory

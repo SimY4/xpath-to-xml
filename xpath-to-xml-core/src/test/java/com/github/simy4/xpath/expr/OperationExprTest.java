@@ -37,7 +37,7 @@ public class OperationExprTest {
     @Before
     public void setUp() {
         when(operator.resolve(ArgumentMatchers.<ExprContext<String>>any(), ArgumentMatchers.<View<String>>any(),
-                ArgumentMatchers.<View<String>>any())).thenReturn(BooleanView.<String>falsy());
+                ArgumentMatchers.<View<String>>any())).thenReturn(BooleanView.<String>of(false));
 
         comparisonExpr = new OperationExpr(leftExpr, rightExpr, operator);
     }
@@ -46,7 +46,7 @@ public class OperationExprTest {
     public void shouldReturnOperatorResolutionResult() {
         // given
         when(operator.resolve(ArgumentMatchers.<ExprContext<String>>any(), ArgumentMatchers.<View<String>>any(),
-                ArgumentMatchers.<View<String>>any())).thenReturn(BooleanView.<String>truthy());
+                ArgumentMatchers.<View<String>>any())).thenReturn(BooleanView.<String>of(true));
         ExprContext<String> context = new ExprContext<String>(navigator, false, 3);
         context.advance();
 
@@ -56,7 +56,7 @@ public class OperationExprTest {
         // then
         verify(leftExpr).resolve(leftExprContextCaptor.capture(), eq(parentNode));
         verify(rightExpr).resolve(rightExprContextCaptor.capture(), eq(parentNode));
-        assertThat(result).isEqualTo(BooleanView.<String>truthy());
+        assertThat(result).isEqualTo(BooleanView.<String>of(true));
         assertThat(leftExprContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(navigator, false, 1, 0);
         assertThat(rightExprContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")

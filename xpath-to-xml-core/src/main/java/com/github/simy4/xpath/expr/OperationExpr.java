@@ -3,7 +3,7 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.expr.operators.Operator;
 import com.github.simy4.xpath.view.View;
 
-public class OperationExpr implements Expr {
+public class OperationExpr extends AbstractExpr {
 
     private final Expr leftExpr;
     private final Expr rightExpr;

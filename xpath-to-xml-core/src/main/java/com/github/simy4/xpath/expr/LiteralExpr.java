@@ -3,7 +3,7 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.View;
 
-public class LiteralExpr implements Expr {
+public class LiteralExpr extends AbstractExpr {
 
     private final LiteralView literal;
 
