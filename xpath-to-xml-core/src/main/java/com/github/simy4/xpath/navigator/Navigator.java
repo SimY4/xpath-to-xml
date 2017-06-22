@@ -54,22 +54,24 @@ public interface Navigator<N> {
     Iterable<? extends Node<N>> attributesOf(Node<N> parent);
 
     /**
-     * Creates detached XML attribute node.
+     * Creates XML attribute node and appends to given parent.
      *
+     * @param parent    parent XML node to modify
      * @param attribute new XML attribute's name
      * @return newly created attribute node
      * @throws XmlBuilderException if failure occur during XML attribute creation
      */
-    Node<N> createAttribute(QName attribute) throws XmlBuilderException;
+    Node<N> createAttribute(Node<N> parent, QName attribute) throws XmlBuilderException;
 
     /**
-     * Creates detached XML element node.
+     * Creates XML element node and appends to given parent.
      *
+     * @param parent  parent XML node to modify
      * @param element new XML element's name
      * @return newly created element node
      * @throws XmlBuilderException if failure occur during XML element creation
      */
-    Node<N> createElement(QName element) throws XmlBuilderException;
+    Node<N> createElement(Node<N> parent, QName element) throws XmlBuilderException;
 
     /**
      * Clones given node.
@@ -87,15 +89,6 @@ public interface Navigator<N> {
      * @throws XmlBuilderException if failure occur during setting the text content
      */
     void setText(Node<N> node, String text) throws XmlBuilderException;
-
-    /**
-     * Appends given node to given parent.
-     *
-     * @param parentNode XML node to modify
-     * @param child      XML node to append
-     * @throws XmlBuilderException if failure occur during node appending
-     */
-    void append(Node<N> parentNode, Node<N> child) throws XmlBuilderException;
 
     /**
      * Prepends given node to given neighbor node.

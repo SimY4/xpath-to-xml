@@ -18,9 +18,9 @@ public class Attribute extends AbstractStepExpr {
     }
 
     @Override
-    <N> NodeSetView<N> traverseStep(ExprContext<N> context, NodeView<N> parentNode) {
+    <N> NodeSetView<N> traverseStep(ExprContext<N> context, NodeView<N> parentView) {
         final NodeSetView.Builder<N> builder = NodeSetView.builder();
-        for (Node<N> attribute : context.getNavigator().attributesOf(parentNode.getNode())) {
+        for (Node<N> attribute : context.getNavigator().attributesOf(parentView.getNode())) {
             if (0 == qnameComparator.compare(this.attribute, attribute.getNodeName())) {
                 builder.add(new NodeView<N>(attribute));
             }
@@ -29,11 +29,11 @@ public class Attribute extends AbstractStepExpr {
     }
 
     @Override
-    <N> NodeView<N> createStepNode(ExprContext<N> context) {
+    <N> NodeView<N> createStepNode(ExprContext<N> context, NodeView<N> parentView) throws XmlBuilderException {
         if ("*".equals(attribute.getNamespaceURI()) || "*".equals(attribute.getLocalPart())) {
             throw new XmlBuilderException("Wildcard attribute cannot be created");
         }
-        return new NodeView<N>(context.getNavigator().createAttribute(attribute));
+        return new NodeView<N>(context.getNavigator().createAttribute(parentView.getNode(), attribute));
     }
 
     @Override

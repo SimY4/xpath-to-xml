@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -39,10 +38,10 @@ public class DomNavigatorTest {
 
     @Before
     public void setUp() {
-        when(root.createAttribute(anyString())).thenReturn(mock(Attr.class));
-        when(root.createAttributeNS(anyString(), anyString())).thenReturn(mock(Attr.class));
-        when(root.createElement(anyString())).thenReturn(mock(Element.class));
-        when(root.createElementNS(anyString(), anyString())).thenReturn(mock(Element.class));
+        when(root.createAttribute(anyString())).thenReturn(attr);
+        when(root.createAttributeNS(anyString(), anyString())).thenReturn(attr);
+        when(root.createElement(anyString())).thenReturn(xml);
+        when(root.createElementNS(anyString(), anyString())).thenReturn(xml);
 
         when(xml.getNodeType()).thenReturn(org.w3c.dom.Node.ELEMENT_NODE);
         when(xml.getOwnerDocument()).thenReturn(root);
@@ -50,8 +49,6 @@ public class DomNavigatorTest {
         when(xml.getFirstChild()).thenReturn(child1);
         when(xml.getAttributes()).thenReturn(attributes);
         when(xml.cloneNode(true)).thenReturn(xml);
-
-        when(attr.getNodeType()).thenReturn(org.w3c.dom.Node.ATTRIBUTE_NODE);
 
         when(attributes.getLength()).thenReturn(3);
         when(attributes.item(0)).thenReturn(child1);
@@ -100,50 +97,59 @@ public class DomNavigatorTest {
 
     @Test
     public void testCreateAttributeSuccess() {
-        assertThat(navigator.createAttribute(new QName("attr"))).isNotNull();
+        assertThat(navigator.createAttribute(new DomNode(xml), new QName("attr"))).isNotNull();
         verify(root).createAttribute("attr");
+        verify(xml).setAttributeNode(attr);
     }
 
     @Test
     public void testCreateNsAttributeSuccess() {
-        assertThat(navigator.createAttribute(new QName("http://example.com/my", "attr"))).isNotNull();
+        assertThat(navigator.createAttribute(new DomNode(xml), new QName("http://example.com/my", "attr"))).isNotNull();
         verify(root).createAttributeNS("http://example.com/my", "attr");
+        verify(xml).setAttributeNode(attr);
+    }
+
+    @Test(expected = XmlBuilderException.class)
+    public void testCreateAttributeFailureWhenParentIsNotAnElement() {
+        navigator.createAttribute(new DomNode(root), new QName("attr"));
     }
 
     @Test(expected = XmlBuilderException.class)
     public void testCreateAttributeFailure() {
         when(root.createAttribute(anyString())).thenThrow(DOMException.class);
-        navigator.createAttribute(new QName("attr"));
+        navigator.createAttribute(new DomNode(xml), new QName("attr"));
     }
 
     @Test(expected = XmlBuilderException.class)
     public void testCreateNsAttributeFailure() {
         when(root.createAttributeNS(anyString(), anyString())).thenThrow(DOMException.class);
-        navigator.createAttribute(new QName("http://example.com/my", "attr"));
+        navigator.createAttribute(new DomNode(xml), new QName("http://example.com/my", "attr"));
     }
 
     @Test
     public void testCreateElementSuccess() {
-        assertThat(navigator.createElement(new QName("elem"))).isNotNull();
+        assertThat(navigator.createElement(new DomNode(xml), new QName("elem"))).isNotNull();
         verify(root).createElement("elem");
+        verify(xml).appendChild(xml);
     }
 
     @Test
     public void testCreateNsElementSuccess() {
-        assertThat(navigator.createElement(new QName("http://example.com/my", "elem"))).isNotNull();
+        assertThat(navigator.createElement(new DomNode(xml), new QName("http://example.com/my", "elem"))).isNotNull();
         verify(root).createElementNS("http://example.com/my", "elem");
+        verify(xml).appendChild(xml);
     }
 
     @Test(expected = XmlBuilderException.class)
     public void testCreateElementFailure() {
         when(root.createElement(anyString())).thenThrow(DOMException.class);
-        navigator.createElement(new QName("elem"));
+        navigator.createElement(new DomNode(xml), new QName("elem"));
     }
 
     @Test(expected = XmlBuilderException.class)
     public void testCreateNsElementFailure() {
         when(root.createElementNS(anyString(), anyString())).thenThrow(DOMException.class);
-        navigator.createElement(new QName("http://example.com/my", "elem"));
+        navigator.createElement(new DomNode(xml), new QName("http://example.com/my", "elem"));
     }
 
     @Test
@@ -162,24 +168,6 @@ public class DomNavigatorTest {
     public void testSetTextFailure() {
         doThrow(DOMException.class).when(xml).setTextContent(anyString());
         navigator.setText(new DomNode(xml), "text");
-    }
-
-    @Test
-    public void testAppendNodeToNodeSuccess() {
-        navigator.append(new DomNode(root), new DomNode(xml));
-        verify(root).appendChild(xml);
-    }
-
-    @Test
-    public void testAppendAttrToElementSuccess() {
-        navigator.append(new DomNode(xml), new DomNode(attr));
-        verify(xml).setAttributeNode(attr);
-    }
-
-    @Test(expected = XmlBuilderException.class)
-    public void testAppendFailure() {
-        when(root.appendChild(any(org.w3c.dom.Node.class))).thenThrow(DOMException.class);
-        navigator.append(new DomNode(root), new DomNode(xml));
     }
 
     @Test

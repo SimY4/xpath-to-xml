@@ -64,30 +64,40 @@ final class DomNavigator implements Navigator<org.w3c.dom.Node> {
     }
 
     @Override
-    public DomNode createAttribute(QName attribute) throws XmlBuilderException {
+    public DomNode createAttribute(Node<org.w3c.dom.Node> parent, QName attribute) throws XmlBuilderException {
         try {
+            final Attr attr;
             if (XMLConstants.NULL_NS_URI.equals(attribute.getNamespaceURI())) {
-                return new DomNode(document.createAttribute(attribute.getLocalPart()));
+                attr = document.createAttribute(attribute.getLocalPart());
             } else {
-                final Attr attr = document.createAttributeNS(attribute.getNamespaceURI(), attribute.getLocalPart());
+                attr = document.createAttributeNS(attribute.getNamespaceURI(), attribute.getLocalPart());
                 attr.setPrefix(attribute.getPrefix());
-                return new DomNode(attr);
             }
+            org.w3c.dom.Node parentNode = parent.getWrappedNode();
+            if (org.w3c.dom.Node.ELEMENT_NODE == parentNode.getNodeType()) {
+                ((Element) parentNode).setAttributeNode(attr);
+            } else {
+                throw new XmlBuilderException("Unable to append attribute " + attr + " to a non-element node "
+                        + parentNode);
+            }
+            return new DomNode(attr);
         } catch (DOMException de) {
             throw new XmlBuilderException("Failed to create attribute: " + attribute, de);
         }
     }
 
     @Override
-    public DomNode createElement(QName element) throws XmlBuilderException {
+    public DomNode createElement(Node<org.w3c.dom.Node> parent, QName element) throws XmlBuilderException {
         try {
+            final Element elem;
             if (XMLConstants.NULL_NS_URI.equals(element.getNamespaceURI())) {
-                return new DomNode(document.createElement(element.getLocalPart()));
+                elem = document.createElement(element.getLocalPart());
             } else {
-                final Element elem = document.createElementNS(element.getNamespaceURI(), element.getLocalPart());
+                elem = document.createElementNS(element.getNamespaceURI(), element.getLocalPart());
                 elem.setPrefix(element.getPrefix());
-                return new DomNode(elem);
             }
+            parent.getWrappedNode().appendChild(elem);
+            return new DomNode(elem);
         } catch (DOMException de) {
             throw new XmlBuilderException("Failed to create element: " + element, de);
         }
@@ -104,22 +114,6 @@ final class DomNavigator implements Navigator<org.w3c.dom.Node> {
             node.getWrappedNode().setTextContent(text);
         } catch (DOMException de) {
             throw new XmlBuilderException("Failed to set text content to " + node, de);
-        }
-    }
-
-    @Override
-    public void append(Node<org.w3c.dom.Node> parent, Node<org.w3c.dom.Node> child) throws XmlBuilderException {
-        try {
-            final org.w3c.dom.Node parentNode = parent.getWrappedNode();
-            final org.w3c.dom.Node childNode = child.getWrappedNode();
-            if (org.w3c.dom.Node.ELEMENT_NODE == parentNode.getNodeType()
-                    && org.w3c.dom.Node.ATTRIBUTE_NODE == childNode.getNodeType()) {
-                ((Element) parentNode).setAttributeNode((Attr) childNode);
-            } else {
-                parentNode.appendChild(childNode);
-            }
-        } catch (DOMException de) {
-            throw new XmlBuilderException("Failed to append child " + child + " to " + parent, de);
         }
     }
 

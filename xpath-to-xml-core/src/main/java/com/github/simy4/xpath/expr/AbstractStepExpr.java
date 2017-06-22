@@ -26,21 +26,22 @@ abstract class AbstractStepExpr implements StepExpr {
      * Traverses XML nodes for the nodes that matches this step expression.
      *
      * @param context    XPath expression context
-     * @param parentNode XML node to traverse
+     * @param parentView XML node to traverse
      * @param <N>        XML node type
      * @return ordered set of matching nodes
      */
-    abstract <N> NodeSetView<N> traverseStep(ExprContext<N> context, NodeView<N> parentNode);
+    abstract <N> NodeSetView<N> traverseStep(ExprContext<N> context, NodeView<N> parentView);
 
     /**
      * Creates new node of this step type.
      *
-     * @param context XML model navigator
-     * @param <N>     XML node type
+     * @param context    XML model navigator
+     * @param parentView XML node modify
+     * @param <N>        XML node type
      * @return newly created node
      * @throws XmlBuilderException if error occur during XML node creation
      */
-    abstract <N> NodeView<N> createStepNode(ExprContext<N> context) throws XmlBuilderException;
+    abstract <N> NodeView<N> createStepNode(ExprContext<N> context, NodeView<N> parentView) throws XmlBuilderException;
 
     private <N> NodeSetView<N> resolvePredicates(ExprContext<N> lookupContext, NodeSetView<N> xmlNodes,
                                                  Iterator<Expr> predicateIterator) throws XmlBuilderException {
@@ -96,8 +97,7 @@ abstract class AbstractStepExpr implements StepExpr {
             result = resolvePredicates(lookupContext, result, predicateIterator);
 
             if (!result.toBoolean() && context.shouldCreate()) {
-                final NodeView<N> newNode = createStepNode(context);
-                context.getNavigator().append(node.getNode(), newNode.getNode());
+                final NodeView<N> newNode = createStepNode(context, node);
                 result = NodeSetView.singleton(newNode);
                 predicateIterator = predicateList.iterator();
                 lookupContext = lookupContext.clone(true, lookupContext.getSize() + 1, lookupContext.getSize());

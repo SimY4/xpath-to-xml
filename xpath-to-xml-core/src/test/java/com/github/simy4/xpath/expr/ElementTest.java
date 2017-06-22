@@ -1,10 +1,12 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
 
 import javax.xml.namespace.QName;
 
@@ -12,6 +14,7 @@ import static com.github.simy4.xpath.utils.StringNode.node;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -20,9 +23,11 @@ public class ElementTest extends AbstractStepExprTest<Element> {
 
     @Before
     public void setUp() {
-        when(navigator.createElement(new QName("elem"))).thenReturn(node("elem"));
+        QName elem = new QName("elem");
 
-        expr = new Element(new QName("elem"), asList(predicate1, predicate2));
+        when(navigator.createElement(ArgumentMatchers.<Node<String>>any(), eq(elem))).thenReturn(node("elem"));
+
+        expr = new Element(elem, asList(predicate1, predicate2));
     }
 
     @Test
@@ -47,7 +52,7 @@ public class ElementTest extends AbstractStepExprTest<Element> {
 
         // then
         assertThat((Iterable<?>) result).containsExactly(new NodeView<String>(node("elem")));
-        verify(navigator).createElement(new QName("elem"));
+        verify(navigator).createElement(node("node"), new QName("elem"));
     }
 
     @Test(expected = XmlBuilderException.class)
@@ -74,7 +79,8 @@ public class ElementTest extends AbstractStepExprTest<Element> {
     public void shouldPropagateIfFailedToCreateElement() {
         // given
         setUpUnresolvableExpr();
-        when(navigator.createElement(any(QName.class))).thenThrow(XmlBuilderException.class);
+        when(navigator.createElement(ArgumentMatchers.<Node<String>>any(), any(QName.class)))
+                .thenThrow(XmlBuilderException.class);
 
         // when
         expr.resolve(new ExprContext<String>(navigator, true, 1), parentNode);

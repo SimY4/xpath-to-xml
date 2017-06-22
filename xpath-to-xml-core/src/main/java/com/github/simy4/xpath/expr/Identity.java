@@ -13,12 +13,12 @@ public class Identity extends AbstractStepExpr {
     }
 
     @Override
-    <N> NodeSetView<N> traverseStep(ExprContext<N> context, NodeView<N> xml) {
-        return NodeSetView.singleton(xml);
+    <N> NodeSetView<N> traverseStep(ExprContext<N> context, NodeView<N> view) {
+        return NodeSetView.singleton(view);
     }
 
     @Override
-    <N> NodeView<N> createStepNode(ExprContext<N> context) {
+    <N> NodeView<N> createStepNode(ExprContext<N> context, NodeView<N> parentView) throws XmlBuilderException {
         throw new XmlBuilderException("Identity node cannot modify XML model");
     }
 
