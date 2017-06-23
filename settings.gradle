@@ -1,5 +1,6 @@
 rootProject.name = 'xpath-to-xml'
-include 'xpath-to-xml-test'
 include 'xpath-to-xml-core'
 include 'xpath-to-xml-dom'
+include 'xpath-to-xml-dom4j'
+include 'xpath-to-xml-test'
 
