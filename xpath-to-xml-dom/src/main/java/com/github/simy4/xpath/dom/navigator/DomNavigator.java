@@ -104,11 +104,6 @@ final class DomNavigator implements Navigator<org.w3c.dom.Node> {
     }
 
     @Override
-    public DomNode clone(Node<org.w3c.dom.Node> toClone) {
-        return new DomNode(toClone.getWrappedNode().cloneNode(true));
-    }
-
-    @Override
     public void setText(Node<org.w3c.dom.Node> node, String text) {
         try {
             node.getWrappedNode().setTextContent(text);
@@ -118,16 +113,17 @@ final class DomNavigator implements Navigator<org.w3c.dom.Node> {
     }
 
     @Override
-    public void prepend(Node<org.w3c.dom.Node> nextNode, Node<org.w3c.dom.Node> nodeToPrepend)
-            throws XmlBuilderException {
+    public void prependCopy(Node<org.w3c.dom.Node> node) throws XmlBuilderException {
+        final org.w3c.dom.Node wrappedNode = node.getWrappedNode();
+        final org.w3c.dom.Node copiedNode = wrappedNode.cloneNode(true);
         try {
-            final org.w3c.dom.Node parent = nextNode.getWrappedNode().getParentNode();
+            final org.w3c.dom.Node parent = wrappedNode.getParentNode();
             if (null == parent) {
-                throw new XmlBuilderException("Failed to prepend - no parent found of " + nextNode);
+                throw new XmlBuilderException("Unable to prepend - no parent found of " + node);
             }
-            parent.insertBefore(nodeToPrepend.getWrappedNode(), nextNode.getWrappedNode());
+            parent.insertBefore(copiedNode, wrappedNode);
         } catch (DOMException de) {
-            throw new XmlBuilderException("Unable to prepend node " + nodeToPrepend + " to " + nextNode, de);
+            throw new XmlBuilderException("Unable to prepend node " + copiedNode + " to " + node, de);
         }
     }
 
@@ -143,7 +139,7 @@ final class DomNavigator implements Navigator<org.w3c.dom.Node> {
                         + ". Node either root or in detached state");
             }
         } catch (DOMException de) {
-            throw new XmlBuilderException("Failed to remove child node " + node, de);
+            throw new XmlBuilderException("Unable to remove child node " + node, de);
         }
     }
 

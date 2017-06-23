@@ -2,7 +2,6 @@ package com.github.simy4.xpath.dom.navigator;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.Node;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -153,9 +152,21 @@ public class DomNavigatorTest {
     }
 
     @Test
-    public void testClone() {
-        Node<org.w3c.dom.Node> result = navigator.clone(new DomNode(xml));
-        assertThat(result).isEqualTo(new DomNode(xml));
+    public void testPrependCopySuccess() {
+        navigator.prependCopy(new DomNode(xml));
+        verify(xml).cloneNode(true);
+        verify(root).insertBefore(xml, xml);
+    }
+
+    @Test(expected = XmlBuilderException.class)
+    public void testPrependCopyNoParent() {
+        navigator.prependCopy(new DomNode(root));
+    }
+
+    @Test(expected = XmlBuilderException.class)
+    public void testPrependCopyFailure() {
+        doThrow(DOMException.class).when(root).insertBefore(any(org.w3c.dom.Node.class), any(org.w3c.dom.Node.class));
+        navigator.prependCopy(new DomNode(xml));
     }
 
     @Test
@@ -174,6 +185,11 @@ public class DomNavigatorTest {
     public void testRemoveSuccess() {
         navigator.remove(new DomNode(xml));
         verify(root).removeChild(xml);
+    }
+
+    @Test(expected = XmlBuilderException.class)
+    public void testRemoveNoParent() {
+        navigator.remove(new DomNode(root));
     }
 
     @Test(expected = XmlBuilderException.class)

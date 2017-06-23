@@ -76,9 +76,11 @@ public class XmlBuilderTest {
     public void shouldBuildDocumentFromSetOfXPaths()
             throws XPathExpressionException, TransformerException, IOException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
+        Document document = documentBuilder.newDocument();
+        document.setXmlStandalone(true);
         Document builtDocument = new XmlBuilder(namespaceContext)
                 .putAll(xmlProperties.keySet())
-                .build(documentBuilder.newDocument());
+                .build(document);
 
         for (Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
             XPathExpression xpath = xpathFactory.newXPath().compile(xpathToValuePair.getKey());
@@ -91,9 +93,11 @@ public class XmlBuilderTest {
     public void shouldBuildDocumentFromSetOfXPathsAndSetValues()
             throws XPathExpressionException, TransformerException, IOException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
+        Document document = documentBuilder.newDocument();
+        document.setXmlStandalone(true);
         Document builtDocument = new XmlBuilder(namespaceContext)
                 .putAll(xmlProperties)
-                .build(documentBuilder.newDocument());
+                .build(document);
 
         for (Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
             XPath xpath = xpathFactory.newXPath();
@@ -138,12 +142,17 @@ public class XmlBuilderTest {
     }
 
     private Document stringToXml(String xml) throws IOException, SAXException {
-        return documentBuilder.parse(new ByteArrayInputStream(xml.getBytes()));
+        Document document = documentBuilder.parse(new ByteArrayInputStream(xml.getBytes()));
+        document.setXmlStandalone(true);
+        return document;
     }
 
     private String xmlToString(Document xml) throws TransformerException {
         Transformer transformer = transformerFactory.newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty(OutputKeys.VERSION, "1.0");
+        transformer.setOutputProperty(OutputKeys.ENCODING,"UTF-8");
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION,"yes");
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
         StringWriter out = new StringWriter();
         transformer.transform(new DOMSource(xml), new StreamResult(out));

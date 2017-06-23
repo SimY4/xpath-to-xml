@@ -53,8 +53,7 @@ public class NumberExpr implements Expr {
             final Node<N> node = view.getNode();
             long numberOfNodesToCreate = this.numberOfNodesToCreate;
             do {
-                Node<N> lastNode = context.getNavigator().clone(node);
-                context.getNavigator().prepend(node, lastNode);
+                context.getNavigator().prependCopy(node);
             } while (--numberOfNodesToCreate > 0);
             return true;
         }

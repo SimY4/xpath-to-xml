@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <breakfast_menu>
     <food calories="650" description="Two of our famous Belgian Waffles with plenty of real maple syrup" name="Belgian Waffles" price="$5.95"/>
     <food calories="900" description="Light Belgian waffles covered with strawberries and whipped cream" name="Strawberry Belgian Waffles" price="$7.95"/>

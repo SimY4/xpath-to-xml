@@ -1,7 +1,6 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeSetView;
@@ -15,14 +14,12 @@ import org.junit.experimental.theories.FromDataPoints;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import static com.github.simy4.xpath.utils.StringNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -63,9 +60,7 @@ public class NumberExprTest {
 
         // then
         assertThat(result).isEqualTo(true);
-        verify(navigator, times(2)).clone(node("node"));
-        verify(navigator, times(2))
-                .prepend(eq(node("node")), ArgumentMatchers.<Node<String>>any());
+        verify(navigator, times(2)).prependCopy(node("node"));
     }
 
     @Test

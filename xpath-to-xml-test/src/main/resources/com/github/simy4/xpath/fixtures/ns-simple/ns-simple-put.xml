@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <my:breakfast_menu xmlns:my="http://www.example.com/my">
     <my:food>
         <my:name>Belgian Waffles</my:name>
