@@ -4,9 +4,12 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
+import org.dom4j.Node;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.AdditionalAnswers;
@@ -15,7 +18,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer1;
 
 import javax.xml.namespace.QName;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -62,9 +67,13 @@ public class Dom4jNavigatorTest {
                     }
                 }));
 
+        when(root.getNodeType()).thenReturn(Node.DOCUMENT_NODE);
+        when(root.getRootElement()).thenReturn(parent);
+
         when(xml.getDocument()).thenReturn(root);
         when(xml.getNodeType()).thenReturn(org.dom4j.Node.ELEMENT_NODE);
         when(xml.getParent()).thenReturn(parent);
+        when(xml.createCopy()).thenReturn(xml);
         when(xml.elementIterator()).thenReturn(Arrays.asList(child1, child2, child3).iterator());
         when(xml.attributeIterator()).thenReturn(Arrays.asList(attr1, attr2, attr3).iterator());
 
@@ -94,17 +103,34 @@ public class Dom4jNavigatorTest {
     }
 
     @Test
-    public void testElementsOf() {
+    public void testElementsOfDocument() {
+        assertThat(navigator.elementsOf(new Dom4jNode(root)))
+                .extracting("wrappedNode", Element.class)
+                .containsExactly(parent);
+    }
+
+    @Test
+    public void testElementsOfElement() {
         assertThat(navigator.elementsOf(new Dom4jNode(xml)))
-                .extracting("wrappedNode", org.dom4j.Element.class)
+                .extracting("wrappedNode", Element.class)
                 .containsExactly(child1, child2, child3);
+    }
+
+    @Test
+    public void testElementsOfNonElement() {
+        assertThat(navigator.elementsOf(new Dom4jNode(attr))).isEmpty();
     }
 
     @Test
     public void testAttributesOf() {
         assertThat(navigator.attributesOf(new Dom4jNode(xml)))
-                .extracting("wrappedNode", org.dom4j.Attribute.class)
+                .extracting("wrappedNode", Attribute.class)
                 .containsExactly(attr1, attr2, attr3);
+    }
+
+    @Test
+    public void testAttributesOfNonElementNode() {
+        assertThat(navigator.attributesOf(new Dom4jNode(attr))).isEmpty();
     }
 
     @Test
@@ -140,6 +166,27 @@ public class Dom4jNavigatorTest {
     }
 
     @Test
+    public void testPrependCopySuccess() {
+        List<Element> elements = new ArrayList<Element>();
+        elements.add(xml);
+        when(parent.elements()).thenReturn(elements);
+
+        navigator.prependCopy(new Dom4jNode(xml));
+        verify(xml).createCopy();
+        assertThat(elements).containsExactly(xml, xml);
+    }
+
+    @Test(expected = XmlBuilderException.class)
+    public void testPrependCopyNoParent() {
+        navigator.prependCopy(new Dom4jNode(DocumentHelper.createElement("elem")));
+    }
+
+    @Test(expected = XmlBuilderException.class)
+    public void testPrependCopyFailure() {
+        navigator.prependCopy(new Dom4jNode(root));
+    }
+
+    @Test
     public void testSetTextSuccess() {
         navigator.setText(new Dom4jNode(xml), "text");
         verify(xml).setText("text");
@@ -152,9 +199,15 @@ public class Dom4jNavigatorTest {
     }
 
     @Test
+    @Ignore
     public void testRemoveSuccess() {
         navigator.remove(new Dom4jNode(xml));
         verify(parent).remove(xml);
+    }
+
+    @Test(expected = XmlBuilderException.class)
+    public void testRemoveFailure() {
+        navigator.remove(new Dom4jNode(root));
     }
 
 }

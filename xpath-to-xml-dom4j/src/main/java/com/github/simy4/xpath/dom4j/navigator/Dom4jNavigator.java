@@ -36,7 +36,7 @@ final class Dom4jNavigator implements Navigator<org.dom4j.Node> {
     @Override
     @Nullable
     public Dom4jNode parentOf(Node<org.dom4j.Node> node) {
-        org.dom4j.Node parent = node.getWrappedNode().getParent();
+        final org.dom4j.Node parent = node.getWrappedNode().getParent();
         return null == parent ? null : new Dom4jNode(parent);
     }
 
@@ -132,8 +132,8 @@ final class Dom4jNavigator implements Navigator<org.dom4j.Node> {
 
     @Override
     public void remove(Node<org.dom4j.Node> node) {
-        org.dom4j.Node wrappedNode = node.getWrappedNode();
-        Element parent = wrappedNode.getParent();
+        final org.dom4j.Node wrappedNode = node.getWrappedNode();
+        final Element parent = wrappedNode.getParent();
         if (parent != null) {
             parent.remove(wrappedNode);
         } else {
