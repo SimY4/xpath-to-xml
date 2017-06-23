@@ -23,7 +23,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.ByteArrayInputStream;
@@ -83,8 +82,11 @@ public class XmlBuilderTest {
                 .build(document);
 
         for (Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
-            XPathExpression xpath = xpathFactory.newXPath().compile(xpathToValuePair.getKey());
-            assertThat(xpath.evaluate(builtDocument, XPathConstants.STRING)).isNotNull();
+            XPath xpath = xpathFactory.newXPath();
+            if (null != namespaceContext) {
+                xpath.setNamespaceContext(namespaceContext);
+            }
+            assertThat(xpath.evaluate(xpathToValuePair.getKey(), builtDocument)).isNotNull();
         }
         assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutXml());
     }
@@ -104,7 +106,8 @@ public class XmlBuilderTest {
             if (null != namespaceContext) {
                 xpath.setNamespaceContext(namespaceContext);
             }
-            assertThat(xpath.evaluate(xpathToValuePair.getKey(), builtDocument, XPathConstants.STRING)).isNotNull();
+            assertThat(xpath.evaluate(xpathToValuePair.getKey(), builtDocument, XPathConstants.STRING))
+                    .isEqualTo(xpathToValuePair.getValue());
         }
         assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
     }
