@@ -13,6 +13,7 @@ import static com.github.simy4.xpath.utils.StringNode.node;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -23,7 +24,7 @@ public class AttributeTest extends AbstractStepExprTest<Attribute> {
     public void setUp() {
         QName attr = new QName("attr");
 
-        when(navigator.createAttribute(attr)).thenReturn(node("attr"));
+        when(navigator.createAttribute(any(), eq(attr))).thenReturn(node("attr"));
 
         expr = new Attribute(attr, asList(predicate1, predicate2));
     }
@@ -50,7 +51,7 @@ public class AttributeTest extends AbstractStepExprTest<Attribute> {
 
         // then
         assertThat((Iterable<View<String>>) result).containsExactly(new NodeView<>(node("attr")));
-        verify(navigator).createAttribute(new QName("attr"));
+        verify(navigator).createAttribute(node("node"), new QName("attr"));
     }
 
     @Test(expected = XmlBuilderException.class)
@@ -77,7 +78,7 @@ public class AttributeTest extends AbstractStepExprTest<Attribute> {
     public void shouldPropagateIfFailedToCreateAttribute() {
         // given
         setUpUnresolvableExpr();
-        when(navigator.createAttribute(any(QName.class))).thenThrow(XmlBuilderException.class);
+        when(navigator.createAttribute(any(), any(QName.class))).thenThrow(XmlBuilderException.class);
 
         // when
         expr.resolve(new ExprContext<>(navigator, true, 1), parentNode);

@@ -9,11 +9,11 @@ import com.github.simy4.xpath.view.View;
 import java.util.Iterator;
 import java.util.List;
 
-abstract class AbstractStepExpr implements StepExpr {
+abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
 
-    private final List<Expr> predicateList;
+    private final List<Predicate> predicateList;
 
-    AbstractStepExpr(List<Expr> predicateList) {
+    AbstractStepExpr(List<Predicate> predicateList) {
         this.predicateList = predicateList;
     }
 
@@ -26,30 +26,31 @@ abstract class AbstractStepExpr implements StepExpr {
      * Traverses XML nodes for the nodes that matches this step expression.
      *
      * @param context    XPath expression context
-     * @param parentNode XML node to traverse
+     * @param parentView XML node to traverse
      * @param <N>        XML node type
      * @return ordered set of matching nodes
      */
-    abstract <N> NodeSetView<N> traverseStep(ExprContext<N> context, NodeView<N> parentNode);
+    abstract <N> NodeSetView<N> traverseStep(ExprContext<N> context, NodeView<N> parentView);
 
     /**
      * Creates new node of this step type.
      *
-     * @param context XML model navigator
-     * @param <N>     XML node type
+     * @param context    XML model navigator
+     * @param parentView XML node modify
+     * @param <N>        XML node type
      * @return newly created node
      * @throws XmlBuilderException if error occur during XML node creation
      */
-    abstract <N> NodeView<N> createStepNode(ExprContext<N> context) throws XmlBuilderException;
+    abstract <N> NodeView<N> createStepNode(ExprContext<N> context, NodeView<N> parentView) throws XmlBuilderException;
 
     private <N> NodeSetView<N> resolvePredicates(ExprContext<N> lookupContext, NodeSetView<N> xmlNodes,
-                                                 Iterator<Expr> predicateIterator) throws XmlBuilderException {
+                                                 Iterator<Predicate> predicateIterator) throws XmlBuilderException {
         if (predicateIterator.hasNext() && xmlNodes.toBoolean()) {
             final NodeSetView.Builder<N> builder = NodeSetView.builder(xmlNodes.size());
-            final Expr nextPredicate = predicateIterator.next();
+            final Predicate nextPredicate = predicateIterator.next();
             for (View<N> xmlNode : xmlNodes) {
                 lookupContext.advance();
-                if (nextPredicate.resolve(lookupContext, xmlNode).toBoolean()) {
+                if (nextPredicate.match(lookupContext, xmlNode)) {
                     builder.add(xmlNode);
                 }
             }
@@ -64,7 +65,7 @@ abstract class AbstractStepExpr implements StepExpr {
     @Override
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder();
-        for (Expr predicate : predicateList) {
+        for (Predicate predicate : predicateList) {
             stringBuilder.append('[').append(predicate).append(']');
         }
         return stringBuilder.toString();
@@ -92,16 +93,14 @@ abstract class AbstractStepExpr implements StepExpr {
             context.advance();
             NodeSetView<N> result = traverseStep(context, node);
             ExprContext<N> lookupContext = context.clone(false, result.size());
-            Iterator<Expr> predicateIterator = predicateList.iterator();
+            Iterator<Predicate> predicateIterator = predicateList.iterator();
             result = resolvePredicates(lookupContext, result, predicateIterator);
 
             if (!result.toBoolean() && context.shouldCreate()) {
-                final NodeView<N> newNode = createStepNode(context);
-                context.getNavigator().append(node.getNode(), newNode.getNode());
-                result = NodeSetView.singleton(newNode);
+                final NodeView<N> newNode = createStepNode(context, node);
                 predicateIterator = predicateList.iterator();
                 lookupContext = lookupContext.clone(true, lookupContext.getSize() + 1, lookupContext.getSize());
-                resolvePredicates(lookupContext, result, predicateIterator);
+                result = resolvePredicates(lookupContext, NodeSetView.singleton(newNode), predicateIterator);
             }
             return result;
         }

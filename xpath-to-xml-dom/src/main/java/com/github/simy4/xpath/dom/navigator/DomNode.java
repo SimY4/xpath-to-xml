@@ -10,36 +10,36 @@ import java.util.Objects;
 @Immutable
 final class DomNode implements Node<org.w3c.dom.Node> {
 
-    private final org.w3c.dom.Node wrappedNode;
+    private final org.w3c.dom.Node node;
 
-    DomNode(org.w3c.dom.Node wrappedNode) {
-        this.wrappedNode = wrappedNode;
+    DomNode(org.w3c.dom.Node node) {
+        this.node = node;
     }
 
     @Override
     public org.w3c.dom.Node getWrappedNode() {
-        return wrappedNode;
+        return node;
     }
 
     @Override
     public QName getNodeName() {
         String ns;
         String prefix;
-        String localPart = wrappedNode.getLocalName();
+        String localPart = node.getLocalName();
         if (null == localPart) {
             ns = XMLConstants.NULL_NS_URI;
             prefix = XMLConstants.DEFAULT_NS_PREFIX;
-            localPart = wrappedNode.getNodeName();
+            localPart = node.getNodeName();
         } else {
-            ns = wrappedNode.getNamespaceURI();
-            prefix = wrappedNode.getPrefix();
+            ns = node.getNamespaceURI();
+            prefix = node.getPrefix();
         }
         return new QName(ns, localPart, prefix);
     }
 
     @Override
     public String getText() {
-        return wrappedNode.getTextContent();
+        return node.getTextContent();
     }
 
     @Override
@@ -53,17 +53,17 @@ final class DomNode implements Node<org.w3c.dom.Node> {
 
         DomNode that = (DomNode) o;
 
-        return Objects.equals(wrappedNode,that.wrappedNode);
+        return Objects.equals(node, that.node);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(wrappedNode);
+        return Objects.hash(node);
     }
 
     @Override
     public String toString() {
-        return wrappedNode.toString();
+        return node.toString();
     }
 
 }

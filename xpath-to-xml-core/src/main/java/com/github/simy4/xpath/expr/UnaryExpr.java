@@ -4,7 +4,7 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
 
-public class UnaryExpr implements Expr {
+public class UnaryExpr extends AbstractExpr {
 
     private final Expr valueExpr;
 

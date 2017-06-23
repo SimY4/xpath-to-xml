@@ -54,30 +54,24 @@ public interface Navigator<N> {
     Iterable<? extends Node<N>> attributesOf(Node<N> parent);
 
     /**
-     * Creates detached XML attribute node.
+     * Creates XML attribute node and appends to given parent.
      *
+     * @param parent    parent XML node to modify
      * @param attribute new XML attribute's name
      * @return newly created attribute node
      * @throws XmlBuilderException if failure occur during XML attribute creation
      */
-    Node<N> createAttribute(QName attribute) throws XmlBuilderException;
+    Node<N> createAttribute(Node<N> parent, QName attribute) throws XmlBuilderException;
 
     /**
-     * Creates detached XML element node.
+     * Creates XML element node and appends to given parent.
      *
+     * @param parent  parent XML node to modify
      * @param element new XML element's name
      * @return newly created element node
      * @throws XmlBuilderException if failure occur during XML element creation
      */
-    Node<N> createElement(QName element) throws XmlBuilderException;
-
-    /**
-     * Clones given node.
-     *
-     * @param toClone XML node to clone
-     * @throws XmlBuilderException if failure occur during node cloning
-     */
-    Node<N> clone(Node<N> toClone) throws XmlBuilderException;
+    Node<N> createElement(Node<N> parent, QName element) throws XmlBuilderException;
 
     /**
      * Sets the given text content to a given node.
@@ -89,22 +83,12 @@ public interface Navigator<N> {
     void setText(Node<N> node, String text) throws XmlBuilderException;
 
     /**
-     * Appends given node to given parent.
+     * Prepends a copy of given node to this node.
      *
-     * @param parentNode XML node to modify
-     * @param child      XML node to append
+     * @param node XML node to copy and prepend
      * @throws XmlBuilderException if failure occur during node appending
      */
-    void append(Node<N> parentNode, Node<N> child) throws XmlBuilderException;
-
-    /**
-     * Prepends given node to given neighbor node.
-     *
-     * @param nextNode  XML node that should be next to prepended node
-     * @param toPrepend XML node to prepend
-     * @throws XmlBuilderException if failure occur during node appending
-     */
-    void prepend(Node<N> nextNode, Node<N> toPrepend) throws XmlBuilderException;
+    void prependCopy(Node<N> node) throws XmlBuilderException;
 
     /**
      * Removes/detaches given node from XML model.

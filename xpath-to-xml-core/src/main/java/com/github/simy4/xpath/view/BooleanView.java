@@ -12,16 +12,6 @@ public final class BooleanView<N> implements View<N> {
     private static final BooleanView TRUE = new BooleanView(true);
 
     @SuppressWarnings("unchecked")
-    public static <T> BooleanView<T> truthy() {
-        return (BooleanView<T>) TRUE;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> BooleanView<T> falsy() {
-        return (BooleanView<T>) FALSE;
-    }
-
-    @SuppressWarnings("unchecked")
     public static <T> BooleanView<T> of(boolean bool) {
         return (BooleanView<T>) (bool ? TRUE : FALSE);
     }

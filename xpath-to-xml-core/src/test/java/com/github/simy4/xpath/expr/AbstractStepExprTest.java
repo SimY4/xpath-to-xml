@@ -3,7 +3,6 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.utils.ExprContextMatcher;
-import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
@@ -38,8 +37,8 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
     public ExpectedException expectedException = ExpectedException.none();
 
     @Mock protected Navigator<String> navigator;
-    @Mock protected Expr predicate1;
-    @Mock protected Expr predicate2;
+    @Mock protected Predicate predicate1;
+    @Mock protected Predicate predicate2;
     @Captor private ArgumentCaptor<ExprContext<String>> predicate1ContextCaptor;
     @Captor private ArgumentCaptor<ExprContext<String>> predicate2ContextCaptor;
 
@@ -55,8 +54,8 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
 
         // then
         assertThat((Iterable<View<String>>) result).isNotEmpty();
-        verify(predicate1).resolve(predicate1ContextCaptor.capture(), any());
-        verify(predicate2).resolve(predicate2ContextCaptor.capture(), any());
+        verify(predicate1).match(predicate1ContextCaptor.capture(), any());
+        verify(predicate2).match(predicate2ContextCaptor.capture(), any());
         assertThat(predicate1ContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(navigator, false, 1, 1);
         assertThat(predicate2ContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
@@ -80,28 +79,28 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
     public void shouldShortCircuitWhenPredicateTraversalReturnsNothing() {
         // given
         setUpResolvableExpr();
-        when(predicate1.resolve(any(), any())).thenReturn(BooleanView.falsy());
+        when(predicate1.match(any(), any())).thenReturn(false);
 
         // when
         NodeSetView<String> result = expr.resolve(new ExprContext<>(navigator, false, 3), parentNode);
 
         // then
         assertThat((Iterable<?>) result).isEmpty();
-        verify(predicate2, never()).resolve(any(), any());
+        verify(predicate2, never()).match(any(), any());
     }
 
     @Test
     public void shouldSkipCreatingNodeIfContextForbids() {
         // given
         setUpResolvableExpr();
-        when(predicate1.resolve(any(), any())).thenReturn(BooleanView.falsy());
+        when(predicate1.match(any(), any())).thenReturn(false);
 
         // when
         NodeSetView<String> result = expr.resolve(new ExprContext<>(navigator, true, 3), parentNode);
 
         // then
         assertThat((Iterable<?>) result).isEmpty();
-        verify(predicate2, never()).resolve(any(), any());
+        verify(predicate2, never()).match(any(), any());
     }
 
     @Test
@@ -119,8 +118,8 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
 
         // then
         assertThat((Iterable<?>) result).isNotEmpty();
-        verify(predicate1).resolve(predicate1ContextCaptor.capture(), any());
-        verify(predicate2).resolve(predicate2ContextCaptor.capture(), any());
+        verify(predicate1).match(predicate1ContextCaptor.capture(), any());
+        verify(predicate2).match(predicate2ContextCaptor.capture(), any());
         assertThat(predicate1ContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(navigator, true, 1, 1);
         assertThat(predicate2ContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
@@ -137,18 +136,16 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
 
         setUpResolvableExpr();
         reset(predicate1, predicate2);
-        when(predicate1.resolve(any(), any())).thenReturn(BooleanView.falsy());
-        when(predicate2.resolve(any(), any())).thenReturn(BooleanView.falsy());
-        when(predicate1.resolve(argThat(ExprContextMatcher.greedyContext()), any())).thenReturn(BooleanView.truthy());
-        when(predicate2.resolve(argThat(ExprContextMatcher.greedyContext()), any())).thenReturn(BooleanView.truthy());
+        when(predicate1.match(argThat(ExprContextMatcher.greedyContext()), any())).thenReturn(true);
+        when(predicate2.match(argThat(ExprContextMatcher.greedyContext()), any())).thenReturn(true);
 
         // when
         NodeSetView<String> result = expr.resolve(new ExprContext<>(navigator, true, 1), parentNode);
 
         // then
         assertThat((Iterable<?>) result).isNotEmpty();
-        verify(predicate1, times(2)).resolve(predicate1ContextCaptor.capture(), any());
-        verify(predicate2).resolve(predicate2ContextCaptor.capture(), any());
+        verify(predicate1, times(2)).match(predicate1ContextCaptor.capture(), any());
+        verify(predicate2).match(predicate2ContextCaptor.capture(), any());
         assertThat(predicate1ContextCaptor.getAllValues()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(
                         tuple(navigator, false, 1, 1),
@@ -189,15 +186,13 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
     }
 
     void setUpResolvableExpr() {
-        when(predicate1.resolve(any(), any())).thenReturn(BooleanView.truthy());
-        when(predicate2.resolve(any(), any())).thenReturn(BooleanView.truthy());
+        when(predicate1.match(any(), any())).thenReturn(true);
+        when(predicate2.match(any(), any())).thenReturn(true);
     }
 
     void setUpUnresolvableExpr() {
-        when(predicate1.resolve(any(), any())).thenReturn(BooleanView.falsy());
-        when(predicate2.resolve(any(), any())).thenReturn(BooleanView.falsy());
-        when(predicate1.resolve(argThat(ExprContextMatcher.greedyContext()), any())).thenReturn(BooleanView.truthy());
-        when(predicate2.resolve(argThat(ExprContextMatcher.greedyContext()), any())).thenReturn(BooleanView.truthy());
+        when(predicate1.match(argThat(ExprContextMatcher.greedyContext()), any())).thenReturn(true);
+        when(predicate2.match(argThat(ExprContextMatcher.greedyContext()), any())).thenReturn(true);
     }
 
 }

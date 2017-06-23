@@ -1,8 +1,7 @@
 package com.github.simy4.xpath.dom.navigator;
 
-import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.navigator.Navigator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -28,7 +26,8 @@ import static org.mockito.Mockito.when;
 public class DomNavigatorTest {
 
     @Mock private Document root;
-    @Mock private org.w3c.dom.Node xml;
+    @Mock private Element xml;
+    @Mock private Attr attr;
     @Mock private NamedNodeMap attributes;
     @Mock private org.w3c.dom.Node child1;
     @Mock private org.w3c.dom.Node child2;
@@ -38,10 +37,10 @@ public class DomNavigatorTest {
 
     @Before
     public void setUp() {
-        when(root.createAttribute(anyString())).thenReturn(mock(Attr.class));
-        when(root.createAttributeNS(anyString(), anyString())).thenReturn(mock(Attr.class));
-        when(root.createElement(anyString())).thenReturn(mock(Element.class));
-        when(root.createElementNS(anyString(), anyString())).thenReturn(mock(Element.class));
+        when(root.createAttribute(anyString())).thenReturn(attr);
+        when(root.createAttributeNS(anyString(), anyString())).thenReturn(attr);
+        when(root.createElement(anyString())).thenReturn(xml);
+        when(root.createElementNS(anyString(), anyString())).thenReturn(xml);
 
         when(xml.getNodeType()).thenReturn(org.w3c.dom.Node.ELEMENT_NODE);
         when(xml.getOwnerDocument()).thenReturn(root);
@@ -97,56 +96,77 @@ public class DomNavigatorTest {
 
     @Test
     public void testCreateAttributeSuccess() {
-        assertThat(navigator.createAttribute(new QName("attr"))).isNotNull();
+        assertThat(navigator.createAttribute(new DomNode(xml), new QName("attr"))).isNotNull();
         verify(root).createAttribute("attr");
+        verify(xml).setAttributeNode(attr);
     }
 
     @Test
     public void testCreateNsAttributeSuccess() {
-        assertThat(navigator.createAttribute(new QName("http://example.com/my", "attr"))).isNotNull();
+        assertThat(navigator.createAttribute(new DomNode(xml), new QName("http://example.com/my", "attr"))).isNotNull();
         verify(root).createAttributeNS("http://example.com/my", "attr");
+        verify(xml).setAttributeNode(attr);
+    }
+
+    @Test(expected = XmlBuilderException.class)
+    public void testCreateAttributeFailureWhenParentIsNotAnElement() {
+        navigator.createAttribute(new DomNode(root), new QName("attr"));
     }
 
     @Test(expected = XmlBuilderException.class)
     public void testCreateAttributeFailure() {
         when(root.createAttribute(anyString())).thenThrow(DOMException.class);
-        navigator.createAttribute(new QName("attr"));
+        navigator.createAttribute(new DomNode(xml), new QName("attr"));
     }
 
     @Test(expected = XmlBuilderException.class)
     public void testCreateNsAttributeFailure() {
         when(root.createAttributeNS(anyString(), anyString())).thenThrow(DOMException.class);
-        navigator.createAttribute(new QName("http://example.com/my", "attr"));
+        navigator.createAttribute(new DomNode(xml), new QName("http://example.com/my", "attr"));
     }
 
     @Test
     public void testCreateElementSuccess() {
-        assertThat(navigator.createElement(new QName("elem"))).isNotNull();
+        assertThat(navigator.createElement(new DomNode(xml), new QName("elem"))).isNotNull();
         verify(root).createElement("elem");
+        verify(xml).appendChild(xml);
     }
 
     @Test
     public void testCreateNsElementSuccess() {
-        assertThat(navigator.createElement(new QName("http://example.com/my", "elem"))).isNotNull();
+        assertThat(navigator.createElement(new DomNode(xml), new QName("http://example.com/my", "elem"))).isNotNull();
         verify(root).createElementNS("http://example.com/my", "elem");
+        verify(xml).appendChild(xml);
     }
 
     @Test(expected = XmlBuilderException.class)
     public void testCreateElementFailure() {
         when(root.createElement(anyString())).thenThrow(DOMException.class);
-        navigator.createElement(new QName("elem"));
+        navigator.createElement(new DomNode(xml), new QName("elem"));
     }
 
     @Test(expected = XmlBuilderException.class)
     public void testCreateNsElementFailure() {
         when(root.createElementNS(anyString(), anyString())).thenThrow(DOMException.class);
-        navigator.createElement(new QName("http://example.com/my", "elem"));
+        navigator.createElement(new DomNode(xml), new QName("http://example.com/my", "elem"));
     }
 
     @Test
-    public void testClone() {
-        Node<org.w3c.dom.Node> result = navigator.clone(new DomNode(xml));
-        assertThat(result).isEqualTo(new DomNode(xml));
+    public void testPrependCopySuccess() {
+        navigator.prependCopy(new DomNode(xml));
+        verify(xml).cloneNode(true);
+        verify(root).insertBefore(xml, xml);
+    }
+
+    @Test(expected = XmlBuilderException.class)
+    public void testPrependCopyNoParent() {
+        navigator.prependCopy(new DomNode(root));
+    }
+
+    @Test(expected = XmlBuilderException.class)
+    public void testPrependCopyFailure() {
+        doThrow(DOMException.class).when(root).insertBefore(any(org.w3c.dom.Node.class), any(org.w3c.dom.Node.class));
+        navigator.prependCopy(new DomNode(xml));
     }
 
     @Test
@@ -162,21 +182,14 @@ public class DomNavigatorTest {
     }
 
     @Test
-    public void testAppendSuccess() {
-        navigator.append(new DomNode(root), new DomNode(xml));
-        verify(root).appendChild(xml);
-    }
-
-    @Test(expected = XmlBuilderException.class)
-    public void testAppendFailure() {
-        when(root.appendChild(any(org.w3c.dom.Node.class))).thenThrow(DOMException.class);
-        navigator.append(new DomNode(root), new DomNode(xml));
-    }
-
-    @Test
     public void testRemoveSuccess() {
         navigator.remove(new DomNode(xml));
         verify(root).removeChild(xml);
+    }
+
+    @Test(expected = XmlBuilderException.class)
+    public void testRemoveNoParent() {
+        navigator.remove(new DomNode(root));
     }
 
     @Test(expected = XmlBuilderException.class)

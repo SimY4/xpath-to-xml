@@ -20,8 +20,6 @@ import org.mockito.junit.MockitoRule;
 
 import static com.github.simy4.xpath.utils.StringNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -32,8 +30,8 @@ public class NumberExprTest {
             new LiteralView("literal"),
             new NumberView(2.0),
             new NodeView<>(node("node")),
-            BooleanView.truthy(),
-            BooleanView.falsy(),
+            BooleanView.of(true),
+            BooleanView.of(false),
             NodeSetView.empty(),
             NodeSetView.singleton(new NodeView<>(node("node"))),
     };
@@ -52,18 +50,17 @@ public class NumberExprTest {
     }
 
     @Test
-    public void shouldPrependMissingNodesAndReturnNumberOnGreedyApplication() {
+    public void shouldPrependMissingNodesAndReturnNumberOnGreedyMatching() {
         // given
         ExprContext<String> context = new ExprContext<>(navigator, true, 1);
         context.advance();
 
         // when
-        View<String> result = numberExpr.resolve(context, new NodeView<>(node("node")));
+        boolean result = numberExpr.match(context, new NodeView<>(node("node")));
 
         // then
-        assertThat(result).isEqualTo(new NumberView<String>(3.0));
-        verify(navigator, times(2)).clone(node("node"));
-        verify(navigator, times(2)).prepend(eq(node("node")), any());
+        assertThat(result).isEqualTo(true);
+        verify(navigator, times(2)).prependCopy(node("node"));
     }
 
     @Test

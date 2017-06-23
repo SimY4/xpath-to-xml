@@ -9,18 +9,18 @@ import java.util.List;
 
 public class Parent extends AbstractStepExpr {
 
-    public Parent(List<Expr> predicateList) {
+    public Parent(List<Predicate> predicateList) {
         super(predicateList);
     }
 
     @Override
-    <N> NodeSetView<N> traverseStep(ExprContext<N> context, NodeView<N> node) {
-        final Node<N> parent = context.getNavigator().parentOf(node.getNode());
+    <N> NodeSetView<N> traverseStep(ExprContext<N> context, NodeView<N> view) {
+        final Node<N> parent = context.getNavigator().parentOf(view.getNode());
         return null == parent ? NodeSetView.empty() : NodeSetView.singleton(new NodeView<>(parent));
     }
 
     @Override
-    <N> NodeView<N> createStepNode(ExprContext<N> context) {
+    <N> NodeView<N> createStepNode(ExprContext<N> context, NodeView<N> parentView) throws XmlBuilderException {
         throw new XmlBuilderException("Parent node cannot modify XML model");
     }
 

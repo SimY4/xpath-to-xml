@@ -64,38 +64,43 @@ final class DomNavigator implements Navigator<org.w3c.dom.Node> {
     }
 
     @Override
-    public DomNode createAttribute(QName attribute) throws XmlBuilderException {
+    public DomNode createAttribute(Node<org.w3c.dom.Node> parent, QName attribute) throws XmlBuilderException {
         try {
+            final Attr attr;
             if (XMLConstants.NULL_NS_URI.equals(attribute.getNamespaceURI())) {
-                return new DomNode(document.createAttribute(attribute.getLocalPart()));
+                attr = document.createAttribute(attribute.getLocalPart());
             } else {
-                final Attr attr = document.createAttributeNS(attribute.getNamespaceURI(), attribute.getLocalPart());
+                attr = document.createAttributeNS(attribute.getNamespaceURI(), attribute.getLocalPart());
                 attr.setPrefix(attribute.getPrefix());
-                return new DomNode(attr);
             }
-        } catch (DOMException de) {
-            throw new XmlBuilderException("Failed to create attribute: " + attribute, de);
-        }
-    }
-
-    @Override
-    public DomNode createElement(QName element) throws XmlBuilderException {
-        try {
-            if (XMLConstants.NULL_NS_URI.equals(element.getNamespaceURI())) {
-                return new DomNode(document.createElement(element.getLocalPart()));
+            org.w3c.dom.Node parentNode = parent.getWrappedNode();
+            if (org.w3c.dom.Node.ELEMENT_NODE == parentNode.getNodeType()) {
+                ((Element) parentNode).setAttributeNode(attr);
             } else {
-                final Element elem = document.createElementNS(element.getNamespaceURI(), element.getLocalPart());
-                elem.setPrefix(element.getPrefix());
-                return new DomNode(elem);
+                throw new XmlBuilderException("Unable to append attribute " + attr + " to a non-element node "
+                        + parentNode);
             }
+            return new DomNode(attr);
         } catch (DOMException de) {
-            throw new XmlBuilderException("Failed to create element: " + element, de);
+            throw new XmlBuilderException("Unable to create attribute: " + attribute, de);
         }
     }
 
     @Override
-    public DomNode clone(Node<org.w3c.dom.Node> toClone) {
-        return new DomNode(toClone.getWrappedNode().cloneNode(true));
+    public DomNode createElement(Node<org.w3c.dom.Node> parent, QName element) throws XmlBuilderException {
+        try {
+            final Element elem;
+            if (XMLConstants.NULL_NS_URI.equals(element.getNamespaceURI())) {
+                elem = document.createElement(element.getLocalPart());
+            } else {
+                elem = document.createElementNS(element.getNamespaceURI(), element.getLocalPart());
+                elem.setPrefix(element.getPrefix());
+            }
+            parent.getWrappedNode().appendChild(elem);
+            return new DomNode(elem);
+        } catch (DOMException de) {
+            throw new XmlBuilderException("Unable to create element: " + element, de);
+        }
     }
 
     @Override
@@ -103,30 +108,22 @@ final class DomNavigator implements Navigator<org.w3c.dom.Node> {
         try {
             node.getWrappedNode().setTextContent(text);
         } catch (DOMException de) {
-            throw new XmlBuilderException("Failed to set text content to " + node, de);
+            throw new XmlBuilderException("Unable to set text content to " + node, de);
         }
     }
 
     @Override
-    public void append(Node<org.w3c.dom.Node> parentNode, Node<org.w3c.dom.Node> child) throws XmlBuilderException {
+    public void prependCopy(Node<org.w3c.dom.Node> node) throws XmlBuilderException {
+        final org.w3c.dom.Node wrappedNode = node.getWrappedNode();
+        final org.w3c.dom.Node copiedNode = wrappedNode.cloneNode(true);
         try {
-            parentNode.getWrappedNode().appendChild(child.getWrappedNode());
-        } catch (DOMException de) {
-            throw new XmlBuilderException("Failed to append child " + child + " to " + parentNode, de);
-        }
-    }
-
-    @Override
-    public void prepend(Node<org.w3c.dom.Node> nextNode, Node<org.w3c.dom.Node> nodeToPrepend)
-            throws XmlBuilderException {
-        try {
-            final org.w3c.dom.Node parent = nextNode.getWrappedNode().getParentNode();
+            final org.w3c.dom.Node parent = wrappedNode.getParentNode();
             if (null == parent) {
-                throw new XmlBuilderException("Failed to prepend - no parent found of " + nextNode);
+                throw new XmlBuilderException("Unable to prepend - no parent found of " + node);
             }
-            parent.insertBefore(nodeToPrepend.getWrappedNode(), nextNode.getWrappedNode());
+            parent.insertBefore(copiedNode, wrappedNode);
         } catch (DOMException de) {
-            throw new XmlBuilderException("Failed to prepend node " + nodeToPrepend + " to " + nextNode, de);
+            throw new XmlBuilderException("Unable to prepend node " + copiedNode + " to " + node, de);
         }
     }
 
@@ -135,9 +132,14 @@ final class DomNavigator implements Navigator<org.w3c.dom.Node> {
         try {
             org.w3c.dom.Node wrappedNode = node.getWrappedNode();
             org.w3c.dom.Node parent = wrappedNode.getParentNode();
-            parent.removeChild(wrappedNode);
+            if (parent != null) {
+                parent.removeChild(wrappedNode);
+            } else {
+                throw new XmlBuilderException("Unable to remove node " + node
+                        + ". Node either root or in detached state");
+            }
         } catch (DOMException de) {
-            throw new XmlBuilderException("Failed to remove child node " + node, de);
+            throw new XmlBuilderException("Unable to remove child node " + node, de);
         }
     }
 

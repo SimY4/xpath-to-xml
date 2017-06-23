@@ -13,6 +13,11 @@ public class Root implements StepExpr {
     }
 
     @Override
+    public <N> boolean match(ExprContext<N> context, View<N> xml) {
+        return true;
+    }
+
+    @Override
     public String toString() {
         return "";
     }

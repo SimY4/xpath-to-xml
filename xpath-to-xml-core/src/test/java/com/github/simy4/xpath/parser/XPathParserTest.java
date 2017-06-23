@@ -7,6 +7,7 @@ import com.github.simy4.xpath.expr.Identity;
 import com.github.simy4.xpath.expr.NumberExpr;
 import com.github.simy4.xpath.expr.OperationExpr;
 import com.github.simy4.xpath.expr.PathExpr;
+import com.github.simy4.xpath.expr.Predicate;
 import com.github.simy4.xpath.expr.Root;
 import com.github.simy4.xpath.expr.StepExpr;
 import com.github.simy4.xpath.expr.operators.Operator;
@@ -34,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(Theories.class)
 public class XPathParserTest {
 
-    private static final List<Expr> NIL = emptyList();
+    private static final List<Predicate> NIL = emptyList();
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();

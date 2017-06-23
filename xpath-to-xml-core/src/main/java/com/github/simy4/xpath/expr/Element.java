@@ -12,15 +12,15 @@ public class Element extends AbstractStepExpr {
 
     private final QName element;
 
-    public Element(QName element, List<Expr> predicateList) {
+    public Element(QName element, List<Predicate> predicateList) {
         super(predicateList);
         this.element = element;
     }
 
     @Override
-    <N> NodeSetView<N> traverseStep(ExprContext<N> navigator, NodeView<N> parentNode) {
+    <N> NodeSetView<N> traverseStep(ExprContext<N> navigator, NodeView<N> parentView) {
         final NodeSetView.Builder<N> builder = NodeSetView.builder();
-        for (Node<N> element : navigator.getNavigator().elementsOf(parentNode.getNode())) {
+        for (Node<N> element : navigator.getNavigator().elementsOf(parentView.getNode())) {
             if (0 == qnameComparator.compare(this.element, element.getNodeName())) {
                 builder.add(new NodeView<>(element));
             }
@@ -29,11 +29,11 @@ public class Element extends AbstractStepExpr {
     }
 
     @Override
-    <N> NodeView<N> createStepNode(ExprContext<N> navigator) {
+    <N> NodeView<N> createStepNode(ExprContext<N> navigator, NodeView<N> parentView) throws XmlBuilderException {
         if ("*".equals(element.getNamespaceURI()) || "*".equals(element.getLocalPart())) {
             throw new XmlBuilderException("Wildcard attribute cannot be created");
         }
-        return new NodeView<>(navigator.getNavigator().createElement(element));
+        return new NodeView<>(navigator.getNavigator().createElement(parentView.getNode(), element));
     }
 
     @Override
