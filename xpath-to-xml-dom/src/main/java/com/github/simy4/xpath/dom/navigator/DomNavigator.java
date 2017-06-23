@@ -82,7 +82,7 @@ final class DomNavigator implements Navigator<org.w3c.dom.Node> {
             }
             return new DomNode(attr);
         } catch (DOMException de) {
-            throw new XmlBuilderException("Failed to create attribute: " + attribute, de);
+            throw new XmlBuilderException("Unable to create attribute: " + attribute, de);
         }
     }
 
@@ -99,7 +99,7 @@ final class DomNavigator implements Navigator<org.w3c.dom.Node> {
             parent.getWrappedNode().appendChild(elem);
             return new DomNode(elem);
         } catch (DOMException de) {
-            throw new XmlBuilderException("Failed to create element: " + element, de);
+            throw new XmlBuilderException("Unable to create element: " + element, de);
         }
     }
 
@@ -113,7 +113,7 @@ final class DomNavigator implements Navigator<org.w3c.dom.Node> {
         try {
             node.getWrappedNode().setTextContent(text);
         } catch (DOMException de) {
-            throw new XmlBuilderException("Failed to set text content to " + node, de);
+            throw new XmlBuilderException("Unable to set text content to " + node, de);
         }
     }
 
@@ -127,7 +127,7 @@ final class DomNavigator implements Navigator<org.w3c.dom.Node> {
             }
             parent.insertBefore(nodeToPrepend.getWrappedNode(), nextNode.getWrappedNode());
         } catch (DOMException de) {
-            throw new XmlBuilderException("Failed to prepend node " + nodeToPrepend + " to " + nextNode, de);
+            throw new XmlBuilderException("Unable to prepend node " + nodeToPrepend + " to " + nextNode, de);
         }
     }
 
@@ -136,7 +136,12 @@ final class DomNavigator implements Navigator<org.w3c.dom.Node> {
         try {
             org.w3c.dom.Node wrappedNode = node.getWrappedNode();
             org.w3c.dom.Node parent = wrappedNode.getParentNode();
-            parent.removeChild(wrappedNode);
+            if (parent != null) {
+                parent.removeChild(wrappedNode);
+            } else {
+                throw new XmlBuilderException("Unable to remove node " + node
+                        + ". Node either root or in detached state");
+            }
         } catch (DOMException de) {
             throw new XmlBuilderException("Failed to remove child node " + node, de);
         }
