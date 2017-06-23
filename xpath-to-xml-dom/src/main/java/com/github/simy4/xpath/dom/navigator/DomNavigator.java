@@ -65,21 +65,21 @@ final class DomNavigator implements Navigator<org.w3c.dom.Node> {
 
     @Override
     public DomNode createAttribute(Node<org.w3c.dom.Node> parent, QName attribute) throws XmlBuilderException {
+        final org.w3c.dom.Node parentNode = parent.getWrappedNode();
+        if (org.w3c.dom.Node.ELEMENT_NODE != parentNode.getNodeType()) {
+            throw new XmlBuilderException("Unable to append attribute to a non-element node " + parent);
+        }
+
         try {
-            final Attr attr;
+            Attr attr;
+            final Element parentElement = (Element) parentNode;
             if (XMLConstants.NULL_NS_URI.equals(attribute.getNamespaceURI())) {
                 attr = document.createAttribute(attribute.getLocalPart());
             } else {
                 attr = document.createAttributeNS(attribute.getNamespaceURI(), attribute.getLocalPart());
                 attr.setPrefix(attribute.getPrefix());
             }
-            org.w3c.dom.Node parentNode = parent.getWrappedNode();
-            if (org.w3c.dom.Node.ELEMENT_NODE == parentNode.getNodeType()) {
-                ((Element) parentNode).setAttributeNode(attr);
-            } else {
-                throw new XmlBuilderException("Unable to append attribute " + attr + " to a non-element node "
-                        + parentNode);
-            }
+            parentElement.setAttributeNode(attr);
             return new DomNode(attr);
         } catch (DOMException de) {
             throw new XmlBuilderException("Unable to create attribute: " + attribute, de);
@@ -96,8 +96,7 @@ final class DomNavigator implements Navigator<org.w3c.dom.Node> {
                 elem = document.createElementNS(element.getNamespaceURI(), element.getLocalPart());
                 elem.setPrefix(element.getPrefix());
             }
-            parent.getWrappedNode().appendChild(elem);
-            return new DomNode(elem);
+            return new DomNode(parent.getWrappedNode().appendChild(elem));
         } catch (DOMException de) {
             throw new XmlBuilderException("Unable to create element: " + element, de);
         }
