@@ -1,6 +1,7 @@
 dependencies {
     compile project(':xpath-to-xml-core')
-    compile 'org.dom4j:dom4j:2.0.0'
+
+    providedCompile 'org.dom4j:dom4j:2.0.0'
 
     testCompile project(':xpath-to-xml-test')
     testCompile 'junit:junit:4.12'
