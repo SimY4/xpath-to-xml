@@ -80,7 +80,7 @@ final class Dom4jNavigator implements Navigator<org.dom4j.Node> {
     public Dom4jNode createAttribute(Node<org.dom4j.Node> parent, QName attribute) throws XmlBuilderException {
         final org.dom4j.Node parentNode = parent.getWrappedNode();
         if (org.dom4j.Node.ELEMENT_NODE != parentNode.getNodeType()) {
-            throw new XmlBuilderException("Unable to create append attribute to " + parent);
+            throw new XmlBuilderException("Unable to append attribute to a non-element node " + parent);
         }
 
         final Element parentElement = (Element) parentNode;
@@ -102,7 +102,7 @@ final class Dom4jNavigator implements Navigator<org.dom4j.Node> {
             case org.dom4j.Node.DOCUMENT_NODE:
                 return new Dom4jNode(((Document) parentNode).addElement(elementName));
             default:
-                throw new XmlBuilderException("Unable to create append element to " + parent);
+                throw new XmlBuilderException("Unable to append element to " + parent);
         }
     }
 
