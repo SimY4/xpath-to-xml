@@ -27,7 +27,7 @@ public class NumberExpr implements Expr {
         if (number == context.getPosition()) {
             return true;
         } else if (number > context.getPosition() && context.shouldCreate()) {
-            return xml.visit(new NumberPredicateVisitor<N>(context, (long) number - context.getPosition()));
+            return xml.visit(new NumberPredicateVisitor<>(context, (long) number - context.getPosition()));
         } else {
             return false;
         }
