@@ -1,6 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.navigator.Node;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.concurrent.NotThreadSafe;
@@ -12,7 +13,7 @@ import javax.annotation.concurrent.NotThreadSafe;
  * @since 1.0
  */
 @NotThreadSafe
-public final class ExprContext<N> {
+public final class ExprContext<N extends Node> {
 
     private final Navigator<N> navigator;
     private final boolean greedy;

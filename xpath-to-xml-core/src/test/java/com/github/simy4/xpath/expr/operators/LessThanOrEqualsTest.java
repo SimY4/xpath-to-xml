@@ -3,6 +3,7 @@ package com.github.simy4.xpath.expr.operators;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.utils.TestNode;
 import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeView;
@@ -20,7 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import static com.github.simy4.xpath.utils.StringNode.node;
+import static com.github.simy4.xpath.utils.TestNode.node;
 import static com.github.simy4.xpath.view.NodeSetView.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,22 +30,22 @@ public class LessThanOrEqualsTest {
 
     @DataPoints("less")
     public static final View[] LESSER = {
-            new LiteralView("1.0"),
-            new NumberView(1.0),
-            new NodeView<String>(node("1.0")),
-            singleton(new LiteralView("1.0")),
-            singleton(new NumberView(1.0)),
-            singleton(new NodeView<String>(node("1.0"))),
+            new LiteralView<TestNode>("1.0"),
+            new NumberView<TestNode>(1.0),
+            new NodeView<TestNode>(node("1.0")),
+            singleton(new LiteralView<TestNode>("1.0")),
+            singleton(new NumberView<TestNode>(1.0)),
+            singleton(new NodeView<TestNode>(node("1.0"))),
     };
 
     @DataPoints("greater")
     public static final View[] GREATER = {
-            new LiteralView("2.0"),
-            new NumberView(2.0),
-            new NodeView<String>(node("2.0")),
-            singleton(new LiteralView("2.0")),
-            singleton(new NumberView(2.0)),
-            singleton(new NodeView<String>(node("2.0"))),
+            new LiteralView<TestNode>("2.0"),
+            new NumberView<TestNode>(2.0),
+            new NodeView<TestNode>(node("2.0")),
+            singleton(new LiteralView<TestNode>("2.0")),
+            singleton(new NumberView<TestNode>(2.0)),
+            singleton(new NodeView<TestNode>(node("2.0"))),
     };
 
     @Rule
@@ -52,53 +53,53 @@ public class LessThanOrEqualsTest {
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
-    private Navigator<String> navigator;
+    private Navigator<TestNode> navigator;
 
     @Theory
-    public void shouldResolveToTrueWhenLeftIsLessThanRight(@FromDataPoints("less") View<String> less,
-                                                           @FromDataPoints("greater") View<String> greater) {
+    public void shouldResolveToTrueWhenLeftIsLessThanRight(@FromDataPoints("less") View<TestNode> less,
+                                                           @FromDataPoints("greater") View<TestNode> greater) {
         // given
-        ExprContext<String> context = new ExprContext<String>(navigator, false, 1);
+        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, false, 1);
 
         // when
-        View<String> result = Operator.lessThanOrEquals.resolve(context, less, greater);
+        View<TestNode> result = Operator.lessThanOrEquals.resolve(context, less, greater);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(true));
     }
 
     @Theory
-    public void shouldResolveToFalseWhenLeftIsGreaterThanRight(@FromDataPoints("less") View<String> less,
-                                                               @FromDataPoints("greater") View<String> greater) {
+    public void shouldResolveToFalseWhenLeftIsGreaterThanRight(@FromDataPoints("less") View<TestNode> less,
+                                                               @FromDataPoints("greater") View<TestNode> greater) {
         // given
-        ExprContext<String> context = new ExprContext<String>(navigator, false, 1);
+        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, false, 1);
 
         // when
-        View<String> result = Operator.lessThanOrEquals.resolve(context, greater, less);
+        View<TestNode> result = Operator.lessThanOrEquals.resolve(context, greater, less);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(false));
     }
 
     @Theory
-    public void shouldResolveToTrueWhenLeftIsEqualToRight(@FromDataPoints("less") View<String> left,
-                                                          @FromDataPoints("less") View<String> right) {
+    public void shouldResolveToTrueWhenLeftIsEqualToRight(@FromDataPoints("less") View<TestNode> left,
+                                                          @FromDataPoints("less") View<TestNode> right) {
         // given
-        ExprContext<String> context = new ExprContext<String>(navigator, false, 1);
+        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, false, 1);
 
         // when
-        View<String> result = Operator.lessThanOrEquals.resolve(context, left, right);
+        View<TestNode> result = Operator.lessThanOrEquals.resolve(context, left, right);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(true));
     }
 
     @Theory
-    public void shouldThrowWhenResolveToFalseAndShouldCreate(@FromDataPoints("less") View<String> less,
-                                                             @FromDataPoints("greater") View<String> greater) {
+    public void shouldThrowWhenResolveToFalseAndShouldCreate(@FromDataPoints("less") View<TestNode> less,
+                                                             @FromDataPoints("greater") View<TestNode> greater) {
         // given
         expectedException.expect(XmlBuilderException.class);
-        ExprContext<String> context = new ExprContext<String>(navigator, true, 1);
+        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, true, 1);
         context.advance();
 
         // when

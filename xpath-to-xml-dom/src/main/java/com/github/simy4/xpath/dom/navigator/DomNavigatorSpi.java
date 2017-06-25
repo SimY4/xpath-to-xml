@@ -19,7 +19,7 @@ public class DomNavigatorSpi implements NavigatorSpi {
             throw new IllegalArgumentException("XML model is not supported");
         }
         final Node xmlNode = (Node) xml;
-        final Navigator<Node> navigator = new DomNavigator(xmlNode);
+        final Navigator<DomNode> navigator = new DomNavigator(xmlNode);
         for (Effect effect : effects) {
             effect.perform(navigator);
         }

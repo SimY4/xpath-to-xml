@@ -33,7 +33,7 @@ public class DomNavigatorTest {
     @Mock private org.w3c.dom.Node child2;
     @Mock private org.w3c.dom.Node child3;
 
-    private Navigator<org.w3c.dom.Node> navigator;
+    private Navigator<DomNode> navigator;
 
     @Before
     public void setUp() {
@@ -62,17 +62,17 @@ public class DomNavigatorTest {
 
     @Test
     public void testXmlNode() {
-        assertThat(navigator.xml()).hasFieldOrPropertyWithValue("wrappedNode", xml);
+        assertThat(navigator.xml()).hasFieldOrPropertyWithValue("node", xml);
     }
 
     @Test
     public void testRootNode() {
-        assertThat(navigator.root()).hasFieldOrPropertyWithValue("wrappedNode", root);
+        assertThat(navigator.root()).hasFieldOrPropertyWithValue("node", root);
     }
 
     @Test
     public void testParentOfRegularNode() {
-        assertThat(navigator.parentOf(new DomNode(xml))).hasFieldOrPropertyWithValue("wrappedNode", root);
+        assertThat(navigator.parentOf(new DomNode(xml))).hasFieldOrPropertyWithValue("node", root);
     }
 
     @Test
@@ -83,14 +83,14 @@ public class DomNavigatorTest {
     @Test
     public void testElementsOf() {
         assertThat(navigator.elementsOf(new DomNode(xml)))
-                .extracting("wrappedNode", org.w3c.dom.Node.class)
+                .extracting("node", org.w3c.dom.Node.class)
                 .containsExactly(child1, child2, child3);
     }
 
     @Test
     public void testAttributesOf() {
         assertThat(navigator.attributesOf(new DomNode(xml)))
-                .extracting("wrappedNode", org.w3c.dom.Node.class)
+                .extracting("node", org.w3c.dom.Node.class)
                 .containsExactly(child1, child2, child3);
     }
 

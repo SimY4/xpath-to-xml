@@ -1,6 +1,7 @@
 package com.github.simy4.xpath.view;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.navigator.Node;
 
 /**
  * XML elements view.
@@ -9,7 +10,7 @@ import com.github.simy4.xpath.XmlBuilderException;
  * @author Alex Simkin
  * @since 1.0
  */
-public interface View<N> extends Comparable<View<N>> {
+public interface View<N extends Node> extends Comparable<View<N>> {
 
     /**
      * Converts this view to a boolean value.

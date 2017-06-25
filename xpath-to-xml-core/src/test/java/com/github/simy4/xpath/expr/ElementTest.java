@@ -1,16 +1,15 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.navigator.Node;
+import com.github.simy4.xpath.utils.TestNode;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentMatchers;
 
 import javax.xml.namespace.QName;
 
-import static com.github.simy4.xpath.utils.StringNode.node;
+import static com.github.simy4.xpath.utils.TestNode.node;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -25,7 +24,7 @@ public class ElementTest extends AbstractStepExprTest<Element> {
     public void setUp() {
         QName elem = new QName("elem");
 
-        when(navigator.createElement(ArgumentMatchers.<Node<String>>any(), eq(elem))).thenReturn(node("elem"));
+        when(navigator.createElement(any(TestNode.class), eq(elem))).thenReturn(node("elem"));
 
         expr = new Element(elem, asList(predicate1, predicate2));
     }
@@ -36,10 +35,10 @@ public class ElementTest extends AbstractStepExprTest<Element> {
         setUpResolvableExpr();
 
         // when
-        NodeSetView<String> result = expr.resolve(new ExprContext<String>(navigator, false, 3), parentNode);
+        NodeSetView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, false, 3), parentNode);
 
         // then
-        assertThat((Iterable<?>) result).containsExactly(new NodeView<String>(node("elem")));
+        assertThat((Iterable<?>) result).containsExactly(new NodeView<TestNode>(node("elem")));
     }
 
     @Test
@@ -48,10 +47,10 @@ public class ElementTest extends AbstractStepExprTest<Element> {
         setUpUnresolvableExpr();
 
         // when
-        NodeSetView<String> result = expr.resolve(new ExprContext<String>(navigator, true, 1), parentNode);
+        NodeSetView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, true, 1), parentNode);
 
         // then
-        assertThat((Iterable<?>) result).containsExactly(new NodeView<String>(node("elem")));
+        assertThat((Iterable<?>) result).containsExactly(new NodeView<TestNode>(node("elem")));
         verify(navigator).createElement(node("node"), new QName("elem"));
     }
 
@@ -62,7 +61,7 @@ public class ElementTest extends AbstractStepExprTest<Element> {
         expr = new Element(new QName("*", "attr"), asList(predicate1, predicate2));
 
         // when
-        expr.resolve(new ExprContext<String>(navigator, true, 1), parentNode);
+        expr.resolve(new ExprContext<TestNode>(navigator, true, 1), parentNode);
     }
 
     @Test(expected = XmlBuilderException.class)
@@ -72,18 +71,17 @@ public class ElementTest extends AbstractStepExprTest<Element> {
         expr = new Element(new QName("http://www.example.com/my", "*", "my"), asList(predicate1, predicate2));
 
         // when
-        expr.resolve(new ExprContext<String>(navigator, true, 1), parentNode);
+        expr.resolve(new ExprContext<TestNode>(navigator, true, 1), parentNode);
     }
 
     @Test(expected = XmlBuilderException.class)
     public void shouldPropagateIfFailedToCreateElement() {
         // given
         setUpUnresolvableExpr();
-        when(navigator.createElement(ArgumentMatchers.<Node<String>>any(), any(QName.class)))
-                .thenThrow(XmlBuilderException.class);
+        when(navigator.createElement(any(TestNode.class), any(QName.class))).thenThrow(XmlBuilderException.class);
 
         // when
-        expr.resolve(new ExprContext<String>(navigator, true, 1), parentNode);
+        expr.resolve(new ExprContext<TestNode>(navigator, true, 1), parentNode);
     }
 
     @Test

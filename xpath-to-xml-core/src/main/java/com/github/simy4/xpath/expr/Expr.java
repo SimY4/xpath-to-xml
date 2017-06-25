@@ -1,6 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.View;
 
 /**
@@ -20,6 +21,6 @@ public interface Expr extends Predicate {
      * @return evaluated XML node view
      * @throws XmlBuilderException if error occur during XML model modification
      */
-    <N> View<N> resolve(ExprContext<N> context, View<N> xml) throws XmlBuilderException;
+    <N extends Node> View<N> resolve(ExprContext<N> context, View<N> xml) throws XmlBuilderException;
 
 }

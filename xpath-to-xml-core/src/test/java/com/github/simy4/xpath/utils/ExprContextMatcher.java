@@ -1,12 +1,13 @@
 package com.github.simy4.xpath.utils;
 
 import com.github.simy4.xpath.expr.ExprContext;
+import com.github.simy4.xpath.navigator.Node;
 import org.mockito.ArgumentMatcher;
 import org.mockito.internal.util.reflection.FieldReader;
 
 import java.lang.reflect.Field;
 
-public class ExprContextMatcher<N> implements ArgumentMatcher<ExprContext<N>> {
+public class ExprContextMatcher<N extends Node> implements ArgumentMatcher<ExprContext<N>> {
 
     private static final Field exprContextGreedyField;
 
@@ -18,7 +19,7 @@ public class ExprContextMatcher<N> implements ArgumentMatcher<ExprContext<N>> {
         }
     }
 
-    public static <T> ArgumentMatcher<ExprContext<T>> greedyContext() {
+    public static <T extends Node> ArgumentMatcher<ExprContext<T>> greedyContext() {
         return new ExprContextMatcher<T>(true);
     }
 

@@ -1,6 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.AbstractViewVisitor;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
@@ -18,7 +19,8 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
     }
 
     @Override
-    public final <N> NodeSetView<N> resolve(ExprContext<N> context, View<N> xml) throws XmlBuilderException {
+    public final <N extends Node> NodeSetView<N> resolve(ExprContext<N> context, View<N> xml)
+            throws XmlBuilderException {
         return xml.visit(new StepNodeVisitor<N>(context));
     }
 
@@ -30,7 +32,7 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
      * @param <N>        XML node type
      * @return ordered set of matching nodes
      */
-    abstract <N> NodeSetView<N> traverseStep(ExprContext<N> context, NodeView<N> parentView);
+    abstract <N extends Node> NodeSetView<N> traverseStep(ExprContext<N> context, NodeView<N> parentView);
 
     /**
      * Creates new node of this step type.
@@ -41,9 +43,10 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
      * @return newly created node
      * @throws XmlBuilderException if error occur during XML node creation
      */
-    abstract <N> NodeView<N> createStepNode(ExprContext<N> context, NodeView<N> parentView) throws XmlBuilderException;
+    abstract <N extends Node> NodeView<N> createStepNode(ExprContext<N> context, NodeView<N> parentView)
+            throws XmlBuilderException;
 
-    private <N> NodeSetView<N> resolvePredicates(ExprContext<N> lookupContext, NodeSetView<N> xmlNodes,
+    private <N extends Node> NodeSetView<N> resolvePredicates(ExprContext<N> lookupContext, NodeSetView<N> xmlNodes,
                                                  Iterator<Predicate> predicateIterator) throws XmlBuilderException {
         if (predicateIterator.hasNext() && xmlNodes.toBoolean()) {
             final NodeSetView.Builder<N> builder = NodeSetView.builder(xmlNodes.size());
@@ -71,7 +74,7 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
         return stringBuilder.toString();
     }
 
-    private final class StepNodeVisitor<N> extends AbstractViewVisitor<N, NodeSetView<N>> {
+    private final class StepNodeVisitor<N extends Node> extends AbstractViewVisitor<N, NodeSetView<N>> {
 
         private final ExprContext<N> context;
 

@@ -3,11 +3,10 @@ package com.github.simy4.xpath.dom.navigator;
 import com.github.simy4.xpath.navigator.Node;
 
 import javax.annotation.concurrent.Immutable;
-import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 @Immutable
-final class DomNode implements Node<org.w3c.dom.Node> {
+final class DomNode implements Node {
 
     private final org.w3c.dom.Node node;
 
@@ -15,25 +14,18 @@ final class DomNode implements Node<org.w3c.dom.Node> {
         this.node = node;
     }
 
-    @Override
-    public org.w3c.dom.Node getWrappedNode() {
+    org.w3c.dom.Node getNode() {
         return node;
     }
 
     @Override
-    public QName getNodeName() {
-        String ns;
-        String prefix;
-        String localPart = node.getLocalName();
+    public QName getName() {
+        final String localPart = node.getLocalName();
         if (null == localPart) {
-            ns = XMLConstants.NULL_NS_URI;
-            prefix = XMLConstants.DEFAULT_NS_PREFIX;
-            localPart = node.getNodeName();
+            return new QName(node.getNodeName());
         } else {
-            ns = node.getNamespaceURI();
-            prefix = node.getPrefix();
+            return new QName(node.getNamespaceURI(), localPart, node.getPrefix());
         }
-        return new QName(ns, localPart, prefix);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.utils.Pair;
+import com.github.simy4.xpath.utils.TestNode;
 import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeSetView;
@@ -21,7 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import static com.github.simy4.xpath.utils.StringNode.node;
+import static com.github.simy4.xpath.utils.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -29,23 +30,23 @@ import static org.mockito.Mockito.when;
 public class UnaryExprTest {
 
     @DataPoints("views") public static Pair[] parentNodes = {
-            Pair.of(new NumberView(2.0), new NumberView(-2.0)),
-            Pair.of(new NumberView(-2.0), new NumberView(2.0)),
-            Pair.of(new LiteralView("2.0"), new NumberView(-2.0)),
-            Pair.of(new LiteralView("literal"), new NumberView(Double.NaN)),
-            Pair.of(new NodeView<String>(node("2.0")), new NumberView(-2.0)),
-            Pair.of(new NodeView<String>(node("node")), new NumberView(Double.NaN)),
-            Pair.of(BooleanView.of(true), new NumberView<String>(-1.0)),
-            Pair.of(BooleanView.of(false), new NumberView<String>(-0.0)),
+            Pair.of(new NumberView<TestNode>(2.0), new NumberView(-2.0)),
+            Pair.of(new NumberView<TestNode>(-2.0), new NumberView(2.0)),
+            Pair.of(new LiteralView<TestNode>("2.0"), new NumberView(-2.0)),
+            Pair.of(new LiteralView<TestNode>("literal"), new NumberView(Double.NaN)),
+            Pair.of(new NodeView<TestNode>(node("2.0")), new NumberView(-2.0)),
+            Pair.of(new NodeView<TestNode>(node("node")), new NumberView(Double.NaN)),
+            Pair.of(BooleanView.of(true), new NumberView<TestNode>(-1.0)),
+            Pair.of(BooleanView.of(false), new NumberView<TestNode>(-0.0)),
             Pair.of(NodeSetView.empty(), new NumberView(Double.NaN)),
-            Pair.of(NodeSetView.singleton(new NodeView<String>(node("2.0"))), new NumberView(-2.0)),
-            Pair.of(NodeSetView.singleton(new NodeView<String>(node("node"))), new NumberView(Double.NaN)),
+            Pair.of(NodeSetView.singleton(new NodeView<TestNode>(node("2.0"))), new NumberView(-2.0)),
+            Pair.of(NodeSetView.singleton(new NodeView<TestNode>(node("node"))), new NumberView(Double.NaN)),
     };
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
-    @Mock private Navigator<String> navigator;
+    @Mock private Navigator<TestNode> navigator;
     @Mock private Expr valueExpr;
 
     private Expr unaryExpr;
@@ -57,12 +58,12 @@ public class UnaryExprTest {
 
     @Theory
     public void shouldAlwaysReturnNegatedNumberViewNode(
-            @FromDataPoints("views") Pair<View<String>, NumberView<String>> data) {
-        when(valueExpr.resolve(ArgumentMatchers.<ExprContext<String>>any(), ArgumentMatchers.<View<String>>any()))
+            @FromDataPoints("views") Pair<View<TestNode>, NumberView<TestNode>> data) {
+        when(valueExpr.resolve(ArgumentMatchers.<ExprContext<TestNode>>any(), ArgumentMatchers.<View<TestNode>>any()))
                 .thenReturn(data.getFirst());
 
-        View<String> result = unaryExpr.resolve(new ExprContext<String>(navigator, false, 1),
-                new NodeView<String>(node("xml")));
+        View<TestNode> result = unaryExpr.resolve(new ExprContext<TestNode>(navigator, false, 1),
+                new NodeView<TestNode>(node("xml")));
         assertThat(result).isEqualTo(data.getSecond());
     }
 

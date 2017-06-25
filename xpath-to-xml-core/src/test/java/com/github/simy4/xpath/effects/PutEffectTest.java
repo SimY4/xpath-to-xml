@@ -4,6 +4,7 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.utils.TestNode;
 import com.github.simy4.xpath.view.NodeView;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +15,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static com.github.simy4.xpath.utils.StringNode.node;
+import static com.github.simy4.xpath.utils.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -23,9 +24,9 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class PutEffectTest {
 
-    @Mock private Navigator<String> navigator;
+    @Mock private Navigator<TestNode> navigator;
     @Mock private Expr expr;
-    @Captor private ArgumentCaptor<ExprContext<String>> contextCaptor;
+    @Captor private ArgumentCaptor<ExprContext<TestNode>> contextCaptor;
 
     private Effect putEffect;
 
@@ -42,7 +43,7 @@ public class PutEffectTest {
         putEffect.perform(navigator);
 
         // then
-        verify(expr).resolve(contextCaptor.capture(), eq(new NodeView<String>(node("xml"))));
+        verify(expr).resolve(contextCaptor.capture(), eq(new NodeView<TestNode>(node("xml"))));
         assertThat(contextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(navigator, true, 1, 0);
     }
@@ -50,7 +51,7 @@ public class PutEffectTest {
     @Test(expected = XmlBuilderException.class)
     public void shouldPropagateOnAnyException() {
         // given
-        when(expr.resolve(ArgumentMatchers.<ExprContext<String>>any(), ArgumentMatchers.<NodeView<String>>any()))
+        when(expr.resolve(ArgumentMatchers.<ExprContext<TestNode>>any(), ArgumentMatchers.<NodeView<TestNode>>any()))
                 .thenThrow(XmlBuilderException.class);
 
         // then

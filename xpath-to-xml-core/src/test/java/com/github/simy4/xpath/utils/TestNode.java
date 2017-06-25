@@ -4,25 +4,20 @@ import com.github.simy4.xpath.navigator.Node;
 
 import javax.xml.namespace.QName;
 
-public final class StringNode implements Node<String> {
+public final class TestNode implements Node {
 
-    public static Node<String> node(String value) {
-        return new StringNode(value);
+    public static TestNode node(String value) {
+        return new TestNode(value);
     }
 
     private final String value;
 
-    private StringNode(String value) {
+    private TestNode(String value) {
         this.value = value;
     }
 
     @Override
-    public String getWrappedNode() {
-        return value;
-    }
-
-    @Override
-    public QName getNodeName() {
+    public QName getName() {
         return new QName(value);
     }
 
@@ -40,7 +35,7 @@ public final class StringNode implements Node<String> {
             return false;
         }
 
-        StringNode that = (StringNode) o;
+        TestNode that = (TestNode) o;
         return value.equals(that.value);
     }
 
@@ -51,7 +46,7 @@ public final class StringNode implements Node<String> {
 
     @Override
     public String toString() {
-        return getNodeName().toString();
+        return getName().toString();
     }
 
 }

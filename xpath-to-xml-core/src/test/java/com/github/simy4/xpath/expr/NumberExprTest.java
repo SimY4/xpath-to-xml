@@ -1,6 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.utils.TestNode;
 import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeSetView;
@@ -18,7 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import static com.github.simy4.xpath.utils.StringNode.node;
+import static com.github.simy4.xpath.utils.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -27,36 +28,36 @@ import static org.mockito.Mockito.verify;
 public class NumberExprTest {
 
     @DataPoints("parent nodes") public static View[] parentNodes = {
-            new LiteralView("literal"),
-            new NumberView(2.0),
-            new NodeView<String>(node("node")),
+            new LiteralView<TestNode>("literal"),
+            new NumberView<TestNode>(2.0),
+            new NodeView<TestNode>(node("node")),
             BooleanView.of(true),
             BooleanView.of(false),
             NodeSetView.empty(),
-            NodeSetView.singleton(new NodeView<String>(node("node"))),
+            NodeSetView.singleton(new NodeView<TestNode>(node("node"))),
     };
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
-    private Navigator<String> navigator;
+    private Navigator<TestNode> navigator;
 
     private final Expr numberExpr = new NumberExpr(3.0);
 
     @Theory
-    public void shouldAlwaysReturnSingleNumberNode(@FromDataPoints("parent nodes") View<String> parentView) {
-        View<String> result = numberExpr.resolve(new ExprContext<String>(navigator, false, 1), parentView);
-        assertThat(result).isEqualTo(new NumberView<String>(3.0));
+    public void shouldAlwaysReturnSingleNumberNode(@FromDataPoints("parent nodes") View<TestNode> parentView) {
+        View<TestNode> result = numberExpr.resolve(new ExprContext<TestNode>(navigator, false, 1), parentView);
+        assertThat(result).isEqualTo(new NumberView<TestNode>(3.0));
     }
 
     @Test
     public void shouldPrependMissingNodesAndReturnNumberOnGreedyMatching() {
         // given
-        ExprContext<String> context = new ExprContext<String>(navigator, true, 1);
+        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, true, 1);
         context.advance();
 
         // when
-        boolean result = numberExpr.match(context, new NodeView<String>(node("node")));
+        boolean result = numberExpr.match(context, new NodeView<TestNode>(node("node")));
 
         // then
         assertThat(result).isEqualTo(true);

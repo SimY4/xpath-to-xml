@@ -5,25 +5,17 @@ import javax.xml.namespace.QName;
 /**
  * XML node contract.
  *
- * @param <N> XML node type
  * @author Alex Simkin
  * @since 1.0
  */
-public interface Node<N> {
-
-    /**
-     * Original node.
-     *
-     * @return node.
-     */
-    N getWrappedNode();
+public interface Node {
 
     /**
      * XML node name.
      *
      * @return node name.
      */
-    QName getNodeName();
+    QName getName();
 
     /**
      * XML node text content.
