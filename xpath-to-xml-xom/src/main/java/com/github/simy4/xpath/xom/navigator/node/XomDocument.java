@@ -1,20 +1,20 @@
-package com.github.simy4.xpath.dom4j.navigator.node;
+package com.github.simy4.xpath.xom.navigator.node;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import org.dom4j.Attribute;
-import org.dom4j.Document;
-import org.dom4j.Element;
+import nu.xom.Attribute;
+import nu.xom.Document;
+import nu.xom.Element;
 
 import javax.annotation.concurrent.Immutable;
 import javax.xml.namespace.QName;
 import java.util.Collections;
 
 @Immutable
-public final class Dom4jDocument implements Dom4jNode<Document> {
+public final class XomDocument implements XomNode<Document> {
 
     private final Document document;
 
-    public Dom4jDocument(Document document) {
+    public XomDocument(Document document) {
         this.document = document;
     }
 
@@ -30,32 +30,34 @@ public final class Dom4jDocument implements Dom4jNode<Document> {
 
     @Override
     public String getText() {
-        return document.getText();
+        return document.getValue();
     }
 
     @Override
-    public Iterable<Dom4jNode<Element>> elements() {
+    public Iterable<XomNode<Element>> elements() {
         final Element root = document.getRootElement();
-        return null == root ? Collections.<Dom4jNode<Element>>emptyList()
-                : Collections.<Dom4jNode<Element>>singletonList(new Dom4jElement(root));
+        return null == root ? Collections.<XomNode<Element>>emptyList()
+                : Collections.<XomNode<Element>>singletonList(new XomElement(root));
     }
 
     @Override
-    public Iterable<Dom4jNode<Attribute>> attributes() {
+    public Iterable<XomNode<Attribute>> attributes() {
         return Collections.emptyList();
     }
 
     @Override
-    public Dom4jNode<Attribute> createAttribute(org.dom4j.QName attribute) throws XmlBuilderException {
+    public XomNode<Attribute> appendAttribute(Attribute attribute) throws XmlBuilderException {
         throw new XmlBuilderException("Unable to append attribute to a document node " + document);
     }
 
     @Override
-    public Dom4jNode<Element> createElement(org.dom4j.QName element) throws XmlBuilderException {
-        if (null != document.getRootElement()) {
-            throw new XmlBuilderException("Unable to create element " + element + " . Root element already exist");
-        }
-        return new Dom4jElement(document.addElement(element));
+    public XomNode<Element> appendElement(Element element) throws XmlBuilderException {
+        return null;
+    }
+
+    @Override
+    public void setValue(String value) throws XmlBuilderException {
+        throw new XmlBuilderException("Unable to set value to a document node " + document);
     }
 
     @Override
@@ -67,7 +69,7 @@ public final class Dom4jDocument implements Dom4jNode<Document> {
             return false;
         }
 
-        Dom4jDocument that = (Dom4jDocument) o;
+        XomDocument that = (XomDocument) o;
 
         return document.equals(that.document);
     }

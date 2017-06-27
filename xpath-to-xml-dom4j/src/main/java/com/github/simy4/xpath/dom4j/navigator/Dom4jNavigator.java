@@ -8,6 +8,7 @@ import com.github.simy4.xpath.navigator.Navigator;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
+import org.dom4j.Node;
 
 import javax.annotation.Nullable;
 import javax.xml.namespace.QName;
@@ -72,8 +73,8 @@ final class Dom4jNavigator implements Navigator<Dom4jNode> {
 
     @Override
     public void prependCopy(Dom4jNode node) throws XmlBuilderException {
-        final org.dom4j.Node wrappedNode = node.getNode();
-        if (org.dom4j.Node.ELEMENT_NODE != wrappedNode.getNodeType()) {
+        final Node wrappedNode = node.getNode();
+        if (Node.ELEMENT_NODE != wrappedNode.getNodeType()) {
             throw new XmlBuilderException("Unable to copy non-element node " + node);
         }
         final Element parent = wrappedNode.getParent();
@@ -87,7 +88,7 @@ final class Dom4jNavigator implements Navigator<Dom4jNode> {
 
     @Override
     public void remove(Dom4jNode node) {
-        final org.dom4j.Node wrappedNode = node.getNode();
+        final Node wrappedNode = node.getNode();
         final Element parent = wrappedNode.getParent();
         if (parent != null) {
             parent.remove(wrappedNode);
