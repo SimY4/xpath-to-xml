@@ -35,9 +35,7 @@ public final class XomDocument implements XomNode<Document> {
 
     @Override
     public Iterable<XomNode<Element>> elements() {
-        final Element root = document.getRootElement();
-        return null == root ? Collections.<XomNode<Element>>emptyList()
-                : Collections.<XomNode<Element>>singletonList(new XomElement(root));
+        return Collections.<XomNode<Element>>singletonList(new XomElement(document.getRootElement()));
     }
 
     @Override
@@ -52,7 +50,7 @@ public final class XomDocument implements XomNode<Document> {
 
     @Override
     public XomNode<Element> appendElement(Element element) throws XmlBuilderException {
-        return null;
+        throw new XmlBuilderException("Unable to append element. Document has root: " + document.getRootElement());
     }
 
     @Override

@@ -50,7 +50,7 @@ public class Dom4JAttributeTest {
     }
 
     @Test
-    public void shouldReturnNodeNameForNamespaceUnawareElement() {
+    public void shouldReturnNodeNameForNamespaceUnawareAttribute() {
         when(attribute.getName()).thenReturn("node");
         when(attribute.getNamespace()).thenReturn(Namespace.NO_NAMESPACE);
 
@@ -61,7 +61,7 @@ public class Dom4JAttributeTest {
     }
 
     @Test
-    public void shouldReturnNodeNameForNamespaceAwareElement() {
+    public void shouldReturnNodeNameForNamespaceAwareAttribute() {
         when(attribute.getName()).thenReturn("node");
         when(attribute.getNamespace()).thenReturn(new Namespace("my", "http://www.example.com/my"));
 

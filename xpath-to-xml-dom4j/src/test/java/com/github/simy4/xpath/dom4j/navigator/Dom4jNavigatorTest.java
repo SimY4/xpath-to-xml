@@ -117,12 +117,12 @@ public class Dom4jNavigatorTest {
 
     @Test
     public void testCreateAttributeSuccess() {
-        assertThat(navigator.createAttribute(new Dom4jElement(xml), new QName("attr")));
+        assertThat(navigator.createAttribute(new Dom4jElement(xml), new QName("attr"))).isNotNull();
     }
 
     @Test
     public void testCreateNsAttributeSuccess() {
-        assertThat(navigator.createAttribute(new Dom4jElement(xml), new QName("http://example.com/my", "attr", "my")));
+        assertThat(navigator.createAttribute(new Dom4jElement(xml), new QName("http://example.com/my", "attr", "my"))).isNotNull();
     }
 
     @Test(expected = XmlBuilderException.class)

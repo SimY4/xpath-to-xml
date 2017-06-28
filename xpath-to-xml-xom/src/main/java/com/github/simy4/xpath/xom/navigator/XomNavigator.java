@@ -14,6 +14,7 @@ import nu.xom.ParentNode;
 import nu.xom.XMLException;
 
 import javax.annotation.Nullable;
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 final class XomNavigator implements Navigator<XomNode> {
@@ -59,15 +60,17 @@ final class XomNavigator implements Navigator<XomNode> {
 
     @Override
     public XomNode createAttribute(XomNode parent, QName attribute) throws XmlBuilderException {
-        final Attribute attr = new Attribute(attribute.getPrefix() + ':' + attribute.getLocalPart(),
-                attribute.getNamespaceURI(), "");
+        final Attribute attr = new Attribute(attribute.getLocalPart(), "");
+        if (!XMLConstants.NULL_NS_URI.equals(attribute.getNamespaceURI())) {
+            attr.setNamespace(attr.getNamespacePrefix(), attr.getNamespaceURI());
+        }
         return parent.appendAttribute(attr);
     }
 
     @Override
     public XomNode createElement(XomNode parent, QName element) throws XmlBuilderException {
-        final Element elem = new Element(element.getPrefix() + ':' + element.getLocalPart(),
-                element.getNamespaceURI());
+        final Element elem = new Element(element.getLocalPart(), element.getNamespaceURI());
+        elem.setNamespacePrefix(element.getPrefix());
         return parent.appendElement(elem);
     }
 

@@ -60,7 +60,7 @@ public final class XomElement implements XomNode<Element> {
     @Override
     public XomNode<Attribute> appendAttribute(Attribute attribute) throws XmlBuilderException {
         try {
-            element.appendChild(attribute);
+            element.addAttribute(attribute);
             return new XomAttribute(attribute);
         } catch (IllegalAddException iae) {
             throw new XmlBuilderException("Unable to append an attribute to " + element, iae);
@@ -70,7 +70,7 @@ public final class XomElement implements XomNode<Element> {
     @Override
     public XomNode<Element> appendElement(Element element) throws XmlBuilderException {
         try {
-            element.appendChild(element);
+            this.element.appendChild(element);
             return new XomElement(element);
         } catch (IllegalAddException iae) {
             throw new XmlBuilderException("Unable to append an element to " + element, iae);
