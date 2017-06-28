@@ -5,6 +5,8 @@ import nu.xom.Attribute;
 import nu.xom.Element;
 import nu.xom.Elements;
 import nu.xom.IllegalAddException;
+import nu.xom.Node;
+import nu.xom.Text;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
@@ -80,6 +82,13 @@ public final class XomElement implements XomNode<Element> {
     @Override
     public void setValue(String value) throws XmlBuilderException {
         try {
+            for (int i = 0; i < element.getChildCount(); i++) {
+                final Node child = element.getChild(i);
+                if (child instanceof Text) {
+                    ((Text) child).setValue(value);
+                    return;
+                }
+            }
             element.appendChild(value);
         } catch (IllegalAddException iae) {
             throw new XmlBuilderException("Unable to set value to " + element, iae);

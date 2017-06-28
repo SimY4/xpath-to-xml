@@ -2,13 +2,13 @@ package com.github.simy4.xpath;
 
 import com.github.simy4.xpath.fixtures.FixtureAccessor;
 import com.github.simy4.xpath.utils.SimpleNamespaceContext;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
-import org.dom4j.XPath;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.SAXReader;
-import org.dom4j.io.XMLWriter;
+import nu.xom.Builder;
+import nu.xom.Document;
+import nu.xom.Element;
+import nu.xom.Nodes;
+import nu.xom.ParsingException;
+import nu.xom.Serializer;
+import nu.xom.XPathContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,8 +19,8 @@ import org.junit.runners.Parameterized.Parameters;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -60,14 +60,13 @@ public class XmlBuilderTest {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         Document builtDocument = new XmlBuilder(namespaceContext)
                 .putAll(xmlProperties.keySet())
-                .build(DocumentHelper.createDocument());
+                .build(new Document(new Element("breakfast_menu")));
 
         for (Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
-            XPath xpath = builtDocument.createXPath(xpathToValuePair.getKey());
-            if (null != namespaceContext) {
-                xpath.setNamespaceContext(new SimpleNamespaceContextWrapper(namespaceContext));
-            }
-            assertThat(xpath.evaluate(builtDocument)).isNotNull();
+            Nodes nodes = null == namespaceContext
+                    ? builtDocument.query(xpathToValuePair.getKey(), toXpathContext(namespaceContext))
+                    : builtDocument.query(xpathToValuePair.getKey());
+            assertThat(nodes).isNotNull();
         }
         assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutXml());
     }
@@ -77,21 +76,19 @@ public class XmlBuilderTest {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         Document builtDocument = new XmlBuilder(namespaceContext)
                 .putAll(xmlProperties)
-                .build(DocumentHelper.createDocument());
+                .build(new Document(new Element("breakfast_menu")));
 
         for (Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
-            XPath xpath = builtDocument.createXPath(xpathToValuePair.getKey());
-            if (null != namespaceContext) {
-                xpath.setNamespaceContext(new SimpleNamespaceContextWrapper(namespaceContext));
-            }
-            assertThat(xpath.selectSingleNode(builtDocument).getText()).isEqualTo(xpathToValuePair.getValue());
+            Nodes nodes = null == namespaceContext
+                    ? builtDocument.query(xpathToValuePair.getKey(), toXpathContext(namespaceContext))
+                    : builtDocument.query(xpathToValuePair.getKey());
+            assertThat(nodes.get(0).getValue()).isEqualTo(xpathToValuePair.getValue());
         }
         assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
     }
 
     @Test
-    public void shouldModifyDocumentWhenXPathsAreNotTraversable()
-            throws XPathExpressionException, DocumentException, IOException {
+    public void shouldModifyDocumentWhenXPathsAreNotTraversable() throws XPathExpressionException, ParsingException, IOException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         String xml = fixtureAccessor.getPutXml();
         Document oldDocument = stringToXml(xml);
@@ -103,8 +100,7 @@ public class XmlBuilderTest {
     }
 
     @Test
-    public void shouldNotModifyDocumentWhenAllXPathsTraversable()
-            throws XPathExpressionException, DocumentException, IOException {
+    public void shouldNotModifyDocumentWhenAllXPathsTraversable() throws XPathExpressionException, ParsingException, IOException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         String xml = fixtureAccessor.getPutValueXml();
         Document oldDocument = stringToXml(xml);
@@ -121,35 +117,25 @@ public class XmlBuilderTest {
         assertThat(xmlToString(builtDocument)).isEqualTo(xml);
     }
 
-    private Document stringToXml(String xml) throws DocumentException {
-        SAXReader saxReader = new SAXReader();
-        return saxReader.read(new ByteArrayInputStream(xml.getBytes()));
+    private Document stringToXml(String xml) throws ParsingException, IOException {
+        Builder builder = new Builder();
+        return builder.build(new ByteArrayInputStream(xml.getBytes()));
     }
 
     private String xmlToString(Document xml) throws IOException {
-        OutputFormat format = OutputFormat.createCompactFormat();
-        format.setIndentSize(4);
-        format.setNewlines(true);
-        format.setSuppressDeclaration(true);
-        StringWriter result = new StringWriter();
-        XMLWriter writer = new XMLWriter(result, format);
-        writer.write(xml);
-        return result.toString().replaceFirst("\n", "");
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        Serializer serializer = new Serializer(outputStream, "UTF-8");
+        serializer.setIndent(4);
+        serializer.setLineSeparator("\n");
+        serializer.write(xml);
+        String xmlString = new String(outputStream.toByteArray(), "UTF-8");
+        return xmlString.substring(xmlString.indexOf('\n') + 1);
     }
 
-    private static final class SimpleNamespaceContextWrapper implements org.jaxen.NamespaceContext {
+    private XPathContext toXpathContext(NamespaceContext namespaceContext) {
+        XPathContext context = new XPathContext();
 
-        private final NamespaceContext namespaceContext;
-
-        private SimpleNamespaceContextWrapper(NamespaceContext namespaceContext) {
-            this.namespaceContext = namespaceContext;
-        }
-
-        @Override
-        public String translateNamespacePrefixToUri(String prefix) {
-            return namespaceContext.getNamespaceURI(prefix);
-        }
-
+        return context;
     }
 
 }
