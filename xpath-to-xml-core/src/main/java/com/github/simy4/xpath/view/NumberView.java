@@ -1,12 +1,13 @@
 package com.github.simy4.xpath.view;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.navigator.Node;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
 @Immutable
-public final class NumberView<N> implements View<N> {
+public final class NumberView<N extends Node> implements View<N> {
 
     private final double number;
 

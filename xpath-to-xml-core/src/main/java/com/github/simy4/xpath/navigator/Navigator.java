@@ -12,21 +12,21 @@ import javax.xml.namespace.QName;
  * @author Alex Simkin
  * @since 1.0
  */
-public interface Navigator<N> {
+public interface Navigator<N extends Node> {
 
     /**
      * Wrapped initial XML node.
      *
      * @return initial XML node
      */
-    Node<N> xml();
+    N xml();
 
     /**
      * Wrapped XML root.
      *
      * @return XML root
      */
-    Node<N> root();
+    N root();
 
     /**
      * Wrapped parent of given XML node.
@@ -35,7 +35,7 @@ public interface Navigator<N> {
      * @return XML node parent
      */
     @Nullable
-    Node<N> parentOf(Node<N> node);
+    N parentOf(N node);
 
     /**
      * Child element nodes of given XML node.
@@ -43,7 +43,7 @@ public interface Navigator<N> {
      * @param parent XML node to scan
      * @return child element nodes
      */
-    Iterable<? extends Node<N>> elementsOf(Node<N> parent);
+    Iterable<? extends N> elementsOf(N parent);
 
     /**
      * Child attribute nodes of given XML node.
@@ -51,7 +51,7 @@ public interface Navigator<N> {
      * @param parent XML node to scan
      * @return child attribute nodes
      */
-    Iterable<? extends Node<N>> attributesOf(Node<N> parent);
+    Iterable<? extends N> attributesOf(N parent);
 
     /**
      * Creates XML attribute node and appends to given parent.
@@ -61,7 +61,7 @@ public interface Navigator<N> {
      * @return newly created attribute node
      * @throws XmlBuilderException if failure occur during XML attribute creation
      */
-    Node<N> createAttribute(Node<N> parent, QName attribute) throws XmlBuilderException;
+    N createAttribute(N parent, QName attribute) throws XmlBuilderException;
 
     /**
      * Creates XML element node and appends to given parent.
@@ -71,7 +71,7 @@ public interface Navigator<N> {
      * @return newly created element node
      * @throws XmlBuilderException if failure occur during XML element creation
      */
-    Node<N> createElement(Node<N> parent, QName element) throws XmlBuilderException;
+    N createElement(N parent, QName element) throws XmlBuilderException;
 
     /**
      * Sets the given text content to a given node.
@@ -80,7 +80,7 @@ public interface Navigator<N> {
      * @param text text content to set
      * @throws XmlBuilderException if failure occur during setting the text content
      */
-    void setText(Node<N> node, String text) throws XmlBuilderException;
+    void setText(N node, String text) throws XmlBuilderException;
 
     /**
      * Prepends a copy of given node to this node.
@@ -88,7 +88,7 @@ public interface Navigator<N> {
      * @param node XML node to copy and prepend
      * @throws XmlBuilderException if failure occur during node appending
      */
-    void prependCopy(Node<N> node) throws XmlBuilderException;
+    void prependCopy(N node) throws XmlBuilderException;
 
     /**
      * Removes/detaches given node from XML model.
@@ -96,6 +96,6 @@ public interface Navigator<N> {
      * @param node node to remove
      * @throws XmlBuilderException if failure occur during node removal
      */
-    void remove(Node<N> node) throws XmlBuilderException;
+    void remove(N node) throws XmlBuilderException;
 
 }

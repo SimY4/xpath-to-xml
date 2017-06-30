@@ -1,20 +1,21 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.utils.TestNode;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.github.simy4.xpath.utils.StringNode.node;
+import static com.github.simy4.xpath.utils.TestNode.node;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 public class ParentTest extends AbstractStepExprTest<Parent> {
 
-    private static final NodeView<String> parentNode = new NodeView<>(node("node"));
+    private static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));
 
     @Before
     public void setUp() {
@@ -29,10 +30,10 @@ public class ParentTest extends AbstractStepExprTest<Parent> {
         setUpResolvableExpr();
 
         // when
-        NodeSetView<String> result = expr.resolve(new ExprContext<>(navigator, false, 3), parentNode);
+        NodeSetView<TestNode> result = expr.resolve(new ExprContext<>(navigator, false, 3), parentNode);
 
         // then
-        assertThat((Iterable<View<String>>) result).containsExactly(new NodeView<>(node("parent")));
+        assertThat((Iterable<View<TestNode>>) result).containsExactly(new NodeView<>(node("parent")));
     }
 
     @Test(expected = XmlBuilderException.class)

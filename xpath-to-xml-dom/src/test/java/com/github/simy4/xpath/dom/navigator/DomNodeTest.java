@@ -18,7 +18,7 @@ public class DomNodeTest {
 
     @Mock private org.w3c.dom.Node node;
 
-    private Node<org.w3c.dom.Node> nodeView;
+    private Node nodeView;
 
     @Before
     public void setUp() {
@@ -30,7 +30,7 @@ public class DomNodeTest {
     @Test
     public void shouldReturnNodeNameForNamespaceUnawareNode() {
         when(node.getNodeName()).thenReturn("node");
-        QName result = nodeView.getNodeName();
+        QName result = nodeView.getName();
         assertThat(result).extracting("namespaceURI", "localPart", "prefix")
                 .containsExactly(XMLConstants.NULL_NS_URI, "node", XMLConstants.DEFAULT_NS_PREFIX);
     }
@@ -40,7 +40,7 @@ public class DomNodeTest {
         when(node.getNamespaceURI()).thenReturn("http://www.example.com/my");
         when(node.getLocalName()).thenReturn("node");
         when(node.getPrefix()).thenReturn("my");
-        QName result = nodeView.getNodeName();
+        QName result = nodeView.getName();
         assertThat(result).extracting("namespaceURI", "localPart", "prefix")
                 .containsExactly("http://www.example.com/my", "node", "my");
     }

@@ -17,12 +17,12 @@ public class NumberExpr implements Expr {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <N> NumberView<N> resolve(ExprContext<N> context, View<N> xml) {
+    public <N extends Node> NumberView<N> resolve(ExprContext<N> context, View<N> xml) {
         return number;
     }
 
     @Override
-    public <N> boolean match(ExprContext<N> context, View<N> xml) {
+    public <N extends Node> boolean match(ExprContext<N> context, View<N> xml) {
         double number = resolve(context, xml).toNumber();
         if (number == context.getPosition()) {
             return true;
@@ -38,7 +38,7 @@ public class NumberExpr implements Expr {
         return number.toString();
     }
 
-    private static final class NumberPredicateVisitor<N> extends AbstractViewVisitor<N, Boolean> {
+    private static final class NumberPredicateVisitor<N extends Node> extends AbstractViewVisitor<N, Boolean> {
 
         private final ExprContext<N> context;
         private final long numberOfNodesToCreate;
@@ -50,7 +50,7 @@ public class NumberExpr implements Expr {
 
         @Override
         public Boolean visit(NodeView<N> view) throws XmlBuilderException {
-            final Node<N> node = view.getNode();
+            final N node = view.getNode();
             long numberOfNodesToCreate = this.numberOfNodesToCreate;
             do {
                 context.getNavigator().prependCopy(node);

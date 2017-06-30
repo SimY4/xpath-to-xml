@@ -2,6 +2,7 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.expr.operators.Operator;
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.utils.TestNode;
 import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
@@ -13,7 +14,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static com.github.simy4.xpath.utils.StringNode.node;
+import static com.github.simy4.xpath.utils.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -23,14 +24,14 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class OperationExprTest {
 
-    private static final NodeView<String> parentNode = new NodeView<>(node("node"));
+    private static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));
 
-    @Mock private Navigator<String> navigator;
+    @Mock private Navigator<TestNode> navigator;
     @Mock private Expr leftExpr;
     @Mock private Expr rightExpr;
     @Mock private Operator operator;
-    @Captor private ArgumentCaptor<ExprContext<String>> leftExprContextCaptor;
-    @Captor private ArgumentCaptor<ExprContext<String>> rightExprContextCaptor;
+    @Captor private ArgumentCaptor<ExprContext<TestNode>> leftExprContextCaptor;
+    @Captor private ArgumentCaptor<ExprContext<TestNode>> rightExprContextCaptor;
 
     private Expr comparisonExpr;
 
@@ -45,11 +46,11 @@ public class OperationExprTest {
     public void shouldReturnOperatorResolutionResult() {
         // given
         when(operator.resolve(any(), any(), any())).thenReturn(BooleanView.of(true));
-        ExprContext<String> context = new ExprContext<>(navigator, false, 3);
+        ExprContext<TestNode> context = new ExprContext<>(navigator, false, 3);
         context.advance();
 
         // when
-        View<String> result = comparisonExpr.resolve(context, parentNode);
+        View<TestNode> result = comparisonExpr.resolve(context, parentNode);
 
         // then
         verify(leftExpr).resolve(leftExprContextCaptor.capture(), eq(parentNode));

@@ -14,13 +14,14 @@ public class Parent extends AbstractStepExpr {
     }
 
     @Override
-    <N> NodeSetView<N> traverseStep(ExprContext<N> context, NodeView<N> view) {
-        final Node<N> parent = context.getNavigator().parentOf(view.getNode());
+    <N extends Node> NodeSetView<N> traverseStep(ExprContext<N> context, NodeView<N> view) {
+        final N parent = context.getNavigator().parentOf(view.getNode());
         return null == parent ? NodeSetView.empty() : NodeSetView.singleton(new NodeView<>(parent));
     }
 
     @Override
-    <N> NodeView<N> createStepNode(ExprContext<N> context, NodeView<N> parentView) throws XmlBuilderException {
+    <N extends Node> NodeView<N> createStepNode(ExprContext<N> context, NodeView<N> parentView)
+            throws XmlBuilderException {
         throw new XmlBuilderException("Parent node cannot modify XML model");
     }
 

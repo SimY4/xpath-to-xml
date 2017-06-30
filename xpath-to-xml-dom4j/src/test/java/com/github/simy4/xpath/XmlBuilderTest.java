@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(Parameterized.class)
 public class XmlBuilderTest {
 
-    @Parameters(name = "With test fixture: {0} and namespace: {1} and XML factory: {2}")
+    @Parameters(name = "With test fixture: {0} and namespace: {1}")
     public static Collection<Object[]> data() {
         return asList(new Object[][] {
                 { "simple", null },

@@ -7,11 +7,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
 @Immutable
-public final class NodeView<N> implements View<N> {
+public final class NodeView<N extends Node> implements View<N> {
 
-    private final Node<N> node;
+    private final N node;
 
-    public NodeView(Node<N> node) {
+    public NodeView(N node) {
         this.node = node;
     }
 
@@ -48,7 +48,7 @@ public final class NodeView<N> implements View<N> {
         return visitor.visit(this);
     }
 
-    public Node<N> getNode() {
+    public N getNode() {
         return node;
     }
 

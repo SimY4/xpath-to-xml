@@ -2,6 +2,7 @@ package com.github.simy4.xpath.effects;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.navigator.Node;
 
 /**
  * XML model modification effect.
@@ -19,6 +20,6 @@ public interface Effect {
      * @param <N> XML model type
      * @throws XmlBuilderException if error occur during XML model modification
      */
-    <N> void perform(Navigator<N> navigator) throws XmlBuilderException;
+    <N extends Node> void perform(Navigator<N> navigator) throws XmlBuilderException;
 
 }

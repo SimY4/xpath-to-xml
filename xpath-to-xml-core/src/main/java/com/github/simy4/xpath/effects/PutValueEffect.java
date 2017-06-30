@@ -4,6 +4,7 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.AbstractViewVisitor;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
@@ -20,13 +21,13 @@ public class PutValueEffect implements Effect {
     }
 
     @Override
-    public <N> void perform(Navigator<N> navigator) throws XmlBuilderException {
+    public <N extends Node> void perform(Navigator<N> navigator) throws XmlBuilderException {
         final ExprContext<N> context = new ExprContext<>(navigator, true, 1);
         final View<N> view = expr.resolve(context, new NodeView<>(navigator.xml()));
         view.visit(new PutValueVisitor<>(navigator, value));
     }
 
-    private static final class PutValueVisitor<N> extends AbstractViewVisitor<N, Void> {
+    private static final class PutValueVisitor<N extends Node> extends AbstractViewVisitor<N, Void> {
 
         private final Navigator<N> navigator;
         private final String value;

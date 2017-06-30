@@ -1,6 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.utils.TestNode;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
@@ -12,7 +13,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static com.github.simy4.xpath.utils.StringNode.node;
+import static com.github.simy4.xpath.utils.TestNode.node;
 import static com.github.simy4.xpath.view.NodeSetView.singleton;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,13 +27,13 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class PathExprTest {
 
-    @Mock private Navigator<String> navigator;
+    @Mock private Navigator<TestNode> navigator;
     @Mock private StepExpr stepExpr1;
     @Mock private StepExpr stepExpr2;
     @Mock private StepExpr stepExpr3;
-    @Captor private ArgumentCaptor<ExprContext<String>> stepExpr1ContextCaptor;
-    @Captor private ArgumentCaptor<ExprContext<String>> stepExpr2ContextCaptor;
-    @Captor private ArgumentCaptor<ExprContext<String>> stepExpr3ContextCaptor;
+    @Captor private ArgumentCaptor<ExprContext<TestNode>> stepExpr1ContextCaptor;
+    @Captor private ArgumentCaptor<ExprContext<TestNode>> stepExpr2ContextCaptor;
+    @Captor private ArgumentCaptor<ExprContext<TestNode>> stepExpr3ContextCaptor;
 
     private Expr pathExpr;
 
@@ -52,7 +53,7 @@ public class PathExprTest {
                 .thenReturn(singleton(new NodeView<>(node("node4"))));
 
         // when
-        View<String> result = pathExpr.resolve(new ExprContext<>(navigator, false, 1),
+        View<TestNode> result = pathExpr.resolve(new ExprContext<>(navigator, false, 1),
                 singleton(new NodeView<>(node("node1"))));
 
         // then
@@ -74,7 +75,7 @@ public class PathExprTest {
                 .thenReturn(NodeSetView.empty());
 
         // when
-        View<String> result = pathExpr.resolve(new ExprContext<>(navigator, false, 1),
+        View<TestNode> result = pathExpr.resolve(new ExprContext<>(navigator, false, 1),
                 singleton(new NodeView<>(node("node1"))));
 
         // then

@@ -1,26 +1,24 @@
 package com.github.simy4.xpath.dom4j.navigator;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.dom4j.navigator.node.Dom4jDocument;
+import com.github.simy4.xpath.dom4j.navigator.node.Dom4jElement;
+import com.github.simy4.xpath.dom4j.navigator.node.Dom4jNode;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.Node;
-import org.dom4j.Attribute;
-import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
+import org.dom4j.Node;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.namespace.QName;
-import java.util.Collections;
-import java.util.Iterator;
 
-final class Dom4jNavigator implements Navigator<org.dom4j.Node> {
+final class Dom4jNavigator implements Navigator<Dom4jNode> {
 
     private final Dom4jNode xml;
 
-    Dom4jNavigator(org.dom4j.Node xml) {
-        this.xml = new Dom4jNode(xml);
+    Dom4jNavigator(Dom4jNode xml) {
+        this.xml = xml;
     }
 
     @Override
@@ -30,94 +28,53 @@ final class Dom4jNavigator implements Navigator<org.dom4j.Node> {
 
     @Override
     public Dom4jNode root() {
-        return new Dom4jNode(xml.getWrappedNode().getDocument());
+        return new Dom4jDocument(xml.getNode().getDocument());
     }
 
     @Override
     @Nullable
-    public Dom4jNode parentOf(Node<org.dom4j.Node> node) {
-        final org.dom4j.Node parent = node.getWrappedNode().getParent();
-        return null == parent ? null : new Dom4jNode(parent);
+    public Dom4jNode parentOf(Dom4jNode node) {
+        final Element parent = node.getNode().getParent();
+        return null == parent ? null : new Dom4jElement(parent);
     }
 
     @Override
-    public Iterable<Dom4jNode> elementsOf(final Node<org.dom4j.Node> parent) {
-        final org.dom4j.Node parentNode = parent.getWrappedNode();
-        switch (parentNode.getNodeType()) {
-            case org.dom4j.Node.ELEMENT_NODE:
-                return new Iterable<Dom4jNode>() {
-                    @Override
-                    @Nonnull
-                    public Iterator<Dom4jNode> iterator() {
-                        return new Dom4jElementsIterator(((Element) parentNode).elementIterator());
-                    }
-                };
-            case org.dom4j.Node.DOCUMENT_NODE:
-                final Element root = ((Document) parentNode).getRootElement();
-                return null == root ? Collections.emptyList() : Collections.singletonList(new Dom4jNode(root));
-            default:
-                return Collections.emptyList();
-        }
+    public Iterable<? extends Dom4jNode<?>> elementsOf(final Dom4jNode parent) {
+        return ((Dom4jNode<?>) parent).elements();
     }
 
     @Override
-    public Iterable<Dom4jNode> attributesOf(final Node<org.dom4j.Node> parent) {
-        final org.dom4j.Node parentNode = parent.getWrappedNode();
-        if (org.dom4j.Node.ELEMENT_NODE != parentNode.getNodeType()) {
-            return Collections.emptyList();
-        }
-        return new Iterable<Dom4jNode>() {
-            @Override
-            @Nonnull
-            public Iterator<Dom4jNode> iterator() {
-                return new Dom4jAttributesIterator(((Element) parentNode).attributeIterator());
-            }
-        };
+    public Iterable<? extends Dom4jNode<?>> attributesOf(final Dom4jNode parent) {
+        return ((Dom4jNode<?>) parent).attributes();
     }
 
     @Override
-    public Dom4jNode createAttribute(Node<org.dom4j.Node> parent, QName attribute) throws XmlBuilderException {
-        final org.dom4j.Node parentNode = parent.getWrappedNode();
-        if (org.dom4j.Node.ELEMENT_NODE != parentNode.getNodeType()) {
-            throw new XmlBuilderException("Unable to append attribute to a non-element node " + parent);
-        }
-
-        final Element parentElement = (Element) parentNode;
+    public Dom4jNode createAttribute(Dom4jNode parent, QName attribute) throws XmlBuilderException {
         final org.dom4j.QName attributeName = DocumentHelper.createQName(attribute.getLocalPart(),
                 new Namespace(attribute.getPrefix(), attribute.getNamespaceURI()));
-        final Attribute attr = DocumentHelper.createAttribute(parentElement, attributeName, "");
-        parentElement.attributes().add(attr);
-        return new Dom4jNode(attr);
+        return parent.createAttribute(attributeName);
     }
 
     @Override
-    public Dom4jNode createElement(Node<org.dom4j.Node> parent, QName element) throws XmlBuilderException {
-        final org.dom4j.Node parentNode = parent.getWrappedNode();
+    public Dom4jNode createElement(Dom4jNode parent, QName element) throws XmlBuilderException {
         final org.dom4j.QName elementName = DocumentHelper.createQName(element.getLocalPart(),
                 new Namespace(element.getPrefix(), element.getNamespaceURI()));
-        switch (parentNode.getNodeType()) {
-            case org.dom4j.Node.ELEMENT_NODE:
-                return new Dom4jNode(((Element) parentNode).addElement(elementName));
-            case org.dom4j.Node.DOCUMENT_NODE:
-                return new Dom4jNode(((Document) parentNode).addElement(elementName));
-            default:
-                throw new XmlBuilderException("Unable to append element to " + parent);
-        }
+        return parent.createElement(elementName);
     }
 
     @Override
-    public void setText(Node<org.dom4j.Node> node, String text) {
+    public void setText(Dom4jNode node, String text) {
         try {
-            node.getWrappedNode().setText(text);
+            node.getNode().setText(text);
         } catch (UnsupportedOperationException uoe) {
             throw new XmlBuilderException("Unable to set text content to " + node, uoe);
         }
     }
 
     @Override
-    public void prependCopy(Node<org.dom4j.Node> node) throws XmlBuilderException {
-        final org.dom4j.Node wrappedNode = node.getWrappedNode();
-        if (org.dom4j.Node.ELEMENT_NODE != wrappedNode.getNodeType()) {
+    public void prependCopy(Dom4jNode node) throws XmlBuilderException {
+        final Node wrappedNode = node.getNode();
+        if (Node.ELEMENT_NODE != wrappedNode.getNodeType()) {
             throw new XmlBuilderException("Unable to copy non-element node " + node);
         }
         final Element parent = wrappedNode.getParent();
@@ -130,8 +87,8 @@ final class Dom4jNavigator implements Navigator<org.dom4j.Node> {
     }
 
     @Override
-    public void remove(Node<org.dom4j.Node> node) {
-        final org.dom4j.Node wrappedNode = node.getWrappedNode();
+    public void remove(Dom4jNode node) {
+        final Node wrappedNode = node.getNode();
         final Element parent = wrappedNode.getParent();
         if (parent != null) {
             parent.remove(wrappedNode);

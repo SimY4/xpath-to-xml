@@ -1,6 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.View;
 
@@ -16,7 +17,7 @@ public class PathExpr extends AbstractExpr {
     }
 
     @Override
-    public <N> View<N> resolve(ExprContext<N> context, View<N> xml) throws XmlBuilderException {
+    public <N extends Node> View<N> resolve(ExprContext<N> context, View<N> xml) throws XmlBuilderException {
         final Iterator<StepExpr> pathExprIterator = pathExpr.iterator();
         ExprContext<N> stepExprContext = context;
         NodeSetView<N> children;

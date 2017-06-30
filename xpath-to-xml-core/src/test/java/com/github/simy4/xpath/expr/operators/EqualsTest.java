@@ -3,6 +3,7 @@ package com.github.simy4.xpath.expr.operators;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.utils.TestNode;
 import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeSetView;
@@ -21,7 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import static com.github.simy4.xpath.utils.StringNode.node;
+import static com.github.simy4.xpath.utils.TestNode.node;
 import static com.github.simy4.xpath.view.NodeSetView.empty;
 import static com.github.simy4.xpath.view.NodeSetView.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,8 +35,8 @@ public class EqualsTest {
 
     @DataPoints("eq left")
     public static final View[] EQ_TEST = {
-            new LiteralView("2.0"),
-            new NumberView(2.0),
+            new LiteralView<>("2.0"),
+            new NumberView<>(2.0),
             new NodeView<>(node("2.0")),
             singleton(new LiteralView<>("2.0")),
             singleton(new NumberView<>(2.0)),
@@ -44,8 +45,8 @@ public class EqualsTest {
 
     @DataPoints("eq right")
     public static final View[] NE_TEST = {
-            new LiteralView("literal"),
-            new NumberView(10.0),
+            new LiteralView<>("literal"),
+            new NumberView<>(10.0),
             new NodeView<>(node("node")),
             BooleanView.of(false),
             empty(),
@@ -58,17 +59,17 @@ public class EqualsTest {
     @Rule public ExpectedException expectedException = ExpectedException.none();
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
-    @Mock private Navigator<String> navigator;
+    @Mock private Navigator<TestNode> navigator;
 
     @Theory
-    public void shouldAssociativelyResolveEqualViewsToTrue(@FromDataPoints("eq left") View<String> left,
-                                                           @FromDataPoints("eq left") View<String> right) {
+    public void shouldAssociativelyResolveEqualViewsToTrue(@FromDataPoints("eq left") View<TestNode> left,
+                                                           @FromDataPoints("eq left") View<TestNode> right) {
         // given
-        ExprContext<String> context = new ExprContext<>(navigator, false, 1);
+        ExprContext<TestNode> context = new ExprContext<>(navigator, false, 1);
 
         // when
-        View<String> leftToRight = Operator.equals.resolve(context, left, right);
-        View<String> rightToLeft = Operator.equals.resolve(context, right, left);
+        View<TestNode> leftToRight = Operator.equals.resolve(context, left, right);
+        View<TestNode> rightToLeft = Operator.equals.resolve(context, right, left);
 
         // then
         assertThat(leftToRight).isEqualTo(BooleanView.of(true));
@@ -76,14 +77,14 @@ public class EqualsTest {
     }
 
     @Theory
-    public void shouldAssociativelyResolveNonEqualViewsToFalse(@FromDataPoints("eq left") View<String> left,
-                                                               @FromDataPoints("eq right") View<String> right) {
+    public void shouldAssociativelyResolveNonEqualViewsToFalse(@FromDataPoints("eq left") View<TestNode> left,
+                                                               @FromDataPoints("eq right") View<TestNode> right) {
         // given
-        ExprContext<String> context = new ExprContext<>(navigator, false, 1);
+        ExprContext<TestNode> context = new ExprContext<>(navigator, false, 1);
 
         // when
-        View<String> leftToRight = Operator.equals.resolve(context, left, right);
-        View<String> rightToLeft = Operator.equals.resolve(context, right, left);
+        View<TestNode> leftToRight = Operator.equals.resolve(context, left, right);
+        View<TestNode> rightToLeft = Operator.equals.resolve(context, right, left);
 
         // then
         assertThat(leftToRight).isEqualTo(BooleanView.of(false));
@@ -91,22 +92,22 @@ public class EqualsTest {
     }
 
     @Theory
-    public void shouldApplyRightViewToLeftViewWhenShouldCreate(@FromDataPoints("eq left") View<String> left,
-                                                               @FromDataPoints("eq right") View<String> right) {
+    public void shouldApplyRightViewToLeftViewWhenShouldCreate(@FromDataPoints("eq left") View<TestNode> left,
+                                                               @FromDataPoints("eq right") View<TestNode> right) {
         // given
         if (!(left instanceof NodeView)
                 && (!(left instanceof NodeSetView) || !(((NodeSetView) left).iterator().next() instanceof NodeView))) {
             expectedException.expect(XmlBuilderException.class);
         }
-        ExprContext<String> context = new ExprContext<>(navigator, true, 1);
+        ExprContext<TestNode> context = new ExprContext<>(navigator, true, 1);
         context.advance();
 
         // when
-        View<String> result = Operator.equals.resolve(context, left, right);
+        View<TestNode> result = Operator.equals.resolve(context, left, right);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(true));
-        verify(navigator).setText(any(), eq(right.toString()));
+        verify(navigator).setText(any(TestNode.class), eq(right.toString()));
     }
 
     @Test

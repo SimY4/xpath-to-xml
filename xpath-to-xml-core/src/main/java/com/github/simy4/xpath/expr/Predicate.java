@@ -1,6 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.View;
 
 /**
@@ -21,6 +22,6 @@ public interface Predicate {
      * @return {@code true} if predicate matches existing model or {@code false} otherwise
      * @throws XmlBuilderException if error occur during XML model modification
      */
-    <N> boolean match(ExprContext<N> context, View<N> xml) throws XmlBuilderException;
+    <N extends Node> boolean match(ExprContext<N> context, View<N> xml) throws XmlBuilderException;
 
 }

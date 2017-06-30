@@ -1,6 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.utils.TestNode;
 import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeSetView;
@@ -19,7 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import static com.github.simy4.xpath.utils.StringNode.node;
+import static com.github.simy4.xpath.utils.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -27,8 +28,8 @@ import static org.mockito.Mockito.when;
 public class RootTest {
 
     @DataPoints("parent nodes") public static View[] parentNodes = {
-            new LiteralView("literal"),
-            new NumberView(2.0),
+            new LiteralView<>("literal"),
+            new NumberView<>(2.0),
             new NodeView<>(node("node")),
             BooleanView.of(true),
             BooleanView.of(false),
@@ -38,7 +39,7 @@ public class RootTest {
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
-    @Mock private Navigator<String> navigator;
+    @Mock private Navigator<TestNode> navigator;
 
     private final StepExpr root = new Root();
 
@@ -48,12 +49,12 @@ public class RootTest {
     }
 
     @Theory
-    public void shouldReturnSingleRootNodeOnTraverse(@FromDataPoints("parent nodes") View<String> parentView) {
+    public void shouldReturnSingleRootNodeOnTraverse(@FromDataPoints("parent nodes") View<TestNode> parentView) {
         // when
-        NodeSetView<String> result = root.resolve(new ExprContext<>(navigator, false, 1), parentView);
+        NodeSetView<TestNode> result = root.resolve(new ExprContext<>(navigator, false, 1), parentView);
 
         // then
-        assertThat((Iterable<View<String>>) result).containsExactly(new NodeView<>(node("root")));
+        assertThat((Iterable<View<TestNode>>) result).containsExactly(new NodeView<>(node("root")));
     }
 
     @Test

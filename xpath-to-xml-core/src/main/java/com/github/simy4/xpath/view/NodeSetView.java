@@ -1,6 +1,7 @@
 package com.github.simy4.xpath.view;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.navigator.Node;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
@@ -10,25 +11,25 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Immutable
-public final class NodeSetView<N> implements View<N>, Iterable<View<N>> {
+public final class NodeSetView<N extends Node> implements View<N>, Iterable<View<N>> {
 
     @SuppressWarnings("unchecked")
     private static final NodeSetView EMPTY_NODE_SET = new NodeSetView(Collections.EMPTY_SET);
 
     @SuppressWarnings("unchecked")
-    public static <T> NodeSetView<T> empty() {
+    public static <T extends Node> NodeSetView<T> empty() {
         return (NodeSetView<T>) EMPTY_NODE_SET;
     }
 
-    public static <T> NodeSetView<T> singleton(View<T> node) {
+    public static <T extends Node> NodeSetView<T> singleton(View<T> node) {
         return new NodeSetView<>(Collections.singleton(node));
     }
 
-    public static <T> NodeSetView.Builder<T> builder() {
+    public static <T extends Node> NodeSetView.Builder<T> builder() {
         return new NodeSetView.Builder<>();
     }
 
-    public static <T> NodeSetView.Builder<T> builder(int initialCapacity) {
+    public static <T extends Node> NodeSetView.Builder<T> builder(int initialCapacity) {
         return new NodeSetView.Builder<>(initialCapacity);
     }
 
@@ -107,7 +108,7 @@ public final class NodeSetView<N> implements View<N>, Iterable<View<N>> {
         return nodeSet.hashCode();
     }
 
-    public static final class Builder<T> {
+    public static final class Builder<T extends Node> {
 
         private final Set<View<T>> nodeSet;
 
