@@ -22,6 +22,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -31,12 +32,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(Parameterized.class)
 public class XmlBuilderTest {
 
-    @Parameters(name = "With test fixture: {0} and namespace: {1}")
+    @Parameters(name = "With test fixture: {0} and namespace: {1} and root element: {2}")
     public static Collection<Object[]> data() {
+        Element nsAwareRoot = new Element("breakfast_menu", "http://www.example.com/my");
+        nsAwareRoot.setNamespacePrefix("my");
         return asList(new Object[][] {
-                { "simple", null },
-                { "simple", new SimpleNamespaceContext() },
-                { "ns-simple", new SimpleNamespaceContext() },
+                { "simple", null, new Element("breakfast_menu") },
+                { "simple", new SimpleNamespaceContext(), new Element("breakfast_menu") },
+                { "ns-simple", new SimpleNamespaceContext(), nsAwareRoot },
 //                TODO although these cases are working fine the order of attribute is messed up
 //                { "attr", null },
 //                { "attr", new SimpleNamespaceContext() },
@@ -47,6 +50,8 @@ public class XmlBuilderTest {
     public String fixtureName;
     @Parameter(1)
     public NamespaceContext namespaceContext;
+    @Parameter(2)
+    public Element root;
 
     private FixtureAccessor fixtureAccessor;
 
@@ -58,14 +63,15 @@ public class XmlBuilderTest {
     @Test
     public void shouldBuildDocumentFromSetOfXPaths() throws XPathExpressionException, IOException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
+        Document newDocument = new Document((Element) root.copy());
         Document builtDocument = new XmlBuilder(namespaceContext)
                 .putAll(xmlProperties.keySet())
-                .build(new Document(new Element("breakfast_menu")));
+                .build(newDocument);
 
         for (Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
             Nodes nodes = null == namespaceContext
-                    ? builtDocument.query(xpathToValuePair.getKey(), toXpathContext(namespaceContext))
-                    : builtDocument.query(xpathToValuePair.getKey());
+                    ? builtDocument.query(xpathToValuePair.getKey())
+                    : builtDocument.query(xpathToValuePair.getKey(), toXpathContext(namespaceContext));
             assertThat(nodes).isNotNull();
         }
         assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutXml());
@@ -74,21 +80,23 @@ public class XmlBuilderTest {
     @Test
     public void shouldBuildDocumentFromSetOfXPathsAndSetValues() throws XPathExpressionException, IOException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
+        Document newDocument = new Document((Element) root.copy());
         Document builtDocument = new XmlBuilder(namespaceContext)
                 .putAll(xmlProperties)
-                .build(new Document(new Element("breakfast_menu")));
+                .build(newDocument);
 
         for (Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
             Nodes nodes = null == namespaceContext
-                    ? builtDocument.query(xpathToValuePair.getKey(), toXpathContext(namespaceContext))
-                    : builtDocument.query(xpathToValuePair.getKey());
+                    ? builtDocument.query(xpathToValuePair.getKey())
+                    : builtDocument.query(xpathToValuePair.getKey(), toXpathContext(namespaceContext));
             assertThat(nodes.get(0).getValue()).isEqualTo(xpathToValuePair.getValue());
         }
         assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
     }
 
     @Test
-    public void shouldModifyDocumentWhenXPathsAreNotTraversable() throws XPathExpressionException, ParsingException, IOException {
+    public void shouldModifyDocumentWhenXPathsAreNotTraversable()
+            throws XPathExpressionException, ParsingException, IOException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         String xml = fixtureAccessor.getPutXml();
         Document oldDocument = stringToXml(xml);
@@ -100,7 +108,8 @@ public class XmlBuilderTest {
     }
 
     @Test
-    public void shouldNotModifyDocumentWhenAllXPathsTraversable() throws XPathExpressionException, ParsingException, IOException {
+    public void shouldNotModifyDocumentWhenAllXPathsTraversable()
+            throws XPathExpressionException, ParsingException, IOException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         String xml = fixtureAccessor.getPutValueXml();
         Document oldDocument = stringToXml(xml);
@@ -134,7 +143,11 @@ public class XmlBuilderTest {
 
     private XPathContext toXpathContext(NamespaceContext namespaceContext) {
         XPathContext context = new XPathContext();
-
+        Iterator prefixes = namespaceContext.getPrefixes("http://www.example.com/my");
+        while (prefixes.hasNext()) {
+            String prefix = (String) prefixes.next();
+            context.addNamespace(prefix, namespaceContext.getNamespaceURI(prefix));
+        }
         return context;
     }
 
