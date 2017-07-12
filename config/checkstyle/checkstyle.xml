@@ -198,7 +198,7 @@
             <property name="allowMissingThrowsTags" value="true"/>
             <property name="allowMissingReturnTag" value="true"/>
             <property name="minLineCount" value="2"/>
-            <property name="allowedAnnotations" value="Override, Test, Theory, DataPoints, Before, After, Parameters"/>
+            <property name="allowedAnnotations" value="Override, Test, Theory, DataPoints, Before, After, Parameters, Setup, Benchmark"/>
             <property name="allowThrowsTagsForSubclasses" value="true"/>
         </module>
         <module name="MethodName">

@@ -1,12 +1,22 @@
+plugins {
+    id 'me.champeau.gradle.jmh' version '0.4.4'
+}
+
 allprojects {
     group 'com.github.simy4'
     version '0.9.2'
 }
 
+jmh {
+    jmhVersion '1.19'
+}
+
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'idea'
     apply plugin: 'checkstyle'
     apply plugin: 'findbugs'
+    apply plugin: 'me.champeau.gradle.jmh'
 
     sourceCompatibility = JavaVersion.VERSION_1_6
 
@@ -24,6 +34,7 @@ subprojects {
 
     dependencies {
         checkstyle 'com.puppycrawl.tools:checkstyle:7.8'
+
         compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     }
 
@@ -54,6 +65,18 @@ subprojects {
             xml.enabled = false
             html.enabled = true
         }
+    }
+
+    jmh {
+        include = ['com\\.github\\.simy4\\.xpath\\..+']
+        humanOutputFile = null
+        iterations = 10
+        fork = 2
+        failOnError = true
+        timeUnit = 'ms'
+        warmupIterations = 5
+
+        jmhVersion '1.19'
     }
 
 }
