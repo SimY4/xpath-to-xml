@@ -13,6 +13,9 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Node;
 
+/**
+ * XOM model navigator extension SPI.
+ */
 public class XomNavigatorSpi implements NavigatorSpi {
 
     @Override

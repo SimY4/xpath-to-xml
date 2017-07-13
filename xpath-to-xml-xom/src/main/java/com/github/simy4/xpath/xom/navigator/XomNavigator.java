@@ -3,10 +3,8 @@ package com.github.simy4.xpath.xom.navigator;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.xom.navigator.node.XomDocument;
-import com.github.simy4.xpath.xom.navigator.node.XomElement;
 import com.github.simy4.xpath.xom.navigator.node.XomNode;
 import nu.xom.Attribute;
-import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.IllegalAddException;
 import nu.xom.Node;
@@ -38,14 +36,7 @@ final class XomNavigator implements Navigator<XomNode> {
     @Override
     @Nullable
     public XomNode parentOf(XomNode node) {
-        final ParentNode parent = node.getNode().getParent();
-        if (parent instanceof Document) {
-            return new XomDocument((Document) parent);
-        } else if (parent instanceof Element) {
-            return new XomElement((Element) parent);
-        } else {
-            return null;
-        }
+        return node.getParent();
     }
 
     @Override
@@ -77,7 +68,7 @@ final class XomNavigator implements Navigator<XomNode> {
     @Override
     public void setText(XomNode node, String text) {
         try {
-            node.setValue(text);
+            node.setText(text);
         } catch (UnsupportedOperationException uoe) {
             throw new XmlBuilderException("Unable to set text content to " + node, uoe);
         }

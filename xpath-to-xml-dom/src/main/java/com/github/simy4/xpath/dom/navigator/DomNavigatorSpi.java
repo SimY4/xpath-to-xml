@@ -6,6 +6,9 @@ import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.NavigatorSpi;
 import org.w3c.dom.Node;
 
+/**
+ * Standard DOM model navigator extension SPI.
+ */
 public class DomNavigatorSpi implements NavigatorSpi {
 
     @Override

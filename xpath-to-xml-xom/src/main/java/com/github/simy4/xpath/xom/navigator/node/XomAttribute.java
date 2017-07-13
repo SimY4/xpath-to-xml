@@ -34,6 +34,11 @@ public final class XomAttribute implements XomNode<Attribute> {
     }
 
     @Override
+    public XomNode<?> getParent() {
+        return new XomElement((Element) attribute.getParent());
+    }
+
+    @Override
     public Iterable<XomNode<Element>> elements() {
         return Collections.emptyList();
     }
@@ -54,9 +59,9 @@ public final class XomAttribute implements XomNode<Attribute> {
     }
 
     @Override
-    public void setValue(String value) throws XmlBuilderException {
+    public void setText(String text) throws XmlBuilderException {
         try {
-            attribute.setValue(value);
+            attribute.setValue(text);
         } catch (IllegalDataException ide) {
             throw new XmlBuilderException("Unable to set value to " + attribute, ide);
         }

@@ -2,10 +2,12 @@ package com.github.simy4.xpath.xom.navigator.node;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import nu.xom.Attribute;
+import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
 import nu.xom.IllegalAddException;
 import nu.xom.Node;
+import nu.xom.ParentNode;
 import nu.xom.Text;
 
 import javax.annotation.Nonnull;
@@ -35,6 +37,12 @@ public final class XomElement implements XomNode<Element> {
     @Override
     public String getText() {
         return element.getValue();
+    }
+
+    @Override
+    public XomNode<?> getParent() {
+        ParentNode parent = element.getParent();
+        return parent instanceof Element ? new XomElement((Element) parent) : new XomDocument((Document) parent);
     }
 
     @Override
@@ -80,16 +88,16 @@ public final class XomElement implements XomNode<Element> {
     }
 
     @Override
-    public void setValue(String value) throws XmlBuilderException {
+    public void setText(String text) throws XmlBuilderException {
         try {
             for (int i = 0; i < element.getChildCount(); i++) {
                 final Node child = element.getChild(i);
                 if (child instanceof Text) {
-                    ((Text) child).setValue(value);
+                    ((Text) child).setValue(text);
                     return;
                 }
             }
-            element.appendChild(value);
+            element.appendChild(text);
         } catch (IllegalAddException iae) {
             throw new XmlBuilderException("Unable to set value to " + element, iae);
         }

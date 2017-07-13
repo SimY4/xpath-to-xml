@@ -13,7 +13,6 @@ jmh {
 
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'idea'
     apply plugin: 'checkstyle'
     apply plugin: 'findbugs'
     apply plugin: 'me.champeau.gradle.jmh'
@@ -33,7 +32,7 @@ subprojects {
     sourceSets.test.runtimeClasspath += configurations.providedCompile
 
     dependencies {
-        checkstyle 'com.puppycrawl.tools:checkstyle:7.8'
+        checkstyle 'com.puppycrawl.tools:checkstyle:8.0'
 
         compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     }
