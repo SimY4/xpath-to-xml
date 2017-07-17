@@ -13,6 +13,9 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
+/**
+ * DOM4J model navigator extension SPI.
+ */
 public class Dom4jNavigatorSpi implements NavigatorSpi {
 
     @Override

@@ -5,6 +5,7 @@ import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
 
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import javax.xml.namespace.QName;
 import java.util.Collections;
@@ -33,6 +34,12 @@ public final class XomDocument implements XomNode<Document> {
         return document.getValue();
     }
 
+    @Nullable
+    @Override
+    public XomNode<?> getParent() {
+        return null;
+    }
+
     @Override
     public Iterable<XomNode<Element>> elements() {
         return Collections.singletonList(new XomElement(document.getRootElement()));
@@ -54,7 +61,7 @@ public final class XomDocument implements XomNode<Document> {
     }
 
     @Override
-    public void setValue(String value) throws XmlBuilderException {
+    public void setText(String text) throws XmlBuilderException {
         throw new XmlBuilderException("Unable to set value to a document node " + document);
     }
 

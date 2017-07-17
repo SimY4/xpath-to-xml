@@ -3,6 +3,8 @@ dependencies {
 
     providedCompile 'org.dom4j:dom4j:2.0.0'
 
+    jmh 'org.dom4j:dom4j:2.0.0'
+
     testCompile project(':xpath-to-xml-test')
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:2.8.47'
