@@ -5,10 +5,10 @@ plugins {
 allprojects {
     group 'com.github.simy4'
     version '0.9.2'
-}
 
-jmh {
-    jmhVersion '1.19'
+    jmh {
+        jmhVersion '1.19'
+    }
 }
 
 subprojects {
@@ -24,12 +24,14 @@ subprojects {
     }
 
     configurations {
-        providedCompile
+        provided
     }
 
-    sourceSets.main.compileClasspath += configurations.providedCompile
-    sourceSets.test.compileClasspath += configurations.providedCompile
-    sourceSets.test.runtimeClasspath += configurations.providedCompile
+    sourceSets {
+        main.compileClasspath += configurations.provided
+        test.compileClasspath += configurations.provided
+        test.runtimeClasspath += configurations.provided
+    }
 
     dependencies {
         checkstyle 'com.puppycrawl.tools:checkstyle:8.0'
@@ -74,8 +76,6 @@ subprojects {
         failOnError = true
         timeUnit = 'ms'
         warmupIterations = 5
-
-        jmhVersion '1.19'
     }
 
 }
