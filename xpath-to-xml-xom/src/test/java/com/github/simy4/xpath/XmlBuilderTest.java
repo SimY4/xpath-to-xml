@@ -132,13 +132,14 @@ public class XmlBuilderTest {
     }
 
     private String xmlToString(Document xml) throws IOException {
+        String lineSeparator = System.getProperty("line.separator");
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Serializer serializer = new Serializer(outputStream, "UTF-8");
         serializer.setIndent(4);
-        serializer.setLineSeparator("\n");
+        serializer.setLineSeparator(lineSeparator);
         serializer.write(xml);
         String xmlString = new String(outputStream.toByteArray(), "UTF-8");
-        return xmlString.substring(xmlString.indexOf('\n') + 1);
+        return xmlString.substring(xmlString.indexOf(lineSeparator) + lineSeparator.length());
     }
 
     private XPathContext toXpathContext(NamespaceContext namespaceContext) {
