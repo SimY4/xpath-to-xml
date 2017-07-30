@@ -33,8 +33,6 @@ public class LessThanTest {
             new LiteralView<TestNode>("1.0"),
             new NumberView<TestNode>(1.0),
             new NodeView<TestNode>(node("1.0")),
-            singleton(new LiteralView<TestNode>("1.0")),
-            singleton(new NumberView<TestNode>(1.0)),
             singleton(new NodeView<TestNode>(node("1.0"))),
     };
 
@@ -43,8 +41,6 @@ public class LessThanTest {
             new LiteralView<TestNode>("2.0"),
             new NumberView<TestNode>(2.0),
             new NodeView<TestNode>(node("2.0")),
-            singleton(new LiteralView<TestNode>("2.0")),
-            singleton(new NumberView<TestNode>(2.0)),
             singleton(new NodeView<TestNode>(node("2.0"))),
     };
 

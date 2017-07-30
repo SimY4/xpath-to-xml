@@ -21,6 +21,8 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import static com.github.simy4.xpath.utils.TestNode.node;
+import static com.github.simy4.xpath.view.NodeSetView.empty;
+import static com.github.simy4.xpath.view.NodeSetView.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -33,8 +35,8 @@ public class RootTest {
             new NodeView<TestNode>(node("node")),
             BooleanView.of(true),
             BooleanView.of(false),
-            NodeSetView.empty(),
-            NodeSetView.singleton(new NodeView<TestNode>(node("node"))),
+            empty(),
+            singleton(new NodeView<TestNode>(node("node"))),
     };
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -54,7 +56,7 @@ public class RootTest {
         NodeSetView<TestNode> result = root.resolve(new ExprContext<TestNode>(navigator, false, 1), parentView);
 
         // then
-        assertThat((Iterable<?>) result).containsExactly(new NodeView<TestNode>(node("root")));
+        assertThat((Iterable<?>) result).extracting("node").containsExactly(node("root"));
     }
 
     @Test

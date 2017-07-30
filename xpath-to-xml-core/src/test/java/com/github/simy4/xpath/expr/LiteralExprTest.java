@@ -44,7 +44,7 @@ public class LiteralExprTest {
     @Theory
     public void shouldAlwaysReturnSingleLiteralNode(@FromDataPoints("parent nodes") View<TestNode> parentView) {
         View<TestNode> result = literalExpr.resolve(new ExprContext<TestNode>(navigator, false, 1), parentView);
-        assertThat(result).isEqualTo(new LiteralView<TestNode>("value"));
+        assertThat(result).extracting("literal").contains("value");
     }
 
     @Test

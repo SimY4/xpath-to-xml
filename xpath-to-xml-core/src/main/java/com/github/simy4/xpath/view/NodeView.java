@@ -52,23 +52,4 @@ public final class NodeView<N extends Node> implements View<N> {
         return node;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        NodeView<?> nodeView = (NodeView<?>) o;
-
-        return node.equals(nodeView.node);
-    }
-
-    @Override
-    public int hashCode() {
-        return node.hashCode();
-    }
-
 }

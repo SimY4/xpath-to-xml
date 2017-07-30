@@ -4,7 +4,6 @@ import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.utils.TestNode;
 import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.LiteralView;
-import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
@@ -20,6 +19,8 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import static com.github.simy4.xpath.utils.TestNode.node;
+import static com.github.simy4.xpath.view.NodeSetView.empty;
+import static com.github.simy4.xpath.view.NodeSetView.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -33,8 +34,8 @@ public class NumberExprTest {
             new NodeView<TestNode>(node("node")),
             BooleanView.of(true),
             BooleanView.of(false),
-            NodeSetView.empty(),
-            NodeSetView.singleton(new NodeView<TestNode>(node("node"))),
+            empty(),
+            singleton(new NodeView<TestNode>(node("node"))),
     };
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -47,7 +48,7 @@ public class NumberExprTest {
     @Theory
     public void shouldAlwaysReturnSingleNumberNode(@FromDataPoints("parent nodes") View<TestNode> parentView) {
         View<TestNode> result = numberExpr.resolve(new ExprContext<TestNode>(navigator, false, 1), parentView);
-        assertThat(result).isEqualTo(new NumberView<TestNode>(3.0));
+        assertThat(result).extracting("number").contains(3.0);
     }
 
     @Test

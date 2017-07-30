@@ -24,7 +24,7 @@ public class IdentityTest extends AbstractStepExprTest<Identity> {
         NodeSetView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, false, 3), parentNode);
 
         // then
-        assertThat((Iterable<?>) result).containsExactly(parentNode);
+        assertThat((Iterable<?>) result).extracting("node").containsExactly(parentNode.getNode());
     }
 
     @Test

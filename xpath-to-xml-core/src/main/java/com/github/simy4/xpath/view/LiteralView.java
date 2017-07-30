@@ -44,23 +44,4 @@ public final class LiteralView<N extends Node> implements View<N> {
         return visitor.visit(this);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        LiteralView<?> that = (LiteralView<?>) o;
-
-        return literal.equals(that.literal);
-    }
-
-    @Override
-    public int hashCode() {
-        return literal.hashCode();
-    }
-
 }

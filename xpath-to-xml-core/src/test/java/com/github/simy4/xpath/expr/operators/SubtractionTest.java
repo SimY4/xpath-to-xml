@@ -30,8 +30,6 @@ public class SubtractionTest {
             new LiteralView<TestNode>("3.0"),
             new NumberView<TestNode>(3.0),
             new NodeView<TestNode>(node("3.0")),
-            singleton(new LiteralView<TestNode>("3.0")),
-            singleton(new NumberView<TestNode>(3.0)),
             singleton(new NodeView<TestNode>(node("3.0"))),
     };
 
@@ -48,7 +46,7 @@ public class SubtractionTest {
         ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, false, 1);
 
         // when
-        assertThat(Operator.subtraction.resolve(context, left, right)).isEqualTo(new NumberView<TestNode>(0.0));
+        assertThat(Operator.subtraction.resolve(context, left, right)).extracting("number").contains(0.0);
     }
 
     @Test

@@ -17,7 +17,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static com.github.simy4.xpath.utils.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -43,7 +43,7 @@ public class PutEffectTest {
         putEffect.perform(navigator);
 
         // then
-        verify(expr).resolve(contextCaptor.capture(), eq(new NodeView<TestNode>(node("xml"))));
+        verify(expr).resolve(contextCaptor.capture(), refEq(new NodeView<TestNode>(node("xml"))));
         assertThat(contextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(navigator, true, 1, 0);
     }

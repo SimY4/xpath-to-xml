@@ -5,12 +5,10 @@ import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 
-import java.util.List;
-
 public class Parent extends AbstractStepExpr {
 
-    public Parent(List<Predicate> predicateList) {
-        super(predicateList);
+    public Parent(Iterable<? extends Predicate> predicates) {
+        super(predicates);
     }
 
     @Override

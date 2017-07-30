@@ -3,7 +3,6 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.utils.TestNode;
 import com.github.simy4.xpath.view.NodeSetView;
-import com.github.simy4.xpath.view.NodeView;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,7 +37,7 @@ public class ElementTest extends AbstractStepExprTest<Element> {
         NodeSetView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, false, 3), parentNode);
 
         // then
-        assertThat((Iterable<?>) result).containsExactly(new NodeView<TestNode>(node("elem")));
+        assertThat((Iterable<?>) result).extracting("node").containsExactly(node("elem"));
     }
 
     @Test
@@ -50,7 +49,7 @@ public class ElementTest extends AbstractStepExprTest<Element> {
         NodeSetView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, true, 1), parentNode);
 
         // then
-        assertThat((Iterable<?>) result).containsExactly(new NodeView<TestNode>(node("elem")));
+        assertThat((Iterable<?>) result).extracting("node").containsExactly(node("elem"));
         verify(navigator).createElement(node("node"), new QName("elem"));
     }
 

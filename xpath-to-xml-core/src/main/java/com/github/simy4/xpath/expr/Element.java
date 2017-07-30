@@ -6,14 +6,13 @@ import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 
 import javax.xml.namespace.QName;
-import java.util.List;
 
 public class Element extends AbstractStepExpr {
 
     private final QName element;
 
-    public Element(QName element, List<Predicate> predicateList) {
-        super(predicateList);
+    public Element(QName element, Iterable<? extends Predicate> predicates) {
+        super(predicates);
         this.element = element;
     }
 

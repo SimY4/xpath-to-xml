@@ -8,14 +8,13 @@ import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
 
 import java.util.Iterator;
-import java.util.List;
 
 abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
 
-    private final List<Predicate> predicateList;
+    private final Iterable<? extends Predicate> predicates;
 
-    AbstractStepExpr(List<Predicate> predicateList) {
-        this.predicateList = predicateList;
+    AbstractStepExpr(Iterable<? extends Predicate> predicates) {
+        this.predicates = predicates;
     }
 
     @Override
@@ -47,11 +46,12 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
             throws XmlBuilderException;
 
     private <N extends Node> NodeSetView<N> resolvePredicates(ExprContext<N> lookupContext, NodeSetView<N> xmlNodes,
-                                                 Iterator<Predicate> predicateIterator) throws XmlBuilderException {
-        if (predicateIterator.hasNext() && xmlNodes.toBoolean()) {
+                                                              Iterator<? extends Predicate> predicates)
+            throws XmlBuilderException {
+        if (predicates.hasNext() && xmlNodes.toBoolean()) {
             final NodeSetView.Builder<N> builder = NodeSetView.builder(xmlNodes.size());
-            final Predicate nextPredicate = predicateIterator.next();
-            for (View<N> xmlNode : xmlNodes) {
+            final Predicate nextPredicate = predicates.next();
+            for (NodeView<N> xmlNode : xmlNodes) {
                 lookupContext.advance();
                 if (nextPredicate.match(lookupContext, xmlNode)) {
                     builder.add(xmlNode);
@@ -59,7 +59,7 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
             }
             final NodeSetView<N> result = builder.build();
             lookupContext = lookupContext.clone(result.size());
-            return resolvePredicates(lookupContext, result, predicateIterator);
+            return resolvePredicates(lookupContext, result, predicates);
         } else {
             return xmlNodes;
         }
@@ -68,7 +68,7 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
     @Override
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder();
-        for (Predicate predicate : predicateList) {
+        for (Predicate predicate : predicates) {
             stringBuilder.append('[').append(predicate).append(']');
         }
         return stringBuilder.toString();
@@ -96,12 +96,12 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
             context.advance();
             NodeSetView<N> result = traverseStep(context, node);
             ExprContext<N> lookupContext = context.clone(false, result.size());
-            Iterator<Predicate> predicateIterator = predicateList.iterator();
+            Iterator<? extends Predicate> predicateIterator = predicates.iterator();
             result = resolvePredicates(lookupContext, result, predicateIterator);
 
             if (!result.toBoolean() && context.shouldCreate()) {
                 final NodeView<N> newNode = createStepNode(context, node);
-                predicateIterator = predicateList.iterator();
+                predicateIterator = predicates.iterator();
                 lookupContext = lookupContext.clone(true, lookupContext.getSize() + 1, lookupContext.getSize());
                 result = resolvePredicates(lookupContext, NodeSetView.singleton(newNode), predicateIterator);
             }

@@ -30,8 +30,6 @@ public class MultiplicationTest {
             new LiteralView<TestNode>("3.0"),
             new NumberView<TestNode>(3.0),
             new NodeView<TestNode>(node("3.0")),
-            singleton(new LiteralView<TestNode>("3.0")),
-            singleton(new NumberView<TestNode>(3.0)),
             singleton(new NodeView<TestNode>(node("3.0"))),
     };
 
@@ -48,7 +46,7 @@ public class MultiplicationTest {
         ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, false, 1);
 
         // when
-        assertThat(Operator.multiplication.resolve(context, left, right)).isEqualTo(new NumberView<TestNode>(9.0));
+        assertThat(Operator.multiplication.resolve(context, left, right)).extracting("number").contains(9.0);
     }
 
     @Test

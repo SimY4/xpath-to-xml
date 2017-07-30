@@ -32,7 +32,7 @@ public class ParentTest extends AbstractStepExprTest<Parent> {
         NodeSetView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, false, 3), parentNode);
 
         // then
-        assertThat((Iterable<?>) result).containsExactly(new NodeView<TestNode>(node("parent")));
+        assertThat((Iterable<?>) result).extracting("node").containsExactly(node("parent"));
     }
 
     @Test(expected = XmlBuilderException.class)
