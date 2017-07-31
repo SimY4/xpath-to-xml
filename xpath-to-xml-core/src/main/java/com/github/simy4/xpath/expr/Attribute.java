@@ -28,12 +28,11 @@ public class Attribute extends AbstractStepExpr {
     }
 
     @Override
-    <N extends Node> NodeView<N> createStepNode(ExprContext<N> context, NodeView<N> parentView)
-            throws XmlBuilderException {
+    <N extends Node> N createStepNode(ExprContext<N> context, NodeView<N> parentView) throws XmlBuilderException {
         if ("*".equals(attribute.getNamespaceURI()) || "*".equals(attribute.getLocalPart())) {
             throw new XmlBuilderException("Wildcard attribute cannot be created");
         }
-        return new NodeView<N>(context.getNavigator().createAttribute(parentView.getNode(), attribute));
+        return context.getNavigator().createAttribute(parentView.getNode(), attribute);
     }
 
     @Override

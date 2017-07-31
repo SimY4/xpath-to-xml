@@ -37,7 +37,7 @@ public class RemoveEffectTest {
     public void setUp() {
         when(navigator.xml()).thenReturn(node("xml"));
         when(expr.resolve(ArgumentMatchers.<ExprContext<TestNode>>any(), refEq(new NodeView<TestNode>(node("xml")))))
-                .thenReturn(NodeSetView.singleton(new NodeView<TestNode>(node("node"))));
+                .thenReturn(NodeSetView.singleton(node("node")));
 
         removeEffect = new RemoveEffect(expr);
     }

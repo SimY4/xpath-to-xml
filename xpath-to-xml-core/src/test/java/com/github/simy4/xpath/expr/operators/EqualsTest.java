@@ -38,7 +38,7 @@ public class EqualsTest {
             new LiteralView<TestNode>("2.0"),
             new NumberView<TestNode>(2.0),
             new NodeView<TestNode>(node("2.0")),
-            singleton(new NodeView<TestNode>(node("2.0"))),
+            singleton(node("2.0")),
     };
 
     @DataPoints("eq right")
@@ -48,7 +48,7 @@ public class EqualsTest {
             new NodeView<TestNode>(node("node")),
             BooleanView.of(false),
             empty(),
-            singleton(new NodeView<TestNode>(node("node"))),
+            singleton(node("node")),
     };
 
     @Rule public ExpectedException expectedException = ExpectedException.none();

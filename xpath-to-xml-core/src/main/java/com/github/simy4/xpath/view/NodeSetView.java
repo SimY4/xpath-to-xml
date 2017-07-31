@@ -21,8 +21,8 @@ public final class NodeSetView<N extends Node> implements View<N>, Iterable<Node
         return (NodeSetView<T>) EMPTY_NODE_SET;
     }
 
-    public static <T extends Node> NodeSetView<T> singleton(NodeView<T> node) {
-        return new NodeSetView<T>(Collections.singleton(node.getNode()));
+    public static <T extends Node> NodeSetView<T> singleton(T node) {
+        return new NodeSetView<T>(Collections.singleton(node));
     }
 
     public static <T extends Node> NodeSetView.Builder<T> builder() {

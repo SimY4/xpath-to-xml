@@ -40,8 +40,8 @@ public class UnaryExprTest {
             Pair.of(BooleanView.of(true), new NumberView<TestNode>(-1.0)),
             Pair.of(BooleanView.of(false), new NumberView<TestNode>(-0.0)),
             Pair.of(empty(), new NumberView(Double.NaN)),
-            Pair.of(singleton(new NodeView<TestNode>(node("2.0"))), new NumberView(-2.0)),
-            Pair.of(singleton(new NodeView<TestNode>(node("node"))), new NumberView(Double.NaN)),
+            Pair.of(singleton(node("2.0")), new NumberView(-2.0)),
+            Pair.of(singleton(node("node")), new NumberView(Double.NaN)),
     };
 
     @Rule

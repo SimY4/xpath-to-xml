@@ -33,7 +33,7 @@ public class LessThanOrEqualsTest {
             new LiteralView<TestNode>("1.0"),
             new NumberView<TestNode>(1.0),
             new NodeView<TestNode>(node("1.0")),
-            singleton(new NodeView<TestNode>(node("1.0"))),
+            singleton(node("1.0")),
     };
 
     @DataPoints("greater")
@@ -41,7 +41,7 @@ public class LessThanOrEqualsTest {
             new LiteralView<TestNode>("2.0"),
             new NumberView<TestNode>(2.0),
             new NodeView<TestNode>(node("2.0")),
-            singleton(new NodeView<TestNode>(node("2.0"))),
+            singleton(node("2.0")),
     };
 
     @Rule

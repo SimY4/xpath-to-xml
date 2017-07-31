@@ -30,7 +30,7 @@ public class SubtractionTest {
             new LiteralView<TestNode>("3.0"),
             new NumberView<TestNode>(3.0),
             new NodeView<TestNode>(node("3.0")),
-            singleton(new NodeView<TestNode>(node("3.0"))),
+            singleton(node("3.0")),
     };
 
     @Rule

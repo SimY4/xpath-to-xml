@@ -36,7 +36,7 @@ public class RootTest {
             BooleanView.of(true),
             BooleanView.of(false),
             empty(),
-            singleton(new NodeView<TestNode>(node("node"))),
+            singleton(node("node")),
     };
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();

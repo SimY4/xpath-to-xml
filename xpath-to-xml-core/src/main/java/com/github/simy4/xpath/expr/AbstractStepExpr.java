@@ -42,7 +42,7 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
      * @return newly created node
      * @throws XmlBuilderException if error occur during XML node creation
      */
-    abstract <N extends Node> NodeView<N> createStepNode(ExprContext<N> context, NodeView<N> parentView)
+    abstract <N extends Node> N createStepNode(ExprContext<N> context, NodeView<N> parentView)
             throws XmlBuilderException;
 
     private <N extends Node> NodeSetView<N> resolvePredicates(ExprContext<N> lookupContext, NodeSetView<N> xmlNodes,
@@ -100,7 +100,7 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
             result = resolvePredicates(lookupContext, result, predicateIterator);
 
             if (!result.toBoolean() && context.shouldCreate()) {
-                final NodeView<N> newNode = createStepNode(context, node);
+                final N newNode = createStepNode(context, node);
                 predicateIterator = predicates.iterator();
                 lookupContext = lookupContext.clone(true, lookupContext.getSize() + 1, lookupContext.getSize());
                 result = resolvePredicates(lookupContext, NodeSetView.singleton(newNode), predicateIterator);
