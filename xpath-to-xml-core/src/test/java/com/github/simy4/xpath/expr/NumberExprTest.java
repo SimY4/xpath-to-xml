@@ -20,7 +20,6 @@ import org.mockito.junit.MockitoRule;
 
 import static com.github.simy4.xpath.utils.TestNode.node;
 import static com.github.simy4.xpath.view.NodeSetView.empty;
-import static com.github.simy4.xpath.view.NodeSetView.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -35,7 +34,6 @@ public class NumberExprTest {
             BooleanView.of(true),
             BooleanView.of(false),
             empty(),
-            singleton(node("node")),
     };
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();

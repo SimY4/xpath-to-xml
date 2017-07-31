@@ -2,7 +2,7 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.utils.TestNode;
-import com.github.simy4.xpath.view.NodeSetView;
+import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeView;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +29,7 @@ public class ParentTest extends AbstractStepExprTest<Parent> {
         setUpResolvableExpr();
 
         // when
-        NodeSetView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, false, 3), parentNode);
+        IterableNodeView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, false, 3), parentNode);
 
         // then
         assertThat((Iterable<?>) result).extracting("node").containsExactly(node("parent"));

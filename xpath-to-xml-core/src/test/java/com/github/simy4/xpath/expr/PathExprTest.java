@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static com.github.simy4.xpath.utils.TestNode.node;
-import static com.github.simy4.xpath.view.NodeSetView.singleton;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -45,16 +44,16 @@ public class PathExprTest {
     @Test
     public void shouldTraverseStepsOneByOneToGetTheResultingList() {
         // given
-        when(stepExpr1.resolve(stepExpr1ContextCaptor.capture(), refEq(singleton(node("node1")))))
-                .thenReturn(singleton(node("node2")));
-        when(stepExpr2.resolve(stepExpr2ContextCaptor.capture(), refEq(singleton(node("node2")))))
-                .thenReturn(singleton(node("node3")));
-        when(stepExpr3.resolve(stepExpr3ContextCaptor.capture(), refEq(singleton(node("node3")))))
-                .thenReturn(singleton(node("node4")));
+        when(stepExpr1.resolve(stepExpr1ContextCaptor.capture(), refEq(new NodeView<TestNode>(node("node1")))))
+                .thenReturn(new NodeView<TestNode>(node("node2")));
+        when(stepExpr2.resolve(stepExpr2ContextCaptor.capture(), refEq(new NodeView<TestNode>(node("node2")))))
+                .thenReturn(new NodeView<TestNode>(node("node3")));
+        when(stepExpr3.resolve(stepExpr3ContextCaptor.capture(), refEq(new NodeView<TestNode>(node("node3")))))
+                .thenReturn(new NodeView<TestNode>(node("node4")));
 
         // when
         View<TestNode> result = pathExpr.resolve(new ExprContext<TestNode>(navigator, false, 1),
-                singleton(node("node1")));
+                new NodeView<TestNode>(node("node1")));
 
         // then
         assertThat((Iterable<?>) result).extracting("node").containsExactly(node("node4"));
@@ -69,14 +68,15 @@ public class PathExprTest {
     @Test
     public void shouldShortCircuitNonGreedyTraversalWhenStepTraversalReturnsNothing() {
         // given
-        when(stepExpr1.resolve(ArgumentMatchers.<ExprContext<TestNode>>any(), refEq(singleton(node("node1")))))
-                .thenReturn(singleton(node("node2")));
-        when(stepExpr2.resolve(stepExpr2ContextCaptor.capture(), refEq(singleton(node("node2")))))
+        when(stepExpr1.resolve(ArgumentMatchers.<ExprContext<TestNode>>any(),
+                refEq(new NodeView<TestNode>(node("node1")))))
+                .thenReturn(new NodeView<TestNode>(node("node2")));
+        when(stepExpr2.resolve(stepExpr2ContextCaptor.capture(), refEq(new NodeView<TestNode>(node("node2")))))
                 .thenReturn(NodeSetView.<TestNode>empty());
 
         // when
         View<TestNode> result = pathExpr.resolve(new ExprContext<TestNode>(navigator, false, 1),
-                singleton(node("node1")));
+                new NodeView<TestNode>(node("node1")));
 
         // then
         assertThat(result).isEqualTo(NodeSetView.empty());

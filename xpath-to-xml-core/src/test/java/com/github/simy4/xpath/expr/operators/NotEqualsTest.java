@@ -24,7 +24,6 @@ import org.mockito.junit.MockitoRule;
 
 import static com.github.simy4.xpath.utils.TestNode.node;
 import static com.github.simy4.xpath.view.NodeSetView.empty;
-import static com.github.simy4.xpath.view.NodeSetView.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -38,7 +37,6 @@ public class NotEqualsTest {
             new LiteralView<TestNode>("2.0"),
             new NumberView<TestNode>(2.0),
             new NodeView<TestNode>(node("2.0")),
-            singleton(node("2.0")),
     };
 
     @DataPoints("ne right")
@@ -48,7 +46,6 @@ public class NotEqualsTest {
             new NodeView<TestNode>(node("node")),
             BooleanView.of(false),
             empty(),
-            singleton(node("node")),
     };
 
     @Rule public ExpectedException expectedException = ExpectedException.none();

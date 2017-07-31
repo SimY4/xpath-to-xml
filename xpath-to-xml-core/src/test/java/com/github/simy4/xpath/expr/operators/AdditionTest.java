@@ -19,7 +19,6 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import static com.github.simy4.xpath.utils.TestNode.node;
-import static com.github.simy4.xpath.view.NodeSetView.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Theories.class)
@@ -30,7 +29,6 @@ public class AdditionTest {
             new LiteralView<TestNode>("3.0"),
             new NumberView<TestNode>(3.0),
             new NodeView<TestNode>(node("3.0")),
-            singleton(node("3.0")),
     };
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();

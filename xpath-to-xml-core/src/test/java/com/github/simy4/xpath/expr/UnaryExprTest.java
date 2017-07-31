@@ -23,7 +23,6 @@ import org.mockito.junit.MockitoRule;
 
 import static com.github.simy4.xpath.utils.TestNode.node;
 import static com.github.simy4.xpath.view.NodeSetView.empty;
-import static com.github.simy4.xpath.view.NodeSetView.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -40,8 +39,6 @@ public class UnaryExprTest {
             Pair.of(BooleanView.of(true), new NumberView<TestNode>(-1.0)),
             Pair.of(BooleanView.of(false), new NumberView<TestNode>(-0.0)),
             Pair.of(empty(), new NumberView(Double.NaN)),
-            Pair.of(singleton(node("2.0")), new NumberView(-2.0)),
-            Pair.of(singleton(node("node")), new NumberView(Double.NaN)),
     };
 
     @Rule

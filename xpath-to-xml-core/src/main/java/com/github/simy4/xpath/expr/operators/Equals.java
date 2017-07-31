@@ -6,7 +6,7 @@ import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.AbstractViewVisitor;
 import com.github.simy4.xpath.view.BooleanView;
-import com.github.simy4.xpath.view.NodeSetView;
+import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
 
@@ -39,17 +39,11 @@ class Equals implements Operator {
         }
 
         @Override
-        public View<N> visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
-            for (View<N> node : nodeSet) {
-                node.visit(this);
+        public View<N> visit(IterableNodeView<N> nodeSet) throws XmlBuilderException {
+            for (NodeView<N> node : nodeSet) {
+                navigator.setText(node.getNode(), right.toString());
             }
             return nodeSet;
-        }
-
-        @Override
-        public View<N> visit(NodeView<N> node) throws XmlBuilderException {
-            navigator.setText(node.getNode(), right.toString());
-            return node;
         }
 
         @Override

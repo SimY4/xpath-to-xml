@@ -2,6 +2,7 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
+import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 
@@ -12,9 +13,9 @@ public class Parent extends AbstractStepExpr {
     }
 
     @Override
-    <N extends Node> NodeSetView<N> traverseStep(ExprContext<N> context, NodeView<N> view) {
+    <N extends Node> IterableNodeView<N> traverseStep(ExprContext<N> context, NodeView<N> view) {
         final N parent = context.getNavigator().parentOf(view.getNode());
-        return null == parent ? NodeSetView.<N>empty() : NodeSetView.singleton(parent);
+        return null == parent ? NodeSetView.<N>empty() : new NodeView<N>(parent);
     }
 
     @Override

@@ -4,8 +4,8 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.utils.ExprContextMatcher;
 import com.github.simy4.xpath.utils.TestNode;
+import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.LiteralView;
-import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
@@ -50,7 +50,7 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
         setUpResolvableExpr();
 
         // when
-        NodeSetView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, false, 3), parentNode);
+        IterableNodeView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, false, 3), parentNode);
 
         // then
         assertThat((Iterable<?>) result).isNotEmpty();
@@ -69,7 +69,7 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
         setUpUnresolvableExpr();
 
         // when
-        NodeSetView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, false, 3), parentNode);
+        IterableNodeView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, false, 3), parentNode);
 
         // then
         assertThat((Iterable<?>) result).isEmpty();
@@ -83,7 +83,7 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
                 .thenReturn(false);
 
         // when
-        NodeSetView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, false, 3), parentNode);
+        IterableNodeView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, false, 3), parentNode);
 
         // then
         assertThat((Iterable<?>) result).isEmpty();
@@ -99,7 +99,7 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
                 .thenReturn(false);
 
         // when
-        NodeSetView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, true, 3), parentNode);
+        IterableNodeView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, true, 3), parentNode);
 
         // then
         assertThat((Iterable<?>) result).isEmpty();
@@ -118,7 +118,7 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
         setUpUnresolvableExpr();
 
         // when
-        NodeSetView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, true, 1), parentNode);
+        IterableNodeView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, true, 1), parentNode);
 
         // then
         assertThat((Iterable<?>) result).isNotEmpty();
@@ -146,7 +146,7 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
                 ArgumentMatchers.<View<TestNode>>any())).thenReturn(true);
 
         // when
-        NodeSetView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, true, 1), parentNode);
+        IterableNodeView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, true, 1), parentNode);
 
         // then
         assertThat((Iterable<?>) result).isNotEmpty();
@@ -167,7 +167,7 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
         setUpUnresolvableExpr();
 
         // when
-        NodeSetView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, false, 3),
+        IterableNodeView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, false, 3),
                 new LiteralView<TestNode>("literal"));
 
         // then

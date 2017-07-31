@@ -11,7 +11,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Immutable
-public final class NodeSetView<N extends Node> implements View<N>, Iterable<NodeView<N>> {
+public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
     @SuppressWarnings("unchecked")
     private static final NodeSetView EMPTY_NODE_SET = new NodeSetView(Collections.EMPTY_SET);
@@ -19,10 +19,6 @@ public final class NodeSetView<N extends Node> implements View<N>, Iterable<Node
     @SuppressWarnings("unchecked")
     public static <T extends Node> NodeSetView<T> empty() {
         return (NodeSetView<T>) EMPTY_NODE_SET;
-    }
-
-    public static <T extends Node> NodeSetView<T> singleton(T node) {
-        return new NodeSetView<T>(Collections.singleton(node));
     }
 
     public static <T extends Node> NodeSetView.Builder<T> builder() {
@@ -69,12 +65,13 @@ public final class NodeSetView<N extends Node> implements View<N>, Iterable<Node
     }
 
     @Override
-    public Iterator<NodeView<N>> iterator() {
-        return new WrappingIterator<N>(nodeSet.iterator());
-    }
-
     public int size() {
         return nodeSet.size();
+    }
+
+    @Override
+    public Iterator<NodeView<N>> iterator() {
+        return new WrappingIterator<N>(nodeSet.iterator());
     }
 
     private boolean isEmpty() {
@@ -107,7 +104,7 @@ public final class NodeSetView<N extends Node> implements View<N>, Iterable<Node
          *
          * @param nodeSet node set to add
          */
-        public void add(NodeSetView<T> nodeSet) {
+        public void add(IterableNodeView<T> nodeSet) {
             for (NodeView<T> node : nodeSet) {
                 add(node);
             }

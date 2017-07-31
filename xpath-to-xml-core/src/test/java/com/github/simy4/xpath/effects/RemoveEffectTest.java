@@ -5,7 +5,6 @@ import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.utils.TestNode;
-import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +36,7 @@ public class RemoveEffectTest {
     public void setUp() {
         when(navigator.xml()).thenReturn(node("xml"));
         when(expr.resolve(ArgumentMatchers.<ExprContext<TestNode>>any(), refEq(new NodeView<TestNode>(node("xml")))))
-                .thenReturn(NodeSetView.singleton(node("node")));
+                .thenReturn(new NodeView<TestNode>(node("node")));
 
         removeEffect = new RemoveEffect(expr);
     }

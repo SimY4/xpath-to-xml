@@ -22,7 +22,6 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import static com.github.simy4.xpath.utils.TestNode.node;
-import static com.github.simy4.xpath.view.NodeSetView.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Theories.class)
@@ -33,7 +32,6 @@ public class GreaterThanOrEqualsTest {
             new LiteralView<TestNode>("1.0"),
             new NumberView<TestNode>(1.0),
             new NodeView<TestNode>(node("1.0")),
-            singleton(node("1.0")),
     };
 
     @DataPoints("greater")
@@ -41,7 +39,6 @@ public class GreaterThanOrEqualsTest {
             new LiteralView<TestNode>("2.0"),
             new NumberView<TestNode>(2.0),
             new NodeView<TestNode>(node("2.0")),
-            singleton(node("2.0")),
     };
 
     @Rule

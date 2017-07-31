@@ -32,7 +32,6 @@ public class LiteralExprTest {
             BooleanView.of(true),
             BooleanView.of(false),
             NodeSetView.empty(),
-            NodeSetView.singleton(node("node")),
     };
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
