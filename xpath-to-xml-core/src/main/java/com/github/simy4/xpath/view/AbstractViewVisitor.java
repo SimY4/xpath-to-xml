@@ -11,18 +11,13 @@ public abstract class AbstractViewVisitor<N extends Node, T> implements ViewVisi
     }
 
     @Override
-    public T visit(LiteralView<N> literal) throws XmlBuilderException {
-        return returnDefault(literal);
-    }
-
-    @Override
-    public T visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
+    public T visit(IterableNodeView<N> nodeSet) throws XmlBuilderException {
         return returnDefault(nodeSet);
     }
 
     @Override
-    public T visit(NodeView<N> node) throws XmlBuilderException {
-        return returnDefault(node);
+    public T visit(LiteralView<N> literal) throws XmlBuilderException {
+        return returnDefault(literal);
     }
 
     @Override

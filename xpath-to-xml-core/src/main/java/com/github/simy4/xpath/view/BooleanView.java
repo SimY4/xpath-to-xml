@@ -49,23 +49,4 @@ public final class BooleanView<N extends Node> implements View<N> {
         return visitor.visit(this);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        BooleanView<?> that = (BooleanView<?>) o;
-
-        return bool == that.bool;
-    }
-
-    @Override
-    public int hashCode() {
-        return (bool ? 1 : 0);
-    }
-
 }

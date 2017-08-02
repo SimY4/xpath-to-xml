@@ -32,7 +32,6 @@ public class LiteralExprTest {
             BooleanView.of(true),
             BooleanView.of(false),
             NodeSetView.empty(),
-            NodeSetView.singleton(new NodeView<>(node("node"))),
     };
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -44,7 +43,7 @@ public class LiteralExprTest {
     @Theory
     public void shouldAlwaysReturnSingleLiteralNode(@FromDataPoints("parent nodes") View<TestNode> parentView) {
         View<TestNode> result = literalExpr.resolve(new ExprContext<>(navigator, false, 1), parentView);
-        assertThat(result).isEqualTo(new LiteralView<>("value"));
+        assertThat(result).extracting("literal").contains("value");
     }
 
     @Test

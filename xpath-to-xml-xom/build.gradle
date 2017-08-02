@@ -1,7 +1,7 @@
 dependencies {
     compile project(':xpath-to-xml-core')
 
-    providedCompile 'xom:xom:1.2.5'
+    provided 'xom:xom:1.2.5'
 
     jmh 'xom:xom:1.2.5'
 

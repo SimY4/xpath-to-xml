@@ -14,12 +14,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static com.github.simy4.xpath.utils.TestNode.node;
-import static com.github.simy4.xpath.view.NodeSetView.singleton;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -45,19 +44,19 @@ public class PathExprTest {
     @Test
     public void shouldTraverseStepsOneByOneToGetTheResultingList() {
         // given
-        when(stepExpr1.resolve(stepExpr1ContextCaptor.capture(), eq(singleton(new NodeView<>(node("node1"))))))
-                .thenReturn(singleton(new NodeView<>(node("node2"))));
-        when(stepExpr2.resolve(stepExpr2ContextCaptor.capture(), eq(singleton(new NodeView<>(node("node2"))))))
-                .thenReturn(singleton(new NodeView<>(node("node3"))));
-        when(stepExpr3.resolve(stepExpr3ContextCaptor.capture(), eq(singleton(new NodeView<>(node("node3"))))))
-                .thenReturn(singleton(new NodeView<>(node("node4"))));
+        when(stepExpr1.resolve(stepExpr1ContextCaptor.capture(), refEq(new NodeView<>(node("node1")))))
+                .thenReturn(new NodeView<>(node("node2")));
+        when(stepExpr2.resolve(stepExpr2ContextCaptor.capture(), refEq(new NodeView<>(node("node2")))))
+                .thenReturn(new NodeView<>(node("node3")));
+        when(stepExpr3.resolve(stepExpr3ContextCaptor.capture(), refEq(new NodeView<>(node("node3")))))
+                .thenReturn(new NodeView<>(node("node4")));
 
         // when
         View<TestNode> result = pathExpr.resolve(new ExprContext<>(navigator, false, 1),
-                singleton(new NodeView<>(node("node1"))));
+                new NodeView<>(node("node1")));
 
         // then
-        assertThat(result).isEqualTo(singleton(new NodeView<>(node("node4"))));
+        assertThat((Iterable<?>) result).extracting("node").containsExactly(node("node4"));
         assertThat(stepExpr1ContextCaptor.getAllValues()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(tuple(navigator, false, 1, 0));
         assertThat(stepExpr2ContextCaptor.getAllValues()).extracting("navigator", "greedy", "size", "position")
@@ -69,14 +68,14 @@ public class PathExprTest {
     @Test
     public void shouldShortCircuitNonGreedyTraversalWhenStepTraversalReturnsNothing() {
         // given
-        when(stepExpr1.resolve(any(), eq(singleton(new NodeView<>(node("node1"))))
-                )).thenReturn(singleton(new NodeView<>(node("node2"))));
-        when(stepExpr2.resolve(stepExpr2ContextCaptor.capture(), eq(singleton(new NodeView<>(node("node2"))))))
+        when(stepExpr1.resolve(any(), refEq(new NodeView<>(node("node1")))))
+                .thenReturn(new NodeView<>(node("node2")));
+        when(stepExpr2.resolve(stepExpr2ContextCaptor.capture(), refEq(new NodeView<>(node("node2")))))
                 .thenReturn(NodeSetView.empty());
 
         // when
         View<TestNode> result = pathExpr.resolve(new ExprContext<>(navigator, false, 1),
-                singleton(new NodeView<>(node("node1"))));
+                new NodeView<>(node("node1")));
 
         // then
         assertThat(result).isEqualTo(NodeSetView.empty());

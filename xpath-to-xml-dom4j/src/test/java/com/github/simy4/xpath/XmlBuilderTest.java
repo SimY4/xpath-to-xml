@@ -127,14 +127,16 @@ public class XmlBuilderTest {
     }
 
     private String xmlToString(Document xml) throws IOException {
+        String lineSeparator = System.getProperty("line.separator");
         OutputFormat format = OutputFormat.createCompactFormat();
         format.setIndentSize(4);
         format.setNewlines(true);
+        format.setLineSeparator(lineSeparator);
         format.setSuppressDeclaration(true);
         StringWriter result = new StringWriter();
         XMLWriter writer = new XMLWriter(result, format);
         writer.write(xml);
-        return result.toString().replaceFirst("\n", "");
+        return result.toString().replaceFirst(lineSeparator, "");
     }
 
     private static final class SimpleNamespaceContextWrapper implements org.jaxen.NamespaceContext {

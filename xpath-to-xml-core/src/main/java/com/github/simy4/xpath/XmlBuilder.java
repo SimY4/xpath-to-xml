@@ -25,6 +25,7 @@ import java.util.ServiceLoader;
  * @author Alex Simkin
  * @since 1.0
  */
+@SuppressWarnings("WeakerAccess")
 public class XmlBuilder {
 
     private static final Iterable<NavigatorSpi> navigatorSpis = ServiceLoader.load(NavigatorSpi.class);

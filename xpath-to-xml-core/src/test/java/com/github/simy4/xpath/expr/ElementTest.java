@@ -2,8 +2,7 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.utils.TestNode;
-import com.github.simy4.xpath.view.NodeSetView;
-import com.github.simy4.xpath.view.NodeView;
+import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.View;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,10 +35,10 @@ public class ElementTest extends AbstractStepExprTest<Element> {
         setUpResolvableExpr();
 
         // when
-        NodeSetView<TestNode> result = expr.resolve(new ExprContext<>(navigator, false, 3), parentNode);
+        IterableNodeView<TestNode> result = expr.resolve(new ExprContext<>(navigator, false, 3), parentNode);
 
         // then
-        assertThat((Iterable<View<TestNode>>) result).containsExactly(new NodeView<>(node("elem")));
+        assertThat((Iterable<?>) result).extracting("node").containsExactly(node("elem"));
     }
 
     @Test
@@ -48,10 +47,10 @@ public class ElementTest extends AbstractStepExprTest<Element> {
         setUpUnresolvableExpr();
 
         // when
-        NodeSetView<TestNode> result = expr.resolve(new ExprContext<>(navigator, true, 1), parentNode);
+        IterableNodeView<TestNode> result = expr.resolve(new ExprContext<>(navigator, true, 1), parentNode);
 
         // then
-        assertThat((Iterable<View<TestNode>>) result).containsExactly(new NodeView<>(node("elem")));
+        assertThat((Iterable<?>) result).extracting("node").containsExactly(node("elem"));
         verify(navigator).createElement(node("node"), new QName("elem"));
     }
 

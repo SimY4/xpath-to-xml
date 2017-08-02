@@ -19,7 +19,6 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import static com.github.simy4.xpath.utils.TestNode.node;
-import static com.github.simy4.xpath.view.NodeSetView.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Theories.class)
@@ -30,9 +29,6 @@ public class AdditionTest {
             new LiteralView<>("3.0"),
             new NumberView<>(3.0),
             new NodeView<>(node("3.0")),
-            singleton(new LiteralView<>("3.0")),
-            singleton(new NumberView<>(3.0)),
-            singleton(new NodeView<>(node("3.0"))),
     };
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -46,7 +42,7 @@ public class AdditionTest {
         ExprContext<TestNode> context = new ExprContext<>(navigator, false, 1);
 
         // when
-        assertThat(Operator.addition.resolve(context, left, right)).isEqualTo(new NumberView<TestNode>(6.0));
+        assertThat(Operator.addition.resolve(context, left, right)).extracting("number").contains(6.0);
     }
 
     @Test

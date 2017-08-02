@@ -5,7 +5,6 @@ import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.utils.TestNode;
-import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +18,7 @@ import static com.github.simy4.xpath.utils.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,8 +35,8 @@ public class PutValueEffectTest {
     @Before
     public void setUp() {
         when(navigator.xml()).thenReturn(node("xml"));
-        when(expr.resolve(any(), eq(new NodeView<>(node("xml")))))
-                .thenReturn(NodeSetView.singleton(new NodeView<>(node("node"))));
+        when(expr.resolve(any(), refEq(new NodeView<>(node("xml")))))
+                .thenReturn(new NodeView<>(node("node")));
 
         putValueEffect = new PutValueEffect(expr, "value");
     }
@@ -48,7 +47,7 @@ public class PutValueEffectTest {
         putValueEffect.perform(navigator);
 
         // then
-        verify(expr).resolve(contextCaptor.capture(), eq(new NodeView<>(node("xml"))));
+        verify(expr).resolve(contextCaptor.capture(), refEq(new NodeView<>(node("xml"))));
         verify(navigator).setText(node("node"), "value");
         assertThat(contextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
                 .containsExactly(navigator, true, 1, 0);

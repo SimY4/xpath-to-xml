@@ -25,6 +25,7 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.xpath.XPathExpressionException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -235,13 +236,16 @@ public class XPathParser {
     }
 
     private List<Predicate> PredicateList(Context context) throws XPathExpressionException {
-        final List<Predicate> predicateList = new ArrayList<>();
-        Type type = context.tokenAt(1).getType();
-        while (Type.LEFT_BRACKET == type) {
+        if (Type.LEFT_BRACKET == context.tokenAt(1).getType()) {
+            final List<Predicate> predicateList = new ArrayList<>();
             predicateList.add(Predicate(context));
-            type = context.tokenAt(1).getType();
+            while (Type.LEFT_BRACKET == context.tokenAt(1).getType()) {
+                predicateList.add(Predicate(context));
+            }
+            return predicateList;
+        } else {
+            return Collections.emptyList();
         }
-        return predicateList;
     }
 
     private Expr Predicate(Context context) throws XPathExpressionException {

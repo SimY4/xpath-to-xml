@@ -6,13 +6,12 @@ import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 
 import javax.xml.namespace.QName;
-import java.util.List;
 
 public class Attribute extends AbstractStepExpr {
 
     private final QName attribute;
 
-    public Attribute(QName attribute, List<Predicate> predicates) {
+    public Attribute(QName attribute, Iterable<? extends Predicate> predicates) {
         super(predicates);
         this.attribute = attribute;
     }
@@ -29,12 +28,11 @@ public class Attribute extends AbstractStepExpr {
     }
 
     @Override
-    <N extends Node> NodeView<N> createStepNode(ExprContext<N> context, NodeView<N> parentView)
-            throws XmlBuilderException {
+    <N extends Node> N createStepNode(ExprContext<N> context, NodeView<N> parentView) throws XmlBuilderException {
         if ("*".equals(attribute.getNamespaceURI()) || "*".equals(attribute.getLocalPart())) {
             throw new XmlBuilderException("Wildcard attribute cannot be created");
         }
-        return new NodeView<>(context.getNavigator().createAttribute(parentView.getNode(), attribute));
+        return context.getNavigator().createAttribute(parentView.getNode(), attribute);
     }
 
     @Override

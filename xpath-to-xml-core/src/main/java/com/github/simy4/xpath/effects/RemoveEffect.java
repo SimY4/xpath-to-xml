@@ -6,7 +6,7 @@ import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.AbstractViewVisitor;
-import com.github.simy4.xpath.view.NodeSetView;
+import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
 
@@ -34,17 +34,11 @@ public class RemoveEffect implements Effect {
         }
 
         @Override
-        public Void visit(NodeSetView<N> nodeSet) throws XmlBuilderException {
-            for (View<N> node : nodeSet) {
-                node.visit(this);
+        public Void visit(IterableNodeView<N> nodeSet) throws XmlBuilderException {
+            for (NodeView<N> node : nodeSet) {
+                navigator.remove(node.getNode());
             }
             return returnDefault(nodeSet);
-        }
-
-        @Override
-        public Void visit(NodeView<N> node) throws XmlBuilderException {
-            navigator.remove(node.getNode());
-            return returnDefault(node);
         }
 
         @Override

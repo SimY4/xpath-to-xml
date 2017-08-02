@@ -3,8 +3,8 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.utils.TestNode;
 import com.github.simy4.xpath.view.BooleanView;
+import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.LiteralView;
-import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
@@ -21,6 +21,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import static com.github.simy4.xpath.utils.TestNode.node;
+import static com.github.simy4.xpath.view.NodeSetView.empty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -33,8 +34,7 @@ public class RootTest {
             new NodeView<>(node("node")),
             BooleanView.of(true),
             BooleanView.of(false),
-            NodeSetView.empty(),
-            NodeSetView.singleton(new NodeView<>(node("node"))),
+            empty(),
     };
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -51,10 +51,10 @@ public class RootTest {
     @Theory
     public void shouldReturnSingleRootNodeOnTraverse(@FromDataPoints("parent nodes") View<TestNode> parentView) {
         // when
-        NodeSetView<TestNode> result = root.resolve(new ExprContext<>(navigator, false, 1), parentView);
+        IterableNodeView<TestNode> result = root.resolve(new ExprContext<>(navigator, false, 1), parentView);
 
         // then
-        assertThat((Iterable<View<TestNode>>) result).containsExactly(new NodeView<>(node("root")));
+        assertThat((Iterable<?>) result).extracting("node").containsExactly(node("root"));
     }
 
     @Test

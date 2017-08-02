@@ -11,7 +11,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Immutable
-public final class NodeSetView<N extends Node> implements View<N>, Iterable<View<N>> {
+public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
     @SuppressWarnings("unchecked")
     private static final NodeSetView EMPTY_NODE_SET = new NodeSetView(Collections.EMPTY_SET);
@@ -19,10 +19,6 @@ public final class NodeSetView<N extends Node> implements View<N>, Iterable<View
     @SuppressWarnings("unchecked")
     public static <T extends Node> NodeSetView<T> empty() {
         return (NodeSetView<T>) EMPTY_NODE_SET;
-    }
-
-    public static <T extends Node> NodeSetView<T> singleton(View<T> node) {
-        return new NodeSetView<>(Collections.singleton(node));
     }
 
     public static <T extends Node> NodeSetView.Builder<T> builder() {
@@ -33,9 +29,9 @@ public final class NodeSetView<N extends Node> implements View<N>, Iterable<View
         return new NodeSetView.Builder<>(initialCapacity);
     }
 
-    private final Set<View<N>> nodeSet;
+    private final Set<N> nodeSet;
 
-    private NodeSetView(Set<View<N>> nodeSet) {
+    private NodeSetView(Set<N> nodeSet) {
         this.nodeSet = nodeSet;
     }
 
@@ -55,20 +51,12 @@ public final class NodeSetView<N extends Node> implements View<N>, Iterable<View
 
     @Override
     public double toNumber() {
-        if (isEmpty()) {
-            return Double.NaN;
-        } else {
-            return iterator().next().toNumber();
-        }
+        return isEmpty() ? Double.NaN : iterator().next().toNumber();
     }
 
     @Override
     public String toString() {
-        if (isEmpty()) {
-            return "";
-        } else {
-            return iterator().next().toString();
-        }
+        return isEmpty() ? "" : iterator().next().toString();
     }
 
     @Override
@@ -77,40 +65,22 @@ public final class NodeSetView<N extends Node> implements View<N>, Iterable<View
     }
 
     @Override
-    public Iterator<View<N>> iterator() {
-        return nodeSet.iterator();
-    }
-
-    public boolean isEmpty() {
-        return nodeSet.isEmpty();
-    }
-
     public int size() {
         return nodeSet.size();
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        NodeSetView<?> that = (NodeSetView<?>) o;
-
-        return nodeSet.equals(that.nodeSet);
+    public Iterator<NodeView<N>> iterator() {
+        return new WrappingIterator<>(nodeSet.iterator());
     }
 
-    @Override
-    public int hashCode() {
-        return nodeSet.hashCode();
+    private boolean isEmpty() {
+        return nodeSet.isEmpty();
     }
 
     public static final class Builder<T extends Node> {
 
-        private final Set<View<T>> nodeSet;
+        private final Set<T> nodeSet;
 
         private Builder() {
             nodeSet = new LinkedHashSet<>();
@@ -121,22 +91,52 @@ public final class NodeSetView<N extends Node> implements View<N>, Iterable<View
         }
 
         /**
-         * Adds new view to a constructing set. Flattens view if necessary.
+         * Adds new node to a constructing set.
          *
          * @param node node to add
          */
-        public void add(View<T> node) {
-            if (node instanceof NodeSetView) {
-                for (View<T> n : (NodeSetView<T>) node) {
-                    add(n);
-                }
-            } else {
-                nodeSet.add(node);
+        public void add(NodeView<T> node) {
+            nodeSet.add(node.getNode());
+        }
+
+        /**
+         * Adds new set of nodes to a constructing set.
+         *
+         * @param nodeSet node set to add
+         */
+        public void add(IterableNodeView<T> nodeSet) {
+            for (NodeView<T> node : nodeSet) {
+                add(node);
             }
         }
 
         public NodeSetView<T> build() {
             return new NodeSetView<>(Collections.unmodifiableSet(nodeSet));
+        }
+
+    }
+
+    private static final class WrappingIterator<T extends Node> implements Iterator<NodeView<T>> {
+
+        private final Iterator<T> delegate;
+
+        private WrappingIterator(Iterator<T> delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return delegate.hasNext();
+        }
+
+        @Override
+        public NodeView<T> next() {
+            return new NodeView<>(delegate.next());
+        }
+
+        @Override
+        public void remove() {
+            delegate.remove();
         }
 
     }

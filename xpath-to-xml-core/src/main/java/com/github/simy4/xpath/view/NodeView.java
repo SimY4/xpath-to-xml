@@ -5,9 +5,11 @@ import com.github.simy4.xpath.navigator.Node;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
+import java.util.Collections;
+import java.util.Iterator;
 
 @Immutable
-public final class NodeView<N extends Node> implements View<N> {
+public final class NodeView<N extends Node> implements IterableNodeView<N> {
 
     private final N node;
 
@@ -48,27 +50,18 @@ public final class NodeView<N extends Node> implements View<N> {
         return visitor.visit(this);
     }
 
+    @Override
+    public int size() {
+        return 1;
+    }
+
+    @Override
+    public Iterator<NodeView<N>> iterator() {
+        return Collections.singleton(this).iterator();
+    }
+
     public N getNode() {
         return node;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        NodeView<?> nodeView = (NodeView<?>) o;
-
-        return node.equals(nodeView.node);
-    }
-
-    @Override
-    public int hashCode() {
-        return node.hashCode();
     }
 
 }

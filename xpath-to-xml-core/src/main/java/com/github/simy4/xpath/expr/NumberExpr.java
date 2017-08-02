@@ -3,7 +3,7 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.AbstractViewVisitor;
-import com.github.simy4.xpath.view.NodeView;
+import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
 
@@ -49,8 +49,8 @@ public class NumberExpr implements Expr {
         }
 
         @Override
-        public Boolean visit(NodeView<N> view) throws XmlBuilderException {
-            final N node = view.getNode();
+        public Boolean visit(IterableNodeView<N> nodeSet) throws XmlBuilderException {
+            final N node = nodeSet.iterator().next().getNode();
             long numberOfNodesToCreate = this.numberOfNodesToCreate;
             do {
                 context.getNavigator().prependCopy(node);

@@ -22,7 +22,6 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import static com.github.simy4.xpath.utils.TestNode.node;
-import static com.github.simy4.xpath.view.NodeSetView.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Theories.class)
@@ -33,9 +32,6 @@ public class LessThanTest {
             new LiteralView<>("1.0"),
             new NumberView<>(1.0),
             new NodeView<>(node("1.0")),
-            singleton(new LiteralView<>("1.0")),
-            singleton(new NumberView<>(1.0)),
-            singleton(new NodeView<>(node("1.0"))),
     };
 
     @DataPoints("greater")
@@ -43,9 +39,6 @@ public class LessThanTest {
             new LiteralView<>("2.0"),
             new NumberView<>(2.0),
             new NodeView<>(node("2.0")),
-            singleton(new LiteralView<>("2.0")),
-            singleton(new NumberView<>(2.0)),
-            singleton(new NodeView<>(node("2.0"))),
     };
 
     @Rule public ExpectedException expectedException = ExpectedException.none();
