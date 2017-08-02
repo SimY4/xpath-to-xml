@@ -12,7 +12,7 @@ public class Identity extends AbstractStepExpr {
 
     @Override
     <N extends Node> NodeView<N> traverseStep(ExprContext<N> context, NodeView<N> view) {
-        return new NodeView<N>(view.getNode());
+        return view;
     }
 
     @Override
