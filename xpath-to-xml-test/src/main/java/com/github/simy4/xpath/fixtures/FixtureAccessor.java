@@ -1,6 +1,6 @@
 package com.github.simy4.xpath.fixtures;
 
-import com.github.simy4.xpath.utils.OrderedProperties;
+import com.github.simy4.xpath.util.OrderedProperties;
 
 import java.io.IOException;
 import java.io.InputStream;

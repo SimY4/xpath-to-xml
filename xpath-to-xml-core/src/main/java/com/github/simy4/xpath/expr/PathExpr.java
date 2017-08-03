@@ -2,8 +2,10 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
+import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.View;
+import com.github.simy4.xpath.view.ViewContext;
 
 import java.util.Iterator;
 import java.util.List;
@@ -17,15 +19,13 @@ public class PathExpr extends AbstractExpr {
     }
 
     @Override
-    public <N extends Node> View<N> resolve(ExprContext<N> context) throws XmlBuilderException {
+    public <N extends Node> View<N> resolve(ViewContext<N> context) throws XmlBuilderException {
         final Iterator<StepExpr> pathExprIterator = pathExpr.iterator();
-        ExprContext<N> stepExprContext = context;
-        IterableNodeView<N> children;
+        IterableNodeView<N> children = context.getCurrent();
         do {
             final StepExpr stepExpr = pathExprIterator.next();
-            children = stepExpr.resolve(stepExprContext);
-            stepExprContext = stepExprContext.clone(children);
-        } while (pathExprIterator.hasNext() && children.toBoolean());
+            children = children.flatMap(context.getNavigator(), context.isGreedy(), new StepResolver<N>(stepExpr));
+        } while (pathExprIterator.hasNext());
         return children;
     }
 
@@ -40,6 +40,21 @@ public class PathExpr extends AbstractExpr {
             }
         }
         return stringBuilder.toString();
+    }
+
+    private static final class StepResolver<T extends Node> implements Function<ViewContext<T>, IterableNodeView<T>> {
+
+        private final StepExpr stepExpr;
+
+        private StepResolver(StepExpr stepExpr) {
+            this.stepExpr = stepExpr;
+        }
+
+        @Override
+        public IterableNodeView<T> apply(ViewContext<T> context) {
+            return stepExpr.resolve(context);
+        }
+
     }
 
 }

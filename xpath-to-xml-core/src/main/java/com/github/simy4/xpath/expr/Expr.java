@@ -3,6 +3,7 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.View;
+import com.github.simy4.xpath.view.ViewContext;
 
 /**
  * XPath expression model. Every XPath expression is also a XPath predicate.
@@ -20,6 +21,6 @@ public interface Expr extends Predicate {
      * @return evaluated XML node view
      * @throws XmlBuilderException if error occur during XML model modification
      */
-    <N extends Node> View<N> resolve(ExprContext<N> context) throws XmlBuilderException;
+    <N extends Node> View<N> resolve(ViewContext<N> context) throws XmlBuilderException;
 
 }

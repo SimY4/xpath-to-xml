@@ -1,9 +1,9 @@
 package com.github.simy4.xpath.expr.operators;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.View;
+import com.github.simy4.xpath.view.ViewContext;
 
 /**
  * Operator model.
@@ -41,6 +41,6 @@ public interface Operator {
      * @return evaluated XML node view
      * @throws XmlBuilderException if error occur during XML model modification
      */
-    <N extends Node> View<N> resolve(ExprContext<N> context, View<N> left, View<N> right) throws XmlBuilderException;
+    <N extends Node> View<N> resolve(ViewContext<N> context, View<N> left, View<N> right) throws XmlBuilderException;
 
 }

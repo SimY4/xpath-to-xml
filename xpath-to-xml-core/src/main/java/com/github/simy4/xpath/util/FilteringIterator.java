@@ -12,6 +12,12 @@ public final class FilteringIterator<T> implements Iterator<T> {
     private T nextElement;
     private boolean hasNext;
 
+    /**
+     * Constructor.
+     *
+     * @param iterator  delegating iterator
+     * @param predicate predicate to apply
+     */
     public FilteringIterator(Iterator<? extends T> iterator, Predicate<? super T> predicate) {
         this.iterator = iterator;
         this.predicate = predicate;
@@ -31,6 +37,11 @@ public final class FilteringIterator<T> implements Iterator<T> {
         return nextMatch();
     }
 
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException();
+    }
+
     private T nextMatch() {
         final T oldMatch = nextElement;
         while (iterator.hasNext()) {
@@ -43,11 +54,6 @@ public final class FilteringIterator<T> implements Iterator<T> {
         }
         hasNext = false;
         return oldMatch;
-    }
-
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException();
     }
 
 }

@@ -1,6 +1,10 @@
 package com.github.simy4.xpath.view;
 
+import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
+import com.github.simy4.xpath.util.Function;
+import com.github.simy4.xpath.util.Predicate;
 
 /**
  * Abstract XML view to generify access to {@link NodeView} and {@link NodeSetView}.
@@ -13,21 +17,13 @@ import com.github.simy4.xpath.navigator.Node;
  */
 public interface IterableNodeView<N extends Node> extends View<N>, Iterable<NodeView<N>> {
 
-    /**
-     * Node view predicate.
-     *
-     * @param <T> filter type
-     */
-    interface Filter<T> {
+    IterableNodeView<N> filter(Navigator<N> navigator, boolean greedy, Predicate<ViewContext<N>> predicate)
+            throws XmlBuilderException;
 
-        /**
-         * Applies predicate to a given value.
-         *
-         * @param t value to test
-         * @return {@code true} if value matches predicate or {@code false} otherwise
-         */
-        boolean test(T t);
+    IterableNodeView<N> flatMap(Navigator<N> navigator, boolean greedy,
+                                Function<ViewContext<N>, IterableNodeView<N>> fmap) throws XmlBuilderException;
 
-    }
+    IterableNodeView<N> flatMap(Navigator<N> navigator, boolean greedy, int position,
+                                Function<ViewContext<N>, IterableNodeView<N>> fmap) throws XmlBuilderException;
 
 }

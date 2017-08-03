@@ -1,7 +1,10 @@
 package com.github.simy4.xpath.view;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
+import com.github.simy4.xpath.util.Function;
+import com.github.simy4.xpath.util.Predicate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
@@ -53,6 +56,26 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
     @Override
     public Iterator<NodeView<N>> iterator() {
         return Collections.singleton(this).iterator();
+    }
+
+    @Override
+    public IterableNodeView<N> filter(Navigator<N> navigator, boolean greedy, Predicate<ViewContext<N>> predicate)
+            throws XmlBuilderException {
+        ViewContext<N> context = new ViewContext<N>(navigator, this, greedy, false, 1);
+        return predicate.test(context) ? this : NodeSetView.<N>empty();
+    }
+
+    @Override
+    public IterableNodeView<N> flatMap(Navigator<N> navigator, boolean greedy,
+                                       Function<ViewContext<N>, IterableNodeView<N>> fmap) throws XmlBuilderException {
+        return flatMap(navigator, greedy, 1, fmap);
+    }
+
+    @Override
+    public IterableNodeView<N> flatMap(Navigator<N> navigator, boolean greedy, int position,
+                                       Function<ViewContext<N>, IterableNodeView<N>> fmap) throws XmlBuilderException {
+        ViewContext<N> context = new ViewContext<N>(navigator, this, greedy, false, 1);
+        return fmap.apply(context);
     }
 
     public N getNode() {

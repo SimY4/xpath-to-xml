@@ -1,15 +1,15 @@
 package com.github.simy4.xpath.expr.operators;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.utils.TestNode;
+import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
+import com.github.simy4.xpath.view.ViewContext;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoints;
@@ -22,7 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import static com.github.simy4.xpath.utils.TestNode.node;
+import static com.github.simy4.xpath.util.TestNode.node;
 import static com.github.simy4.xpath.view.NodeSetView.empty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -59,7 +59,7 @@ public class EqualsTest {
     public void shouldAssociativelyResolveEqualViewsToTrue(@FromDataPoints("eq left") View<TestNode> left,
                                                            @FromDataPoints("eq left") View<TestNode> right) {
         // given
-        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, false, parentNode);
+        ViewContext<TestNode> context = new ViewContext<TestNode>(navigator, parentNode, false);
 
         // when
         View<TestNode> leftToRight = Operator.equals.resolve(context, left, right);
@@ -74,7 +74,7 @@ public class EqualsTest {
     public void shouldAssociativelyResolveNonEqualViewsToFalse(@FromDataPoints("eq left") View<TestNode> left,
                                                                @FromDataPoints("eq right") View<TestNode> right) {
         // given
-        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, false, parentNode);
+        ViewContext<TestNode> context = new ViewContext<TestNode>(navigator, parentNode, false);
 
         // when
         View<TestNode> leftToRight = Operator.equals.resolve(context, left, right);
@@ -93,8 +93,7 @@ public class EqualsTest {
                 && (!(left instanceof NodeSetView) || !(((NodeSetView) left).iterator().next() instanceof NodeView))) {
             expectedException.expect(XmlBuilderException.class);
         }
-        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, true, parentNode);
-        context.next();
+        ViewContext<TestNode> context = new ViewContext<TestNode>(navigator, parentNode, true);
 
         // when
         View<TestNode> result = Operator.equals.resolve(context, left, right);

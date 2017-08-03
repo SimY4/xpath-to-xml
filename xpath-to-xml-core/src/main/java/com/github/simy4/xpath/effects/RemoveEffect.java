@@ -2,13 +2,13 @@ package com.github.simy4.xpath.effects;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.Expr;
-import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.AbstractViewVisitor;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
+import com.github.simy4.xpath.view.ViewContext;
 
 public class RemoveEffect implements Effect {
 
@@ -20,8 +20,8 @@ public class RemoveEffect implements Effect {
 
     @Override
     public <N extends Node> void perform(Navigator<N> navigator) throws XmlBuilderException {
-        NodeView<N> xml = new NodeView<N>(navigator.xml());
-        final ExprContext<N> context = new ExprContext<N>(navigator, false, xml);
+        final NodeView<N> xml = new NodeView<N>(navigator.xml());
+        final ViewContext<N> context = new ViewContext<N>(navigator, xml, false);
         final View<N> view = expr.resolve(context);
         view.visit(new RemoveVisitor<N>(navigator));
     }

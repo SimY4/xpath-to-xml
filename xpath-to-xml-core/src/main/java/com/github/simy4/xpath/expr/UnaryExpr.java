@@ -3,6 +3,7 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.NumberView;
+import com.github.simy4.xpath.view.ViewContext;
 
 public class UnaryExpr extends AbstractExpr {
 
@@ -13,7 +14,7 @@ public class UnaryExpr extends AbstractExpr {
     }
 
     @Override
-    public <N extends Node> NumberView<N> resolve(ExprContext<N> context) throws XmlBuilderException {
+    public <N extends Node> NumberView<N> resolve(ViewContext<N> context) throws XmlBuilderException {
         return new NumberView<N>(-valueExpr.resolve(context).toNumber());
     }
 

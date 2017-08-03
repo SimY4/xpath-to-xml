@@ -3,10 +3,13 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
+import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
+import com.github.simy4.xpath.view.ViewContext;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import java.util.Iterator;
 
 abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
@@ -18,29 +21,29 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
     }
 
     @Override
-    public final <N extends Node> IterableNodeView<N> resolve(ExprContext<N> context) throws XmlBuilderException {
-        NodeSetView.Builder<N> builder = NodeSetView.builder();
-        while (context.hasNext()) {
-            builder.add(resolve(context.getNavigator(), context.next(), context.shouldCreate()));
-        }
-        return builder.build();
-    }
-
-    private <N extends Node> IterableNodeView<N> resolve(Navigator<N> navigator, NodeView<N> node, boolean shouldCreate)
-            throws XmlBuilderException {
-        IterableNodeView<N> result = traverseStep(navigator, node);
-        ExprContext<N> lookupContext = new ExprContext<N>(navigator, false, result);
+    public final <N extends Node> IterableNodeView<N> resolve(ViewContext<N> context) throws XmlBuilderException {
+        IterableNodeView<N> result = traverseStep(context.getNavigator(), context.getCurrent());
         Iterator<? extends Predicate> predicateIterator = predicates.iterator();
+        final CountingPredicateResolver<N> counter = new CountingPredicateResolver<N>(predicateIterator.next());
         if (predicateIterator.hasNext()) {
-            result = resolvePredicates(lookupContext, predicateIterator);
+            result = result.flatMap(context.getNavigator(), false, counter);
+            while (predicateIterator.hasNext()) {
+                final Predicate predicate = predicateIterator.next();
+                result = result.flatMap(context.getNavigator(), false, new PredicateResolver<N>(predicate));
+            }
         }
 
-        if (!result.toBoolean() && shouldCreate) {
-            result = new NodeView<N>(createStepNode(navigator, node));
+        if (!result.toBoolean() && context.isGreedy() && !context.hasNext()) {
+            result = new NodeView<N>(createStepNode(context.getNavigator(), context.getCurrent()));
             predicateIterator = predicates.iterator();
-            lookupContext = new ExprContext<N>(navigator, true, result, lookupContext.getPosition());
             if (predicateIterator.hasNext()) {
-                result = resolvePredicates(lookupContext, predicateIterator);
+                final int count = counter.count();
+                Predicate predicate = predicateIterator.next();
+                result = result.flatMap(context.getNavigator(), true, count, new PredicateResolver<N>(predicate));
+                while (predicateIterator.hasNext()) {
+                    predicate = predicateIterator.next();
+                    result = result.flatMap(context.getNavigator(), true, new PredicateResolver<N>(predicate));
+                }
             }
         }
         return result;
@@ -68,25 +71,6 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
     abstract <N extends Node> N createStepNode(Navigator<N> navigator, NodeView<N> parentView)
             throws XmlBuilderException;
 
-    private <N extends Node> IterableNodeView<N> resolvePredicates(ExprContext<N> lookupContext,
-                                                                   Iterator<? extends Predicate> predicates)
-            throws XmlBuilderException {
-        final NodeSetView.Builder<N> builder = NodeSetView.builder();
-        final Predicate nextPredicate = predicates.next();
-        while (lookupContext.hasNext()) {
-            NodeView<N> xmlNode = lookupContext.next();
-            if (nextPredicate.match(lookupContext)) {
-                builder.add(xmlNode);
-            }
-        }
-        IterableNodeView<N> result = builder.build();
-        if (predicates.hasNext()) {
-            lookupContext = lookupContext.clone(result);
-            result = resolvePredicates(lookupContext, predicates);
-        }
-        return result;
-    }
-
     @Override
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder();
@@ -94,6 +78,42 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
             stringBuilder.append('[').append(predicate).append(']');
         }
         return stringBuilder.toString();
+    }
+
+    private static class PredicateResolver<T extends Node> implements Function<ViewContext<T>, IterableNodeView<T>> {
+
+        private final Predicate predicate;
+
+        private PredicateResolver(Predicate predicate) {
+            this.predicate = predicate;
+        }
+
+        @Override
+        public IterableNodeView<T> apply(ViewContext<T> context) {
+            return predicate.match(context) ? context.getCurrent() : NodeSetView.<T>empty();
+        }
+
+    }
+
+    @NotThreadSafe
+    private static final class CountingPredicateResolver<T extends Node> extends PredicateResolver<T> {
+
+        private int count;
+
+        private CountingPredicateResolver(Predicate predicate) {
+            super(predicate);
+        }
+
+        @Override
+        public IterableNodeView<T> apply(ViewContext<T> context) {
+            count += 1;
+            return super.apply(context);
+        }
+
+        private int count() {
+            return count;
+        }
+
     }
 
 }

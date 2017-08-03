@@ -1,15 +1,16 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.utils.TestNode;
+import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
+import com.github.simy4.xpath.view.ViewContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static com.github.simy4.xpath.utils.TestNode.node;
+import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -23,7 +24,7 @@ public class LiteralExprTest {
 
     @Test
     public void shouldAlwaysReturnSingleLiteralNode() {
-        View<TestNode> result = literalExpr.resolve(new ExprContext<TestNode>(navigator, false, parentNode));
+        View<TestNode> result = literalExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
         assertThat(result).extracting("literal").contains("value");
     }
 

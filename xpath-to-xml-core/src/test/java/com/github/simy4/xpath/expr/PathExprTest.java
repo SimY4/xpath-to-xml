@@ -1,10 +1,11 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.utils.TestNode;
+import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
+import com.github.simy4.xpath.view.ViewContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +15,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static com.github.simy4.xpath.utils.TestNode.node;
+import static com.github.simy4.xpath.util.TestNode.node;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -31,9 +32,9 @@ public class PathExprTest {
     @Mock private StepExpr stepExpr1;
     @Mock private StepExpr stepExpr2;
     @Mock private StepExpr stepExpr3;
-    @Captor private ArgumentCaptor<ExprContext<TestNode>> stepExpr1ContextCaptor;
-    @Captor private ArgumentCaptor<ExprContext<TestNode>> stepExpr2ContextCaptor;
-    @Captor private ArgumentCaptor<ExprContext<TestNode>> stepExpr3ContextCaptor;
+    @Captor private ArgumentCaptor<ViewContext<TestNode>> stepExpr1ContextCaptor;
+    @Captor private ArgumentCaptor<ViewContext<TestNode>> stepExpr2ContextCaptor;
+    @Captor private ArgumentCaptor<ViewContext<TestNode>> stepExpr3ContextCaptor;
 
     private Expr pathExpr;
 
@@ -50,31 +51,31 @@ public class PathExprTest {
         when(stepExpr3.resolve(stepExpr3ContextCaptor.capture())).thenReturn(new NodeView<TestNode>(node("node4")));
 
         // when
-        View<TestNode> result = pathExpr.resolve(new ExprContext<TestNode>(navigator, false, parentNode));
+        View<TestNode> result = pathExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
 
         // then
         assertThat((Iterable<?>) result).extracting("node").containsExactly(node("node4"));
-        assertThat(stepExpr1ContextCaptor.getAllValues()).extracting("navigator", "greedy", "position")
-                .containsExactly(tuple(navigator, false, 0));
-        assertThat(stepExpr2ContextCaptor.getAllValues()).extracting("navigator", "greedy", "position")
-                .containsExactly(tuple(navigator, false, 0));
-        assertThat(stepExpr3ContextCaptor.getAllValues()).extracting("navigator", "greedy", "position")
-                .containsExactly(tuple(navigator, false, 0));
+        assertThat(stepExpr1ContextCaptor.getAllValues()).extracting("navigator", "greedy", "hasNext", "position")
+                .containsExactly(tuple(navigator, false, false, 1));
+        assertThat(stepExpr2ContextCaptor.getAllValues()).extracting("navigator", "greedy", "hasNext", "position")
+                .containsExactly(tuple(navigator, false, false, 1));
+        assertThat(stepExpr3ContextCaptor.getAllValues()).extracting("navigator", "greedy", "hasNext", "position")
+                .containsExactly(tuple(navigator, false, false, 1));
     }
 
     @Test
     public void shouldShortCircuitNonGreedyTraversalWhenStepTraversalReturnsNothing() {
         // given
-        when(stepExpr1.resolve(ArgumentMatchers.<ExprContext<TestNode>>any()))
+        when(stepExpr1.resolve(ArgumentMatchers.<ViewContext<TestNode>>any()))
                 .thenReturn(new NodeView<TestNode>(node("node2")));
         when(stepExpr2.resolve(stepExpr2ContextCaptor.capture())).thenReturn(NodeSetView.<TestNode>empty());
 
         // when
-        View<TestNode> result = pathExpr.resolve(new ExprContext<TestNode>(navigator, false, parentNode));
+        View<TestNode> result = pathExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
 
         // then
-        assertThat(result).isEqualTo(NodeSetView.empty());
-        verify(stepExpr3, never()).resolve(ArgumentMatchers.<ExprContext<TestNode>>any());
+        assertThat((Iterable<?>) result).isEmpty();
+        verify(stepExpr3, never()).resolve(ArgumentMatchers.<ViewContext<TestNode>>any());
     }
 
     @Test

@@ -2,10 +2,10 @@ package com.github.simy4.xpath.effects;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.Expr;
-import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.utils.TestNode;
+import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.NodeView;
+import com.github.simy4.xpath.view.ViewContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +15,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static com.github.simy4.xpath.utils.TestNode.node;
+import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -28,14 +28,14 @@ public class PutValueEffectTest {
 
     @Mock private Navigator<TestNode> navigator;
     @Mock private Expr expr;
-    @Captor private ArgumentCaptor<ExprContext<TestNode>> contextCaptor;
+    @Captor private ArgumentCaptor<ViewContext<TestNode>> contextCaptor;
 
     private Effect putValueEffect;
 
     @Before
     public void setUp() {
         when(navigator.xml()).thenReturn(node("xml"));
-        when(expr.resolve(ArgumentMatchers.<ExprContext<TestNode>>any()))
+        when(expr.resolve(ArgumentMatchers.<ViewContext<TestNode>>any()))
                 .thenReturn(new NodeView<TestNode>(node("node")));
 
         putValueEffect = new PutValueEffect(expr, "value");
@@ -49,8 +49,8 @@ public class PutValueEffectTest {
         // then
         verify(expr).resolve(contextCaptor.capture());
         verify(navigator).setText(node("node"), "value");
-        assertThat((Object) contextCaptor.getValue()).extracting("navigator", "greedy", "position")
-                .containsExactly(navigator, true, 0);
+        assertThat((Object) contextCaptor.getValue()).extracting("navigator", "greedy", "hasNext", "position")
+                .containsExactly(navigator, true, false, 1);
     }
 
     @Test(expected = XmlBuilderException.class)

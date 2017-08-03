@@ -3,6 +3,7 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.IterableNodeView;
+import com.github.simy4.xpath.view.ViewContext;
 
 import javax.xml.namespace.QName;
 import java.util.Comparator;
@@ -38,6 +39,6 @@ public interface StepExpr extends Expr {
     };
 
     @Override
-    <N extends Node> IterableNodeView<N> resolve(ExprContext<N> context) throws XmlBuilderException;
+    <N extends Node> IterableNodeView<N> resolve(ViewContext<N> context) throws XmlBuilderException;
 
 }

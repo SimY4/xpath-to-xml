@@ -1,4 +1,4 @@
-package com.github.simy4.xpath.utils;
+package com.github.simy4.xpath.util;
 
 import java.util.Collections;
 import java.util.Enumeration;

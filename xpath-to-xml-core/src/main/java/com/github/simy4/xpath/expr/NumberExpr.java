@@ -2,6 +2,7 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.NumberView;
+import com.github.simy4.xpath.view.ViewContext;
 
 public class NumberExpr implements Expr {
 
@@ -13,16 +14,16 @@ public class NumberExpr implements Expr {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <N extends Node> NumberView<N> resolve(ExprContext<N> context) {
+    public <N extends Node> NumberView<N> resolve(ViewContext<N> context) {
         return number;
     }
 
     @Override
-    public <N extends Node> boolean match(ExprContext<N> context) {
+    public <N extends Node> boolean match(ViewContext<N> context) {
         double number = resolve(context).toNumber();
         if (number == context.getPosition()) {
             return true;
-        } else if (number > context.getPosition() && context.shouldCreate()) {
+        } else if (number > context.getPosition() && context.isGreedy() && !context.hasNext()) {
             final N node = context.getCurrent().getNode();
             long numberOfNodesToCreate = (long) number - context.getPosition();
             do {

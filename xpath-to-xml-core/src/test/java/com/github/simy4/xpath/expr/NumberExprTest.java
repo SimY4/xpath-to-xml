@@ -1,15 +1,16 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.utils.TestNode;
+import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
+import com.github.simy4.xpath.view.ViewContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static com.github.simy4.xpath.utils.TestNode.node;
+import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -26,16 +27,15 @@ public class NumberExprTest {
 
     @Test
     public void shouldAlwaysReturnSingleNumberNode() {
-        View<TestNode> result = numberExpr.resolve(new ExprContext<TestNode>(navigator, false, parentNode));
+        View<TestNode> result = numberExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
         assertThat(result).extracting("number").contains(3.0);
     }
 
     @Test
     public void shouldPrependMissingNodesAndReturnNumberOnGreedyMatching() {
         // given
-        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, true,
-                new NodeView<TestNode>(node("node")));
-        context.next();
+        ViewContext<TestNode> context = new ViewContext<TestNode>(navigator,
+                new NodeView<TestNode>(node("node")), true);
 
         // when
         boolean result = numberExpr.match(context);
