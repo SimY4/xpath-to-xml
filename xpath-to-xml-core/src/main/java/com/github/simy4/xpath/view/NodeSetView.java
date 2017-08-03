@@ -2,6 +2,10 @@ package com.github.simy4.xpath.view;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
+import com.github.simy4.xpath.util.FilteringIterator;
+import com.github.simy4.xpath.util.Function;
+import com.github.simy4.xpath.util.Predicate;
+import com.github.simy4.xpath.util.TransformingIterator;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
@@ -21,13 +25,33 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
         return (NodeSetView<T>) EMPTY_NODE_SET;
     }
 
+    /**
+     * Creates filtered node view from given nodes and predicate.
+     *
+     * @param nodes     nodes to wap in a view
+     * @param predicate predicate to apply to nodes
+     * @param <T> XML model type
+     * @return newly created node set view
+     */
+    public static <T extends Node> NodeSetView<T> filtered(final Iterable<? extends T> nodes,
+                                                           final Predicate<? super T> predicate) {
+        return new NodeSetView<T>(new Iterable<NodeView<T>>() {
+            @Nonnull
+            @Override
+            public Iterator<NodeView<T>> iterator() {
+                return new TransformingIterator<T, NodeView<T>>(
+                        new FilteringIterator<T>(nodes.iterator(), predicate), new Wrapper<T>());
+            }
+        });
+    }
+
     public static <T extends Node> NodeSetView.Builder<T> builder() {
         return new NodeSetView.Builder<T>();
     }
 
-    private final Set<N> nodeSet;
+    private final Iterable<NodeView<N>> nodeSet;
 
-    private NodeSetView(Set<N> nodeSet) {
+    public NodeSetView(Iterable<NodeView<N>> nodeSet) {
         this.nodeSet = nodeSet;
     }
 
@@ -62,19 +86,19 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
     @Override
     public Iterator<NodeView<N>> iterator() {
-        return new WrappingIterator<N>(nodeSet.iterator());
+        return nodeSet.iterator();
     }
 
     private boolean isEmpty() {
-        return nodeSet.isEmpty();
+        return !nodeSet.iterator().hasNext();
     }
 
     public static final class Builder<T extends Node> {
 
-        private final Set<T> nodeSet;
+        private final Set<NodeView<T>> nodeSet;
 
         private Builder() {
-            nodeSet = new LinkedHashSet<T>();
+            nodeSet = new LinkedHashSet<NodeView<T>>();
         }
 
         /**
@@ -83,7 +107,7 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
          * @param node node to add
          */
         public void add(NodeView<T> node) {
-            nodeSet.add(node.getNode());
+            nodeSet.add(node);
         }
 
         /**
@@ -98,32 +122,16 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
         }
 
         public NodeSetView<T> build() {
-            return new NodeSetView<T>(Collections.unmodifiableSet(nodeSet));
+            return new NodeSetView<T>(nodeSet);
         }
 
     }
 
-    private static final class WrappingIterator<T extends Node> implements Iterator<NodeView<T>> {
-
-        private final Iterator<T> delegate;
-
-        private WrappingIterator(Iterator<T> delegate) {
-            this.delegate = delegate;
-        }
+    private static final class Wrapper<T extends Node> implements Function<T, NodeView<T>> {
 
         @Override
-        public boolean hasNext() {
-            return delegate.hasNext();
-        }
-
-        @Override
-        public NodeView<T> next() {
-            return new NodeView<T>(delegate.next());
-        }
-
-        @Override
-        public void remove() {
-            delegate.remove();
+        public NodeView<T> apply(T node) {
+            return new NodeView<T>(node);
         }
 
     }

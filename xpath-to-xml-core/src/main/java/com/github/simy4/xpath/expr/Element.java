@@ -19,13 +19,13 @@ public class Element extends AbstractStepExpr {
 
     @Override
     <N extends Node> NodeSetView<N> traverseStep(Navigator<N> navigator, NodeView<N> parentView) {
-        final NodeSetView.Builder<N> builder = NodeSetView.builder();
-        for (N element : navigator.elementsOf(parentView.getNode())) {
-            if (0 == qnameComparator.compare(this.element, element.getName())) {
-                builder.add(new NodeView<N>(element));
-            }
-        }
-        return builder.build();
+        return NodeSetView.filtered(navigator.elementsOf(parentView.getNode()),
+                new com.github.simy4.xpath.util.Predicate<N>() {
+                    @Override
+                    public boolean test(N element) {
+                        return 0 == qnameComparator.compare(Element.this.element, element.getName());
+                    }
+                });
     }
 
     @Override
