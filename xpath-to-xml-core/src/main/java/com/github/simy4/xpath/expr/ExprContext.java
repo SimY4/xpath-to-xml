@@ -2,9 +2,12 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
+import com.github.simy4.xpath.view.IterableNodeView;
+import com.github.simy4.xpath.view.NodeView;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.concurrent.NotThreadSafe;
+import java.util.Iterator;
 
 /**
  * XPath expression context.
@@ -13,62 +16,70 @@ import javax.annotation.concurrent.NotThreadSafe;
  * @since 1.0
  */
 @NotThreadSafe
-public final class ExprContext<N extends Node> {
+@SuppressWarnings("WeakerAccess")
+public final class ExprContext<N extends Node> implements Iterator<NodeView<N>> {
 
     private final Navigator<N> navigator;
     private final boolean greedy;
-    private final int size;
+    private final Iterator<NodeView<N>> nodeSetIterator;
     private int position;
+    private NodeView<N> current;
+
+    public ExprContext(Navigator<N> navigator, boolean greedy, IterableNodeView<N> nodeSet) {
+        this(navigator, greedy, nodeSet, 0);
+    }
 
     /**
      * Constructor.
      *
      * @param navigator XML model navigator
      * @param greedy    {@code true} if you want to evaluate expression greedily and {@code false} otherwise
-     * @param size      XPath expression context size
+     * @param nodeSet   context bound XML node set
+     * @param position  context position
      */
-    public ExprContext(Navigator<N> navigator, boolean greedy, @Nonnegative int size) {
-        this(navigator, greedy, size, 0);
-    }
-
-    private ExprContext(Navigator<N> navigator, boolean greedy, int size, int position) {
+    public ExprContext(Navigator<N> navigator, boolean greedy, IterableNodeView<N> nodeSet, @Nonnegative int position) {
         this.navigator = navigator;
         this.greedy = greedy;
-        this.size = size;
+        this.nodeSetIterator = nodeSet.iterator();
         this.position = position;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return nodeSetIterator.hasNext();
+    }
+
+    @Override
+    public NodeView<N> next() {
+        position += 1;
+        current = nodeSetIterator.next();
+        return current;
+    }
+
+    @Override
+    public void remove() {
+        nodeSetIterator.remove();
     }
 
     public Navigator<N> getNavigator() {
         return navigator;
     }
 
-    public int getSize() {
-        return size;
+    public NodeView<N> getCurrent() {
+        assert current != null : "ExprContext.getCurrent was called before context was initialized";
+        return current;
     }
 
     public int getPosition() {
-        assert position > 0 : "ExprContext.getPosition was called before context was initialized";
         return position;
     }
 
     public boolean shouldCreate() {
-        return this.position == this.size && greedy;
+        return !nodeSetIterator.hasNext() && greedy;
     }
 
-    public void advance() {
-        this.position += 1;
-    }
-
-    public ExprContext<N> clone(boolean greedy, @Nonnegative int size, @Nonnegative int position) {
-        return new ExprContext<N>(navigator, greedy, size, position);
-    }
-
-    public ExprContext<N> clone(boolean greedy, @Nonnegative int size) {
-        return new ExprContext<N>(navigator, greedy, size);
-    }
-
-    public ExprContext<N> clone(@Nonnegative int size) {
-        return new ExprContext<N>(navigator, greedy, size);
+    public ExprContext<N> clone(IterableNodeView<N> nodeSet) {
+        return new ExprContext<N>(navigator, greedy, nodeSet);
     }
 
 }

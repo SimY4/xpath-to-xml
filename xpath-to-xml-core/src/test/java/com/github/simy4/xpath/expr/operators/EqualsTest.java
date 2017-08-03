@@ -48,6 +48,8 @@ public class EqualsTest {
             empty(),
     };
 
+    private static final NodeView<TestNode> parentNode = new NodeView<TestNode>(node("node"));
+
     @Rule public ExpectedException expectedException = ExpectedException.none();
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
@@ -57,7 +59,7 @@ public class EqualsTest {
     public void shouldAssociativelyResolveEqualViewsToTrue(@FromDataPoints("eq left") View<TestNode> left,
                                                            @FromDataPoints("eq left") View<TestNode> right) {
         // given
-        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, false, 1);
+        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, false, parentNode);
 
         // when
         View<TestNode> leftToRight = Operator.equals.resolve(context, left, right);
@@ -72,7 +74,7 @@ public class EqualsTest {
     public void shouldAssociativelyResolveNonEqualViewsToFalse(@FromDataPoints("eq left") View<TestNode> left,
                                                                @FromDataPoints("eq right") View<TestNode> right) {
         // given
-        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, false, 1);
+        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, false, parentNode);
 
         // when
         View<TestNode> leftToRight = Operator.equals.resolve(context, left, right);
@@ -91,8 +93,8 @@ public class EqualsTest {
                 && (!(left instanceof NodeSetView) || !(((NodeSetView) left).iterator().next() instanceof NodeView))) {
             expectedException.expect(XmlBuilderException.class);
         }
-        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, true, 1);
-        context.advance();
+        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, true, parentNode);
+        context.next();
 
         // when
         View<TestNode> result = Operator.equals.resolve(context, left, right);

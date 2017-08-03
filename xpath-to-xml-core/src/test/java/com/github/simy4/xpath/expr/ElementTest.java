@@ -34,7 +34,7 @@ public class ElementTest extends AbstractStepExprTest<Element> {
         setUpResolvableExpr();
 
         // when
-        IterableNodeView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, false, 3), parentNode);
+        IterableNodeView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, false, parentNode));
 
         // then
         assertThat((Iterable<?>) result).extracting("node").containsExactly(node("elem"));
@@ -46,7 +46,7 @@ public class ElementTest extends AbstractStepExprTest<Element> {
         setUpUnresolvableExpr();
 
         // when
-        IterableNodeView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, true, 1), parentNode);
+        IterableNodeView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, true, parentNode));
 
         // then
         assertThat((Iterable<?>) result).extracting("node").containsExactly(node("elem"));
@@ -60,7 +60,7 @@ public class ElementTest extends AbstractStepExprTest<Element> {
         expr = new Element(new QName("*", "attr"), asList(predicate1, predicate2));
 
         // when
-        expr.resolve(new ExprContext<TestNode>(navigator, true, 1), parentNode);
+        expr.resolve(new ExprContext<TestNode>(navigator, true, parentNode));
     }
 
     @Test(expected = XmlBuilderException.class)
@@ -70,7 +70,7 @@ public class ElementTest extends AbstractStepExprTest<Element> {
         expr = new Element(new QName("http://www.example.com/my", "*", "my"), asList(predicate1, predicate2));
 
         // when
-        expr.resolve(new ExprContext<TestNode>(navigator, true, 1), parentNode);
+        expr.resolve(new ExprContext<TestNode>(navigator, true, parentNode));
     }
 
     @Test(expected = XmlBuilderException.class)
@@ -80,7 +80,7 @@ public class ElementTest extends AbstractStepExprTest<Element> {
         when(navigator.createElement(any(TestNode.class), any(QName.class))).thenThrow(XmlBuilderException.class);
 
         // when
-        expr.resolve(new ExprContext<TestNode>(navigator, true, 1), parentNode);
+        expr.resolve(new ExprContext<TestNode>(navigator, true, parentNode));
     }
 
     @Test

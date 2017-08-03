@@ -51,11 +51,6 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
     }
 
     @Override
-    public int size() {
-        return 1;
-    }
-
-    @Override
     public Iterator<NodeView<N>> iterator() {
         return Collections.singleton(this).iterator();
     }

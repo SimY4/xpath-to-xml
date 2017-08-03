@@ -29,7 +29,7 @@ public class ParentTest extends AbstractStepExprTest<Parent> {
         setUpResolvableExpr();
 
         // when
-        IterableNodeView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, false, 3), parentNode);
+        IterableNodeView<TestNode> result = expr.resolve(new ExprContext<TestNode>(navigator, false, parentNode));
 
         // then
         assertThat((Iterable<?>) result).extracting("node").containsExactly(node("parent"));
@@ -41,7 +41,7 @@ public class ParentTest extends AbstractStepExprTest<Parent> {
         setUpUnresolvableExpr();
 
         // when
-        expr.resolve(new ExprContext<TestNode>(navigator, true, 1), parentNode);
+        expr.resolve(new ExprContext<TestNode>(navigator, true, parentNode));
     }
 
     @Test

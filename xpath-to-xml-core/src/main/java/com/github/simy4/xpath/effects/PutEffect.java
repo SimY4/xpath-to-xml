@@ -17,8 +17,9 @@ public class PutEffect implements Effect {
 
     @Override
     public <N extends Node> void perform(Navigator<N> navigator) throws XmlBuilderException {
-        final ExprContext<N> context = new ExprContext<N>(navigator, true, 1);
-        expr.resolve(context, new NodeView<N>(navigator.xml()));
+        NodeView<N> xml = new NodeView<N>(navigator.xml());
+        final ExprContext<N> context = new ExprContext<N>(navigator, true, xml);
+        expr.resolve(context);
     }
 
 }

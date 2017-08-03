@@ -1,6 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.NodeView;
 
@@ -11,12 +12,12 @@ public class Identity extends AbstractStepExpr {
     }
 
     @Override
-    <N extends Node> NodeView<N> traverseStep(ExprContext<N> context, NodeView<N> view) {
+    <N extends Node> NodeView<N> traverseStep(Navigator<N> navigator, NodeView<N> view) {
         return view;
     }
 
     @Override
-    <N extends Node> N createStepNode(ExprContext<N> context, NodeView<N> parentView) throws XmlBuilderException {
+    <N extends Node> N createStepNode(Navigator<N> navigator, NodeView<N> parentView) throws XmlBuilderException {
         throw new XmlBuilderException("Identity node cannot modify XML model");
     }
 

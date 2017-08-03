@@ -41,7 +41,8 @@ public class SubtractionTest {
     public void shouldMultiplyLeftViewToRightView(@FromDataPoints("3.0") View<TestNode> left,
                                                   @FromDataPoints("3.0") View<TestNode> right) {
         // given
-        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, false, 1);
+        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, false,
+                new NodeView<TestNode>(node("node")));
 
         // when
         assertThat(Operator.subtraction.resolve(context, left, right)).extracting("number").contains(0.0);

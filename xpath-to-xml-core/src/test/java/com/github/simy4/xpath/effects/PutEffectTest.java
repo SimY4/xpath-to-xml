@@ -5,7 +5,6 @@ import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.utils.TestNode;
-import com.github.simy4.xpath.view.NodeView;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +16,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static com.github.simy4.xpath.utils.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -43,16 +41,15 @@ public class PutEffectTest {
         putEffect.perform(navigator);
 
         // then
-        verify(expr).resolve(contextCaptor.capture(), refEq(new NodeView<TestNode>(node("xml"))));
-        assertThat(contextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
-                .containsExactly(navigator, true, 1, 0);
+        verify(expr).resolve(contextCaptor.capture());
+        assertThat((Object) contextCaptor.getValue()).extracting("navigator", "greedy", "position")
+                .containsExactly(navigator, true, 0);
     }
 
     @Test(expected = XmlBuilderException.class)
     public void shouldPropagateOnAnyException() {
         // given
-        when(expr.resolve(ArgumentMatchers.<ExprContext<TestNode>>any(), ArgumentMatchers.<NodeView<TestNode>>any()))
-                .thenThrow(XmlBuilderException.class);
+        when(expr.resolve(ArgumentMatchers.<ExprContext<TestNode>>any())).thenThrow(XmlBuilderException.class);
 
         // then
         putEffect.perform(navigator);

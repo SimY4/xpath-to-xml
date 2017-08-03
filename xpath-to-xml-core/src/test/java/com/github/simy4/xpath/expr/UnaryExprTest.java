@@ -57,11 +57,10 @@ public class UnaryExprTest {
     @Theory
     public void shouldAlwaysReturnNegatedNumberViewNode(
             @FromDataPoints("views") Pair<View<TestNode>, NumberView<TestNode>> data) {
-        when(valueExpr.resolve(ArgumentMatchers.<ExprContext<TestNode>>any(), ArgumentMatchers.<View<TestNode>>any()))
-                .thenReturn(data.getFirst());
+        when(valueExpr.resolve(ArgumentMatchers.<ExprContext<TestNode>>any())).thenReturn(data.getFirst());
 
-        View<TestNode> result = unaryExpr.resolve(new ExprContext<TestNode>(navigator, false, 1),
-                new NodeView<TestNode>(node("xml")));
+        View<TestNode> result = unaryExpr.resolve(new ExprContext<TestNode>(navigator, false,
+                new NodeView<TestNode>(node("xml"))));
         assertThat(result.toNumber()).isEqualTo(data.getSecond().toNumber());
     }
 

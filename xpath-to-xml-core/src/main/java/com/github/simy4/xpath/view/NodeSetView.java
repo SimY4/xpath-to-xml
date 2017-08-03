@@ -25,10 +25,6 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
         return new NodeSetView.Builder<T>();
     }
 
-    public static <T extends Node> NodeSetView.Builder<T> builder(int initialCapacity) {
-        return new NodeSetView.Builder<T>(initialCapacity);
-    }
-
     private final Set<N> nodeSet;
 
     private NodeSetView(Set<N> nodeSet) {
@@ -65,11 +61,6 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
     }
 
     @Override
-    public int size() {
-        return nodeSet.size();
-    }
-
-    @Override
     public Iterator<NodeView<N>> iterator() {
         return new WrappingIterator<N>(nodeSet.iterator());
     }
@@ -84,10 +75,6 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
         private Builder() {
             nodeSet = new LinkedHashSet<T>();
-        }
-
-        private Builder(int initialCapacity) {
-            nodeSet = new LinkedHashSet<T>(initialCapacity);
         }
 
         /**

@@ -24,11 +24,11 @@ public class OperationExpr extends AbstractExpr {
     }
 
     @Override
-    public <N extends Node> View<N> resolve(ExprContext<N> context, View<N> xml) {
-        final ExprContext<N> leftContext = context.clone(1);
-        final View<N> leftView = leftExpr.resolve(leftContext, xml);
-        final ExprContext<N> rightContext = context.clone(1);
-        final View<N> rightView = rightExpr.resolve(rightContext, xml);
+    public <N extends Node> View<N> resolve(ExprContext<N> context) {
+        final ExprContext<N> leftContext = context.clone(context.getCurrent());
+        final View<N> leftView = leftExpr.resolve(leftContext);
+        final ExprContext<N> rightContext = context.clone(context.getCurrent());
+        final View<N> rightView = rightExpr.resolve(rightContext);
         return operator.resolve(context, leftView, rightView);
     }
 

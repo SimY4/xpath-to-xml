@@ -16,11 +16,10 @@ public interface Expr extends Predicate {
      * Evaluate this expression on given xml model view using given context.
      *
      * @param context XPath expression context
-     * @param xml     XML model
      * @param <N>     XML model type
      * @return evaluated XML node view
      * @throws XmlBuilderException if error occur during XML model modification
      */
-    <N extends Node> View<N> resolve(ExprContext<N> context, View<N> xml) throws XmlBuilderException;
+    <N extends Node> View<N> resolve(ExprContext<N> context) throws XmlBuilderException;
 
 }

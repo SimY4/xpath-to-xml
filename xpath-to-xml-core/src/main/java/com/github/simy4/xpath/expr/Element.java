@@ -1,6 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
@@ -17,9 +18,9 @@ public class Element extends AbstractStepExpr {
     }
 
     @Override
-    <N extends Node> NodeSetView<N> traverseStep(ExprContext<N> navigator, NodeView<N> parentView) {
+    <N extends Node> NodeSetView<N> traverseStep(Navigator<N> navigator, NodeView<N> parentView) {
         final NodeSetView.Builder<N> builder = NodeSetView.builder();
-        for (N element : navigator.getNavigator().elementsOf(parentView.getNode())) {
+        for (N element : navigator.elementsOf(parentView.getNode())) {
             if (0 == qnameComparator.compare(this.element, element.getName())) {
                 builder.add(new NodeView<N>(element));
             }
@@ -28,11 +29,11 @@ public class Element extends AbstractStepExpr {
     }
 
     @Override
-    <N extends Node> N createStepNode(ExprContext<N> navigator, NodeView<N> parentView) throws XmlBuilderException {
+    <N extends Node> N createStepNode(Navigator<N> navigator, NodeView<N> parentView) throws XmlBuilderException {
         if ("*".equals(element.getNamespaceURI()) || "*".equals(element.getLocalPart())) {
             throw new XmlBuilderException("Wildcard attribute cannot be created");
         }
-        return navigator.getNavigator().createElement(parentView.getNode(), element);
+        return navigator.createElement(parentView.getNode(), element);
     }
 
     @Override

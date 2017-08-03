@@ -41,7 +41,8 @@ public class MultiplicationTest {
     public void shouldMultiplyLeftViewToRightView(@FromDataPoints("3.0") View<TestNode> left,
                                                   @FromDataPoints("3.0") View<TestNode> right) {
         // given
-        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, false, 1);
+        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, false,
+                new NodeView<TestNode>(node("node")));
 
         // when
         assertThat(Operator.multiplication.resolve(context, left, right)).extracting("number").contains(9.0);

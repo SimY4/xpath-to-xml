@@ -41,6 +41,8 @@ public class GreaterThanTest {
             new NodeView<TestNode>(node("2.0")),
     };
 
+    private static final NodeView<TestNode> parentNode = new NodeView<TestNode>(node("node"));
+
     @Rule public ExpectedException expectedException = ExpectedException.none();
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
@@ -50,7 +52,7 @@ public class GreaterThanTest {
     public void shouldResolveToTrueWhenLeftIsGreaterThanRight(@FromDataPoints("less") View<TestNode> less,
                                                               @FromDataPoints("greater") View<TestNode> greater) {
         // given
-        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, false, 1);
+        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, false, parentNode);
 
         // when
         View<TestNode> result = Operator.greaterThan.resolve(context, greater, less);
@@ -63,7 +65,7 @@ public class GreaterThanTest {
     public void shouldResolveToFalseWhenLeftIsLessThanRight(@FromDataPoints("less") View<TestNode> less,
                                                             @FromDataPoints("greater") View<TestNode> greater) {
         // given
-        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, false, 1);
+        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, false, parentNode);
 
         // when
         View<TestNode> result = Operator.greaterThan.resolve(context, less, greater);
@@ -76,7 +78,7 @@ public class GreaterThanTest {
     public void shouldResolveToFalseWhenLeftIsEqualToRight(@FromDataPoints("less") View<TestNode> left,
                                                            @FromDataPoints("less") View<TestNode> right) {
         // given
-        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, false, 1);
+        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, false, parentNode);
 
         // when
         View<TestNode> result = Operator.greaterThan.resolve(context, left, right);
@@ -90,8 +92,8 @@ public class GreaterThanTest {
                                                              @FromDataPoints("greater") View<TestNode> greater) {
         // given
         expectedException.expect(XmlBuilderException.class);
-        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, true, 1);
-        context.advance();
+        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, true, parentNode);
+        context.next();
 
         // when
         Operator.greaterThan.resolve(context, less, greater);

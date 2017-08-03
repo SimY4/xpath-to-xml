@@ -11,13 +11,4 @@ import com.github.simy4.xpath.navigator.Node;
  * @see NodeView
  * @see NodeSetView
  */
-public interface IterableNodeView<N extends Node> extends View<N>, Iterable<NodeView<N>> {
-
-    /**
-     * Size of an iterable.
-     *
-     * @return iterable size
-     */
-    int size();
-
-}
+public interface IterableNodeView<N extends Node> extends View<N>, Iterable<NodeView<N>> { }

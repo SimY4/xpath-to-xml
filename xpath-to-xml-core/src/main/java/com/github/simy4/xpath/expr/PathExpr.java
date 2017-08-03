@@ -17,17 +17,16 @@ public class PathExpr extends AbstractExpr {
     }
 
     @Override
-    public <N extends Node> View<N> resolve(ExprContext<N> context, View<N> xml) throws XmlBuilderException {
+    public <N extends Node> View<N> resolve(ExprContext<N> context) throws XmlBuilderException {
         final Iterator<StepExpr> pathExprIterator = pathExpr.iterator();
         ExprContext<N> stepExprContext = context;
         IterableNodeView<N> children;
         do {
             final StepExpr stepExpr = pathExprIterator.next();
-            children = stepExpr.resolve(stepExprContext, xml);
-            stepExprContext = stepExprContext.clone(children.size());
-            xml = children;
+            children = stepExpr.resolve(stepExprContext);
+            stepExprContext = stepExprContext.clone(children);
         } while (pathExprIterator.hasNext() && children.toBoolean());
-        return xml;
+        return children;
     }
 
     @Override
@@ -37,7 +36,7 @@ public class PathExpr extends AbstractExpr {
         if (pathExprIterator.hasNext()) {
             stringBuilder.append(pathExprIterator.next());
             while (pathExprIterator.hasNext()) {
-                stringBuilder.append("/").append(pathExprIterator.next());
+                stringBuilder.append('/').append(pathExprIterator.next());
             }
         }
         return stringBuilder.toString();

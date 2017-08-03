@@ -17,7 +17,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static com.github.simy4.xpath.utils.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -48,20 +47,20 @@ public class OperationExprTest {
         // given
         when(operator.resolve(ArgumentMatchers.<ExprContext<TestNode>>any(), ArgumentMatchers.<View<TestNode>>any(),
                 ArgumentMatchers.<View<TestNode>>any())).thenReturn(BooleanView.<TestNode>of(true));
-        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, false, 3);
-        context.advance();
+        ExprContext<TestNode> context = new ExprContext<TestNode>(navigator, false, parentNode);
+        context.next();
 
         // when
-        View<TestNode> result = comparisonExpr.resolve(context, parentNode);
+        View<TestNode> result = comparisonExpr.resolve(context);
 
         // then
-        verify(leftExpr).resolve(leftExprContextCaptor.capture(), eq(parentNode));
-        verify(rightExpr).resolve(rightExprContextCaptor.capture(), eq(parentNode));
+        verify(leftExpr).resolve(leftExprContextCaptor.capture());
+        verify(rightExpr).resolve(rightExprContextCaptor.capture());
         assertThat(result).isEqualTo(BooleanView.<TestNode>of(true));
-        assertThat(leftExprContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
-                .containsExactly(navigator, false, 1, 0);
-        assertThat(rightExprContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
-                .containsExactly(navigator, false, 1, 0);
+        assertThat((Object) leftExprContextCaptor.getValue()).extracting("navigator", "greedy", "position")
+                .containsExactly(navigator, false, 0);
+        assertThat((Object) rightExprContextCaptor.getValue()).extracting("navigator", "greedy", "position")
+                .containsExactly(navigator, false, 0);
     }
 
     @Test
