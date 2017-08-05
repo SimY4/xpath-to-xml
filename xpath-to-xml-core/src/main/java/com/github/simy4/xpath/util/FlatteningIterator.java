@@ -8,10 +8,15 @@ import java.util.Iterator;
 public final class FlatteningIterator<T> implements Iterator<T> {
 
     private final Iterator<? extends Iterator<? extends T>> metaIterator;
-    private Iterator<? extends T> current = Collections.<T>emptyList().iterator();
+    private Iterator<? extends T> current;
 
     public FlatteningIterator(Iterator<? extends Iterator<? extends T>> iterator) {
-        this.metaIterator = iterator;
+        this(Collections.<T>emptyList().iterator(), iterator);
+    }
+
+    public FlatteningIterator(Iterator<? extends T> first, Iterator<? extends Iterator<? extends T>> rest) {
+        this.current = first;
+        this.metaIterator = rest;
     }
 
     @Override
