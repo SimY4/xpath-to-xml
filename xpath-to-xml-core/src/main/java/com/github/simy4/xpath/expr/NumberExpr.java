@@ -23,7 +23,7 @@ public class NumberExpr implements Expr {
         double number = resolve(context).toNumber();
         if (number == context.getPosition()) {
             return true;
-        } else if (number > context.getPosition() && context.isGreedy() && !context.hasNext()) {
+        } else if (context.isGreedy() && !context.hasNext() && number > context.getPosition()) {
             final N node = context.getCurrent().getNode();
             long numberOfNodesToCreate = (long) number - context.getPosition();
             do {

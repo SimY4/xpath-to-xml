@@ -33,7 +33,7 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
             }
         }
 
-        if (!result.toBoolean() && context.isGreedy() && !context.hasNext()) {
+        if (context.isGreedy() && !context.hasNext() && !result.toBoolean()) {
             result = new NodeView<N>(createStepNode(context.getNavigator(), context.getCurrent()));
             predicateIterator = predicates.iterator();
             if (predicateIterator.hasNext()) {
