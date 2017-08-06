@@ -2,10 +2,10 @@ package com.github.simy4.xpath.effects;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.Expr;
-import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.utils.TestNode;
+import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.NodeView;
+import com.github.simy4.xpath.view.ViewContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,10 +14,9 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static com.github.simy4.xpath.utils.TestNode.node;
+import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -26,13 +25,14 @@ public class PutEffectTest {
 
     @Mock private Navigator<TestNode> navigator;
     @Mock private Expr expr;
-    @Captor private ArgumentCaptor<ExprContext<TestNode>> contextCaptor;
+    @Captor private ArgumentCaptor<ViewContext<TestNode>> contextCaptor;
 
     private Effect putEffect;
 
     @Before
     public void setUp() {
         when(navigator.xml()).thenReturn(node("xml"));
+        when(expr.resolve(any())).thenReturn(new NodeView<>(node("node")));
 
         putEffect = new PutEffect(expr);
     }
@@ -43,15 +43,15 @@ public class PutEffectTest {
         putEffect.perform(navigator);
 
         // then
-        verify(expr).resolve(contextCaptor.capture(), refEq(new NodeView<>(node("xml"))));
-        assertThat(contextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
-                .containsExactly(navigator, true, 1, 0);
+        verify(expr).resolve(contextCaptor.capture());
+        assertThat((Object) contextCaptor.getValue()).extracting("navigator", "greedy", "hasNext", "position")
+                .containsExactly(navigator, true, false, 1);
     }
 
     @Test(expected = XmlBuilderException.class)
     public void shouldPropagateOnAnyException() {
         // given
-        when(expr.resolve(any(), any())).thenThrow(XmlBuilderException.class);
+        when(expr.resolve(any())).thenThrow(XmlBuilderException.class);
 
         // then
         putEffect.perform(navigator);

@@ -2,18 +2,17 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.NodeView;
-import com.github.simy4.xpath.view.View;
+import com.github.simy4.xpath.view.ViewContext;
 
 public class Root implements StepExpr {
 
     @Override
-    public <N extends Node> NodeView<N> resolve(ExprContext<N> context, View<N> xml) {
-        context.advance();
+    public <N extends Node> NodeView<N> resolve(ViewContext<N> context) {
         return new NodeView<>(context.getNavigator().root());
     }
 
     @Override
-    public <N extends Node> boolean match(ExprContext<N> context, View<N> xml) {
+    public <N extends Node> boolean match(ViewContext<N> context) {
         return true;
     }
 

@@ -33,8 +33,7 @@ class XPathLexer implements Iterator<Token> {
                     token = literal();
                     break;
                 case '/':
-                    token = new Token(Type.SLASH, xpath, cursor, cursor + 1);
-                    cursor += 1;
+                    token = token2('/', Type.SLASH, Type.DOUBLE_SLASH);
                     break;
                 case '[':
                     token = new Token(Type.LEFT_BRACKET, xpath, cursor, cursor + 1);

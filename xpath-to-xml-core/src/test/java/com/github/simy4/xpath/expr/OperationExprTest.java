@@ -2,10 +2,11 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.expr.operators.Operator;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.utils.TestNode;
+import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
+import com.github.simy4.xpath.view.ViewContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,10 +15,9 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static com.github.simy4.xpath.utils.TestNode.node;
+import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -30,8 +30,8 @@ public class OperationExprTest {
     @Mock private Expr leftExpr;
     @Mock private Expr rightExpr;
     @Mock private Operator operator;
-    @Captor private ArgumentCaptor<ExprContext<TestNode>> leftExprContextCaptor;
-    @Captor private ArgumentCaptor<ExprContext<TestNode>> rightExprContextCaptor;
+    @Captor private ArgumentCaptor<ViewContext<TestNode>> leftExprContextCaptor;
+    @Captor private ArgumentCaptor<ViewContext<TestNode>> rightExprContextCaptor;
 
     private Expr comparisonExpr;
 
@@ -46,20 +46,19 @@ public class OperationExprTest {
     public void shouldReturnOperatorResolutionResult() {
         // given
         when(operator.resolve(any(), any(), any())).thenReturn(BooleanView.of(true));
-        ExprContext<TestNode> context = new ExprContext<>(navigator, false, 3);
-        context.advance();
+        ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, false);
 
         // when
-        View<TestNode> result = comparisonExpr.resolve(context, parentNode);
+        View<TestNode> result = comparisonExpr.resolve(context);
 
         // then
-        verify(leftExpr).resolve(leftExprContextCaptor.capture(), eq(parentNode));
-        verify(rightExpr).resolve(rightExprContextCaptor.capture(), eq(parentNode));
+        verify(leftExpr).resolve(leftExprContextCaptor.capture());
+        verify(rightExpr).resolve(rightExprContextCaptor.capture());
         assertThat(result).isEqualTo(BooleanView.of(true));
-        assertThat(leftExprContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
-                .containsExactly(navigator, false, 1, 0);
-        assertThat(rightExprContextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
-                .containsExactly(navigator, false, 1, 0);
+        assertThat((Object) leftExprContextCaptor.getValue()).extracting("navigator", "greedy", "hasNext", "position")
+                .containsExactly(navigator, false, false, 1);
+        assertThat((Object) rightExprContextCaptor.getValue()).extracting("navigator", "greedy", "hasNext", "position")
+                .containsExactly(navigator, false, false, 1);
     }
 
     @Test

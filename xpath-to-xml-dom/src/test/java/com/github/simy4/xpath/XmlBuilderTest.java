@@ -1,7 +1,7 @@
 package com.github.simy4.xpath;
 
 import com.github.simy4.xpath.fixtures.FixtureAccessor;
-import com.github.simy4.xpath.utils.SimpleNamespaceContext;
+import com.github.simy4.xpath.util.SimpleNamespaceContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

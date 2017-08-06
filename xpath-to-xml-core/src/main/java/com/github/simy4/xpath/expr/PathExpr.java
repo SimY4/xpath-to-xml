@@ -2,8 +2,10 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
+import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.View;
+import com.github.simy4.xpath.view.ViewContext;
 
 import java.util.Iterator;
 import java.util.List;
@@ -17,17 +19,12 @@ public class PathExpr extends AbstractExpr {
     }
 
     @Override
-    public <N extends Node> View<N> resolve(ExprContext<N> context, View<N> xml) throws XmlBuilderException {
-        final Iterator<StepExpr> pathExprIterator = pathExpr.iterator();
-        ExprContext<N> stepExprContext = context;
-        IterableNodeView<N> children;
-        do {
-            final StepExpr stepExpr = pathExprIterator.next();
-            children = stepExpr.resolve(stepExprContext, xml);
-            stepExprContext = stepExprContext.clone(children.size());
-            xml = children;
-        } while (pathExprIterator.hasNext() && children.toBoolean());
-        return xml;
+    public <N extends Node> View<N> resolve(ViewContext<N> context) throws XmlBuilderException {
+        IterableNodeView<N> children = context.getCurrent();
+        for (StepExpr stepExpr : pathExpr) {
+            children = children.flatMap(context.getNavigator(), context.isGreedy(), new StepResolver<>(stepExpr));
+        }
+        return children;
     }
 
     @Override
@@ -37,10 +34,25 @@ public class PathExpr extends AbstractExpr {
         if (pathExprIterator.hasNext()) {
             stringBuilder.append(pathExprIterator.next());
             while (pathExprIterator.hasNext()) {
-                stringBuilder.append("/").append(pathExprIterator.next());
+                stringBuilder.append('/').append(pathExprIterator.next());
             }
         }
         return stringBuilder.toString();
+    }
+
+    private static final class StepResolver<T extends Node> implements Function<ViewContext<T>, IterableNodeView<T>> {
+
+        private final StepExpr stepExpr;
+
+        private StepResolver(StepExpr stepExpr) {
+            this.stepExpr = stepExpr;
+        }
+
+        @Override
+        public IterableNodeView<T> apply(ViewContext<T> context) {
+            return stepExpr.resolve(context);
+        }
+
     }
 
 }

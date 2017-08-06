@@ -49,6 +49,7 @@ final class Token {
         STAR,
 
         SLASH,
+        DOUBLE_SLASH,
         DOT,
         DOUBLE_DOT,
 

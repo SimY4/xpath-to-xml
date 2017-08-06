@@ -1,6 +1,7 @@
 package com.github.simy4.xpath.parser;
 
 import com.github.simy4.xpath.expr.Attribute;
+import com.github.simy4.xpath.expr.DescendantOrSelfExpr;
 import com.github.simy4.xpath.expr.Element;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.expr.Identity;
@@ -139,6 +140,12 @@ public class XPathParser {
                     default:
                 }
                 break;
+            case DOUBLE_SLASH:
+                context.match(Type.DOUBLE_SLASH);
+                pathExpr.add(new Root());
+                pathExpr.add(new DescendantOrSelfExpr());
+                RelativePathExpr(context, pathExpr);
+                break;
             default:
                 RelativePathExpr(context, pathExpr);
                 break;
@@ -149,14 +156,19 @@ public class XPathParser {
     private void RelativePathExpr(Context context, List<StepExpr> pathExpr) throws XPathExpressionException {
         pathExpr.add(StepExpr(context));
         Type type = context.tokenAt(1).getType();
-        while (Type.SLASH == type) {
+        while (Type.SLASH == type || Type.DOUBLE_SLASH == type) {
             switch (context.tokenAt(1).getType()) {
                 case SLASH:
                     context.match(Type.SLASH);
                     pathExpr.add(StepExpr(context));
                     break;
+                case DOUBLE_SLASH:
+                    context.match(Type.DOUBLE_SLASH);
+                    pathExpr.add(new DescendantOrSelfExpr());
+                    pathExpr.add(StepExpr(context));
+                    break;
                 default:
-                    throw new XPathParserException(context.tokenAt(1), Type.SLASH);
+                    throw new XPathParserException(context.tokenAt(1), Type.SLASH, Type.DOUBLE_SLASH);
             }
             type = context.tokenAt(1).getType();
         }

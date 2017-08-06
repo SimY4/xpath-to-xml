@@ -1,6 +1,6 @@
 package com.github.simy4.xpath.expr;
 
-import com.github.simy4.xpath.utils.Triple;
+import com.github.simy4.xpath.util.Triple;
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.FromDataPoints;
 import org.junit.experimental.theories.Theories;

@@ -1,12 +1,12 @@
 package com.github.simy4.xpath.expr.operators;
 
-import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.utils.TestNode;
+import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
+import com.github.simy4.xpath.view.ViewContext;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoints;
@@ -18,7 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import static com.github.simy4.xpath.utils.TestNode.node;
+import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Theories.class)
@@ -41,7 +41,7 @@ public class SubtractionTest {
     public void shouldMultiplyLeftViewToRightView(@FromDataPoints("3.0") View<TestNode> left,
                                                   @FromDataPoints("3.0") View<TestNode> right) {
         // given
-        ExprContext<TestNode> context = new ExprContext<>(navigator, false, 1);
+        ViewContext<TestNode> context = new ViewContext<>(navigator, new NodeView<>(node("node")), false);
 
         // when
         assertThat(Operator.subtraction.resolve(context, left, right)).extracting("number").contains(0.0);

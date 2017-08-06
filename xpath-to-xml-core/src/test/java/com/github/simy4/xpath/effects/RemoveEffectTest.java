@@ -2,10 +2,10 @@ package com.github.simy4.xpath.effects;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.Expr;
-import com.github.simy4.xpath.expr.ExprContext;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.utils.TestNode;
+import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.NodeView;
+import com.github.simy4.xpath.view.ViewContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,10 +14,9 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static com.github.simy4.xpath.utils.TestNode.node;
+import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,15 +26,14 @@ public class RemoveEffectTest {
 
     @Mock private Navigator<TestNode> navigator;
     @Mock private Expr expr;
-    @Captor private ArgumentCaptor<ExprContext<TestNode>> contextCaptor;
+    @Captor private ArgumentCaptor<ViewContext<TestNode>> contextCaptor;
 
     private Effect removeEffect;
 
     @Before
     public void setUp() {
         when(navigator.xml()).thenReturn(node("xml"));
-        when(expr.resolve(any(), refEq(new NodeView<>(node("xml")))))
-                .thenReturn(new NodeView<>(node("node")));
+        when(expr.resolve(any())).thenReturn(new NodeView<>(node("node")));
 
         removeEffect = new RemoveEffect(expr);
     }
@@ -46,10 +44,10 @@ public class RemoveEffectTest {
         removeEffect.perform(navigator);
 
         // then
-        verify(expr).resolve(contextCaptor.capture(), refEq(new NodeView<>(node("xml"))));
+        verify(expr).resolve(contextCaptor.capture());
         verify(navigator).remove(node("node"));
-        assertThat(contextCaptor.getValue()).extracting("navigator", "greedy", "size", "position")
-                .containsExactly(navigator, false, 1, 0);
+        assertThat((Object) contextCaptor.getValue()).extracting("navigator", "greedy", "hasNext", "position")
+                .containsExactly(navigator, false, false, 1);
     }
 
     @Test(expected = XmlBuilderException.class)

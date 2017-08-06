@@ -1,13 +1,14 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.utils.Pair;
-import com.github.simy4.xpath.utils.TestNode;
+import com.github.simy4.xpath.util.Pair;
+import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
+import com.github.simy4.xpath.view.ViewContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -21,10 +22,9 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import static com.github.simy4.xpath.utils.TestNode.node;
+import static com.github.simy4.xpath.util.TestNode.node;
 import static com.github.simy4.xpath.view.NodeSetView.empty;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(Theories.class)
@@ -58,9 +58,10 @@ public class UnaryExprTest {
     @Theory
     public void shouldAlwaysReturnNegatedNumberViewNode(
             @FromDataPoints("views") Pair<View<TestNode>, NumberView<TestNode>> data) {
-        when(valueExpr.resolve(ArgumentMatchers.<ExprContext<TestNode>>any(), any())).thenReturn(data.getFirst());
+        when(valueExpr.resolve(ArgumentMatchers.<ViewContext<TestNode>>any())).thenReturn(data.getFirst());
 
-        View<TestNode> result = unaryExpr.resolve(new ExprContext<>(navigator, false, 1), new NodeView<>(node("xml")));
+        View<TestNode> result = unaryExpr.resolve(new ViewContext<>(navigator,
+                new NodeView<>(node("xml")), false));
         assertThat(result.toNumber()).isEqualTo(data.getSecond().toNumber());
     }
 

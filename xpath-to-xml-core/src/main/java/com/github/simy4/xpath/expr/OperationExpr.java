@@ -3,6 +3,7 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.expr.operators.Operator;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.View;
+import com.github.simy4.xpath.view.ViewContext;
 
 public class OperationExpr extends AbstractExpr {
 
@@ -24,11 +25,9 @@ public class OperationExpr extends AbstractExpr {
     }
 
     @Override
-    public <N extends Node> View<N> resolve(ExprContext<N> context, View<N> xml) {
-        final ExprContext<N> leftContext = context.clone(1);
-        final View<N> leftView = leftExpr.resolve(leftContext, xml);
-        final ExprContext<N> rightContext = context.clone(1);
-        final View<N> rightView = rightExpr.resolve(rightContext, xml);
+    public <N extends Node> View<N> resolve(ViewContext<N> context) {
+        final View<N> leftView = leftExpr.resolve(context);
+        final View<N> rightView = rightExpr.resolve(context);
         return operator.resolve(context, leftView, rightView);
     }
 
