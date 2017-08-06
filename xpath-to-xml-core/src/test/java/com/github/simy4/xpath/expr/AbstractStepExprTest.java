@@ -15,7 +15,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.internal.util.reflection.FieldSetter;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.lang.reflect.Field;
+import java.util.Collections;
 
 import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,20 +44,20 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
     @Captor private ArgumentCaptor<ViewContext<TestNode>> predicate1ContextCaptor;
     @Captor private ArgumentCaptor<ViewContext<TestNode>> predicate2ContextCaptor;
 
-    protected E expr;
+    protected E stepExpr;
 
     @Test
-    public void shouldMatchAttributesFromAListOfChildNodes() {
+    public void shouldMatchNodesThroughPredicateChainFromAListOfChildNodes() {
         // given
         setUpResolvableExpr();
 
         // when
-        IterableNodeView<TestNode> result = expr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
+        IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
 
         // then
+        assertThat((Iterable<?>) result).isNotEmpty();
         verify(predicate1).match(predicate1ContextCaptor.capture());
         verify(predicate2).match(predicate2ContextCaptor.capture());
-        assertThat((Iterable<?>) result).isNotEmpty();
         assertThat((Object) predicate1ContextCaptor.getValue()).extracting("navigator", "greedy", "position")
                 .containsExactly(navigator, false, 1);
         assertThat((Object) predicate2ContextCaptor.getValue()).extracting("navigator", "greedy", "position")
@@ -62,12 +66,28 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
     }
 
     @Test
+    public void shouldReturnNodesResolvedByStepExprOnly() throws NoSuchFieldException {
+        // given
+        setUpResolvableExpr();
+        Field stepExprPredicatesField = stepExpr.getClass().getSuperclass().getDeclaredField("predicates");
+        FieldSetter.setField(stepExpr, stepExprPredicatesField, Collections.emptyList());
+
+        // when
+        IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
+
+        // then
+        assertThat((Iterable<?>) result).isNotEmpty();
+        verify(predicate1, never()).match(ArgumentMatchers.<ViewContext<TestNode>>any());
+        verify(predicate2, never()).match(ArgumentMatchers.<ViewContext<TestNode>>any());
+    }
+
+    @Test
     public void shouldShortCircuitWhenStepTraversalReturnsNothing() {
         // given
         setUpUnresolvableExpr();
 
         // when
-        IterableNodeView<TestNode> result = expr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
+        IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
 
         // then
         assertThat((Iterable<?>) result).isEmpty();
@@ -80,7 +100,7 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
         when(predicate1.match(ArgumentMatchers.<com.github.simy4.xpath.view.ViewContext>any())).thenReturn(false);
 
         // when
-        IterableNodeView<TestNode> result = expr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
+        IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
 
         // then
         assertThat((Iterable<?>) result).isEmpty();
@@ -98,7 +118,7 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
         setUpUnresolvableExpr();
 
         // when
-        IterableNodeView<TestNode> result = expr.resolve(new ViewContext<TestNode>(navigator, parentNode, true));
+        IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, true));
 
         // then
         assertThat((Iterable<?>) result).isNotEmpty();
@@ -124,7 +144,7 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
         when(predicate2.match(ArgumentMatchers.argThat(ViewContextMatcher.<TestNode>greedyContext()))).thenReturn(true);
 
         // when
-        IterableNodeView<TestNode> result = expr.resolve(new ViewContext<TestNode>(navigator, parentNode, true));
+        IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, true));
 
         // then
         assertThat((Iterable<?>) result).isNotEmpty();

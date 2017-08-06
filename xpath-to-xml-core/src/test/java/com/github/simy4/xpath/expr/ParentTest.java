@@ -22,7 +22,7 @@ public class ParentTest extends AbstractStepExprTest<Parent> {
     public void setUp() {
         when(navigator.parentOf(parentNode.getNode())).thenReturn(node("parent"));
 
-        expr = new Parent(asList(predicate1, predicate2));
+        stepExpr = new Parent(asList(predicate1, predicate2));
     }
 
     @Test
@@ -31,7 +31,7 @@ public class ParentTest extends AbstractStepExprTest<Parent> {
         setUpResolvableExpr();
 
         // when
-        IterableNodeView<TestNode> result = expr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
+        IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
 
         // then
         assertThat((Iterable<?>) result).extracting("node").containsExactly(node("parent"));
@@ -43,12 +43,12 @@ public class ParentTest extends AbstractStepExprTest<Parent> {
         setUpUnresolvableExpr();
 
         // when
-        consume(expr.resolve(new ViewContext<TestNode>(navigator, parentNode, true)));
+        consume(stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, true)));
     }
 
     @Test
     public void testToString() {
-        assertThat(expr).hasToString("..[" + predicate1 + "][" + predicate2 + ']');
+        assertThat(stepExpr).hasToString("..[" + predicate1 + "][" + predicate2 + ']');
     }
 
     @Override

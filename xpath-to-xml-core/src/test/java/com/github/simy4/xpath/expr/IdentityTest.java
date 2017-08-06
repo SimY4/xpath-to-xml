@@ -13,7 +13,7 @@ public class IdentityTest extends AbstractStepExprTest<Identity> {
 
     @Before
     public void setUp() {
-        expr = new Identity(asList(predicate1, predicate2));
+        stepExpr = new Identity(asList(predicate1, predicate2));
     }
 
     @Test
@@ -22,7 +22,7 @@ public class IdentityTest extends AbstractStepExprTest<Identity> {
         setUpResolvableExpr();
 
         // when
-        IterableNodeView<TestNode> result = expr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
+        IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
 
         // then
         assertThat((Iterable<?>) result).extracting("node").containsExactly(parentNode.getNode());
@@ -30,7 +30,7 @@ public class IdentityTest extends AbstractStepExprTest<Identity> {
 
     @Test
     public void testToString() {
-        assertThat(expr).hasToString(".[" + predicate1 + "][" + predicate2 + ']');
+        assertThat(stepExpr).hasToString(".[" + predicate1 + "][" + predicate2 + ']');
     }
 
 }

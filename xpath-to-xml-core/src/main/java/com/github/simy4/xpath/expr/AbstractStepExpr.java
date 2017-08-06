@@ -9,6 +9,7 @@ import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.concurrent.NotThreadSafe;
 import java.util.Iterator;
 
@@ -24,13 +25,18 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
     public final <N extends Node> IterableNodeView<N> resolve(ViewContext<N> context) throws XmlBuilderException {
         IterableNodeView<N> result = traverseStep(context.getNavigator(), context.getCurrent());
         Iterator<? extends Predicate> predicateIterator = predicates.iterator();
-        final CountingPredicateResolver<N> counter = new CountingPredicateResolver<N>(predicateIterator.next());
+        final Counter counter;
         if (predicateIterator.hasNext()) {
-            result = result.flatMap(context.getNavigator(), false, counter);
+            final CountingPredicateResolver<N> countingPredicate =
+                    new CountingPredicateResolver<N>(predicateIterator.next());
+            counter = countingPredicate;
+            result = result.flatMap(context.getNavigator(), false, countingPredicate);
             while (predicateIterator.hasNext()) {
                 final Predicate predicate = predicateIterator.next();
                 result = result.flatMap(context.getNavigator(), false, new PredicateResolver<N>(predicate));
             }
+        } else {
+            counter = Counter.NO_OP;
         }
 
         if (context.isGreedy() && !context.hasNext() && !result.toBoolean()) {
@@ -80,6 +86,20 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
         return stringBuilder.toString();
     }
 
+    private interface Counter {
+
+        Counter NO_OP = new Counter() {
+            @Override
+            public int count() {
+                return 0;
+            }
+        };
+
+        @Nonnegative
+        int count();
+
+    }
+
     private static class PredicateResolver<T extends Node> implements Function<ViewContext<T>, IterableNodeView<T>> {
 
         private final Predicate predicate;
@@ -96,7 +116,8 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
     }
 
     @NotThreadSafe
-    private static final class CountingPredicateResolver<T extends Node> extends PredicateResolver<T> {
+    private static final class CountingPredicateResolver<T extends Node> extends PredicateResolver<T>
+            implements Counter {
 
         private int count;
 
@@ -110,7 +131,8 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
             return super.apply(context);
         }
 
-        private int count() {
+        @Override
+        public int count() {
             return count;
         }
 
