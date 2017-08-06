@@ -74,7 +74,7 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
     @Override
     public IterableNodeView<N> flatMap(Navigator<N> navigator, boolean greedy, int position,
                                        Function<ViewContext<N>, IterableNodeView<N>> fmap) throws XmlBuilderException {
-        ViewContext<N> context = new ViewContext<N>(navigator, this, greedy, false, 1);
+        ViewContext<N> context = new ViewContext<N>(navigator, this, greedy, false, position);
         return fmap.apply(context);
     }
 

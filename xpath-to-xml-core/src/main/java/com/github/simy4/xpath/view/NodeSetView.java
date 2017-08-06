@@ -109,7 +109,7 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
     public IterableNodeView<N> flatMap(final Navigator<N> navigator, final boolean greedy,
                                        final Function<ViewContext<N>, IterableNodeView<N>> fmap)
             throws XmlBuilderException {
-        return flatMap(navigator, greedy, 0, fmap);
+        return flatMap(navigator, greedy, 1, fmap);
     }
 
     @Override
@@ -157,7 +157,7 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
         }
 
         final ViewContext<T> wrap(NodeView<T> node) {
-            return new ViewContext<T>(navigator, node, greedy, wrappingNodeSet.hasNext(), position += 1);
+            return new ViewContext<T>(navigator, node, greedy, wrappingNodeSet.hasNext(), position++);
         }
 
     }

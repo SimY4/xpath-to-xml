@@ -45,7 +45,7 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
             if (predicateIterator.hasNext()) {
                 final int count = counter.count();
                 Predicate predicate = predicateIterator.next();
-                result = result.flatMap(context.getNavigator(), true, count, new PredicateResolver<N>(predicate));
+                result = result.flatMap(context.getNavigator(), true, count + 1, new PredicateResolver<N>(predicate));
                 while (predicateIterator.hasNext()) {
                     predicate = predicateIterator.next();
                     result = result.flatMap(context.getNavigator(), true, new PredicateResolver<N>(predicate));
