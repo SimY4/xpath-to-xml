@@ -61,20 +61,20 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
     @Override
     public IterableNodeView<N> filter(Navigator<N> navigator, boolean greedy, Predicate<ViewContext<N>> predicate)
             throws XmlBuilderException {
-        ViewContext<N> context = new ViewContext<N>(navigator, this, greedy, false, 1);
+        return filter(navigator, greedy, 1, predicate);
+    }
+
+    @Override
+    public IterableNodeView<N> filter(Navigator<N> navigator, boolean greedy, int position,
+                                      Predicate<ViewContext<N>> predicate) throws XmlBuilderException {
+        ViewContext<N> context = new ViewContext<N>(navigator, this, greedy, false, position);
         return predicate.test(context) ? this : NodeSetView.<N>empty();
     }
 
     @Override
     public IterableNodeView<N> flatMap(Navigator<N> navigator, boolean greedy,
                                        Function<ViewContext<N>, IterableNodeView<N>> fmap) throws XmlBuilderException {
-        return flatMap(navigator, greedy, 1, fmap);
-    }
-
-    @Override
-    public IterableNodeView<N> flatMap(Navigator<N> navigator, boolean greedy, int position,
-                                       Function<ViewContext<N>, IterableNodeView<N>> fmap) throws XmlBuilderException {
-        ViewContext<N> context = new ViewContext<N>(navigator, this, greedy, false, position);
+        ViewContext<N> context = new ViewContext<N>(navigator, this, greedy, false, 1);
         return fmap.apply(context);
     }
 

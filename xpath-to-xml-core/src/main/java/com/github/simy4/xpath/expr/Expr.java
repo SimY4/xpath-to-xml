@@ -2,6 +2,7 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
+import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewContext;
 
@@ -11,7 +12,7 @@ import com.github.simy4.xpath.view.ViewContext;
  * @author Alex Simkin
  * @since 1.0
  */
-public interface Expr extends Predicate {
+public interface Expr extends Predicate<ViewContext<?>> {
 
     /**
      * Evaluate this expression on given xml model view using given context.

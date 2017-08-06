@@ -20,10 +20,10 @@ public interface IterableNodeView<N extends Node> extends View<N>, Iterable<Node
     IterableNodeView<N> filter(Navigator<N> navigator, boolean greedy, Predicate<ViewContext<N>> predicate)
             throws XmlBuilderException;
 
-    IterableNodeView<N> flatMap(Navigator<N> navigator, boolean greedy,
-                                Function<ViewContext<N>, IterableNodeView<N>> fmap) throws XmlBuilderException;
+    IterableNodeView<N> filter(Navigator<N> navigator, boolean greedy, int position,
+                               Predicate<ViewContext<N>> predicate) throws XmlBuilderException;
 
-    IterableNodeView<N> flatMap(Navigator<N> navigator, boolean greedy, int position,
+    IterableNodeView<N> flatMap(Navigator<N> navigator, boolean greedy,
                                 Function<ViewContext<N>, IterableNodeView<N>> fmap) throws XmlBuilderException;
 
 }

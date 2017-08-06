@@ -12,7 +12,7 @@ public class Root implements StepExpr {
     }
 
     @Override
-    public <N extends Node> boolean match(ViewContext<N> context) {
+    public boolean test(ViewContext<?> context) {
         return true;
     }
 

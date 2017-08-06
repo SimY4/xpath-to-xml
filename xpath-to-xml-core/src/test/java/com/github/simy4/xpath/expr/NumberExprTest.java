@@ -38,7 +38,7 @@ public class NumberExprTest {
                 new NodeView<TestNode>(node("node")), true);
 
         // when
-        boolean result = numberExpr.match(context);
+        boolean result = numberExpr.test(context);
 
         // then
         assertThat(result).isEqualTo(true);

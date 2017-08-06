@@ -3,9 +3,8 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.util.Function;
+import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.view.IterableNodeView;
-import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;
 
@@ -15,25 +14,26 @@ import java.util.Iterator;
 
 abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
 
-    private final Iterable<? extends Predicate> predicates;
+    private final Iterable<Predicate<ViewContext<?>>> predicates;
 
-    AbstractStepExpr(Iterable<? extends Predicate> predicates) {
+    AbstractStepExpr(Iterable<Predicate<ViewContext<?>>> predicates) {
         this.predicates = predicates;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public final <N extends Node> IterableNodeView<N> resolve(ViewContext<N> context) throws XmlBuilderException {
         IterableNodeView<N> result = traverseStep(context.getNavigator(), context.getCurrent());
         Iterator<? extends Predicate> predicateIterator = predicates.iterator();
         final Counter counter;
         if (predicateIterator.hasNext()) {
-            final CountingPredicateResolver<N> countingPredicate =
-                    new CountingPredicateResolver<N>(predicateIterator.next());
+            Predicate<ViewContext<N>> predicate = (Predicate<ViewContext<N>>) predicateIterator.next();
+            final CountingPredicate<N> countingPredicate = new CountingPredicate<N>(predicate);
             counter = countingPredicate;
-            result = result.flatMap(context.getNavigator(), false, countingPredicate);
+            result = result.filter(context.getNavigator(), false, countingPredicate);
             while (predicateIterator.hasNext()) {
-                final Predicate predicate = predicateIterator.next();
-                result = result.flatMap(context.getNavigator(), false, new PredicateResolver<N>(predicate));
+                predicate = (Predicate<ViewContext<N>>) predicateIterator.next();
+                result = result.filter(context.getNavigator(), false, predicate);
             }
         } else {
             counter = Counter.NO_OP;
@@ -44,11 +44,11 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
             predicateIterator = predicates.iterator();
             if (predicateIterator.hasNext()) {
                 final int count = counter.count();
-                Predicate predicate = predicateIterator.next();
-                result = result.flatMap(context.getNavigator(), true, count + 1, new PredicateResolver<N>(predicate));
+                Predicate<ViewContext<N>> predicate = (Predicate<ViewContext<N>>) predicateIterator.next();
+                result = result.filter(context.getNavigator(), true, count + 1, predicate);
                 while (predicateIterator.hasNext()) {
-                    predicate = predicateIterator.next();
-                    result = result.flatMap(context.getNavigator(), true, new PredicateResolver<N>(predicate));
+                    predicate = (Predicate<ViewContext<N>>) predicateIterator.next();
+                    result = result.filter(context.getNavigator(), true, predicate);
                 }
             }
         }
@@ -100,35 +100,20 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
 
     }
 
-    private static class PredicateResolver<T extends Node> implements Function<ViewContext<T>, IterableNodeView<T>> {
+    @NotThreadSafe
+    private static final class CountingPredicate<T extends Node> implements Predicate<ViewContext<T>>, Counter {
 
-        private final Predicate predicate;
+        private final Predicate<ViewContext<T>> predicate;
+        private int count;
 
-        private PredicateResolver(Predicate predicate) {
+        private CountingPredicate(Predicate<ViewContext<T>> predicate) {
             this.predicate = predicate;
         }
 
         @Override
-        public IterableNodeView<T> apply(ViewContext<T> context) {
-            return predicate.match(context) ? context.getCurrent() : NodeSetView.<T>empty();
-        }
-
-    }
-
-    @NotThreadSafe
-    private static final class CountingPredicateResolver<T extends Node> extends PredicateResolver<T>
-            implements Counter {
-
-        private int count;
-
-        private CountingPredicateResolver(Predicate predicate) {
-            super(predicate);
-        }
-
-        @Override
-        public IterableNodeView<T> apply(ViewContext<T> context) {
+        public boolean test(ViewContext<T> context) {
             count += 1;
-            return super.apply(context);
+            return predicate.test(context);
         }
 
         @Override
