@@ -4,7 +4,7 @@ plugins {
 
 allprojects {
     group 'com.github.simy4'
-    version '0.9.2'
+    version '1.0.0-RC1'
 
     jmh {
         jmhVersion '1.19'
