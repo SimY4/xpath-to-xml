@@ -20,12 +20,10 @@ public class PathExpr extends AbstractExpr {
 
     @Override
     public <N extends Node> View<N> resolve(ViewContext<N> context) throws XmlBuilderException {
-        final Iterator<StepExpr> pathExprIterator = pathExpr.iterator();
         IterableNodeView<N> children = context.getCurrent();
-        do {
-            final StepExpr stepExpr = pathExprIterator.next();
+        for (StepExpr stepExpr : pathExpr) {
             children = children.flatMap(context.getNavigator(), context.isGreedy(), new StepResolver<N>(stepExpr));
-        } while (pathExprIterator.hasNext());
+        }
         return children;
     }
 

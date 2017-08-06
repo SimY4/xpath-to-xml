@@ -27,7 +27,7 @@ public class ElementTest extends AbstractStepExprTest<Element> {
 
         when(navigator.createElement(any(TestNode.class), eq(elem))).thenReturn(node("elem"));
 
-        expr = new Element(elem, asList(predicate1, predicate2));
+        stepExpr = new Element(elem, asList(predicate1, predicate2));
     }
 
     @Test
@@ -36,7 +36,7 @@ public class ElementTest extends AbstractStepExprTest<Element> {
         setUpResolvableExpr();
 
         // when
-        IterableNodeView<TestNode> result = expr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
+        IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
 
         // then
         assertThat((Iterable<?>) result).extracting("node").containsExactly(node("elem"));
@@ -48,7 +48,7 @@ public class ElementTest extends AbstractStepExprTest<Element> {
         setUpUnresolvableExpr();
 
         // when
-        IterableNodeView<TestNode> result = expr.resolve(new ViewContext<TestNode>(navigator, parentNode, true));
+        IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, true));
 
         // then
         assertThat((Iterable<?>) result).extracting("node").containsExactly(node("elem"));
@@ -59,20 +59,20 @@ public class ElementTest extends AbstractStepExprTest<Element> {
     public void shouldThrowForElementsWithWildcardNamespace() {
         // given
         setUpUnresolvableExpr();
-        expr = new Element(new QName("*", "attr"), asList(predicate1, predicate2));
+        stepExpr = new Element(new QName("*", "attr"), asList(predicate1, predicate2));
 
         // when
-        consume(expr.resolve(new ViewContext<TestNode>(navigator, parentNode, true)));
+        consume(stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, true)));
     }
 
     @Test(expected = XmlBuilderException.class)
     public void shouldThrowForElementsWithWildcardLocalPart() {
         // given
         setUpUnresolvableExpr();
-        expr = new Element(new QName("http://www.example.com/my", "*", "my"), asList(predicate1, predicate2));
+        stepExpr = new Element(new QName("http://www.example.com/my", "*", "my"), asList(predicate1, predicate2));
 
         // when
-        consume(expr.resolve(new ViewContext<TestNode>(navigator, parentNode, true)));
+        consume(stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, true)));
     }
 
     @Test(expected = XmlBuilderException.class)
@@ -82,12 +82,12 @@ public class ElementTest extends AbstractStepExprTest<Element> {
         when(navigator.createElement(any(TestNode.class), any(QName.class))).thenThrow(XmlBuilderException.class);
 
         // when
-        consume(expr.resolve(new ViewContext<TestNode>(navigator, parentNode, true)));
+        consume(stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, true)));
     }
 
     @Test
     public void testToString() {
-        assertThat(expr).hasToString("elem[" + predicate1 + "][" + predicate2 + ']');
+        assertThat(stepExpr).hasToString("elem[" + predicate1 + "][" + predicate2 + ']');
     }
 
     @Override

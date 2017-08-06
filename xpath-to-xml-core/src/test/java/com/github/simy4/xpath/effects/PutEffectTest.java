@@ -4,6 +4,7 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
+import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +32,8 @@ public class PutEffectTest {
     @Before
     public void setUp() {
         when(navigator.xml()).thenReturn(node("xml"));
+        when(expr.resolve(ArgumentMatchers.<ViewContext<TestNode>>any()))
+                .thenReturn(new NodeView<TestNode>(node("node")));
 
         putEffect = new PutEffect(expr);
     }
