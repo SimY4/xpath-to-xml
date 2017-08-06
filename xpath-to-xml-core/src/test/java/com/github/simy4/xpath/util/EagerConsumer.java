@@ -5,7 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class EagerConsumer {
+@SuppressWarnings("JavadocMethod")
+public final class EagerConsumer {
 
     public static <T> Collection<T> consume(Iterable<T> iterable) {
         List<T> eager = new ArrayList<T>();

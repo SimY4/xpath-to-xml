@@ -43,7 +43,7 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
     protected E expr;
 
     @Test
-    public void shouldMatchAttributesFromAListOfChildNodes() {
+    public void shouldMatchNodeViaPredicatesChainFromAListOfChildNodes() {
         // given
         setUpResolvableExpr();
 
@@ -51,9 +51,9 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
         IterableNodeView<TestNode> result = expr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
 
         // then
+        assertThat((Iterable<?>) result).isNotEmpty();
         verify(predicate1).match(predicate1ContextCaptor.capture());
         verify(predicate2).match(predicate2ContextCaptor.capture());
-        assertThat((Iterable<?>) result).isNotEmpty();
         assertThat((Object) predicate1ContextCaptor.getValue()).extracting("navigator", "greedy", "position")
                 .containsExactly(navigator, false, 1);
         assertThat((Object) predicate2ContextCaptor.getValue()).extracting("navigator", "greedy", "position")

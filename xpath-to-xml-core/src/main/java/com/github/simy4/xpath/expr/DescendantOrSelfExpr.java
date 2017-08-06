@@ -13,7 +13,7 @@ import com.github.simy4.xpath.view.ViewContext;
 import javax.annotation.Nonnull;
 import java.util.Iterator;
 
-public class DescendantOrSelfExpr extends AbstractExpr {
+public class DescendantOrSelfExpr extends AbstractExpr implements StepExpr {
 
     @Override
     public <N extends Node> IterableNodeView<N> resolve(final ViewContext<N> context) {
@@ -31,6 +31,11 @@ public class DescendantOrSelfExpr extends AbstractExpr {
                 new TransformingIterator<T, Iterator<NodeView<T>>>(
                         navigator.elementsOf(self.getNode()).iterator(),
                         new DescendantOrSelf<T>(navigator)));
+    }
+
+    @Override
+    public String toString() {
+        return "";
     }
 
     private static final class DescendantOrSelf<T extends Node> implements Function<T, Iterator<NodeView<T>>> {
