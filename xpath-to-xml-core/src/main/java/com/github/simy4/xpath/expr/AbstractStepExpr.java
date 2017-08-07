@@ -21,19 +21,17 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public final <N extends Node> IterableNodeView<N> resolve(ViewContext<N> context) throws XmlBuilderException {
         IterableNodeView<N> result = traverseStep(context.getNavigator(), context.getCurrent());
-        Iterator<? extends Predicate> predicateIterator = predicates.iterator();
+        Iterator<Predicate<ViewContext<?>>> predicateIterator = predicates.iterator();
         final Counter counter;
         if (predicateIterator.hasNext()) {
-            Predicate<ViewContext<N>> predicate = (Predicate<ViewContext<N>>) predicateIterator.next();
-            final CountingPredicate<N> countingPredicate = new CountingPredicate<N>(predicate);
+            Predicate<ViewContext<?>> predicate = predicateIterator.next();
+            final CountingPredicate countingPredicate = new CountingPredicate(predicate);
             counter = countingPredicate;
             result = result.filter(context.getNavigator(), false, countingPredicate);
             while (predicateIterator.hasNext()) {
-                predicate = (Predicate<ViewContext<N>>) predicateIterator.next();
-                result = result.filter(context.getNavigator(), false, predicate);
+                result = result.filter(context.getNavigator(), false, predicateIterator.next());
             }
         } else {
             counter = Counter.NO_OP;
@@ -44,11 +42,9 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
             predicateIterator = predicates.iterator();
             if (predicateIterator.hasNext()) {
                 final int count = counter.count();
-                Predicate<ViewContext<N>> predicate = (Predicate<ViewContext<N>>) predicateIterator.next();
-                result = result.filter(context.getNavigator(), true, count + 1, predicate);
+                result = result.filter(context.getNavigator(), true, count + 1, predicateIterator.next());
                 while (predicateIterator.hasNext()) {
-                    predicate = (Predicate<ViewContext<N>>) predicateIterator.next();
-                    result = result.filter(context.getNavigator(), true, predicate);
+                    result = result.filter(context.getNavigator(), true, predicateIterator.next());
                 }
             }
         }
@@ -101,17 +97,17 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
     }
 
     @NotThreadSafe
-    private static final class CountingPredicate<T extends Node> implements Predicate<ViewContext<T>>, Counter {
+    private static final class CountingPredicate implements Predicate<ViewContext<?>>, Counter {
 
-        private final Predicate<ViewContext<T>> predicate;
+        private final Predicate<ViewContext<?>> predicate;
         private int count;
 
-        private CountingPredicate(Predicate<ViewContext<T>> predicate) {
+        private CountingPredicate(Predicate<ViewContext<?>> predicate) {
             this.predicate = predicate;
         }
 
         @Override
-        public boolean test(ViewContext<T> context) {
+        public boolean test(ViewContext<?> context) {
             count += 1;
             return predicate.test(context);
         }

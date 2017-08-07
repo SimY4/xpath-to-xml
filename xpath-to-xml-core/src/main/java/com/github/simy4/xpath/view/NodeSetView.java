@@ -20,8 +20,7 @@ import java.util.Set;
 @Immutable
 public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
-    @SuppressWarnings("unchecked")
-    private static final NodeSetView EMPTY_NODE_SET = new NodeSetView(Collections.EMPTY_SET);
+    private static final NodeSetView<?> EMPTY_NODE_SET = new NodeSetView<Node>(Collections.<NodeView<Node>>emptySet());
 
     @SuppressWarnings("unchecked")
     public static <T extends Node> NodeSetView<T> empty() {
@@ -93,20 +92,20 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
     @Override
     public IterableNodeView<N> filter(final Navigator<N> navigator, final boolean greedy,
-                                      final Predicate<ViewContext<N>> predicate) throws XmlBuilderException {
+                                      final Predicate<ViewContext<?>> predicate) throws XmlBuilderException {
         return filter(navigator, greedy, 1, predicate);
     }
 
     @Override
     public IterableNodeView<N> filter(final Navigator<N> navigator, final boolean greedy, final int position,
-                                      final Predicate<ViewContext<N>> predicate) throws XmlBuilderException {
+                                      final Predicate<ViewContext<?>> predicate) throws XmlBuilderException {
         return new NodeSetView<N>(new Iterable<NodeView<N>>() {
             @Nonnull
             @Override
             public Iterator<NodeView<N>> iterator() {
                 final Iterator<NodeView<N>> iterator = nodeSet.iterator();
-                final PredicateWrapper<N> wrapper = new PredicateWrapper<N>(navigator, iterator, greedy, 1, predicate);
-                return new FilteringIterator<NodeView<N>>(iterator, wrapper);
+                return new FilteringIterator<NodeView<N>>(iterator,
+                        new PredicateWrapper<N>(navigator, iterator, greedy, position, predicate));
             }
         });
     }
@@ -144,10 +143,6 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
         protected final boolean greedy;
         private int position;
 
-        AbstractWrapper(Navigator<T> navigator, Iterator<NodeView<T>> wrappingNodeSet, boolean greedy) {
-            this(navigator, wrappingNodeSet, greedy, 0);
-        }
-
         AbstractWrapper(Navigator<T> navigator, Iterator<NodeView<T>> wrappingNodeSet, boolean greedy, int position) {
             this.navigator = navigator;
             this.wrappingNodeSet = wrappingNodeSet;
@@ -165,10 +160,10 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
     private static final class PredicateWrapper<T extends Node> extends AbstractWrapper<T>
             implements Predicate<NodeView<T>> {
 
-        private final Predicate<ViewContext<T>> delegate;
+        private final Predicate<ViewContext<?>> delegate;
 
         private PredicateWrapper(Navigator<T> navigator, Iterator<NodeView<T>> wrappingNodeSet, boolean greedy,
-                                 int position, Predicate<ViewContext<T>> delegate) {
+                                 int position, Predicate<ViewContext<?>> delegate) {
             super(navigator, wrappingNodeSet, greedy, position);
             this.delegate = delegate;
         }
@@ -188,7 +183,7 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
         private TransformerWrapper(Navigator<T> navigator, Iterator<NodeView<T>> wrappingNodeSet, boolean greedy,
                                    Function<ViewContext<T>, IterableNodeView<T>> delegate) {
-            super(navigator, wrappingNodeSet, greedy);
+            super(navigator, wrappingNodeSet, greedy, 1);
             this.delegate = delegate;
         }
 
