@@ -19,20 +19,22 @@ public class NumberExpr implements Expr {
     }
 
     @Override
-    public <N extends Node> boolean match(ViewContext<N> context) {
+    public boolean test(ViewContext<?> context) {
         double number = resolve(context).toNumber();
         if (number == context.getPosition()) {
             return true;
-        } else if (context.isGreedy() && !context.hasNext() && number > context.getPosition()) {
-            final N node = context.getCurrent().getNode();
-            long numberOfNodesToCreate = (long) number - context.getPosition();
-            do {
-                context.getNavigator().prependCopy(node);
-            } while (--numberOfNodesToCreate > 0);
-            return true;
         } else {
-            return false;
+            return context.isGreedy() && !context.hasNext() && number > context.getPosition() && test(context, number);
         }
+    }
+
+    private <N extends Node> boolean test(ViewContext<N> context, double number) {
+        final N node = context.getCurrent().getNode();
+        long numberOfNodesToCreate = (long) number - context.getPosition();
+        do {
+            context.getNavigator().prependCopy(node);
+        } while (--numberOfNodesToCreate > 0);
+        return true;
     }
 
     @Override

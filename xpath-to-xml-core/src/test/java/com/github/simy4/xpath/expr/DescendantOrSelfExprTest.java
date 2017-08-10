@@ -57,4 +57,9 @@ public class DescendantOrSelfExprTest {
         assertThat((Iterable<?>) result).extracting("node").containsExactly(self);
     }
 
+    @Test
+    public void shouldAlwaysReturnTrueOnMatch() {
+        assertThat(descendantOrSelf.test(new ViewContext<>(navigator, new NodeView<>(node("node")), false))).isTrue();
+    }
+
 }

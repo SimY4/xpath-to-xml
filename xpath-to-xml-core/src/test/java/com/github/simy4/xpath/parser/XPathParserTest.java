@@ -8,13 +8,14 @@ import com.github.simy4.xpath.expr.Identity;
 import com.github.simy4.xpath.expr.NumberExpr;
 import com.github.simy4.xpath.expr.OperationExpr;
 import com.github.simy4.xpath.expr.PathExpr;
-import com.github.simy4.xpath.expr.Predicate;
 import com.github.simy4.xpath.expr.Root;
 import com.github.simy4.xpath.expr.StepExpr;
 import com.github.simy4.xpath.expr.operators.Operator;
 import com.github.simy4.xpath.util.Pair;
+import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.util.SimpleNamespaceContext;
 import com.github.simy4.xpath.util.Triple;
+import com.github.simy4.xpath.view.ViewContext;
 import org.junit.Rule;
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.FromDataPoints;
@@ -36,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(Theories.class)
 public class XPathParserTest {
 
-    private static final List<Predicate> NIL = emptyList();
+    private static final List<Predicate<ViewContext<?>>> NIL = emptyList();
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();

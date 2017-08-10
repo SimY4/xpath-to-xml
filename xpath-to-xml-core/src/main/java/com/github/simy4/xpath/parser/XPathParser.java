@@ -10,12 +10,13 @@ import com.github.simy4.xpath.expr.NumberExpr;
 import com.github.simy4.xpath.expr.OperationExpr;
 import com.github.simy4.xpath.expr.Parent;
 import com.github.simy4.xpath.expr.PathExpr;
-import com.github.simy4.xpath.expr.Predicate;
 import com.github.simy4.xpath.expr.Root;
 import com.github.simy4.xpath.expr.StepExpr;
 import com.github.simy4.xpath.expr.UnaryExpr;
 import com.github.simy4.xpath.expr.operators.Operator;
 import com.github.simy4.xpath.parser.Token.Type;
+import com.github.simy4.xpath.util.Predicate;
+import com.github.simy4.xpath.view.ViewContext;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
@@ -176,7 +177,7 @@ public class XPathParser {
 
     private StepExpr StepExpr(Context context) throws XPathExpressionException {
         final QName nodeTest;
-        final List<Predicate> predicateList;
+        final List<Predicate<ViewContext<?>>> predicateList;
         final StepExpr stepExpr;
         switch (context.tokenAt(1).getType()) {
             case DOT:
@@ -247,9 +248,9 @@ public class XPathParser {
         }
     }
 
-    private List<Predicate> PredicateList(Context context) throws XPathExpressionException {
+    private List<Predicate<ViewContext<?>>> PredicateList(Context context) throws XPathExpressionException {
         if (Type.LEFT_BRACKET == context.tokenAt(1).getType()) {
-            final List<Predicate> predicateList = new ArrayList<>();
+            final List<Predicate<ViewContext<?>>> predicateList = new ArrayList<>();
             predicateList.add(Predicate(context));
             while (Type.LEFT_BRACKET == context.tokenAt(1).getType()) {
                 predicateList.add(Predicate(context));
