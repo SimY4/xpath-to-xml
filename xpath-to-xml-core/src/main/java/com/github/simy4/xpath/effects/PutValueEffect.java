@@ -28,7 +28,7 @@ public class PutValueEffect implements Effect {
         view.visit(new PutValueVisitor<N>(navigator, value));
     }
 
-    private static final class PutValueVisitor<N extends Node> extends AbstractViewVisitor<N, Void> {
+    private static final class PutValueVisitor<N extends Node> extends AbstractViewVisitor<N> {
 
         private final Navigator<N> navigator;
         private final String value;
@@ -39,15 +39,14 @@ public class PutValueEffect implements Effect {
         }
 
         @Override
-        public Void visit(IterableNodeView<N> nodeSet) throws XmlBuilderException {
+        public void visit(IterableNodeView<N> nodeSet) throws XmlBuilderException {
             for (NodeView<N> node : nodeSet) {
                 navigator.setText(node.getNode(), value);
             }
-            return null;
         }
 
         @Override
-        protected Void returnDefault(View<N> view) throws XmlBuilderException {
+        protected void returnDefault(View<N> view) throws XmlBuilderException {
             throw new XmlBuilderException("Failed to put value into XML. Read-only view was resolved: " + view);
         }
 

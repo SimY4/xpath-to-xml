@@ -25,18 +25,17 @@ public class PutEffect implements Effect {
         expr.resolve(context).visit(new EagerVisitor<N>());
     }
 
-    private static final class EagerVisitor<N extends Node> extends AbstractViewVisitor<N, Void> {
+    private static final class EagerVisitor<N extends Node> extends AbstractViewVisitor<N> {
 
         @Override
         @SuppressWarnings("StatementWithEmptyBody")
-        public Void visit(IterableNodeView<N> nodeSet) throws XmlBuilderException {
+        public void visit(IterableNodeView<N> nodeSet) throws XmlBuilderException {
             for (NodeView<N> ignored : nodeSet) { } // eagerly consume resolved iterable
-            return null;
         }
 
         @Override
-        protected Void returnDefault(View<N> view) {
-            return null;
+        protected void returnDefault(View<N> view) {
+            /* NO OP */
         }
 
     }

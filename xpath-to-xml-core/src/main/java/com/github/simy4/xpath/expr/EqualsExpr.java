@@ -32,7 +32,7 @@ public class EqualsExpr extends AbstractOperationExpr {
         return "=";
     }
 
-    private static final class ApplicationVisitor<N extends Node> extends AbstractViewVisitor<N, View<N>> {
+    private static final class ApplicationVisitor<N extends Node> extends AbstractViewVisitor<N> {
 
         private final Navigator<N> navigator;
         private final View<N> right;
@@ -43,15 +43,14 @@ public class EqualsExpr extends AbstractOperationExpr {
         }
 
         @Override
-        public View<N> visit(IterableNodeView<N> nodeSet) throws XmlBuilderException {
+        public void visit(IterableNodeView<N> nodeSet) throws XmlBuilderException {
             for (NodeView<N> node : nodeSet) {
                 navigator.setText(node.getNode(), right.toString());
             }
-            return nodeSet;
         }
 
         @Override
-        protected View<N> returnDefault(View<N> view) throws XmlBuilderException {
+        protected void returnDefault(View<N> view) throws XmlBuilderException {
             throw new XmlBuilderException("Can not modify read-only node: " + view);
         }
 

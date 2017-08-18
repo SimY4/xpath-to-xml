@@ -37,10 +37,8 @@ public interface View<N extends Node> extends Comparable<View<N>> {
      * Visits current XML element.
      *
      * @param visitor XML element visitor
-     * @param <T> visitor return type
-     * @return resolved return value
      * @throws XmlBuilderException if error occur during XML model modification
      */
-    <T> T visit(ViewVisitor<N, T> visitor) throws XmlBuilderException;
+    void visit(ViewVisitor<N> visitor) throws XmlBuilderException;
 
 }
