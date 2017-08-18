@@ -131,8 +131,15 @@ public class XPathParserTest {
 
     @DataPoints("Negative")
     public static final String[] INVALID_X_PATHS = new String[] {
+            "",
             "...",
+            "//",
             "///",
+            "my:book:com",
+            "bo@k",
+            "book[]",
+            "book[]]",
+            "book[[]",
             "book[@style='value\"]",
     };
 
