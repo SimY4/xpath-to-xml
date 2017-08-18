@@ -1,12 +1,10 @@
 dependencies {
-    compile project(':xpath-to-xml-core')
+    api project(':xpath-to-xml-core')
 
-    provided 'org.dom4j:dom4j:2.0.0'
+    implementation 'org.dom4j:dom4j:2.0.0'
 
-    jmh 'org.dom4j:dom4j:2.0.0'
-
-    testCompile project(':xpath-to-xml-test')
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:2.8.47'
-    testCompile 'org.assertj:assertj-core:2.8.0'
+    testImplementation project(':xpath-to-xml-test')
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:2.8.47'
+    testImplementation 'org.assertj:assertj-core:2.8.0'
 }

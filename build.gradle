@@ -1,21 +1,11 @@
-plugins {
-    id 'me.champeau.gradle.jmh' version '0.4.4'
-}
-
 allprojects {
     group 'com.github.simy4'
     version '1.0.0-RC1'
-
-    jmh {
-        jmhVersion '1.19'
-    }
 }
 
 subprojects {
-    apply plugin: 'java'
+    apply plugin: 'java-library'
     apply plugin: 'checkstyle'
-    apply plugin: 'findbugs'
-    apply plugin: 'me.champeau.gradle.jmh'
 
     sourceCompatibility = JavaVersion.VERSION_1_6
 
@@ -23,20 +13,19 @@ subprojects {
         mavenCentral()
     }
 
-    configurations {
-        provided
-    }
-
-    sourceSets {
-        main.compileClasspath += configurations.provided
-        test.compileClasspath += configurations.provided
-        test.runtimeClasspath += configurations.provided
-    }
-
     dependencies {
         checkstyle 'com.puppycrawl.tools:checkstyle:8.1'
 
-        compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+        implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    }
+
+    jar {
+        manifest {
+            attributes (
+                    'Implementation-Title': project.name,
+                    'Implementation-Version': project.version
+            )
+        }
     }
 
     checkstyle {
@@ -45,37 +34,8 @@ subprojects {
         ignoreFailures = false
     }
 
-    findbugs {
-        toolVersion = "3.0.1"
-        sourceSets = [sourceSets.main]
-        ignoreFailures = true
-        reportsDir = file("$project.buildDir/reports/findbugs")
-        effort = "max"
-        reportLevel = "high"
-    }
+}
 
-    findbugsMain {
-        reports {
-            xml.enabled = false
-            html.enabled = true
-        }
-    }
-
-    findbugsTest {
-        reports {
-            xml.enabled = false
-            html.enabled = true
-        }
-    }
-
-    jmh {
-        include = ['com\\.github\\.simy4\\.xpath\\..+']
-        humanOutputFile = null
-        iterations = 10
-        fork = 2
-        failOnError = true
-        timeUnit = 'ms'
-        warmupIterations = 5
-    }
-
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.1'
 }
