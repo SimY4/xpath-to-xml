@@ -1,0 +1,55 @@
+apply plugin: "maven-publish"
+
+def pomConfig = {
+    name project.name
+    url "https://github.com/SimY4/xpath-to-xml"
+    inceptionYear "2017"
+
+    licenses {
+        license([:]) {
+            name "The Apache Software License, Version 2.0"
+            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            distribution "repo"
+        }
+    }
+
+    scm {
+        url "https://github.com/SimY4/xpath-to-xml"
+    }
+
+    developers {
+        developer {
+            id "SimY4"
+            name "Alex Simkin"
+            url "https://github.com/SimY4"
+            timezone "+10"
+            roles {
+                role "project maintainer"
+            }
+        }
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            url sonatypeUrl
+            credentials {
+                username = sonatypeUsername
+                password = sonatypePassword
+            }
+        }
+    }
+
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom.withXml {
+                asNode().children().last() + pomConfig
+                asNode().appendNode("description", project.pomDescription)
+            }
+        }
+    }
+}

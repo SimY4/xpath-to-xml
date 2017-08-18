@@ -1,11 +1,15 @@
-allprojects {
-    group 'com.github.simy4'
-    version '1.0.0-RC1'
+ext {
+    def buildTimeAndDate = new Date()
+    buildDate = buildTimeAndDate.format("yyyy-MM-dd")
+    buildTime = buildTimeAndDate.format("HH:mm:ss.SSSZ")
 }
 
 subprojects {
     apply plugin: 'java-library'
-    apply plugin: 'checkstyle'
+    apply from: rootProject.file('gradle/check-checkstyle.gradle')
+    apply from: rootProject.file('gradle/check-findbugs.gradle')
+    apply from: rootProject.file('gradle/publish-jar.gradle')
+    apply from: rootProject.file('gradle/publish-maven.gradle')
 
     sourceCompatibility = JavaVersion.VERSION_1_6
 
@@ -19,21 +23,20 @@ subprojects {
         implementation 'com.google.code.findbugs:jsr305:3.0.2'
     }
 
-    jar {
-        manifest {
-            attributes (
-                    'Implementation-Title': project.name,
-                    'Implementation-Version': project.version
-            )
-        }
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
     }
 
-    checkstyle {
-        configFile = rootProject.file('config/checkstyle/checkstyle.xml')
-        showViolations = true
-        ignoreFailures = false
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
     }
 
+    artifacts {
+        archives sourcesJar
+        archives javadocJar
+    }
 }
 
 task wrapper(type: Wrapper) {
