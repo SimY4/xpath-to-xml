@@ -1,3 +1,5 @@
+ext.pomDescription = "XPath-to-XML Core"
+
 dependencies {
     testImplementation project(':xpath-to-xml-test')
     testImplementation 'junit:junit:4.12'

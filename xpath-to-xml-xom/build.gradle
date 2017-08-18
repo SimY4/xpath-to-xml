@@ -1,3 +1,5 @@
+ext.pomDescription = "XPath-to-XML XOM"
+
 dependencies {
     api project(':xpath-to-xml-core')
 
