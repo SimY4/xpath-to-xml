@@ -91,7 +91,7 @@ public class AttributeTest extends AbstractStepExprTest<Attribute> {
     }
 
     @Override
-    void setUpResolvableExpr() {
+    protected void setUpResolvableExpr() {
         doReturn(asList(node("attr"), node("another-attr"))).when(navigator).attributesOf(parentNode.getNode());
         super.setUpResolvableExpr();
     }

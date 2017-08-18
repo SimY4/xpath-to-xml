@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -35,8 +34,7 @@ public class PutValueEffectTest {
     @Before
     public void setUp() {
         when(navigator.xml()).thenReturn(node("xml"));
-        when(expr.resolve(ArgumentMatchers.<ViewContext<TestNode>>any()))
-                .thenReturn(new NodeView<TestNode>(node("node")));
+        when(expr.resolve(any(ViewContext.class))).thenReturn(new NodeView<TestNode>(node("node")));
 
         putValueEffect = new PutValueEffect(expr, "value");
     }

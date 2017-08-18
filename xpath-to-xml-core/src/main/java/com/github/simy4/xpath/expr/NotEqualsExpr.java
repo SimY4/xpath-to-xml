@@ -1,4 +1,4 @@
-package com.github.simy4.xpath.expr.operators;
+package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
@@ -10,7 +10,11 @@ import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewContext;
 
-class NotEquals implements Operator {
+public class NotEqualsExpr extends AbstractOperationExpr {
+
+    public NotEqualsExpr(Expr leftExpr, Expr rightExpr) {
+        super(leftExpr, rightExpr);
+    }
 
     @Override
     public <N extends Node> View<N> resolve(ViewContext<N> context, View<N> left, View<N> right)
@@ -24,7 +28,7 @@ class NotEquals implements Operator {
     }
 
     @Override
-    public String toString() {
+    String operator() {
         return "!=";
     }
 

@@ -10,13 +10,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -32,8 +32,7 @@ public class PutEffectTest {
     @Before
     public void setUp() {
         when(navigator.xml()).thenReturn(node("xml"));
-        when(expr.resolve(ArgumentMatchers.<ViewContext<TestNode>>any()))
-                .thenReturn(new NodeView<TestNode>(node("node")));
+        when(expr.resolve(any(ViewContext.class))).thenReturn(new NodeView<TestNode>(node("node")));
 
         putEffect = new PutEffect(expr);
     }
@@ -52,7 +51,7 @@ public class PutEffectTest {
     @Test(expected = XmlBuilderException.class)
     public void shouldPropagateOnAnyException() {
         // given
-        when(expr.resolve(ArgumentMatchers.<ViewContext<TestNode>>any())).thenThrow(XmlBuilderException.class);
+        when(expr.resolve(any(ViewContext.class))).thenThrow(XmlBuilderException.class);
 
         // then
         putEffect.perform(navigator);

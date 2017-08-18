@@ -4,7 +4,6 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.util.TestNode;
-import com.github.simy4.xpath.util.ViewContextMatcher;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;
@@ -13,7 +12,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.internal.util.reflection.FieldSetter;
@@ -25,6 +24,8 @@ import java.util.Collections;
 import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
@@ -78,8 +79,8 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
 
         // then
         assertThat((Iterable<?>) result).isNotEmpty();
-        verify(predicate1, never()).test(ArgumentMatchers.<ViewContext<TestNode>>any());
-        verify(predicate2, never()).test(ArgumentMatchers.<ViewContext<TestNode>>any());
+        verify(predicate1, never()).test(any(ViewContext.class));
+        verify(predicate2, never()).test(any(ViewContext.class));
     }
 
     @Test
@@ -98,14 +99,14 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
     public void shouldShortCircuitWhenPredicateTraversalReturnsNothing() {
         // given
         setUpResolvableExpr();
-        when(predicate1.test(ArgumentMatchers.<ViewContext<TestNode>>any())).thenReturn(false);
+        when(predicate1.test(any(ViewContext.class))).thenReturn(false);
 
         // when
         IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
 
         // then
         assertThat((Iterable<?>) result).isEmpty();
-        verify(predicate2, never()).test(ArgumentMatchers.<ViewContext<TestNode>>any());
+        verify(predicate2, never()).test(any(ViewContext.class));
     }
 
     @Test
@@ -141,8 +142,8 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
 
         setUpResolvableExpr();
         reset(predicate1, predicate2);
-        when(predicate1.test(ArgumentMatchers.argThat(ViewContextMatcher.<TestNode>greedyContext()))).thenReturn(true);
-        when(predicate2.test(ArgumentMatchers.argThat(ViewContextMatcher.<TestNode>greedyContext()))).thenReturn(true);
+        when(predicate1.test(argThat(greedyContext()))).thenReturn(true);
+        when(predicate2.test(argThat(greedyContext()))).thenReturn(true);
 
         // when
         IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, true));
@@ -159,14 +160,23 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
                 .containsExactly(tuple(navigator, true, false, 1));
     }
 
-    void setUpResolvableExpr() {
-        when(predicate1.test(ArgumentMatchers.<ViewContext<TestNode>>any())).thenReturn(true);
-        when(predicate2.test(ArgumentMatchers.<ViewContext<TestNode>>any())).thenReturn(true);
+    protected void setUpResolvableExpr() {
+        when(predicate1.test(any(ViewContext.class))).thenReturn(true);
+        when(predicate2.test(any(ViewContext.class))).thenReturn(true);
     }
 
-    void setUpUnresolvableExpr() {
-        when(predicate1.test(ArgumentMatchers.argThat(ViewContextMatcher.<TestNode>greedyContext()))).thenReturn(true);
-        when(predicate2.test(ArgumentMatchers.argThat(ViewContextMatcher.<TestNode>greedyContext()))).thenReturn(true);
+    protected void setUpUnresolvableExpr() {
+        when(predicate1.test(argThat(greedyContext()))).thenReturn(true);
+        when(predicate2.test(argThat(greedyContext()))).thenReturn(true);
+    }
+
+    private ArgumentMatcher<ViewContext> greedyContext() {
+        return new ArgumentMatcher<ViewContext>() {
+            @Override
+            public boolean matches(ViewContext context) {
+                return context.isGreedy();
+            }
+        };
     }
 
 }

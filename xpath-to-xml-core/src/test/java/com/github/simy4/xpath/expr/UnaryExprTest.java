@@ -17,7 +17,6 @@ import org.junit.experimental.theories.FromDataPoints;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
@@ -25,6 +24,7 @@ import org.mockito.junit.MockitoRule;
 import static com.github.simy4.xpath.util.TestNode.node;
 import static com.github.simy4.xpath.view.NodeSetView.empty;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(Theories.class)
@@ -58,7 +58,7 @@ public class UnaryExprTest {
     @Theory
     public void shouldAlwaysReturnNegatedNumberViewNode(
             @FromDataPoints("views") Pair<View<TestNode>, NumberView<TestNode>> data) {
-        when(valueExpr.resolve(ArgumentMatchers.<ViewContext<TestNode>>any())).thenReturn(data.getFirst());
+        when(valueExpr.resolve(any(ViewContext.class))).thenReturn(data.getFirst());
 
         View<TestNode> result = unaryExpr.resolve(new ViewContext<TestNode>(navigator,
                 new NodeView<TestNode>(node("xml")), false));

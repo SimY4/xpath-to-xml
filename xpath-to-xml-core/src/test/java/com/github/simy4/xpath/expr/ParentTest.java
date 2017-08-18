@@ -52,7 +52,7 @@ public class ParentTest extends AbstractStepExprTest<Parent> {
     }
 
     @Override
-    void setUpResolvableExpr() {
+    protected void setUpResolvableExpr() {
         when(navigator.parentOf(node("node"))).thenReturn(node("parent"));
         super.setUpResolvableExpr();
     }
