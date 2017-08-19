@@ -66,7 +66,8 @@ public class PathExprTest {
     @Test
     public void shouldShortCircuitNonGreedyTraversalWhenStepTraversalReturnsNothing() {
         // given
-        when(stepExpr1.resolve(any())).thenReturn(new NodeView<>(node("node2")));
+        when(stepExpr1.resolve(any(ViewContext.class)))
+                .thenReturn(new NodeView<>(node("node2")));
         when(stepExpr2.resolve(stepExpr2ContextCaptor.capture())).thenReturn(NodeSetView.empty());
 
         // when
@@ -74,7 +75,7 @@ public class PathExprTest {
 
         // then
         assertThat((Iterable<?>) result).isEmpty();
-        verify(stepExpr3, never()).resolve(any());
+        verify(stepExpr3, never()).resolve(any(ViewContext.class));
     }
 
     @Test

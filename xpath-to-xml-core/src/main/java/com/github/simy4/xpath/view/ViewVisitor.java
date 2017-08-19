@@ -7,18 +7,17 @@ import com.github.simy4.xpath.navigator.Node;
  * XML elements view visitor.
  *
  * @param <N> XML node type
- * @param <T> visitor return type
  * @author Alex Simkin
  * @since 1.0
  */
-public interface ViewVisitor<N extends Node, T> {
+public interface ViewVisitor<N extends Node> {
 
-    T visit(BooleanView<N> bool) throws XmlBuilderException;
+    void visit(BooleanView<N> bool) throws XmlBuilderException;
 
-    T visit(IterableNodeView<N> nodeSet) throws XmlBuilderException;
+    void visit(IterableNodeView<N> nodeSet) throws XmlBuilderException;
 
-    T visit(LiteralView<N> literal) throws XmlBuilderException;
+    void visit(LiteralView<N> literal) throws XmlBuilderException;
 
-    T visit(NumberView<N> number) throws XmlBuilderException;
+    void visit(NumberView<N> number) throws XmlBuilderException;
 
 }

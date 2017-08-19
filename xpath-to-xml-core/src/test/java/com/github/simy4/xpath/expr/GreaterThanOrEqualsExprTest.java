@@ -1,4 +1,4 @@
-package com.github.simy4.xpath.expr.operators;
+package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
@@ -23,9 +23,11 @@ import org.mockito.junit.MockitoRule;
 
 import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @RunWith(Theories.class)
-public class GreaterThanOrEqualsTest {
+public class GreaterThanOrEqualsExprTest {
 
     @DataPoints("less")
     public static final View[] LESSER = {
@@ -46,17 +48,20 @@ public class GreaterThanOrEqualsTest {
     @Rule public ExpectedException expectedException = ExpectedException.none();
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
-    @Mock
-    private Navigator<TestNode> navigator;
+    @Mock private Navigator<TestNode> navigator;
+    @Mock private Expr leftExpr;
+    @Mock private Expr rightExpr;
 
     @Theory
     public void shouldResolveToTrueWhenLeftIsGreaterThanRight(@FromDataPoints("less") View<TestNode> less,
                                                               @FromDataPoints("greater") View<TestNode> greater) {
         // given
+        when(leftExpr.resolve(any(ViewContext.class))).thenReturn(greater);
+        when(rightExpr.resolve(any(ViewContext.class))).thenReturn(less);
         ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, false);
 
         // when
-        View<TestNode> result = Operator.greaterThanOrEquals.resolve(context, greater, less);
+        View<TestNode> result = new GreaterThanOrEqualsExpr(leftExpr, rightExpr).resolve(context);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(true));
@@ -66,10 +71,12 @@ public class GreaterThanOrEqualsTest {
     public void shouldResolveToFalseWhenLeftIsLessThanRight(@FromDataPoints("less") View<TestNode> less,
                                                             @FromDataPoints("greater") View<TestNode> greater) {
         // given
+        when(leftExpr.resolve(any(ViewContext.class))).thenReturn(less);
+        when(rightExpr.resolve(any(ViewContext.class))).thenReturn(greater);
         ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, false);
 
         // when
-        View<TestNode> result = Operator.greaterThanOrEquals.resolve(context, less, greater);
+        View<TestNode> result = new GreaterThanOrEqualsExpr(leftExpr, rightExpr).resolve(context);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(false));
@@ -77,12 +84,14 @@ public class GreaterThanOrEqualsTest {
 
     @Theory
     public void shouldResolveToTrueWhenLeftIsEqualToRight(@FromDataPoints("less") View<TestNode> left,
-                                                           @FromDataPoints("less") View<TestNode> right) {
+                                                          @FromDataPoints("less") View<TestNode> right) {
         // given
+        when(leftExpr.resolve(any(ViewContext.class))).thenReturn(left);
+        when(rightExpr.resolve(any(ViewContext.class))).thenReturn(right);
         ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, false);
 
         // when
-        View<TestNode> result = Operator.greaterThanOrEquals.resolve(context, left, right);
+        View<TestNode> result = new GreaterThanOrEqualsExpr(leftExpr, rightExpr).resolve(context);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(true));
@@ -93,15 +102,18 @@ public class GreaterThanOrEqualsTest {
                                                              @FromDataPoints("greater") View<TestNode> greater) {
         // given
         expectedException.expect(XmlBuilderException.class);
+        when(leftExpr.resolve(any(ViewContext.class))).thenReturn(less);
+        when(rightExpr.resolve(any(ViewContext.class))).thenReturn(greater);
         ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, true);
 
         // when
-        Operator.greaterThanOrEquals.resolve(context, less, greater);
+        new GreaterThanOrEqualsExpr(leftExpr, rightExpr).resolve(context, less, greater);
     }
 
     @Test
     public void testToString() {
-        assertThat(Operator.greaterThanOrEquals).hasToString(">=");
+        assertThat(new GreaterThanOrEqualsExpr(leftExpr, rightExpr))
+                .hasToString(leftExpr.toString() + ">=" + rightExpr.toString());
     }
 
 }

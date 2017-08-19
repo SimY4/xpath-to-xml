@@ -33,7 +33,8 @@ public class RemoveEffectTest {
     @Before
     public void setUp() {
         when(navigator.xml()).thenReturn(node("xml"));
-        when(expr.resolve(any())).thenReturn(new NodeView<>(node("node")));
+        when(expr.resolve(any(ViewContext.class)))
+                .thenReturn(new NodeView<>(node("node")));
 
         removeEffect = new RemoveEffect(expr);
     }

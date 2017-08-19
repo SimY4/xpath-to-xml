@@ -91,7 +91,7 @@ public class ElementTest extends AbstractStepExprTest<Element> {
     }
 
     @Override
-    void setUpResolvableExpr() {
+    protected void setUpResolvableExpr() {
         doReturn(asList(node("elem"), node("another-elem"))).when(navigator).elementsOf(parentNode.getNode());
         super.setUpResolvableExpr();
     }

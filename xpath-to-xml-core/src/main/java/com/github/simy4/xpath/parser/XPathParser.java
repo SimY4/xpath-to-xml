@@ -1,19 +1,26 @@
 package com.github.simy4.xpath.parser;
 
+import com.github.simy4.xpath.expr.AdditionExpr;
 import com.github.simy4.xpath.expr.Attribute;
 import com.github.simy4.xpath.expr.DescendantOrSelfExpr;
 import com.github.simy4.xpath.expr.Element;
+import com.github.simy4.xpath.expr.EqualsExpr;
 import com.github.simy4.xpath.expr.Expr;
+import com.github.simy4.xpath.expr.GreaterThanExpr;
+import com.github.simy4.xpath.expr.GreaterThanOrEqualsExpr;
 import com.github.simy4.xpath.expr.Identity;
+import com.github.simy4.xpath.expr.LessThanExpr;
+import com.github.simy4.xpath.expr.LessThanOrEqualsExpr;
 import com.github.simy4.xpath.expr.LiteralExpr;
+import com.github.simy4.xpath.expr.MultiplicationExpr;
+import com.github.simy4.xpath.expr.NotEqualsExpr;
 import com.github.simy4.xpath.expr.NumberExpr;
-import com.github.simy4.xpath.expr.OperationExpr;
 import com.github.simy4.xpath.expr.Parent;
 import com.github.simy4.xpath.expr.PathExpr;
 import com.github.simy4.xpath.expr.Root;
 import com.github.simy4.xpath.expr.StepExpr;
+import com.github.simy4.xpath.expr.SubtractionExpr;
 import com.github.simy4.xpath.expr.UnaryExpr;
-import com.github.simy4.xpath.expr.operators.Operator;
 import com.github.simy4.xpath.parser.Token.Type;
 import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.view.ViewContext;
@@ -67,47 +74,76 @@ public class XPathParser {
     }
 
     private Expr ComparisonExpr(Context context) throws XPathExpressionException {
-        final Expr left = UnaryExpr(context);
+        final Expr left = AdditionExpr(context);
         final Expr right;
         switch (context.tokenAt(1).getType()) {
             case EQUALS:
                 context.match(Type.EQUALS);
-                right = UnaryExpr(context);
-                return new OperationExpr(left, right, Operator.equals);
+                right = AdditionExpr(context);
+                return new EqualsExpr(left, right);
             case NOT_EQUALS:
                 context.match(Type.NOT_EQUALS);
-                right = UnaryExpr(context);
-                return new OperationExpr(left, right, Operator.notEquals);
+                right = AdditionExpr(context);
+                return new NotEqualsExpr(left, right);
             case LESS_THAN_OR_EQUALS:
                 context.match(Type.LESS_THAN_OR_EQUALS);
-                right = UnaryExpr(context);
-                return new OperationExpr(left, right, Operator.lessThanOrEquals);
+                right = AdditionExpr(context);
+                return new LessThanOrEqualsExpr(left, right);
             case LESS_THAN:
                 context.match(Type.LESS_THAN);
-                right = UnaryExpr(context);
-                return new OperationExpr(left, right, Operator.lessThan);
+                right = AdditionExpr(context);
+                return new LessThanExpr(left, right);
             case GREATER_THAN_OR_EQUALS:
                 context.match(Type.GREATER_THAN_OR_EQUALS);
-                right = UnaryExpr(context);
-                return new OperationExpr(left, right, Operator.greaterThanOrEquals);
+                right = AdditionExpr(context);
+                return new GreaterThanOrEqualsExpr(left, right);
             case GREATER_THAN:
                 context.match(Type.GREATER_THAN);
+                right = AdditionExpr(context);
+                return new GreaterThanExpr(left, right);
+            default:
+                return left;
+        }
+    }
+
+    private Expr AdditionExpr(Context context) throws XPathExpressionException {
+        final Expr left = MultiplicationExpr(context);
+        final Expr right;
+        switch (context.tokenAt(1).getType()) {
+            case PLUS:
+                context.match(Type.PLUS);
+                right = MultiplicationExpr(context);
+                return new AdditionExpr(left, right);
+            case MINUS:
+                context.match(Type.MINUS);
+                right = MultiplicationExpr(context);
+                return new SubtractionExpr(left, right);
+            default:
+                return left;
+        }
+    }
+
+    private Expr MultiplicationExpr(Context context) throws XPathExpressionException {
+        final Expr left = UnaryExpr(context);
+        final Expr right;
+        switch (context.tokenAt(1).getType()) {
+            case STAR:
+                context.match(Type.STAR);
                 right = UnaryExpr(context);
-                return new OperationExpr(left, right, Operator.greaterThan);
+                return new MultiplicationExpr(left, right);
             default:
                 return left;
         }
     }
 
     private Expr UnaryExpr(Context context) throws XPathExpressionException {
-        switch (context.tokenAt(1).getType()) {
-            case MINUS:
-                context.match(Type.MINUS);
-                final Expr expr = UnaryExpr(context);
-                return new UnaryExpr(expr);
-            default:
-                return ValueExpr(context);
+        int count = 0;
+        while (Type.MINUS == context.tokenAt(1).getType()) {
+            context.match(Type.MINUS);
+            count++;
         }
+        final Expr expr = ValueExpr(context);
+        return 0 == (count & 1) ? expr : new UnaryExpr(expr);
     }
 
     private Expr ValueExpr(Context context) throws XPathExpressionException {

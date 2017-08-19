@@ -3,28 +3,28 @@ package com.github.simy4.xpath.view;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
 
-public abstract class AbstractViewVisitor<N extends Node, T> implements ViewVisitor<N, T> {
+public abstract class AbstractViewVisitor<N extends Node> implements ViewVisitor<N> {
 
     @Override
-    public T visit(BooleanView<N> bool) throws XmlBuilderException {
-        return returnDefault(bool);
+    public void visit(BooleanView<N> bool) throws XmlBuilderException {
+        returnDefault(bool);
     }
 
     @Override
-    public T visit(IterableNodeView<N> nodeSet) throws XmlBuilderException {
-        return returnDefault(nodeSet);
+    public void visit(IterableNodeView<N> nodeSet) throws XmlBuilderException {
+        returnDefault(nodeSet);
     }
 
     @Override
-    public T visit(LiteralView<N> literal) throws XmlBuilderException {
-        return returnDefault(literal);
+    public void visit(LiteralView<N> literal) throws XmlBuilderException {
+        returnDefault(literal);
     }
 
     @Override
-    public T visit(NumberView<N> number) throws XmlBuilderException {
-        return returnDefault(number);
+    public void visit(NumberView<N> number) throws XmlBuilderException {
+        returnDefault(number);
     }
 
-    protected abstract T returnDefault(View<N> view) throws XmlBuilderException;
+    protected abstract void returnDefault(View<N> view) throws XmlBuilderException;
 
 }

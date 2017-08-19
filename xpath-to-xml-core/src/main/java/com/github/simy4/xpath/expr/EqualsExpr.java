@@ -1,4 +1,4 @@
-package com.github.simy4.xpath.expr.operators;
+package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
@@ -10,25 +10,29 @@ import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewContext;
 
-class NotEquals implements Operator {
+public class EqualsExpr extends AbstractOperationExpr {
+
+    public EqualsExpr(Expr leftExpr, Expr rightExpr) {
+        super(leftExpr, rightExpr);
+    }
 
     @Override
     public <N extends Node> View<N> resolve(ViewContext<N> context, View<N> left, View<N> right)
             throws XmlBuilderException {
         boolean eq = 0 == left.compareTo(right);
-        if (eq && context.isGreedy() && !context.hasNext()) {
+        if (!eq && context.isGreedy() && !context.hasNext()) {
             left.visit(new ApplicationVisitor<>(context.getNavigator(), right));
-            eq = false;
+            eq = true;
         }
-        return BooleanView.of(!eq);
+        return BooleanView.of(eq);
     }
 
     @Override
-    public String toString() {
-        return "!=";
+    String operator() {
+        return "=";
     }
 
-    private static final class ApplicationVisitor<N extends Node> extends AbstractViewVisitor<N, View<N>> {
+    private static final class ApplicationVisitor<N extends Node> extends AbstractViewVisitor<N> {
 
         private final Navigator<N> navigator;
         private final View<N> right;
@@ -39,15 +43,14 @@ class NotEquals implements Operator {
         }
 
         @Override
-        public View<N> visit(IterableNodeView<N> nodeSet) throws XmlBuilderException {
+        public void visit(IterableNodeView<N> nodeSet) throws XmlBuilderException {
             for (NodeView<N> node : nodeSet) {
-                navigator.setText(node.getNode(), Boolean.toString(!right.toBoolean()));
+                navigator.setText(node.getNode(), right.toString());
             }
-            return nodeSet;
         }
 
         @Override
-        protected View<N> returnDefault(View<N> view) throws XmlBuilderException {
+        protected void returnDefault(View<N> view) throws XmlBuilderException {
             throw new XmlBuilderException("Can not modify read-only node: " + view);
         }
 

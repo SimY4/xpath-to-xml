@@ -36,8 +36,8 @@ public final class NumberView<N extends Node> implements View<N> {
     }
 
     @Override
-    public <T> T visit(ViewVisitor<N, T> visitor) throws XmlBuilderException {
-        return visitor.visit(this);
+    public void visit(ViewVisitor<N> visitor) throws XmlBuilderException {
+        visitor.visit(this);
     }
 
 }

@@ -1,8 +1,10 @@
-dependencies {
-    compile project(':xpath-to-xml-core')
+ext.pomDescription = "XPath-to-XML DOM"
 
-    testCompile project(':xpath-to-xml-test')
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:2.8.47'
-    testCompile 'org.assertj:assertj-core:3.8.0'
+dependencies {
+    api project(':xpath-to-xml-core')
+
+    testImplementation project(':xpath-to-xml-test')
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:2.8.47'
+    testImplementation 'org.assertj:assertj-core:3.8.0'
 }

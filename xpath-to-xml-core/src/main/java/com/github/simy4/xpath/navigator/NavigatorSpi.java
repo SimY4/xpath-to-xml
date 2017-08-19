@@ -24,6 +24,7 @@ public interface NavigatorSpi {
      *
      * @param xml     XML model to modify
      * @param effects effects to apply
+     * @param <T> XML model type
      * @return modified XML model
      * @throws XmlBuilderException if error occur during XML model modification
      */

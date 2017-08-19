@@ -1,21 +1,17 @@
-plugins {
-    id 'me.champeau.gradle.jmh' version '0.4.4'
-}
-
-allprojects {
-    group 'com.github.simy4'
-    version '1.0.0-RC1'
-
-    jmh {
-        jmhVersion '1.19'
-    }
+ext {
+    def buildTimeAndDate = new Date()
+    buildDate = buildTimeAndDate.format("yyyy-MM-dd")
+    buildTime = buildTimeAndDate.format("HH:mm:ss.SSSZ")
 }
 
 subprojects {
-    apply plugin: 'java'
-    apply plugin: 'checkstyle'
-    apply plugin: 'findbugs'
-    apply plugin: 'me.champeau.gradle.jmh'
+    apply plugin: 'java-library'
+    apply plugin: 'signing'
+    apply from: rootProject.file('gradle/check-checkstyle.gradle')
+    apply from: rootProject.file('gradle/check-codecoverage.gradle')
+    apply from: rootProject.file('gradle/check-findbugs.gradle')
+    apply from: rootProject.file('gradle/publish-jar.gradle')
+    apply from: rootProject.file('gradle/publish-maven.gradle')
 
     sourceCompatibility = JavaVersion.VERSION_1_8
 
@@ -23,59 +19,37 @@ subprojects {
         mavenCentral()
     }
 
-    configurations {
-        provided
-    }
-
-    sourceSets {
-        main.compileClasspath += configurations.provided
-        test.compileClasspath += configurations.provided
-        test.runtimeClasspath += configurations.provided
-    }
-
     dependencies {
         checkstyle 'com.puppycrawl.tools:checkstyle:8.1'
 
-        compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+        implementation 'com.google.code.findbugs:jsr305:3.0.2'
     }
 
-    checkstyle {
-        configFile = rootProject.file('config/checkstyle/checkstyle.xml')
-        showViolations = true
-        ignoreFailures = false
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
     }
 
-    findbugs {
-        toolVersion = "3.0.1"
-        sourceSets = [sourceSets.main]
-        ignoreFailures = true
-        reportsDir = file("$project.buildDir/reports/findbugs")
-        effort = "max"
-        reportLevel = "high"
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
     }
 
-    findbugsMain {
-        reports {
-            xml.enabled = false
-            html.enabled = true
+    artifacts {
+        archives jar
+        archives sourcesJar
+        archives javadocJar
+    }
+
+    signing {
+        required {
+            signatory != null && !(project.version =~ /-SNAPSHOT$/)
         }
+        sign configurations.archives
     }
 
-    findbugsTest {
-        reports {
-            xml.enabled = false
-            html.enabled = true
-        }
-    }
+}
 
-    jmh {
-        include = ['com\\.github\\.simy4\\.xpath\\..+']
-        humanOutputFile = null
-        iterations = 10
-        fork = 2
-        failOnError = true
-        timeUnit = 'ms'
-        warmupIterations = 5
-    }
-
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.1'
 }

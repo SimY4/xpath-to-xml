@@ -3,14 +3,13 @@ package com.github.simy4.xpath.parser;
 import com.github.simy4.xpath.expr.Attribute;
 import com.github.simy4.xpath.expr.DescendantOrSelfExpr;
 import com.github.simy4.xpath.expr.Element;
+import com.github.simy4.xpath.expr.EqualsExpr;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.expr.Identity;
 import com.github.simy4.xpath.expr.NumberExpr;
-import com.github.simy4.xpath.expr.OperationExpr;
 import com.github.simy4.xpath.expr.PathExpr;
 import com.github.simy4.xpath.expr.Root;
 import com.github.simy4.xpath.expr.StepExpr;
-import com.github.simy4.xpath.expr.operators.Operator;
 import com.github.simy4.xpath.util.Pair;
 import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.util.SimpleNamespaceContext;
@@ -58,14 +57,15 @@ public class XPathParserTest {
                 Pair.of("//author", pathExpr(new Root(), new DescendantOrSelfExpr(),
                         new Element(new QName("author"), NIL))),
                 Pair.of("book[/bookstore/@specialty=@style]",
-                        pathExpr(new Element(new QName("book"), singletonList(new OperationExpr(
-                                pathExpr(
-                                        new Root(),
-                                        new Element(new QName("bookstore"), NIL),
-                                        new Attribute(new QName("specialty"), NIL)),
-                                pathExpr(
-                                        new Attribute(new QName("style"), NIL)),
-                                Operator.equals))))),
+                        pathExpr(new Element(new QName("book"),
+                                singletonList(
+                                        new EqualsExpr(
+                                                pathExpr(
+                                                        new Root(),
+                                                        new Element(new QName("bookstore"), NIL),
+                                                        new Attribute(new QName("specialty"), NIL)),
+                                                pathExpr(
+                                                        new Attribute(new QName("style"), NIL))))))),
                 Pair.of("author/first-name", pathExpr(new Element(new QName("author"), NIL),
                         new Element(new QName("first-name"), NIL))),
                 Pair.of("bookstore//title", pathExpr(new Element(new QName("bookstore"), NIL),
@@ -126,8 +126,15 @@ public class XPathParserTest {
 
     @DataPoints("Negative")
     public static final String[] INVALID_X_PATHS = new String[] {
+            "",
             "...",
+            "//",
             "///",
+            "my:book:com",
+            "bo@k",
+            "book[]",
+            "book[]]",
+            "book[[]",
             "book[@style='value\"]",
     };
 

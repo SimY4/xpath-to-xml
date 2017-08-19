@@ -34,7 +34,8 @@ public class PutValueEffectTest {
     @Before
     public void setUp() {
         when(navigator.xml()).thenReturn(node("xml"));
-        when(expr.resolve(any())).thenReturn(new NodeView<>(node("node")));
+        when(expr.resolve(any(ViewContext.class)))
+                .thenReturn(new NodeView<>(node("node")));
 
         putValueEffect = new PutValueEffect(expr, "value");
     }
