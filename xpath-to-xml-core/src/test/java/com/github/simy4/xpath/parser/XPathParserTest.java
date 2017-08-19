@@ -1,15 +1,19 @@
 package com.github.simy4.xpath.parser;
 
+import com.github.simy4.xpath.expr.AdditionExpr;
 import com.github.simy4.xpath.expr.Attribute;
 import com.github.simy4.xpath.expr.DescendantOrSelfExpr;
 import com.github.simy4.xpath.expr.Element;
 import com.github.simy4.xpath.expr.EqualsExpr;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.expr.Identity;
+import com.github.simy4.xpath.expr.MultiplicationExpr;
 import com.github.simy4.xpath.expr.NumberExpr;
 import com.github.simy4.xpath.expr.PathExpr;
 import com.github.simy4.xpath.expr.Root;
 import com.github.simy4.xpath.expr.StepExpr;
+import com.github.simy4.xpath.expr.SubtractionExpr;
+import com.github.simy4.xpath.expr.UnaryExpr;
 import com.github.simy4.xpath.util.Pair;
 import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.util.SimpleNamespaceContext;
@@ -109,6 +113,9 @@ public class XPathParserTest {
                 Pair.of("author[first-name][3]", pathExpr(new Element(new QName("author"), asList(
                         pathExpr(new Element(new QName("first-name"), NIL)),
                         new NumberExpr(3.0))))),
+                Pair.of("1 + 2 + 2 * 2 - -4", new MultiplicationExpr(new AdditionExpr(new NumberExpr(1.0),
+                        new AdditionExpr(new NumberExpr(2.0), new NumberExpr(2.0))),
+                        new SubtractionExpr(new NumberExpr(2.0), new UnaryExpr(new NumberExpr(4.0))))),
         };
     }
 
