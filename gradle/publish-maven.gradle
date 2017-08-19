@@ -18,6 +18,7 @@ uploadArchives {
                 packaging 'jar'
                 description projectDescription
                 url 'http://github.com/SimY4/xpath-to-xml'
+                inceptionYear '2017'
 
                 scm {
                     connection 'scm:git:http://github.com/SimY4/xpath-to-xml'
