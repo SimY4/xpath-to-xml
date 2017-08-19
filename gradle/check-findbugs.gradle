@@ -1,12 +1,12 @@
-apply plugin: "findbugs"
+apply plugin: 'findbugs'
 
 findbugs {
-    toolVersion = "3.0.1"
+    toolVersion = '3.0.1'
     sourceSets = [sourceSets.main]
     ignoreFailures = false
     reportsDir = file("$project.buildDir/reports/findbugs")
-    effort = "max"
-    reportLevel = "high"
+    effort = 'max'
+    reportLevel = 'high'
 }
 
 findbugsMain {

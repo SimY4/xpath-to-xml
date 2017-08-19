@@ -6,6 +6,7 @@ ext {
 
 subprojects {
     apply plugin: 'java-library'
+    apply plugin: 'signing'
     apply from: rootProject.file('gradle/check-checkstyle.gradle')
     apply from: rootProject.file('gradle/check-findbugs.gradle')
     apply from: rootProject.file('gradle/publish-jar.gradle')
@@ -34,9 +35,18 @@ subprojects {
     }
 
     artifacts {
+        archives jar
         archives sourcesJar
         archives javadocJar
     }
+
+    signing {
+        required {
+            signatory != null && !(project.version =~ /-SNAPSHOT$/)
+        }
+        sign configurations.archives
+    }
+
 }
 
 task wrapper(type: Wrapper) {

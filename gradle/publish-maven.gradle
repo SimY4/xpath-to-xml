@@ -1,54 +1,44 @@
-apply plugin: "maven-publish"
+apply plugin: 'maven'
 
-def pomConfig = {
-    name project.name
-    url "https://github.com/SimY4/xpath-to-xml"
-    inceptionYear "2017"
-
-    licenses {
-        license([:]) {
-            name "The Apache Software License, Version 2.0"
-            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            distribution "repo"
-        }
-    }
-
-    scm {
-        url "https://github.com/SimY4/xpath-to-xml"
-    }
-
-    developers {
-        developer {
-            id "SimY4"
-            name "Alex Simkin"
-            url "https://github.com/SimY4"
-            timezone "+10"
-            roles {
-                role "project maintainer"
-            }
-        }
-    }
-}
-
-publishing {
+uploadArchives {
     repositories {
-        maven {
-            url sonatypeUrl
-            credentials {
-                username = sonatypeUsername
-                password = sonatypePassword
-            }
-        }
-    }
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-            artifact sourcesJar
-            artifact javadocJar
-            pom.withXml {
-                asNode().children().last() + pomConfig
-                asNode().appendNode("description", project.pomDescription)
+            repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+
+            snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+
+            pom.project {
+                name "${project.name}"
+                packaging 'jar'
+                description projectDescription
+                url 'http://github.com/SimY4/xpath-to-xml'
+
+                scm {
+                    connection 'scm:git:http://github.com/SimY4/xpath-to-xml'
+                    developerConnection 'scm:git:http://github.com/SimY4/xpath-to-xml'
+                    url 'http://github.com/SimY4/xpath-to-xml'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'SimY4'
+                        name 'Alex Simkin'
+                        url 'http://github.com/SimY4'
+                    }
+                }
             }
         }
     }
