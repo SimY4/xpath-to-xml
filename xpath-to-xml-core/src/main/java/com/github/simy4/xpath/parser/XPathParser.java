@@ -74,76 +74,89 @@ public class XPathParser {
     }
 
     private Expr ComparisonExpr(Context context) throws XPathExpressionException {
-        final Expr left = AdditionExpr(context);
+        final Expr left = AdditiveExpr(context);
         final Expr right;
         switch (context.tokenAt(1).getType()) {
             case EQUALS:
                 context.match(Type.EQUALS);
-                right = AdditionExpr(context);
+                right = AdditiveExpr(context);
                 return new EqualsExpr(left, right);
             case NOT_EQUALS:
                 context.match(Type.NOT_EQUALS);
-                right = AdditionExpr(context);
+                right = AdditiveExpr(context);
                 return new NotEqualsExpr(left, right);
             case LESS_THAN_OR_EQUALS:
                 context.match(Type.LESS_THAN_OR_EQUALS);
-                right = AdditionExpr(context);
+                right = AdditiveExpr(context);
                 return new LessThanOrEqualsExpr(left, right);
             case LESS_THAN:
                 context.match(Type.LESS_THAN);
-                right = AdditionExpr(context);
+                right = AdditiveExpr(context);
                 return new LessThanExpr(left, right);
             case GREATER_THAN_OR_EQUALS:
                 context.match(Type.GREATER_THAN_OR_EQUALS);
-                right = AdditionExpr(context);
+                right = AdditiveExpr(context);
                 return new GreaterThanOrEqualsExpr(left, right);
             case GREATER_THAN:
                 context.match(Type.GREATER_THAN);
-                right = AdditionExpr(context);
+                right = AdditiveExpr(context);
                 return new GreaterThanExpr(left, right);
             default:
                 return left;
         }
     }
 
-    private Expr AdditionExpr(Context context) throws XPathExpressionException {
-        final Expr left = MultiplicationExpr(context);
-        final Expr right;
-        switch (context.tokenAt(1).getType()) {
-            case PLUS:
-                context.match(Type.PLUS);
-                right = MultiplicationExpr(context);
-                return new AdditionExpr(left, right);
-            case MINUS:
-                context.match(Type.MINUS);
-                right = MultiplicationExpr(context);
-                return new SubtractionExpr(left, right);
-            default:
-                return left;
+    private Expr AdditiveExpr(Context context) throws XPathExpressionException {
+        Expr left = MultiplicativeExpr(context);
+        Type type = context.tokenAt(1).getType();
+        while (Type.PLUS == type || Type.MINUS == type) {
+            Expr right;
+            switch (type) {
+                case PLUS:
+                    context.match(Type.PLUS);
+                    right = MultiplicativeExpr(context);
+                    left = new AdditionExpr(left, right);
+                    break;
+                case MINUS:
+                    context.match(Type.MINUS);
+                    right = MultiplicativeExpr(context);
+                    left = new SubtractionExpr(left, right);
+                    break;
+                default:
+                    throw new XPathParserException(context.tokenAt(1), Type.PLUS, Type.MINUS);
+            }
+            type = context.tokenAt(1).getType();
         }
+        return left;
     }
 
-    private Expr MultiplicationExpr(Context context) throws XPathExpressionException {
-        final Expr left = UnaryExpr(context);
-        final Expr right;
-        switch (context.tokenAt(1).getType()) {
-            case STAR:
-                context.match(Type.STAR);
-                right = UnaryExpr(context);
-                return new MultiplicationExpr(left, right);
-            default:
-                return left;
+    private Expr MultiplicativeExpr(Context context) throws XPathExpressionException {
+        Expr left = UnaryExpr(context);
+        Type type = context.tokenAt(1).getType();
+        while (Type.STAR == type) {
+            Expr right;
+            switch (type) {
+                case STAR:
+                    context.match(Type.STAR);
+                    right = UnaryExpr(context);
+                    left = new MultiplicationExpr(left, right);
+                    break;
+                default:
+                    throw new XPathParserException(context.tokenAt(1), Type.STAR);
+            }
+            type = context.tokenAt(1).getType();
         }
+        return left;
     }
 
     private Expr UnaryExpr(Context context) throws XPathExpressionException {
-        int count = 0;
-        while (Type.MINUS == context.tokenAt(1).getType()) {
-            context.match(Type.MINUS);
-            count++;
+        switch (context.tokenAt(1).getType()) {
+            case MINUS:
+                context.match(Type.MINUS);
+                return new UnaryExpr(UnaryExpr(context));
+            default:
+                return ValueExpr(context);
         }
-        final Expr expr = ValueExpr(context);
-        return 0 == (count & 1) ? expr : new UnaryExpr(expr);
     }
 
     private Expr ValueExpr(Context context) throws XPathExpressionException {
@@ -194,7 +207,7 @@ public class XPathParser {
         pathExpr.add(StepExpr(context));
         Type type = context.tokenAt(1).getType();
         while (Type.SLASH == type || Type.DOUBLE_SLASH == type) {
-            switch (context.tokenAt(1).getType()) {
+            switch (type) {
                 case SLASH:
                     context.match(Type.SLASH);
                     pathExpr.add(StepExpr(context));
