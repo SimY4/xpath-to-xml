@@ -1,13 +1,14 @@
-package com.github.simy4.xpath.dom4j.navigator;
+package com.github.simy4.xpath.dom4j.spi;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.dom4j.navigator.Dom4jNavigator;
 import com.github.simy4.xpath.dom4j.navigator.node.Dom4jAttribute;
 import com.github.simy4.xpath.dom4j.navigator.node.Dom4jDocument;
 import com.github.simy4.xpath.dom4j.navigator.node.Dom4jElement;
 import com.github.simy4.xpath.dom4j.navigator.node.Dom4jNode;
 import com.github.simy4.xpath.effects.Effect;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.NavigatorSpi;
+import com.github.simy4.xpath.spi.NavigatorSpi;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -29,7 +30,7 @@ public class Dom4jNavigatorSpi implements NavigatorSpi {
             throw new IllegalArgumentException("XML model is not supported");
         }
         final Node xmlNode = (Node) xml;
-        final Dom4jNode node;
+        final Dom4jNode<?> node;
         switch (xmlNode.getNodeType()) {
             case Node.DOCUMENT_NODE:
                 node = new Dom4jDocument((Document) xmlNode);
@@ -43,9 +44,9 @@ public class Dom4jNavigatorSpi implements NavigatorSpi {
             default:
                 throw new IllegalArgumentException("XML node type is not supported");
         }
-        final Navigator<Dom4jNode> navigator = new Dom4jNavigator(node);
+        final Navigator<Dom4jNode> navigator = new Dom4jNavigator(xmlNode);
         for (Effect effect : effects) {
-            effect.perform(navigator);
+            effect.perform(navigator, node);
         }
         return xml;
     }

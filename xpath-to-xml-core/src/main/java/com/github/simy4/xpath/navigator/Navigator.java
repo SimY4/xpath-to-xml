@@ -15,13 +15,6 @@ import javax.xml.namespace.QName;
 public interface Navigator<N extends Node> {
 
     /**
-     * Wrapped initial XML node.
-     *
-     * @return initial XML node
-     */
-    N xml();
-
-    /**
      * Wrapped XML root.
      *
      * @return XML root

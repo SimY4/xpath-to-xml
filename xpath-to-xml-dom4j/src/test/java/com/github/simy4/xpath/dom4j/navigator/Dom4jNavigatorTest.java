@@ -61,12 +61,7 @@ public class Dom4jNavigatorTest {
         when(xml.elementIterator()).thenReturn(Arrays.asList(child1, child2, child3).iterator());
         when(xml.attributeIterator()).thenReturn(Arrays.asList(attr1, attr2, attr3).iterator());
 
-        navigator = new Dom4jNavigator(new Dom4jElement(xml));
-    }
-
-    @Test
-    public void testXmlNode() {
-        assertThat(navigator.xml()).hasFieldOrPropertyWithValue("node", xml);
+        navigator = new Dom4jNavigator(xml);
     }
 
     @Test

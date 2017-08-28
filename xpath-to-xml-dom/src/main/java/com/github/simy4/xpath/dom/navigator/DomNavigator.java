@@ -13,19 +13,12 @@ import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import java.util.Iterator;
 
-final class DomNavigator implements Navigator<DomNode> {
+public final class DomNavigator implements Navigator<DomNode> {
 
     private final Document document;
-    private final DomNode xml;
 
-    DomNavigator(org.w3c.dom.Node xml) {
-        this.xml = new DomNode(xml);
+    public DomNavigator(org.w3c.dom.Node xml) {
         this.document = xml.getNodeType() == org.w3c.dom.Node.DOCUMENT_NODE ? (Document) xml : xml.getOwnerDocument();
-    }
-
-    @Override
-    public DomNode xml() {
-        return xml;
     }
 
     @Override

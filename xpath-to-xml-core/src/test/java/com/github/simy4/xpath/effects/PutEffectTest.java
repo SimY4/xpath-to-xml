@@ -31,7 +31,6 @@ public class PutEffectTest {
 
     @Before
     public void setUp() {
-        when(navigator.xml()).thenReturn(node("xml"));
         when(expr.resolve(any(ViewContext.class))).thenReturn(new NodeView<TestNode>(node("node")));
 
         putEffect = new PutEffect(expr);
@@ -40,7 +39,7 @@ public class PutEffectTest {
     @Test
     public void shouldGreedilyResolveExpr() {
         // when
-        putEffect.perform(navigator);
+        putEffect.perform(navigator, node("xml"));
 
         // then
         verify(expr).resolve(contextCaptor.capture());
@@ -54,7 +53,7 @@ public class PutEffectTest {
         when(expr.resolve(any(ViewContext.class))).thenThrow(XmlBuilderException.class);
 
         // then
-        putEffect.perform(navigator);
+        putEffect.perform(navigator, node("xml"));
     }
 
 }

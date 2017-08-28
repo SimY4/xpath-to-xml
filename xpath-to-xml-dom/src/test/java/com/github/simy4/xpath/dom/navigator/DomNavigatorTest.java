@@ -61,11 +61,6 @@ public class DomNavigatorTest {
     }
 
     @Test
-    public void testXmlNode() {
-        assertThat(navigator.xml()).hasFieldOrPropertyWithValue("node", xml);
-    }
-
-    @Test
     public void testRootNode() {
         assertThat(navigator.root()).hasFieldOrPropertyWithValue("node", root);
     }

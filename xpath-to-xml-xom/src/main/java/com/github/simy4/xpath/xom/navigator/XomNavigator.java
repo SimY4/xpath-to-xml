@@ -15,22 +15,17 @@ import javax.annotation.Nullable;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
-final class XomNavigator implements Navigator<XomNode> {
+public final class XomNavigator implements Navigator<XomNode> {
 
-    private final XomNode xml;
+    private final Node xml;
 
-    XomNavigator(XomNode xml) {
+    public XomNavigator(Node xml) {
         this.xml = xml;
     }
 
     @Override
-    public XomNode xml() {
-        return xml;
-    }
-
-    @Override
     public XomNode root() {
-        return new XomDocument(xml.getNode().getDocument());
+        return new XomDocument(xml.getDocument());
     }
 
     @Override

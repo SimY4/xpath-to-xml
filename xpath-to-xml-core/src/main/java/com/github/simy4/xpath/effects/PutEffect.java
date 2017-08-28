@@ -19,9 +19,8 @@ public class PutEffect implements Effect {
     }
 
     @Override
-    public <N extends Node> void perform(Navigator<N> navigator) throws XmlBuilderException {
-        final NodeView<N> xml = new NodeView<N>(navigator.xml());
-        final ViewContext<N> context = new ViewContext<N>(navigator, xml, true);
+    public <N extends Node> void perform(Navigator<N> navigator, N xml) throws XmlBuilderException {
+        final ViewContext<N> context = new ViewContext<N>(navigator, new NodeView<N>(xml), true);
         expr.resolve(context).visit(new EagerVisitor<N>());
     }
 
