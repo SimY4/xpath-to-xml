@@ -134,7 +134,7 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
         if (this == o) {
             return true;
         }
-        if (o == null || !o.getClass().isAssignableFrom(View.class)) {
+        if (o == null || !(o instanceof View)) {
             return false;
         }
 

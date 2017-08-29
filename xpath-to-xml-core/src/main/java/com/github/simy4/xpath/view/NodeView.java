@@ -22,12 +22,7 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
 
     @Override
     public int compareTo(@Nonnull View<N> other) {
-        final String text = node.getText();
-        if (null == text) {
-            return other.toBoolean() ? -1 : 0;
-        } else {
-            return text.compareTo(other.toString());
-        }
+        return toString().compareTo(other.toString());
     }
 
     @Override
@@ -81,21 +76,12 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (null == o || !o.getClass().isAssignableFrom(View.class)) {
-            return false;
-        }
-
-        final String text = node.getText();
-        return null != text ? text.equals(o.toString()) : !((View<?>) o).toBoolean();
+        return this == o || null != o && o instanceof View && toString().equals(o.toString());
     }
 
     @Override
     public int hashCode() {
-        final String text = node.getText();
-        return null != text ? text.hashCode() : 0;
+        return toString().hashCode();
     }
 
     public N getNode() {
