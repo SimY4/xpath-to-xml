@@ -9,6 +9,7 @@ import com.github.simy4.xpath.dom4j.navigator.node.Dom4jNode;
 import com.github.simy4.xpath.effects.Effect;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.spi.NavigatorSpi;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -25,6 +26,7 @@ public class Dom4jNavigatorSpi implements NavigatorSpi {
     }
 
     @Override
+    @SuppressFBWarnings("BC_UNCONFIRMED_CAST")
     public <T> T process(T xml, Iterable<Effect> effects) throws XmlBuilderException {
         if (!canHandle(xml)) {
             throw new IllegalArgumentException("XML model is not supported");

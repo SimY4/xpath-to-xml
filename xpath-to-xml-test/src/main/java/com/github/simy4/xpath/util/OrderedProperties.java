@@ -1,5 +1,7 @@
 package com.github.simy4.xpath.util;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
@@ -13,7 +15,10 @@ import java.util.Set;
  *
  * @author Alex Simkin
  */
+@SuppressFBWarnings("EQ_DOESNT_OVERRIDE_EQUALS")
 public class OrderedProperties extends Properties {
+
+    private static final long serialVersionUID = 1L;
 
     private final Set<Object> keys = new LinkedHashSet<Object>();
 

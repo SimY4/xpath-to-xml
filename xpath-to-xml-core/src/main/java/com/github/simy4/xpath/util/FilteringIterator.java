@@ -32,7 +32,7 @@ public final class FilteringIterator<T> implements Iterator<T> {
     @Override
     public T next() {
         if (!hasNext) {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException("No more elements");
         }
         return nextMatch();
     }

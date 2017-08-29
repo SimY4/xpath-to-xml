@@ -14,6 +14,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 import javax.xml.namespace.QName;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 @Immutable
 public final class XomElement implements XomNode<Element> {
@@ -143,6 +144,9 @@ public final class XomElement implements XomNode<Element> {
 
         @Override
         public XomNode<Attribute> next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException("No more elements");
+            }
             return new XomAttribute(element.getAttribute(cursor++));
         }
 
@@ -169,6 +173,9 @@ public final class XomElement implements XomNode<Element> {
 
         @Override
         public XomNode<Element> next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException("No more elements");
+            }
             return new XomElement(elements.get(cursor++));
         }
 
