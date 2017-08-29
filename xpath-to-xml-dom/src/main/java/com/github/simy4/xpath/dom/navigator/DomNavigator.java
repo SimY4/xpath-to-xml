@@ -7,11 +7,9 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
-import java.util.Iterator;
 
 public final class DomNavigator implements Navigator<DomNode> {
 
@@ -35,24 +33,12 @@ public final class DomNavigator implements Navigator<DomNode> {
 
     @Override
     public Iterable<DomNode> elementsOf(final DomNode parent) {
-        return new Iterable<DomNode>() {
-            @Override
-            @Nonnull
-            public Iterator<DomNode> iterator() {
-                return new DomElementsIterator(parent.getNode());
-            }
-        };
+        return new DomElementsIterable(parent.getNode());
     }
 
     @Override
     public Iterable<DomNode> attributesOf(final DomNode parent) {
-        return new Iterable<DomNode>() {
-            @Override
-            @Nonnull
-            public Iterator<DomNode> iterator() {
-                return new DomAttributesIterator(parent.getNode());
-            }
-        };
+        return new DomAttributesIterable(parent.getNode());
     }
 
     @Override
