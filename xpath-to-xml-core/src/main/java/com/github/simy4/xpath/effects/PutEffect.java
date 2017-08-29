@@ -9,6 +9,7 @@ import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewContext;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class PutEffect implements Effect {
 
@@ -28,6 +29,7 @@ public class PutEffect implements Effect {
 
         @Override
         @SuppressWarnings("StatementWithEmptyBody")
+        @SuppressFBWarnings("UC_USELESS_VOID_METHOD")
         public void visit(IterableNodeView<N> nodeSet) throws XmlBuilderException {
             for (NodeView<N> ignored : nodeSet) { } // eagerly consume resolved iterable
         }

@@ -22,10 +22,11 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
 
     @Override
     public int compareTo(@Nonnull View<N> other) {
-        if (other instanceof NodeView) {
-            return node.getText().compareTo(((NodeView) other).getNode().getText());
+        final String text = node.getText();
+        if (null == text) {
+            return other.toBoolean() ? -1 : 0;
         } else {
-            return -other.compareTo(this);
+            return text.compareTo(other.toString());
         }
     }
 
@@ -67,15 +68,34 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
     @Override
     public IterableNodeView<N> filter(Navigator<N> navigator, boolean greedy, int position,
                                       Predicate<ViewContext<?>> predicate) throws XmlBuilderException {
-        ViewContext<N> context = new ViewContext<N>(navigator, this, greedy, false, position);
+        final ViewContext<N> context = new ViewContext<N>(navigator, this, greedy, false, position);
         return predicate.test(context) ? this : NodeSetView.<N>empty();
     }
 
     @Override
     public IterableNodeView<N> flatMap(Navigator<N> navigator, boolean greedy,
                                        Function<ViewContext<N>, IterableNodeView<N>> fmap) throws XmlBuilderException {
-        ViewContext<N> context = new ViewContext<N>(navigator, this, greedy, false, 1);
+        final ViewContext<N> context = new ViewContext<N>(navigator, this, greedy, false, 1);
         return fmap.apply(context);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (null == o || !o.getClass().isAssignableFrom(View.class)) {
+            return false;
+        }
+
+        final String text = node.getText();
+        return null != text ? text.equals(o.toString()) : !((View<?>) o).toBoolean();
+    }
+
+    @Override
+    public int hashCode() {
+        final String text = node.getText();
+        return null != text ? text.hashCode() : 0;
     }
 
     public N getNode() {

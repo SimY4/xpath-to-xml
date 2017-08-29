@@ -8,6 +8,7 @@ import com.github.simy4.xpath.util.FlatteningIterator;
 import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.util.TransformingIterator;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
@@ -127,6 +128,30 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
         });
     }
 
+    @Override
+    @SuppressFBWarnings("EQ_CHECK_FOR_OPERAND_NOT_COMPATIBLE_WITH_THIS")
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || !o.getClass().isAssignableFrom(View.class)) {
+            return false;
+        }
+
+        final Iterator<NodeView<N>> iterator = iterator();
+        if (iterator.hasNext()) {
+            return iterator.next().equals(o);
+        } else {
+            return !((View) o).toBoolean();
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        final Iterator<NodeView<N>> iterator = iterator();
+        return iterator.hasNext() ? iterator.next().hashCode() : 0;
+    }
+
     private static final class NodeWrapper<T extends Node> implements Function<T, NodeView<T>> {
 
         @Override
@@ -138,9 +163,9 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
     private abstract static class AbstractWrapper<T extends Node> {
 
-        protected final Navigator<T> navigator;
-        protected final Iterator<NodeView<T>> wrappingNodeSet;
-        protected final boolean greedy;
+        private final Navigator<T> navigator;
+        private final Iterator<NodeView<T>> wrappingNodeSet;
+        private final boolean greedy;
         private int position;
 
         AbstractWrapper(Navigator<T> navigator, Iterator<NodeView<T>> wrappingNodeSet, boolean greedy, int position) {
@@ -194,6 +219,7 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
     }
 
+    @NotThreadSafe
     private static final class Distinct<T extends Node> implements Predicate<NodeView<T>> {
 
         private final Set<T> visited = new HashSet<T>();

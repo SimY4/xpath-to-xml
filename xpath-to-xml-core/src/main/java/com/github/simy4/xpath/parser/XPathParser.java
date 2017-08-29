@@ -24,6 +24,7 @@ import com.github.simy4.xpath.expr.UnaryExpr;
 import com.github.simy4.xpath.parser.Token.Type;
 import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.view.ViewContext;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
@@ -45,6 +46,7 @@ import java.util.List;
  */
 @ThreadSafe
 @SuppressWarnings("MethodName")
+@SuppressFBWarnings("NM_METHOD_NAMING_CONVENTION")
 public class XPathParser {
 
     private final NamespaceContext namespaceContext;
