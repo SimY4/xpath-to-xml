@@ -40,4 +40,15 @@ public final class NumberView<N extends Node> implements View<N> {
         visitor.visit(this);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        return this == o || null != o && o instanceof View && 0 == Double.compare(number, ((View<?>) o).toNumber());
+    }
+
+    @Override
+    public int hashCode() {
+        final long temp = Double.doubleToLongBits(number);
+        return (int) (temp ^ (temp >>> 32));
+    }
+
 }

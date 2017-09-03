@@ -43,12 +43,7 @@ public class XomNavigatorTest {
         xml.addAttribute(attr2);
         xml.addAttribute(attr3);
 
-        navigator = new XomNavigator(new XomElement(xml));
-    }
-
-    @Test
-    public void testXmlNode() {
-        assertThat(navigator.xml()).hasFieldOrPropertyWithValue("node", xml);
+        navigator = new XomNavigator(xml);
     }
 
     @Test

@@ -5,8 +5,8 @@ import com.github.simy4.xpath.effects.PutEffect;
 import com.github.simy4.xpath.effects.PutValueEffect;
 import com.github.simy4.xpath.effects.RemoveEffect;
 import com.github.simy4.xpath.expr.Expr;
-import com.github.simy4.xpath.navigator.NavigatorSpi;
 import com.github.simy4.xpath.parser.XPathParser;
+import com.github.simy4.xpath.spi.NavigatorSpi;
 
 import javax.annotation.Nullable;
 import javax.xml.namespace.NamespaceContext;

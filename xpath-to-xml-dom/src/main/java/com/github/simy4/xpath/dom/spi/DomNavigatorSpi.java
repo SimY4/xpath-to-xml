@@ -1,9 +1,11 @@
-package com.github.simy4.xpath.dom.navigator;
+package com.github.simy4.xpath.dom.spi;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.dom.navigator.DomNavigator;
+import com.github.simy4.xpath.dom.navigator.DomNode;
 import com.github.simy4.xpath.effects.Effect;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.NavigatorSpi;
+import com.github.simy4.xpath.spi.NavigatorSpi;
 import org.w3c.dom.Node;
 
 /**
@@ -24,7 +26,7 @@ public class DomNavigatorSpi implements NavigatorSpi {
         final Node xmlNode = (Node) xml;
         final Navigator<DomNode> navigator = new DomNavigator(xmlNode);
         for (Effect effect : effects) {
-            effect.perform(navigator);
+            effect.perform(navigator, new DomNode(xmlNode));
         }
         return xml;
     }

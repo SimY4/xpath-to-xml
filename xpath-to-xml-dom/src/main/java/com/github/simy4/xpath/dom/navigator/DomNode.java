@@ -7,11 +7,11 @@ import javax.xml.namespace.QName;
 import java.util.Objects;
 
 @Immutable
-final class DomNode implements Node {
+public final class DomNode implements Node {
 
     private final org.w3c.dom.Node node;
 
-    DomNode(org.w3c.dom.Node node) {
+    public DomNode(org.w3c.dom.Node node) {
         this.node = node;
     }
 

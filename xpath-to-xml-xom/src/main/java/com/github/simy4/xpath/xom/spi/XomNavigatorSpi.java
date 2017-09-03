@@ -1,9 +1,10 @@
-package com.github.simy4.xpath.xom.navigator;
+package com.github.simy4.xpath.xom.spi;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.effects.Effect;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.NavigatorSpi;
+import com.github.simy4.xpath.spi.NavigatorSpi;
+import com.github.simy4.xpath.xom.navigator.XomNavigator;
 import com.github.simy4.xpath.xom.navigator.node.XomAttribute;
 import com.github.simy4.xpath.xom.navigator.node.XomDocument;
 import com.github.simy4.xpath.xom.navigator.node.XomElement;
@@ -29,7 +30,7 @@ public class XomNavigatorSpi implements NavigatorSpi {
             throw new IllegalArgumentException("XML model is not supported");
         }
         final Node xmlNode = (Node) xml;
-        final XomNode node;
+        final XomNode<?> node;
         if (xmlNode instanceof Document) {
             node = new XomDocument((Document) xmlNode);
         } else if (xmlNode instanceof Element) {
@@ -39,9 +40,9 @@ public class XomNavigatorSpi implements NavigatorSpi {
         } else {
             throw new IllegalArgumentException("XML node type is not supported");
         }
-        final Navigator<XomNode> navigator = new XomNavigator(node);
+        final Navigator<XomNode> navigator = new XomNavigator(xmlNode);
         for (Effect effect : effects) {
-            effect.perform(navigator);
+            effect.perform(navigator, node);
         }
         return xml;
     }

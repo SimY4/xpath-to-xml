@@ -1,4 +1,4 @@
-package com.github.simy4.xpath.navigator;
+package com.github.simy4.xpath.spi;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.effects.Effect;

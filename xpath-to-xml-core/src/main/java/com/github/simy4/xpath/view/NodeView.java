@@ -22,11 +22,7 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
 
     @Override
     public int compareTo(@Nonnull View<N> other) {
-        if (other instanceof NodeView) {
-            return node.getText().compareTo(((NodeView) other).getNode().getText());
-        } else {
-            return -other.compareTo(this);
-        }
+        return toString().compareTo(other.toString());
     }
 
     @Override
@@ -59,23 +55,27 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
     }
 
     @Override
-    public IterableNodeView<N> filter(Navigator<N> navigator, boolean greedy, Predicate<ViewContext<?>> predicate)
-            throws XmlBuilderException {
-        return filter(navigator, greedy, 1, predicate);
-    }
-
-    @Override
     public IterableNodeView<N> filter(Navigator<N> navigator, boolean greedy, int position,
                                       Predicate<ViewContext<?>> predicate) throws XmlBuilderException {
-        ViewContext<N> context = new ViewContext<>(navigator, this, greedy, false, position);
+        final ViewContext<N> context = new ViewContext<>(navigator, this, greedy, false, position);
         return predicate.test(context) ? this : NodeSetView.empty();
     }
 
     @Override
     public IterableNodeView<N> flatMap(Navigator<N> navigator, boolean greedy,
                                        Function<ViewContext<N>, IterableNodeView<N>> fmap) throws XmlBuilderException {
-        ViewContext<N> context = new ViewContext<>(navigator, this, greedy, false, 1);
+        final ViewContext<N> context = new ViewContext<>(navigator, this, greedy, false, 1);
         return fmap.apply(context);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return this == o || null != o && o instanceof View && toString().equals(o.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
     }
 
     public N getNode() {

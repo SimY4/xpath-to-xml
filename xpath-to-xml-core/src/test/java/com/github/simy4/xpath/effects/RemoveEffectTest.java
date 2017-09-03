@@ -32,9 +32,7 @@ public class RemoveEffectTest {
 
     @Before
     public void setUp() {
-        when(navigator.xml()).thenReturn(node("xml"));
-        when(expr.resolve(any(ViewContext.class)))
-                .thenReturn(new NodeView<>(node("node")));
+        when(expr.resolve(any(ViewContext.class))).thenReturn(new NodeView<>(node("node")));
 
         removeEffect = new RemoveEffect(expr);
     }
@@ -42,7 +40,7 @@ public class RemoveEffectTest {
     @Test
     public void shouldDetachGivenNodes() {
         // when
-        removeEffect.perform(navigator);
+        removeEffect.perform(navigator, node("xml"));
 
         // then
         verify(expr).resolve(contextCaptor.capture());
@@ -57,7 +55,7 @@ public class RemoveEffectTest {
         doThrow(XmlBuilderException.class).when(navigator).remove(any(TestNode.class));
 
         // when
-        removeEffect.perform(navigator);
+        removeEffect.perform(navigator, node("xml"));
     }
 
 }

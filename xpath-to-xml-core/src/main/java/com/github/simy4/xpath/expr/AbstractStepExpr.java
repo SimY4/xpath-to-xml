@@ -8,9 +8,9 @@ import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;
 
-import javax.annotation.Nonnegative;
 import javax.annotation.concurrent.NotThreadSafe;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicInteger;
 
 abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
 
@@ -24,25 +24,24 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
     public final <N extends Node> IterableNodeView<N> resolve(ViewContext<N> context) throws XmlBuilderException {
         IterableNodeView<N> result = traverseStep(context.getNavigator(), context.getCurrent());
         Iterator<Predicate<ViewContext<?>>> predicateIterator = predicates.iterator();
-        final Counter counter;
+        final Number count;
         if (predicateIterator.hasNext()) {
             Predicate<ViewContext<?>> predicate = predicateIterator.next();
             final CountingPredicate countingPredicate = new CountingPredicate(predicate);
-            counter = countingPredicate;
             result = result.filter(context.getNavigator(), false, countingPredicate);
             while (predicateIterator.hasNext()) {
                 result = result.filter(context.getNavigator(), false, predicateIterator.next());
             }
+            count = countingPredicate.count();
         } else {
-            counter = Counter.NO_OP;
+            count = 0;
         }
 
         if (context.isGreedy() && !context.hasNext() && !result.toBoolean()) {
             result = new NodeView<>(createStepNode(context.getNavigator(), context.getCurrent()));
             predicateIterator = predicates.iterator();
             if (predicateIterator.hasNext()) {
-                final int count = counter.count();
-                result = result.filter(context.getNavigator(), true, count + 1, predicateIterator.next());
+                result = result.filter(context.getNavigator(), true, count.intValue() + 1, predicateIterator.next());
                 while (predicateIterator.hasNext()) {
                     result = result.filter(context.getNavigator(), true, predicateIterator.next());
                 }
@@ -82,21 +81,11 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
         return stringBuilder.toString();
     }
 
-    @FunctionalInterface
-    private interface Counter {
-
-        Counter NO_OP = () -> 0;
-
-        @Nonnegative
-        int count();
-
-    }
-
     @NotThreadSafe
-    private static final class CountingPredicate implements Predicate<ViewContext<?>>, Counter {
+    private static final class CountingPredicate implements Predicate<ViewContext<?>> {
 
         private final Predicate<ViewContext<?>> predicate;
-        private int count;
+        private final AtomicInteger counter = new AtomicInteger(0);
 
         private CountingPredicate(Predicate<ViewContext<?>> predicate) {
             this.predicate = predicate;
@@ -104,13 +93,12 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
 
         @Override
         public boolean test(ViewContext<?> context) {
-            count += 1;
+            counter.incrementAndGet();
             return predicate.test(context);
         }
 
-        @Override
-        public int count() {
-            return count;
+        private Number count() {
+            return counter;
         }
 
     }

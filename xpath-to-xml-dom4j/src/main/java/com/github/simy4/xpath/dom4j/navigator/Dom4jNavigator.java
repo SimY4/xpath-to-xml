@@ -13,22 +13,17 @@ import org.dom4j.Node;
 import javax.annotation.Nullable;
 import javax.xml.namespace.QName;
 
-final class Dom4jNavigator implements Navigator<Dom4jNode> {
+public final class Dom4jNavigator implements Navigator<Dom4jNode> {
 
-    private final Dom4jNode xml;
+    private final Node xml;
 
-    Dom4jNavigator(Dom4jNode xml) {
+    public Dom4jNavigator(Node xml) {
         this.xml = xml;
     }
 
     @Override
-    public Dom4jNode xml() {
-        return xml;
-    }
-
-    @Override
     public Dom4jNode root() {
-        return new Dom4jDocument(xml.getNode().getDocument());
+        return new Dom4jDocument(xml.getDocument());
     }
 
     @Override

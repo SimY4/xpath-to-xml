@@ -33,9 +33,7 @@ public class PutValueEffectTest {
 
     @Before
     public void setUp() {
-        when(navigator.xml()).thenReturn(node("xml"));
-        when(expr.resolve(any(ViewContext.class)))
-                .thenReturn(new NodeView<>(node("node")));
+        when(expr.resolve(any(ViewContext.class))).thenReturn(new NodeView<>(node("node")));
 
         putValueEffect = new PutValueEffect(expr, "value");
     }
@@ -43,7 +41,7 @@ public class PutValueEffectTest {
     @Test
     public void shouldPutValueToAllResolvedNodes() {
         // when
-        putValueEffect.perform(navigator);
+        putValueEffect.perform(navigator, node("xml"));
 
         // then
         verify(expr).resolve(contextCaptor.capture());
@@ -58,7 +56,7 @@ public class PutValueEffectTest {
         doThrow(XmlBuilderException.class).when(navigator).setText(any(TestNode.class), anyString());
 
         // when
-        putValueEffect.perform(navigator);
+        putValueEffect.perform(navigator, node("xml"));
     }
 
 }

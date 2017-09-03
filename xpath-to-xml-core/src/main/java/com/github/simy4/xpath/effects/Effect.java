@@ -14,12 +14,13 @@ import com.github.simy4.xpath.navigator.Node;
 public interface Effect {
 
     /**
-     * Performs effect on a particular {@link Navigator} instance.
+     * Performs effect on a particular xml model.
      *
+     * @param xml       XML model to modify
      * @param navigator XML model navigator
-     * @param <N> XML model type
+     * @param <N>       XML model type
      * @throws XmlBuilderException if error occur during XML model modification
      */
-    <N extends Node> void perform(Navigator<N> navigator) throws XmlBuilderException;
+    <N extends Node> void perform(Navigator<N> navigator, N xml) throws XmlBuilderException;
 
 }

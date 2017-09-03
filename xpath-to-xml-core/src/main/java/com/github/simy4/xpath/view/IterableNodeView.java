@@ -17,8 +17,10 @@ import com.github.simy4.xpath.util.Predicate;
  */
 public interface IterableNodeView<N extends Node> extends View<N>, Iterable<NodeView<N>> {
 
-    IterableNodeView<N> filter(Navigator<N> navigator, boolean greedy, Predicate<ViewContext<?>> predicate)
-            throws XmlBuilderException;
+    default IterableNodeView<N> filter(Navigator<N> navigator, boolean greedy, Predicate<ViewContext<?>> predicate)
+            throws XmlBuilderException {
+        return filter(navigator, greedy, 1, predicate);
+    }
 
     IterableNodeView<N> filter(Navigator<N> navigator, boolean greedy, int position,
                                Predicate<ViewContext<?>> predicate) throws XmlBuilderException;
