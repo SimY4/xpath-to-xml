@@ -1,4 +1,10 @@
 ext {
+    jUnitVersion = '4.12'
+    mockitoVersion = '2.9.0'
+    assertjVersion = '2.8.0'
+    findBugsVersion = '3.0.1'
+    checkstyleVersion = '8.1'
+
     def buildTimeAndDate = new Date()
     buildDate = buildTimeAndDate.format("yyyy-MM-dd")
     buildTime = buildTimeAndDate.format("HH:mm:ss.SSSZ")
@@ -20,9 +26,9 @@ subprojects {
     }
 
     dependencies {
-        checkstyle 'com.puppycrawl.tools:checkstyle:8.1'
+        checkstyle "com.puppycrawl.tools:checkstyle:$checkstyleVersion"
 
-        implementation 'com.google.code.findbugs:annotations:3.0.1'
+        implementation "com.google.code.findbugs:annotations:$findBugsVersion"
     }
 
     task sourcesJar(type: Jar, dependsOn: classes) {
