@@ -13,21 +13,23 @@ import javax.xml.namespace.QName;
 public class Attribute extends AbstractStepExpr {
 
     private final QName attribute;
+    private final Predicate<Node> filter;
 
+    /**
+     * Constructor.
+     *
+     * @param attribute  attribute name
+     * @param predicates attribute predicates
+     */
     public Attribute(QName attribute, Iterable<Predicate<ViewContext<?>>> predicates) {
         super(predicates);
         this.attribute = attribute;
+        this.filter = new QNamePredicate(attribute);
     }
 
     @Override
     <N extends Node> NodeSetView<N> traverseStep(Navigator<N> navigator, NodeView<N> parentView) {
-        return NodeSetView.filtered(navigator.attributesOf(parentView.getNode()),
-                new com.github.simy4.xpath.util.Predicate<N>() {
-                    @Override
-                    public boolean test(N attribute) {
-                        return 0 == qnameComparator.compare(Attribute.this.attribute, attribute.getName());
-                    }
-                });
+        return NodeSetView.filtered(navigator.attributesOf(parentView.getNode()), filter);
     }
 
     @Override

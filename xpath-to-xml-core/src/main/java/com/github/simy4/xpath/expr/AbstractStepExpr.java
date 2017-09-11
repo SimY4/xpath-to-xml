@@ -9,6 +9,7 @@ import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;
 
 import javax.annotation.concurrent.NotThreadSafe;
+import javax.xml.namespace.QName;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -99,6 +100,27 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
 
         private Number count() {
             return counter;
+        }
+
+    }
+
+    static final class QNamePredicate implements Predicate<Node> {
+
+        private final QName expected;
+
+        QNamePredicate(QName expected) {
+            this.expected = expected;
+        }
+
+        @Override
+        public boolean test(Node t) {
+            final QName actual = t.getName();
+            return test(expected.getNamespaceURI(), actual.getNamespaceURI())
+                    && test(expected.getLocalPart(), actual.getLocalPart());
+        }
+
+        private boolean test(String expected, String actual) {
+            return "*".equals(expected) || "*".equals(actual) || expected.equals(actual);
         }
 
     }
