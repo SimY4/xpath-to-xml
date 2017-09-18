@@ -1,9 +1,9 @@
 ext {
     jUnitVersion = '4.12'
-    mockitoVersion = '2.9.0'
+    mockitoVersion = '2.10.0'
     assertjVersion = '2.8.0'
     findBugsVersion = '3.0.1'
-    checkstyleVersion = '8.1'
+    checkstyleVersion = '8.2'
 
     def buildTimeAndDate = new Date()
     buildDate = buildTimeAndDate.format("yyyy-MM-dd")
