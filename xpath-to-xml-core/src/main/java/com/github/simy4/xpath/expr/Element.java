@@ -13,16 +13,23 @@ import javax.xml.namespace.QName;
 public class Element extends AbstractStepExpr {
 
     private final QName element;
+    private final Predicate<Node> filter;
 
+    /**
+     * Constructor.
+     *
+     * @param element    element name
+     * @param predicates element predicates
+     */
     public Element(QName element, Iterable<Predicate<ViewContext<?>>> predicates) {
         super(predicates);
         this.element = element;
+        this.filter = new QNamePredicate(element);
     }
 
     @Override
     <N extends Node> NodeSetView<N> traverseStep(Navigator<N> navigator, NodeView<N> parentView) {
-        return NodeSetView.filtered(navigator.elementsOf(parentView.getNode()), element ->
-                0 == qnameComparator.compare(Element.this.element, element.getName()));
+        return NodeSetView.filtered(navigator.elementsOf(parentView.getNode()), filter);
     }
 
     @Override

@@ -6,21 +6,19 @@ import com.github.simy4.xpath.view.ViewContext;
 
 public class NumberExpr implements Expr {
 
-    private final NumberView number;
+    private final double number;
 
     public NumberExpr(double number) {
-        this.number = new NumberView(number);
+        this.number = number;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <N extends Node> NumberView<N> resolve(ViewContext<N> context) {
-        return number;
+        return new NumberView<>(number);
     }
 
     @Override
     public boolean test(ViewContext<?> context) {
-        double number = resolve(context).toNumber();
         return 0 == Double.compare(number, context.getPosition())
                 || context.isGreedy() && !context.hasNext() && number > context.getPosition() && test(context, number);
     }
@@ -36,7 +34,7 @@ public class NumberExpr implements Expr {
 
     @Override
     public String toString() {
-        return number.toString();
+        return Double.toString(number);
     }
 
 }

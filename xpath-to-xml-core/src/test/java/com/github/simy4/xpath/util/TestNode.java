@@ -7,23 +7,27 @@ import javax.xml.namespace.QName;
 public final class TestNode implements Node {
 
     public static TestNode node(String value) {
+        return node(new QName(value));
+    }
+
+    public static TestNode node(QName value) {
         return new TestNode(value);
     }
 
-    private final String value;
+    private final QName value;
 
-    private TestNode(String value) {
+    private TestNode(QName value) {
         this.value = value;
     }
 
     @Override
     public QName getName() {
-        return new QName(value);
+        return value;
     }
 
     @Override
     public String getText() {
-        return value;
+        return value.getLocalPart();
     }
 
     @Override
@@ -46,7 +50,7 @@ public final class TestNode implements Node {
 
     @Override
     public String toString() {
-        return getName().toString();
+        return getName().toString() + ':' + getText();
     }
 
 }
