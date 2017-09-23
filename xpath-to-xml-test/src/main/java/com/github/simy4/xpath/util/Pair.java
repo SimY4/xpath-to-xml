@@ -1,29 +1,26 @@
 package com.github.simy4.xpath.util;
 
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
+import com.google.errorprone.annotations.Immutable;
 
-@Immutable
+@Immutable(containerOf = {"F", "S"})
 public final class Pair<F, S> {
 
-    public static <A, B> Pair<A, B> of(@Nullable A first, @Nullable B second) {
+    public static <A, B> Pair<A, B> of(A first, B second) {
         return new Pair<A, B>(first, second);
     }
 
     private final F first;
     private final S second;
 
-    public Pair(@Nullable F first, @Nullable S second) {
+    public Pair(F first, S second) {
         this.first = first;
         this.second = second;
     }
 
-    @Nullable
     public F getFirst() {
         return first;
     }
 
-    @Nullable
     public S getSecond() {
         return second;
     }

@@ -19,8 +19,8 @@ public class NumberExpr implements Expr {
 
     @Override
     public boolean test(ViewContext<?> context) {
-        return 0 == Double.compare(number, context.getPosition())
-                || context.isGreedy() && !context.hasNext() && number > context.getPosition() && test(context, number);
+        return 0 == Double.compare(number, context.getPosition()) || (context.isGreedy() && !context.hasNext()
+                && number > context.getPosition() && test(context, number));
     }
 
     private <N extends Node> boolean test(ViewContext<N> context, double number) {

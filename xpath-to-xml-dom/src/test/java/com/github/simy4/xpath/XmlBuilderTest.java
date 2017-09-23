@@ -28,6 +28,7 @@ import javax.xml.xpath.XPathFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -145,7 +146,7 @@ public class XmlBuilderTest {
     }
 
     private Document stringToXml(String xml) throws IOException, SAXException {
-        Document document = documentBuilder.parse(new ByteArrayInputStream(xml.getBytes()));
+        Document document = documentBuilder.parse(new ByteArrayInputStream(xml.getBytes(Charset.forName("UTF-8"))));
         document.setXmlStandalone(true);
         return document;
     }

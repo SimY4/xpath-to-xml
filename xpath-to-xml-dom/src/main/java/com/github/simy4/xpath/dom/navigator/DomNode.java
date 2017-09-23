@@ -2,10 +2,8 @@ package com.github.simy4.xpath.dom.navigator;
 
 import com.github.simy4.xpath.navigator.Node;
 
-import javax.annotation.concurrent.Immutable;
 import javax.xml.namespace.QName;
 
-@Immutable
 public final class DomNode implements Node {
 
     private final org.w3c.dom.Node node;

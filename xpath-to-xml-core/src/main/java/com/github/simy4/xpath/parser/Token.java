@@ -1,7 +1,6 @@
 package com.github.simy4.xpath.parser;
 
-import javax.annotation.Nonnegative;
-import javax.annotation.concurrent.Immutable;
+import com.google.errorprone.annotations.Immutable;
 
 @Immutable
 final class Token {
@@ -11,7 +10,7 @@ final class Token {
     private final int beginIndex;
     private final int endIndex;
 
-    Token(Type type, String xpath, @Nonnegative int beginIndex, @Nonnegative int endIndex) {
+    Token(Type type, String xpath, int beginIndex, int endIndex) {
         this.type = type;
         this.xpath = xpath;
         this.beginIndex = beginIndex;

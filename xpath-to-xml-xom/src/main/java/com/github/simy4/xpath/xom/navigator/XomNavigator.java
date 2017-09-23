@@ -11,7 +11,6 @@ import nu.xom.Node;
 import nu.xom.ParentNode;
 import nu.xom.XMLException;
 
-import javax.annotation.Nullable;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
@@ -29,7 +28,6 @@ public final class XomNavigator implements Navigator<XomNode> {
     }
 
     @Override
-    @Nullable
     public XomNode parentOf(XomNode node) {
         return node.getParent();
     }

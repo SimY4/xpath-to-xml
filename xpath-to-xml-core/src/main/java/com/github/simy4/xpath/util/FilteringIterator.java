@@ -1,10 +1,8 @@
 package com.github.simy4.xpath.util;
 
-import javax.annotation.concurrent.NotThreadSafe;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-@NotThreadSafe
 public final class FilteringIterator<T> implements Iterator<T> {
 
     private final Iterator<? extends T> iterator;

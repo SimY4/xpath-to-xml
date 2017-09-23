@@ -21,6 +21,7 @@ import javax.xml.xpath.XPathExpressionException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -123,7 +124,7 @@ public class XmlBuilderTest {
 
     private Document stringToXml(String xml) throws DocumentException {
         SAXReader saxReader = new SAXReader();
-        return saxReader.read(new ByteArrayInputStream(xml.getBytes()));
+        return saxReader.read(new ByteArrayInputStream(xml.getBytes(Charset.forName("UTF-8"))));
     }
 
     private String xmlToString(Document xml) throws IOException {

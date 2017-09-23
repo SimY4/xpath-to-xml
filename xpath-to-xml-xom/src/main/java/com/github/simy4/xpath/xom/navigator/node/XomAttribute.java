@@ -5,11 +5,9 @@ import nu.xom.Attribute;
 import nu.xom.Element;
 import nu.xom.IllegalDataException;
 
-import javax.annotation.concurrent.Immutable;
 import javax.xml.namespace.QName;
 import java.util.Collections;
 
-@Immutable
 public final class XomAttribute implements XomNode<Attribute> {
 
     private final Attribute attribute;

@@ -2,12 +2,8 @@ package com.github.simy4.xpath.parser;
 
 import com.github.simy4.xpath.parser.Token.Type;
 
-import javax.annotation.Nonnegative;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.NotThreadSafe;
 import java.util.Iterator;
 
-@NotThreadSafe
 class XPathLexer implements Iterator<Token> {
 
     private final String xpath;
@@ -138,7 +134,6 @@ class XPathLexer implements Iterator<Token> {
         throw new UnsupportedOperationException("remove");
     }
 
-    @Nullable
     private Token literal() {
         final char match = charAt(1);
         final int start = cursor += 1;
@@ -196,7 +191,6 @@ class XPathLexer implements Iterator<Token> {
         return new Token(Type.DOUBLE, xpath, start, cursor);
     }
 
-    @Nullable
     private Token relationalOperator() {
         final Token token;
         switch (charAt(1)) {
@@ -253,7 +247,7 @@ class XPathLexer implements Iterator<Token> {
         return token;
     }
 
-    private char charAt(@Nonnegative int i) {
+    private char charAt(int i) {
         final int pos = cursor + i - 1;
         return pos >= xpath.length() ? (char) -1 : xpath.charAt(pos);
     }

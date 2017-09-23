@@ -10,7 +10,6 @@ import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.Node;
 
-import javax.annotation.Nullable;
 import javax.xml.namespace.QName;
 
 public final class Dom4jNavigator implements Navigator<Dom4jNode> {
@@ -27,7 +26,6 @@ public final class Dom4jNavigator implements Navigator<Dom4jNode> {
     }
 
     @Override
-    @Nullable
     public Dom4jNode parentOf(Dom4jNode node) {
         final Element parent = node.getNode().getParent();
         return null == parent ? null : new Dom4jElement(parent);

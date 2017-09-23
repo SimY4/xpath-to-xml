@@ -1,10 +1,8 @@
 package com.github.simy4.xpath.util;
 
-import javax.annotation.concurrent.NotThreadSafe;
 import java.util.Collections;
 import java.util.Iterator;
 
-@NotThreadSafe
 public final class FlatteningIterator<T> implements Iterator<T> {
 
     private final Iterator<? extends Iterator<? extends T>> metaIterator;

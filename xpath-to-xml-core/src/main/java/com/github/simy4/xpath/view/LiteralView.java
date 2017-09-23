@@ -2,9 +2,7 @@ package com.github.simy4.xpath.view;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
-
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.Immutable;
+import com.google.errorprone.annotations.Immutable;
 
 @Immutable
 public final class LiteralView<N extends Node> implements View<N> {
@@ -16,7 +14,7 @@ public final class LiteralView<N extends Node> implements View<N> {
     }
 
     @Override
-    public int compareTo(@Nonnull View<N> other) {
+    public int compareTo(View<N> other) {
         return literal.compareTo(other.toString());
     }
 
@@ -46,7 +44,7 @@ public final class LiteralView<N extends Node> implements View<N> {
 
     @Override
     public boolean equals(Object o) {
-        return this == o || null != o && o instanceof View && literal.equals(o.toString());
+        return ((this == o || null != o) && o instanceof View) && literal.equals(o.toString());
     }
 
     @Override

@@ -21,6 +21,7 @@ import javax.xml.xpath.XPathExpressionException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -128,7 +129,7 @@ public class XmlBuilderTest {
 
     private Document stringToXml(String xml) throws ParsingException, IOException {
         Builder builder = new Builder();
-        return builder.build(new ByteArrayInputStream(xml.getBytes()));
+        return builder.build(new ByteArrayInputStream(xml.getBytes(Charset.forName("UTF-8"))));
     }
 
     private String xmlToString(Document xml) throws IOException {

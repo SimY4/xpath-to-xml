@@ -24,12 +24,8 @@ import com.github.simy4.xpath.expr.UnaryExpr;
 import com.github.simy4.xpath.parser.Token.Type;
 import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.view.ViewContext;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import com.google.errorprone.annotations.Immutable;
 
-import javax.annotation.Nonnegative;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.NotThreadSafe;
-import javax.annotation.concurrent.ThreadSafe;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
@@ -44,14 +40,14 @@ import java.util.List;
  * @author Alex Simkin
  * @since 1.0
  */
-@ThreadSafe
+@Immutable
 @SuppressWarnings("MethodName")
-@SuppressFBWarnings("NM_METHOD_NAMING_CONVENTION")
 public class XPathParser {
 
+    @SuppressWarnings("Immutable")
     private final NamespaceContext namespaceContext;
 
-    public XPathParser(@Nullable NamespaceContext namespaceContext) {
+    public XPathParser(NamespaceContext namespaceContext) {
         this.namespaceContext = namespaceContext;
     }
 
@@ -319,7 +315,6 @@ public class XPathParser {
         return predicate;
     }
 
-    @NotThreadSafe
     private static final class Context {
 
         private final XPathLexer lexer;
@@ -333,7 +328,7 @@ public class XPathParser {
             return tokenAt(1).getType() != Type.EOF;
         }
 
-        Token tokenAt(@Nonnegative int i) {
+        Token tokenAt(int i) {
             if (tokens.size() <= i - 1) {
                 for (int j = 0; j < i; ++j) {
                     tokens.add(lexer.next());
