@@ -1,7 +1,5 @@
 package com.github.simy4.xpath.util;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 /**
  * java.util.function.Predicate exact copy.
  *
@@ -10,9 +8,9 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * @since 1.0
  */
 @FunctionalInterface
-@SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_INTERFACE")
 public interface Predicate<T> extends java.util.function.Predicate<T> {
 
+    @Override
     boolean test(T t);
 
 }

@@ -1,9 +1,7 @@
 package com.github.simy4.xpath.util;
 
-import javax.annotation.concurrent.NotThreadSafe;
 import java.util.Iterator;
 
-@NotThreadSafe
 public final class TransformingIterator<T, R> implements Iterator<R> {
 
     private final Iterator<? extends T> delegate;

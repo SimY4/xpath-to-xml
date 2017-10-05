@@ -3,9 +3,6 @@ package com.github.simy4.xpath.view;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
 
-import javax.annotation.concurrent.Immutable;
-
-@Immutable
 public final class ViewContext<N extends Node> {
 
     private final Navigator<N> navigator;

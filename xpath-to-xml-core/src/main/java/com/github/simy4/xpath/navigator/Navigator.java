@@ -2,7 +2,6 @@ package com.github.simy4.xpath.navigator;
 
 import com.github.simy4.xpath.XmlBuilderException;
 
-import javax.annotation.Nullable;
 import javax.xml.namespace.QName;
 
 /**
@@ -27,7 +26,6 @@ public interface Navigator<N extends Node> {
      * @param node XML node to scan
      * @return XML node parent
      */
-    @Nullable
     N parentOf(N node);
 
     /**

@@ -5,11 +5,9 @@ import org.dom4j.Attribute;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 
-import javax.annotation.concurrent.Immutable;
 import javax.xml.namespace.QName;
 import java.util.Collections;
 
-@Immutable
 public final class Dom4jAttribute implements Dom4jNode<Attribute> {
 
     private final Attribute attribute;

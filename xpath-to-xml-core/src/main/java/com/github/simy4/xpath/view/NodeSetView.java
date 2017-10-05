@@ -8,17 +8,14 @@ import com.github.simy4.xpath.util.FlatteningIterator;
 import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.util.TransformingIterator;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import com.google.errorprone.annotations.Immutable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.Immutable;
-import javax.annotation.concurrent.NotThreadSafe;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-@Immutable
+@Immutable(containerOf = "N")
 public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
     private static final NodeSetView<?> EMPTY_NODE_SET = new NodeSetView<>(Collections.emptySet());
@@ -42,6 +39,7 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
                 new FilteringIterator<T>(nodes.iterator(), predicate), NodeView::new));
     }
 
+    @SuppressWarnings("Immutable")
     private final Iterable<NodeView<N>> nodeSet;
 
     public NodeSetView(Iterable<NodeView<N>> nodeSet) {
@@ -49,7 +47,7 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
     }
 
     @Override
-    public int compareTo(@Nonnull View<N> other) {
+    public int compareTo(View<N> other) {
         final Iterator<NodeView<N>> iterator = iterator();
         if (iterator.hasNext()) {
             return iterator.next().compareTo(other);
@@ -108,7 +106,6 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
     }
 
     @Override
-    @SuppressFBWarnings("EQ_CHECK_FOR_OPERAND_NOT_COMPATIBLE_WITH_THIS")
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -151,7 +148,6 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
     }
 
-    @NotThreadSafe
     private static final class PredicateWrapper<T extends Node> extends AbstractWrapper<T>
             implements Predicate<NodeView<T>> {
 
@@ -170,7 +166,6 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
     }
 
-    @NotThreadSafe
     private static final class TransformerWrapper<T extends Node> extends AbstractWrapper<T>
             implements Function<NodeView<T>, Iterator<NodeView<T>>> {
 
@@ -189,7 +184,6 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
     }
 
-    @NotThreadSafe
     private static final class Distinct<T extends Node> implements Predicate<NodeView<T>> {
 
         private final Set<T> visited = new HashSet<>();

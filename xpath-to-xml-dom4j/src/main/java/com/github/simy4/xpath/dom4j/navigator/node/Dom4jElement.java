@@ -7,12 +7,8 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.Immutable;
 import javax.xml.namespace.QName;
-import java.util.Iterator;
 
-@Immutable
 public final class Dom4jElement implements Dom4jNode<Element> {
 
     private final Element element;
@@ -39,24 +35,12 @@ public final class Dom4jElement implements Dom4jNode<Element> {
 
     @Override
     public Iterable<Dom4jNode<Element>> elements() {
-        return new Iterable<Dom4jNode<Element>>() {
-            @Override
-            @Nonnull
-            public Iterator<Dom4jNode<Element>> iterator() {
-                return new TransformingIterator<>(element.elementIterator(), new Dom4jElementWrapper());
-            }
-        };
+        return () -> new TransformingIterator<>(element.elementIterator(), new Dom4jElementWrapper());
     }
 
     @Override
     public Iterable<Dom4jNode<Attribute>> attributes() {
-        return new Iterable<Dom4jNode<Attribute>>() {
-            @Override
-            @Nonnull
-            public Iterator<Dom4jNode<Attribute>> iterator() {
-                return new TransformingIterator<>(element.attributeIterator(), new Dom4jAttributeWrapper());
-            }
-        };
+        return () -> new TransformingIterator<>(element.attributeIterator(), new Dom4jAttributeWrapper());
     }
 
     @Override

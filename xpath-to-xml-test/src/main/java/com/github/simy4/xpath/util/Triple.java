@@ -1,12 +1,11 @@
 package com.github.simy4.xpath.util;
 
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
+import com.google.errorprone.annotations.Immutable;
 
-@Immutable
+@Immutable(containerOf = {"F", "S", "T"})
 public final class Triple<F, S, T> {
 
-    public static <A, B, C> Triple<A, B, C> of(@Nullable A first, @Nullable B second, @Nullable C third) {
+    public static <A, B, C> Triple<A, B, C> of(A first, B second, C third) {
         return new Triple<>(first, second, third);
     }
 
@@ -21,23 +20,20 @@ public final class Triple<F, S, T> {
      * @param second second argument
      * @param third  third argument
      */
-    public Triple(@Nullable F first, @Nullable S second, @Nullable T third) {
+    public Triple(F first, S second, T third) {
         this.first = first;
         this.second = second;
         this.third = third;
     }
 
-    @Nullable
     public F getFirst() {
         return first;
     }
 
-    @Nullable
     public S getSecond() {
         return second;
     }
 
-    @Nullable
     public T getThird() {
         return third;
     }

@@ -5,11 +5,9 @@ import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
 
-import javax.annotation.concurrent.Immutable;
 import javax.xml.namespace.QName;
 import java.util.Collections;
 
-@Immutable
 public final class Dom4jDocument implements Dom4jNode<Document> {
 
     private final Document document;

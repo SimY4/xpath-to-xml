@@ -31,6 +31,7 @@ public interface View<N extends Node> extends Comparable<View<N>> {
      *
      * @return string value
      */
+    @Override
     String toString();
 
     /**

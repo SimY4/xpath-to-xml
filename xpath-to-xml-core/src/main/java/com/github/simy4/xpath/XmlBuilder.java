@@ -7,8 +7,8 @@ import com.github.simy4.xpath.effects.RemoveEffect;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.parser.XPathParser;
 import com.github.simy4.xpath.spi.NavigatorSpi;
+import com.google.errorprone.annotations.Immutable;
 
-import javax.annotation.Nullable;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPathExpressionException;
 import java.util.ArrayList;
@@ -25,25 +25,27 @@ import java.util.ServiceLoader;
  * @author Alex Simkin
  * @since 1.0
  */
+@Immutable
 @SuppressWarnings("WeakerAccess")
 public class XmlBuilder {
 
     private static final Iterable<NavigatorSpi> navigatorSpis = ServiceLoader.load(NavigatorSpi.class);
 
     private final XPathParser parser;
+    @SuppressWarnings("Immutable")
     private final Collection<Effect> effects;
 
     public XmlBuilder() {
         this(null);
     }
 
-    public XmlBuilder(@Nullable NamespaceContext namespaceContext) {
+    public XmlBuilder(NamespaceContext namespaceContext) {
         this(new XPathParser(namespaceContext), Collections.emptyList());
     }
 
     private XmlBuilder(XPathParser parser, Collection<Effect> effects) {
         this.parser = parser;
-        this.effects = effects;
+        this.effects = Collections.unmodifiableCollection(effects);
     }
 
     /**
@@ -68,7 +70,7 @@ public class XmlBuilder {
      * @throws XPathExpressionException if xpath cannot be parsed
      * @see #putAll(Map)
      */
-    public XmlBuilder put(String xpath, @Nullable Object value) throws XPathExpressionException {
+    public XmlBuilder put(String xpath, Object value) throws XPathExpressionException {
         return putAll(Collections.singletonMap(xpath, value));
     }
 

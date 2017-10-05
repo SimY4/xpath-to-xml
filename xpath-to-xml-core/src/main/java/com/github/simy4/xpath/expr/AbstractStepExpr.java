@@ -8,7 +8,6 @@ import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;
 
-import javax.annotation.concurrent.NotThreadSafe;
 import javax.xml.namespace.QName;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -82,7 +81,6 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
         return stringBuilder.toString();
     }
 
-    @NotThreadSafe
     private static final class CountingPredicate implements Predicate<ViewContext<?>> {
 
         private final Predicate<ViewContext<?>> predicate;

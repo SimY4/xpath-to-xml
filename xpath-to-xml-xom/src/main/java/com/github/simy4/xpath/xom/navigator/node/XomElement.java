@@ -10,13 +10,10 @@ import nu.xom.Node;
 import nu.xom.ParentNode;
 import nu.xom.Text;
 
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.Immutable;
 import javax.xml.namespace.QName;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-@Immutable
 public final class XomElement implements XomNode<Element> {
 
     private final Element element;
@@ -48,24 +45,12 @@ public final class XomElement implements XomNode<Element> {
 
     @Override
     public Iterable<XomNode<Element>> elements() {
-        return new Iterable<XomNode<Element>>() {
-            @Override
-            @Nonnull
-            public Iterator<XomNode<Element>> iterator() {
-                return new XomElementsIterator(element.getChildElements());
-            }
-        };
+        return () -> new XomElementsIterator(element.getChildElements());
     }
 
     @Override
     public Iterable<XomNode<Attribute>> attributes() {
-        return new Iterable<XomNode<Attribute>>() {
-            @Override
-            @Nonnull
-            public Iterator<XomNode<Attribute>> iterator() {
-                return new XomAttributesIterator(element);
-            }
-        };
+        return () -> new XomAttributesIterator(element);
     }
 
     @Override

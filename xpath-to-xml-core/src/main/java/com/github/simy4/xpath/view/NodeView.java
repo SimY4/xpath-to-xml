@@ -5,13 +5,12 @@ import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.util.Predicate;
+import com.google.errorprone.annotations.Immutable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.Immutable;
 import java.util.Collections;
 import java.util.Iterator;
 
-@Immutable
+@Immutable(containerOf = "N")
 public final class NodeView<N extends Node> implements IterableNodeView<N> {
 
     private final N node;
@@ -21,7 +20,7 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
     }
 
     @Override
-    public int compareTo(@Nonnull View<N> other) {
+    public int compareTo(View<N> other) {
         return toString().compareTo(other.toString());
     }
 
@@ -70,7 +69,7 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
 
     @Override
     public boolean equals(Object o) {
-        return this == o || null != o && o instanceof View && toString().equals(o.toString());
+        return ((this == o || null != o) && o instanceof View) && toString().equals(o.toString());
     }
 
     @Override

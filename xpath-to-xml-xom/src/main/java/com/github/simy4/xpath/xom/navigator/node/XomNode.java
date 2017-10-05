@@ -5,8 +5,6 @@ import com.github.simy4.xpath.navigator.Node;
 import nu.xom.Attribute;
 import nu.xom.Element;
 
-import javax.annotation.Nullable;
-
 /**
  * XOM node contract.
  *
@@ -18,7 +16,6 @@ public interface XomNode<N extends nu.xom.Node> extends Node {
 
     N getNode();
 
-    @Nullable
     XomNode<?> getParent();
 
     /**

@@ -7,7 +7,6 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.annotation.Nullable;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
@@ -25,7 +24,6 @@ public final class DomNavigator implements Navigator<DomNode> {
     }
 
     @Override
-    @Nullable
     public DomNode parentOf(DomNode node) {
         org.w3c.dom.Node parent = node.getNode().getParentNode();
         return null == parent ? null : new DomNode(parent);
