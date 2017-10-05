@@ -1,3 +1,7 @@
+plugins {
+    id 'net.ltgt.errorprone' version '0.0.11' apply false
+}
+
 ext {
     jUnitVersion = '4.12'
     mockitoVersion = '2.10.0'
@@ -8,17 +12,6 @@ ext {
     def buildTimeAndDate = new Date()
     buildDate = buildTimeAndDate.format("yyyy-MM-dd")
     buildTime = buildTimeAndDate.format("HH:mm:ss.SSSZ")
-}
-
-buildscript {
-    repositories {
-        maven {
-            url 'https://plugins.gradle.org/m2/'
-        }
-    }
-    dependencies {
-        classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.11'
-    }
 }
 
 subprojects {
