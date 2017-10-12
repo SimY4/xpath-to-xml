@@ -1,5 +1,5 @@
 plugins {
-    id 'net.ltgt.errorprone' version '0.0.11' apply false
+    id 'net.ltgt.apt' version '0.12' apply false
 }
 
 ext {
@@ -17,7 +17,7 @@ ext {
 subprojects {
     apply plugin: 'java-library'
     apply plugin: 'signing'
-    apply plugin: 'net.ltgt.errorprone'
+    apply plugin: 'net.ltgt.apt'
     apply from: rootProject.file('gradle/check-checkstyle.gradle')
     apply from: rootProject.file('gradle/check-codecoverage.gradle')
     apply from: rootProject.file('gradle/publish-jar.gradle')
@@ -29,14 +29,15 @@ subprojects {
         mavenCentral()
     }
 
-    configurations.errorprone {
-        resolutionStrategy.force "com.google.errorprone:error_prone_core:$errorproneVersion"
-    }
-
     dependencies {
         checkstyle "com.puppycrawl.tools:checkstyle:$checkstyleVersion"
 
+        apt "com.google.errorprone:error_prone_core:$errorproneVersion"
         implementation "com.google.errorprone:error_prone_annotations:$errorproneVersion"
+    }
+
+    compileJava {
+        options.compilerArgs << '-Xplugin:ErrorProne'
     }
 
     task sourcesJar(type: Jar, dependsOn: classes) {

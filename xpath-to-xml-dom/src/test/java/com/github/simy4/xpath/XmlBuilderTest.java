@@ -160,7 +160,7 @@ public class XmlBuilderTest {
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
         StringWriter out = new StringWriter();
         transformer.transform(new DOMSource(xml), new StreamResult(out));
-        return out.toString();
+        return out.toString().replaceAll("\n\\p{Space}*\n", "\n"); //JDK 9 fix
     }
 
 }
