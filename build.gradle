@@ -4,10 +4,10 @@ plugins {
 
 ext {
     jUnitVersion = '4.12'
-    mockitoVersion = '2.10.0'
+    mockitoVersion = '2.11.0'
     assertjVersion = '2.8.0'
-    errorproneVersion = '2.1.1'
-    checkstyleVersion = '8.2'
+    errorproneVersion = '2.1.2'
+    checkstyleVersion = '8.3'
 
     def buildTimeAndDate = new Date()
     buildDate = buildTimeAndDate.format("yyyy-MM-dd")
