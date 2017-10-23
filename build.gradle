@@ -1,13 +1,13 @@
 plugins {
-    id 'net.ltgt.apt' version '0.12' apply false
+    id 'net.ltgt.errorprone' version '0.0.13' apply false
 }
 
 ext {
     jUnitVersion = '4.12'
-    mockitoVersion = '2.10.0'
+    mockitoVersion = '2.11.0'
     assertjVersion = '3.8.0'
-    errorproneVersion = '2.1.1'
-    checkstyleVersion = '8.2'
+    errorproneVersion = '2.1.2'
+    checkstyleVersion = '8.3'
 
     def buildTimeAndDate = new Date()
     buildDate = buildTimeAndDate.format("yyyy-MM-dd")
@@ -17,7 +17,7 @@ ext {
 subprojects {
     apply plugin: 'java-library'
     apply plugin: 'signing'
-    apply plugin: 'net.ltgt.apt'
+    apply plugin: 'net.ltgt.errorprone'
     apply from: rootProject.file('gradle/check-checkstyle.gradle')
     apply from: rootProject.file('gradle/check-codecoverage.gradle')
     apply from: rootProject.file('gradle/publish-jar.gradle')
@@ -29,10 +29,13 @@ subprojects {
         mavenCentral()
     }
 
+    configurations.errorprone {
+        resolutionStrategy.force "com.google.errorprone:error_prone_core:$errorproneVersion"
+    }
+
     dependencies {
         checkstyle "com.puppycrawl.tools:checkstyle:$checkstyleVersion"
 
-        apt "com.google.errorprone:error_prone_core:$errorproneVersion"
         implementation "com.google.errorprone:error_prone_annotations:$errorproneVersion"
     }
 
