@@ -48,7 +48,7 @@ public final class SimpleNamespaceContext implements NamespaceContext {
         } else if ("http://www.example.com/my".equals(namespaceUri)) {
             return Collections.singletonList("my").iterator();
         } else {
-            return Collections.emptyList().iterator();
+            return Collections.emptyIterator();
         }
     }
 

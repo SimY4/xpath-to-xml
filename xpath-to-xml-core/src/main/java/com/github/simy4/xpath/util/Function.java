@@ -9,9 +9,4 @@ package com.github.simy4.xpath.util;
  * @since 1.0
  */
 @FunctionalInterface
-public interface Function<T, R> extends java.util.function.Function<T, R> {
-
-    @Override
-    R apply(T t);
-
-}
+public interface Function<T, R> extends java.util.function.Function<T, R> { }

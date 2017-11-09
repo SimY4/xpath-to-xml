@@ -9,7 +9,7 @@ public final class FlatteningIterator<T> implements Iterator<T> {
     private Iterator<? extends T> current;
 
     public FlatteningIterator(Iterator<? extends Iterator<? extends T>> iterator) {
-        this(Collections.<T>emptyList().iterator(), iterator);
+        this(Collections.emptyIterator(), iterator);
     }
 
     public FlatteningIterator(Iterator<? extends T> first, Iterator<? extends Iterator<? extends T>> rest) {

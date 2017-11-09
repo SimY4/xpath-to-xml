@@ -8,9 +8,4 @@ package com.github.simy4.xpath.util;
  * @since 1.0
  */
 @FunctionalInterface
-public interface Predicate<T> extends java.util.function.Predicate<T> {
-
-    @Override
-    boolean test(T t);
-
-}
+public interface Predicate<T> extends java.util.function.Predicate<T> { }
