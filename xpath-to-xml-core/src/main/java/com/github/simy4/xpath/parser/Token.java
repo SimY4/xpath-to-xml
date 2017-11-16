@@ -1,8 +1,5 @@
 package com.github.simy4.xpath.parser;
 
-import com.google.errorprone.annotations.Immutable;
-
-@Immutable
 final class Token {
 
     private final Type type;

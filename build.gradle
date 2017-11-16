@@ -35,8 +35,6 @@ subprojects {
 
     dependencies {
         checkstyle "com.puppycrawl.tools:checkstyle:$checkstyleVersion"
-
-        implementation "com.google.errorprone:error_prone_annotations:$errorproneVersion"
     }
 
     compileJava {

@@ -5,12 +5,10 @@ import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.util.Predicate;
-import com.google.errorprone.annotations.Immutable;
 
 import java.util.Collections;
 import java.util.Iterator;
 
-@Immutable(containerOf = "N")
 public final class NodeView<N extends Node> implements IterableNodeView<N> {
 
     private final N node;
