@@ -52,32 +52,32 @@ you can:
 - alter existing paths
 
 ```java
-new XmlBuilder(document)
+new XmlBuilder()
         .put("/breakfast_menu/food[1]/price", "$7.95")
-        .build();
+        .build(document);
 ```
 
 - append new elements
 
 ```java
-new XmlBuilder(document)
+new XmlBuilder()
         .put("/breakfast_menu/food[name='Homestyle Breakfast'][price='$6.95'][description='Two eggs, bacon or sausage, toast, and our ever-popular hash browns']/calories", "950")
-        .build();
+        .build(document);
 ```
 
 - remove paths
 
 ```java
-new XmlBuilder(document)
+new XmlBuilder()
         .remove("/breakfast_menu/food[name='Belgian Waffles']")
-        .build();
+        .build(document);
 ```
 
 - combine any of the above actions into a single modification action
 
 ```java
-new XmlBuilder(document)
+new XmlBuilder()
         .remove("/breakfast_menu/food[name='Homestyle Breakfast']")
         .put("/breakfast_menu/food[name='Homestyle Breakfast'][price='$6.95'][description='Two eggs, bacon or sausage, toast, and our ever-popular hash browns']/calories", "950")
-        .build();
+        .build(document);
 ```
