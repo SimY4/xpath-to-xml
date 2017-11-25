@@ -3,7 +3,7 @@
 [![codecov](https://codecov.io/gh/SimY4/xpath-to-xml/branch/master/graph/badge.svg)](https://codecov.io/gh/SimY4/xpath-to-xml) 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.github.simy4.xpath/xpath-to-xml-core.svg)](http://search.maven.org/#artifactdetails%7Ccom.github.simy4.xpath%7Cxpath-to-xml-core%7C1.0.0-RC2%7C)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.simy4.xpath/xpath-to-xml-core.svg)](http://search.maven.org/#artifactdetails%7Ccom.github.simy4.xpath%7Cxpath-to-xml-core%7C1.0.0%7C)
 [![Javadocs](http://www.javadoc.io/badge/com.github.simy4.xpath/xpath-to-xml-core.svg)](http://www.javadoc.io/doc/com.github.simy4.xpath/xpath-to-xml-core)
 
 Convenient utility to build XML models by evaluating XPath expressions.
