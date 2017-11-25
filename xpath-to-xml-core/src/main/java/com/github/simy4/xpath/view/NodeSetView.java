@@ -8,14 +8,12 @@ import com.github.simy4.xpath.util.FlatteningIterator;
 import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.util.TransformingIterator;
-import com.google.errorprone.annotations.Immutable;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-@Immutable(containerOf = "N")
 public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
     private static final NodeSetView<?> EMPTY_NODE_SET = new NodeSetView<>(Collections.emptySet());
@@ -39,7 +37,6 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
                 new FilteringIterator<T>(nodes.iterator(), predicate), NodeView::new));
     }
 
-    @SuppressWarnings("Immutable")
     private final Iterable<NodeView<N>> nodeSet;
 
     public NodeSetView(Iterable<NodeView<N>> nodeSet) {

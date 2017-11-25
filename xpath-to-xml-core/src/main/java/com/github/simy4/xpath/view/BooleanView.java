@@ -2,9 +2,7 @@ package com.github.simy4.xpath.view;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
-import com.google.errorprone.annotations.Immutable;
 
-@Immutable
 public final class BooleanView<N extends Node> implements View<N> {
 
     private static final BooleanView FALSE = new BooleanView(false);

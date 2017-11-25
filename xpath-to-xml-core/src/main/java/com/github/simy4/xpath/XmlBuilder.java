@@ -7,7 +7,6 @@ import com.github.simy4.xpath.effects.RemoveEffect;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.parser.XPathParser;
 import com.github.simy4.xpath.spi.NavigatorSpi;
-import com.google.errorprone.annotations.Immutable;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPathExpressionException;
@@ -25,14 +24,12 @@ import java.util.ServiceLoader;
  * @author Alex Simkin
  * @since 1.0
  */
-@Immutable
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class XmlBuilder {
 
     private static final Iterable<NavigatorSpi> navigatorSpis = ServiceLoader.load(NavigatorSpi.class);
 
     private final XPathParser parser;
-    @SuppressWarnings("Immutable")
     private final Collection<Effect> effects;
 
     public XmlBuilder() {

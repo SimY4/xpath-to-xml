@@ -1,8 +1,5 @@
 package com.github.simy4.xpath.util;
 
-import com.google.errorprone.annotations.Immutable;
-
-@Immutable(containerOf = {"F", "S", "T"})
 public final class Triple<F, S, T> {
 
     public static <A, B, C> Triple<A, B, C> of(A first, B second, C third) {

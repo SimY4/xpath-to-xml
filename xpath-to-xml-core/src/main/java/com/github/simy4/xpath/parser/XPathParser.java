@@ -24,7 +24,6 @@ import com.github.simy4.xpath.expr.UnaryExpr;
 import com.github.simy4.xpath.parser.Token.Type;
 import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.view.ViewContext;
-import com.google.errorprone.annotations.Immutable;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
@@ -40,11 +39,9 @@ import java.util.List;
  * @author Alex Simkin
  * @since 1.0
  */
-@Immutable
 @SuppressWarnings("MethodName")
 public class XPathParser {
 
-    @SuppressWarnings("Immutable")
     private final NamespaceContext namespaceContext;
 
     public XPathParser(NamespaceContext namespaceContext) {

@@ -1,8 +1,5 @@
 package com.github.simy4.xpath.util;
 
-import com.google.errorprone.annotations.Immutable;
-
-@Immutable(containerOf = {"F", "S"})
 public final class Pair<F, S> {
 
     public static <A, B> Pair<A, B> of(A first, B second) {

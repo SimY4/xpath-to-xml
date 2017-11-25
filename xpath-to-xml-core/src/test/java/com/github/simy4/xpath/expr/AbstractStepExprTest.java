@@ -32,6 +32,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@SuppressWarnings("WeakerAccess")
 @RunWith(MockitoJUnitRunner.Silent.class)
 public abstract class AbstractStepExprTest<E extends StepExpr> {
 
