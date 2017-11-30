@@ -152,58 +152,54 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
     }
 
-    private abstract static class AbstractWrapper<T extends Node> {
+    private static final class PredicateWrapper<T extends Node> implements Predicate<NodeView<T>> {
 
         private final Navigator<T> navigator;
         private final Iterator<NodeView<T>> wrappingNodeSet;
         private final boolean greedy;
+        private final Predicate<ViewContext<?>> delegate;
         private int position;
 
-        AbstractWrapper(Navigator<T> navigator, Iterator<NodeView<T>> wrappingNodeSet, boolean greedy, int position) {
+        private PredicateWrapper(Navigator<T> navigator, Iterator<NodeView<T>> wrappingNodeSet, boolean greedy,
+                                 int position, Predicate<ViewContext<?>> delegate) {
             this.navigator = navigator;
             this.wrappingNodeSet = wrappingNodeSet;
             this.greedy = greedy;
             this.position = position;
-        }
-
-        final ViewContext<T> wrap(NodeView<T> node) {
-            return new ViewContext<T>(navigator, node, greedy, wrappingNodeSet.hasNext(), position++);
-        }
-
-    }
-
-    private static final class PredicateWrapper<T extends Node> extends AbstractWrapper<T>
-            implements Predicate<NodeView<T>> {
-
-        private final Predicate<ViewContext<?>> delegate;
-
-        private PredicateWrapper(Navigator<T> navigator, Iterator<NodeView<T>> wrappingNodeSet, boolean greedy,
-                                 int position, Predicate<ViewContext<?>> delegate) {
-            super(navigator, wrappingNodeSet, greedy, position);
             this.delegate = delegate;
         }
 
         @Override
         public boolean test(NodeView<T> node) {
-            return delegate.test(wrap(node));
+            final ViewContext<T> context = new ViewContext<T>(navigator, node, greedy, wrappingNodeSet.hasNext(),
+                    position++);
+            return delegate.test(context);
         }
 
     }
 
-    private static final class TransformerWrapper<T extends Node> extends AbstractWrapper<T>
+    private static final class TransformerWrapper<T extends Node>
             implements Function<NodeView<T>, Iterator<NodeView<T>>> {
 
+        private final Navigator<T> navigator;
+        private final Iterator<NodeView<T>> wrappingNodeSet;
+        private final boolean greedy;
         private final Function<ViewContext<T>, IterableNodeView<T>> delegate;
+        private int position = 1;
 
         private TransformerWrapper(Navigator<T> navigator, Iterator<NodeView<T>> wrappingNodeSet, boolean greedy,
                                    Function<ViewContext<T>, IterableNodeView<T>> delegate) {
-            super(navigator, wrappingNodeSet, greedy, 1);
+            this.navigator = navigator;
+            this.wrappingNodeSet = wrappingNodeSet;
+            this.greedy = greedy;
             this.delegate = delegate;
         }
 
         @Override
         public Iterator<NodeView<T>> apply(NodeView<T> node) {
-            return delegate.apply(wrap(node)).iterator();
+            final ViewContext<T> context = new ViewContext<T>(navigator, node, greedy, wrappingNodeSet.hasNext(),
+                    position++);
+            return delegate.apply(context).iterator();
         }
 
     }

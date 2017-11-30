@@ -52,7 +52,7 @@ public final class BooleanView<N extends Node> implements View<N> {
 
     @Override
     public int hashCode() {
-        return (bool ? 1 : 0);
+        return bool ? 1 : 0;
     }
 
 }
