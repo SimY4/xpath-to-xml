@@ -1,5 +1,7 @@
 package com.github.simy4.xpath.util;
 
+import java.util.Objects;
+
 public final class Triple<F, S, T> {
 
     public static <A, B, C> Triple<A, B, C> of(A first, B second, C third) {
@@ -45,22 +47,14 @@ public final class Triple<F, S, T> {
         }
 
         Triple<?, ?, ?> triple = (Triple<?, ?, ?>) o;
-
-        if (first != null ? !first.equals(triple.first) : triple.first != null) {
-            return false;
-        }
-        if (second != null ? !second.equals(triple.second) : triple.second != null) {
-            return false;
-        }
-        return third != null ? third.equals(triple.third) : triple.third == null;
+        return Objects.equals(first, triple.first) &&
+                Objects.equals(second, triple.second) &&
+                Objects.equals(third, triple.third);
     }
 
     @Override
     public int hashCode() {
-        int result = first != null ? first.hashCode() : 0;
-        result = 31 * result + (second != null ? second.hashCode() : 0);
-        result = 31 * result + (third != null ? third.hashCode() : 0);
-        return result;
+        return Objects.hash(first, second, third);
     }
 
     @Override

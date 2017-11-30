@@ -3,7 +3,6 @@ package com.github.simy4.xpath.dom.navigator;
 import com.github.simy4.xpath.navigator.Node;
 
 import javax.xml.namespace.QName;
-import java.util.Objects;
 
 public final class DomNode implements Node {
 
@@ -43,12 +42,12 @@ public final class DomNode implements Node {
 
         DomNode that = (DomNode) o;
 
-        return Objects.equals(node, that.node);
+        return node.equals(that.node);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(node);
+        return node.hashCode();
     }
 
     @Override

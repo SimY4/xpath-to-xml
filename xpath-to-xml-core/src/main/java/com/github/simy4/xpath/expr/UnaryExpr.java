@@ -5,7 +5,7 @@ import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.ViewContext;
 
-public class UnaryExpr extends AbstractExpr {
+public class UnaryExpr implements Expr {
 
     private final Expr valueExpr;
 

@@ -12,7 +12,7 @@ import javax.xml.namespace.QName;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 
-abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
+abstract class AbstractStepExpr implements StepExpr {
 
     private final Iterable<Predicate<ViewContext<?>>> predicates;
 

@@ -24,4 +24,9 @@ public interface Expr extends Predicate<ViewContext<?>> {
      */
     <N extends Node> View<N> resolve(ViewContext<N> context) throws XmlBuilderException;
 
+    @Override
+    default boolean test(ViewContext<?> context) throws XmlBuilderException {
+        return resolve(context).toBoolean();
+    }
+
 }

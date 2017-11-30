@@ -5,7 +5,7 @@ import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewContext;
 
-abstract class AbstractOperationExpr extends AbstractExpr {
+abstract class AbstractOperationExpr implements Expr {
 
     private final Expr leftExpr;
     private final Expr rightExpr;

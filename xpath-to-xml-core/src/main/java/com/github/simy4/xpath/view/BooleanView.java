@@ -21,8 +21,7 @@ public final class BooleanView<N extends Node> implements View<N> {
 
     @Override
     public int compareTo(View<N> other) {
-        final boolean thatBool = other.toBoolean();
-        return (bool == thatBool) ? 0 : (bool ? 1 : -1);
+        return Boolean.compare(bool, other.toBoolean());
     }
 
     @Override
@@ -52,7 +51,7 @@ public final class BooleanView<N extends Node> implements View<N> {
 
     @Override
     public int hashCode() {
-        return bool ? 1 : 0;
+        return Boolean.hashCode(bool);
     }
 
 }

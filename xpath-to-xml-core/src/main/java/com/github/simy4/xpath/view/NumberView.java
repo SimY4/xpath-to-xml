@@ -43,8 +43,7 @@ public final class NumberView<N extends Node> implements View<N> {
 
     @Override
     public int hashCode() {
-        final long temp = Double.doubleToLongBits(number);
-        return (int) (temp ^ (temp >>> 32));
+        return Double.hashCode(number);
     }
 
 }

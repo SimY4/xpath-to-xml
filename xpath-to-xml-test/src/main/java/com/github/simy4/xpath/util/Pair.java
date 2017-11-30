@@ -1,5 +1,7 @@
 package com.github.simy4.xpath.util;
 
+import java.util.Objects;
+
 public final class Pair<F, S> {
 
     public static <A, B> Pair<A, B> of(A first, B second) {
@@ -32,18 +34,13 @@ public final class Pair<F, S> {
         }
 
         Pair<?, ?> pair = (Pair<?, ?>) o;
-
-        if (first != null ? !first.equals(pair.first) : pair.first != null) {
-            return false;
-        }
-        return second != null ? second.equals(pair.second) : pair.second == null;
+        return Objects.equals(first, pair.first) &&
+                Objects.equals(second, pair.second);
     }
 
     @Override
     public int hashCode() {
-        int result = first != null ? first.hashCode() : 0;
-        result = 31 * result + (second != null ? second.hashCode() : 0);
-        return result;
+        return Objects.hash(first, second);
     }
 
     @Override
