@@ -41,9 +41,9 @@ public class XmlBuilderTest {
                 { "simple", null, new Element("breakfast_menu") },
                 { "simple", new SimpleNamespaceContext(), new Element("breakfast_menu") },
                 { "ns-simple", new SimpleNamespaceContext(), nsAwareRoot },
-//                TODO although these cases are working fine the order of attribute is messed up
-//                { "attr", null },
-//                { "attr", new SimpleNamespaceContext() },
+                // TODO although these cases are working fine the order of attributes is messed up
+                // { "attr", null },
+                // { "attr", new SimpleNamespaceContext() },
         });
     }
 
