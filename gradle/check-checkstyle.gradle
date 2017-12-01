@@ -2,6 +2,6 @@ apply plugin: 'checkstyle'
 
 checkstyle {
     configFile = rootProject.file('config/checkstyle/checkstyle.xml')
-    showViolations = true
+    maxWarnings = 0
     ignoreFailures = false
 }

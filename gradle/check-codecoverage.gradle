@@ -18,7 +18,7 @@ jacocoTestCoverageVerification {
             element = 'CLASS'
             includes = ['com.github.simy4.xpath.*']
             excludes = [
-                    'com.github.simy4.xpath.view.*',
+                    'com.github.simy4.xpath.view.AbstractViewVisitor',
                     'com.github.simy4.xpath.XmlBuilder'
             ]
 
@@ -32,3 +32,4 @@ jacocoTestCoverageVerification {
 }
 
 check.dependsOn jacocoTestReport
+check.dependsOn jacocoTestCoverageVerification
