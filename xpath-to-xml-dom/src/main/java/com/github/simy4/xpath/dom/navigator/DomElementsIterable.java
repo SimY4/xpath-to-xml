@@ -36,7 +36,7 @@ final class DomElementsIterable implements Iterable<DomNode> {
             if (!hasNext()) {
                 throw new NoSuchElementException("No more elements");
             }
-            final org.w3c.dom.Node next = child;
+            final Node next = child;
             child = next.getNextSibling();
             return new DomNode(next);
         }
