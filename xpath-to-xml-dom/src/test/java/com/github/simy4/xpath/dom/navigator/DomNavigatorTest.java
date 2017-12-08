@@ -12,6 +12,7 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 import javax.xml.namespace.QName;
 
@@ -29,9 +30,9 @@ public class DomNavigatorTest {
     @Mock private Element xml;
     @Mock private Attr attr;
     @Mock private NamedNodeMap attributes;
-    @Mock private org.w3c.dom.Node child1;
-    @Mock private org.w3c.dom.Node child2;
-    @Mock private org.w3c.dom.Node child3;
+    @Mock private Node child1;
+    @Mock private Node child2;
+    @Mock private Node child3;
 
     private Navigator<DomNode> navigator;
 
@@ -42,7 +43,7 @@ public class DomNavigatorTest {
         when(root.createElement(anyString())).thenReturn(xml);
         when(root.createElementNS(anyString(), anyString())).thenReturn(xml);
 
-        when(xml.getNodeType()).thenReturn(org.w3c.dom.Node.ELEMENT_NODE);
+        when(xml.getNodeType()).thenReturn(Node.ELEMENT_NODE);
         when(xml.getOwnerDocument()).thenReturn(root);
         when(xml.getParentNode()).thenReturn(root);
         when(xml.getFirstChild()).thenReturn(child1);
@@ -78,14 +79,14 @@ public class DomNavigatorTest {
     @Test
     public void testElementsOf() {
         assertThat(navigator.elementsOf(new DomNode(xml)))
-                .extracting("node", org.w3c.dom.Node.class)
+                .extracting("node", Node.class)
                 .containsExactly(child1, child2, child3);
     }
 
     @Test
     public void testAttributesOf() {
         assertThat(navigator.attributesOf(new DomNode(xml)))
-                .extracting("node", org.w3c.dom.Node.class)
+                .extracting("node", Node.class)
                 .containsExactly(child1, child2, child3);
     }
 
@@ -160,7 +161,7 @@ public class DomNavigatorTest {
 
     @Test(expected = XmlBuilderException.class)
     public void testPrependCopyFailure() {
-        doThrow(DOMException.class).when(root).insertBefore(any(org.w3c.dom.Node.class), any(org.w3c.dom.Node.class));
+        doThrow(DOMException.class).when(root).insertBefore(any(Node.class), any(Node.class));
         navigator.prependCopy(new DomNode(xml));
     }
 
@@ -189,7 +190,7 @@ public class DomNavigatorTest {
 
     @Test(expected = XmlBuilderException.class)
     public void testRemoveFailure() {
-        when(root.removeChild(any(org.w3c.dom.Node.class))).thenThrow(DOMException.class);
+        when(root.removeChild(any(Node.class))).thenThrow(DOMException.class);
         navigator.remove(new DomNode(xml));
     }
 
