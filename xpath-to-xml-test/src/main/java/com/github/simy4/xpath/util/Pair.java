@@ -34,8 +34,7 @@ public final class Pair<F, S> {
         }
 
         Pair<?, ?> pair = (Pair<?, ?>) o;
-        return Objects.equals(first, pair.first) &&
-                Objects.equals(second, pair.second);
+        return Objects.equals(first, pair.first) && Objects.equals(second, pair.second);
     }
 
     @Override

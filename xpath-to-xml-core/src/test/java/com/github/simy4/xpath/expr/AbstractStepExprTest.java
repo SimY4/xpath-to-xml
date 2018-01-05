@@ -53,7 +53,7 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
     public void shouldMatchPredicateAndRegularApplicationResult() {
         // given
         setUpResolvableExpr();
-        ViewContext<TestNode> context = new ViewContext<TestNode>(navigator, parentNode, false);
+        ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, false);
 
         // then
         assertThat(stepExpr.resolve(context).toBoolean()).isEqualTo(stepExpr.test(context));
