@@ -50,6 +50,16 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
     protected E stepExpr;
 
     @Test
+    public void shouldMatchPredicateAndRegularApplicationResult() {
+        // given
+        setUpResolvableExpr();
+        ViewContext<TestNode> context = new ViewContext<TestNode>(navigator, parentNode, false);
+
+        // then
+        assertThat(stepExpr.resolve(context).toBoolean()).isEqualTo(stepExpr.test(context));
+    }
+
+    @Test
     public void shouldMatchNodeViaPredicatesChainFromAListOfChildNodes() {
         // given
         setUpResolvableExpr();
@@ -65,7 +75,6 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
                 .containsExactly(navigator, false, 1);
         assertThat((Object) predicate2ContextCaptor.getValue()).extracting("navigator", "greedy", "position")
                 .containsExactly(navigator, false, 1);
-
     }
 
     @Test
