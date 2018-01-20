@@ -25,6 +25,8 @@ import org.mockito.junit.MockitoRule;
 import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(Theories.class)
@@ -110,7 +112,11 @@ public class LessThanOrEqualsExprTest {
         ViewContext<TestNode> context = new ViewContext<TestNode>(navigator, parentNode, true);
 
         // when
-        new LessThanOrEqualsExpr(leftExpr, rightExpr).resolve(context);
+        View<TestNode> result = new LessThanOrEqualsExpr(leftExpr, rightExpr).resolve(context);
+
+        // then
+        assertThat(result).isEqualTo(BooleanView.of(true));
+        verify(navigator).setText(any(TestNode.class), eq(less.toString()));
     }
 
     @Test
