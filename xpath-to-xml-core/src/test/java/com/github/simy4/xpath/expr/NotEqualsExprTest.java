@@ -4,8 +4,8 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.BooleanView;
+import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.LiteralView;
-import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
@@ -18,6 +18,7 @@ import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
@@ -26,7 +27,6 @@ import static com.github.simy4.xpath.util.TestNode.node;
 import static com.github.simy4.xpath.view.NodeSetView.empty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -96,8 +96,7 @@ public class NotEqualsExprTest {
     public void shouldApplyRightViewToLeftViewWhenShouldCreate(@FromDataPoints("ne left") View<TestNode> left,
                                                                @FromDataPoints("ne left") View<TestNode> right) {
         // given
-        if (!(left instanceof NodeView)
-                && (!(left instanceof NodeSetView) || !(((NodeSetView) left).iterator().next() instanceof NodeView))) {
+        if (!(left instanceof IterableNodeView && ((IterableNodeView<TestNode>) left).iterator().hasNext())) {
             expectedException.expect(XmlBuilderException.class);
         }
         when(leftExpr.resolve(any(ViewContext.class))).thenReturn(left);
@@ -109,7 +108,9 @@ public class NotEqualsExprTest {
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(true));
-        verify(navigator).setText(any(TestNode.class), eq(Boolean.toString(!right.toBoolean())));
+        ArgumentCaptor<String> textCaptor = ArgumentCaptor.forClass(String.class);
+        verify(navigator).setText(any(TestNode.class), textCaptor.capture());
+        assertThat(textCaptor.getValue()).isNotEqualTo(right.toString());
     }
 
     @Test

@@ -4,6 +4,7 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.BooleanView;
+import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.NumberView;
@@ -24,6 +25,8 @@ import org.mockito.junit.MockitoRule;
 import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(Theories.class)
@@ -98,16 +101,22 @@ public class GreaterThanOrEqualsExprTest {
     }
 
     @Theory
-    public void shouldThrowWhenResolveToFalseAndShouldCreate(@FromDataPoints("less") View<TestNode> less,
-                                                             @FromDataPoints("greater") View<TestNode> greater) {
+    public void shouldApplyRightViewToLeftViewWhenShouldCreate(@FromDataPoints("less") View<TestNode> less,
+                                                               @FromDataPoints("greater") View<TestNode> greater) {
         // given
-        expectedException.expect(XmlBuilderException.class);
+        if (!(less instanceof IterableNodeView && ((IterableNodeView<TestNode>) less).iterator().hasNext())) {
+            expectedException.expect(XmlBuilderException.class);
+        }
         when(leftExpr.resolve(any(ViewContext.class))).thenReturn(less);
         when(rightExpr.resolve(any(ViewContext.class))).thenReturn(greater);
         ViewContext<TestNode> context = new ViewContext<TestNode>(navigator, parentNode, true);
 
         // when
-        new GreaterThanOrEqualsExpr(leftExpr, rightExpr).resolve(context, less, greater);
+        View<TestNode> result = new GreaterThanOrEqualsExpr(leftExpr, rightExpr).resolve(context, less, greater);
+
+        // then
+        assertThat(result).isEqualTo(BooleanView.of(true));
+        verify(navigator).setText(any(TestNode.class), eq(greater.toString()));
     }
 
     @Test
