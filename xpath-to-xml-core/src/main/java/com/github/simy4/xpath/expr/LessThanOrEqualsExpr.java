@@ -15,10 +15,9 @@ public class LessThanOrEqualsExpr extends AbstractOperationExpr {
     @Override
     public <N extends Node> View<N> resolve(ViewContext<N> context, View<N> left, View<N> right)
             throws XmlBuilderException {
-        final boolean le = 0 >= Double.compare(left.toNumber(), right.toNumber());
+        boolean le = 0 >= Double.compare(left.toNumber(), right.toNumber());
         if (!le && context.isGreedy() && !context.hasNext()) {
-            throw new XmlBuilderException("Can not apply a 'less than or equals' operator "
-                    + "to: " + left + " and: " + right);
+            le = left.visit(new EqualsExpr.EqualsVisitor<N>(context.getNavigator(), right));
         }
         return BooleanView.of(le);
     }

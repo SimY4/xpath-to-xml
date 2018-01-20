@@ -4,8 +4,8 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.BooleanView;
+import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.LiteralView;
-import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
@@ -96,8 +96,7 @@ public class EqualsExprTest {
     public void shouldApplyRightViewToLeftViewWhenShouldCreate(@FromDataPoints("eq left") View<TestNode> left,
                                                                @FromDataPoints("eq right") View<TestNode> right) {
         // given
-        if (!(left instanceof NodeView)
-                && (!(left instanceof NodeSetView) || !(((NodeSetView) left).iterator().next() instanceof NodeView))) {
+        if (!(left instanceof IterableNodeView && ((IterableNodeView<TestNode>) left).iterator().hasNext())) {
             expectedException.expect(XmlBuilderException.class);
         }
         when(leftExpr.resolve(any(ViewContext.class))).thenReturn(left);

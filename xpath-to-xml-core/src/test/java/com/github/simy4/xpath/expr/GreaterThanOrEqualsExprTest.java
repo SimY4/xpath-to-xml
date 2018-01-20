@@ -4,6 +4,7 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.BooleanView;
+import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.NumberView;
@@ -98,10 +99,12 @@ public class GreaterThanOrEqualsExprTest {
     }
 
     @Theory
-    public void shouldThrowWhenResolveToFalseAndShouldCreate(@FromDataPoints("less") View<TestNode> less,
-                                                             @FromDataPoints("greater") View<TestNode> greater) {
+    public void shouldApplyRightViewToLeftViewWhenShouldCreate(@FromDataPoints("less") View<TestNode> less,
+                                                               @FromDataPoints("greater") View<TestNode> greater) {
         // given
-        expectedException.expect(XmlBuilderException.class);
+        if (!(less instanceof IterableNodeView && ((IterableNodeView<TestNode>) less).iterator().hasNext())) {
+            expectedException.expect(XmlBuilderException.class);
+        }
         when(leftExpr.resolve(any(ViewContext.class))).thenReturn(less);
         when(rightExpr.resolve(any(ViewContext.class))).thenReturn(greater);
         ViewContext<TestNode> context = new ViewContext<TestNode>(navigator, parentNode, true);
