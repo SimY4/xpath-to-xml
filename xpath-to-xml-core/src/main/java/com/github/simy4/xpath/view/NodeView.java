@@ -42,8 +42,8 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
     }
 
     @Override
-    public void visit(ViewVisitor<N> visitor) throws XmlBuilderException {
-        visitor.visit(this);
+    public <T> T visit(ViewVisitor<N, T> visitor) throws XmlBuilderException {
+        return visitor.visit(this);
     }
 
     @Override
@@ -67,7 +67,7 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
 
     @Override
     public boolean equals(Object o) {
-        return ((this == o || null != o) && o instanceof View) && toString().equals(o.toString());
+        return this == o || (o instanceof View && toString().equals(o.toString()));
     }
 
     @Override

@@ -32,13 +32,13 @@ public final class NumberView<N extends Node> implements View<N> {
     }
 
     @Override
-    public void visit(ViewVisitor<N> visitor) throws XmlBuilderException {
-        visitor.visit(this);
+    public <T> T visit(ViewVisitor<N, T> visitor) throws XmlBuilderException {
+        return visitor.visit(this);
     }
 
     @Override
     public boolean equals(Object o) {
-        return ((this == o || null != o) && o instanceof View) && 0 == Double.compare(number, ((View<?>) o).toNumber());
+        return this == o || (o instanceof View && 0 == Double.compare(number, ((View<?>) o).toNumber()));
     }
 
     @Override

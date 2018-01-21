@@ -71,8 +71,8 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
     }
 
     @Override
-    public void visit(ViewVisitor<N> visitor) throws XmlBuilderException {
-        visitor.visit(this);
+    public <T> T visit(ViewVisitor<N, T> visitor) throws XmlBuilderException {
+        return visitor.visit(this);
     }
 
     @Override
@@ -107,7 +107,7 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
         if (this == o) {
             return true;
         }
-        if (o == null || !(o instanceof View)) {
+        if (!(o instanceof View)) {
             return false;
         }
 
