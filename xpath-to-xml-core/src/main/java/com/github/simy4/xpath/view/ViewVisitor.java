@@ -7,6 +7,7 @@ import com.github.simy4.xpath.navigator.Node;
  * XML elements view visitor.
  *
  * @param <N> XML node type
+ * @param <T> type of return value
  * @author Alex Simkin
  * @since 1.0
  */
