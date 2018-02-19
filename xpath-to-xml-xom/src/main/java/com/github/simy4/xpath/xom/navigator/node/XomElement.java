@@ -1,6 +1,7 @@
 package com.github.simy4.xpath.xom.navigator.node;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.util.ReadOnlyIterator;
 import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
@@ -123,7 +124,7 @@ public final class XomElement implements XomNode<Element> {
         return element.toString();
     }
 
-    private static final class XomAttributesIterator implements Iterator<XomNode<Attribute>> {
+    private static final class XomAttributesIterator extends ReadOnlyIterator<XomNode<Attribute>> {
 
         private final Element element;
         private int cursor;
@@ -145,14 +146,9 @@ public final class XomElement implements XomNode<Element> {
             return new XomAttribute(element.getAttribute(cursor++));
         }
 
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException("remove");
-        }
-
     }
 
-    private static final class XomElementsIterator implements Iterator<XomNode<Element>> {
+    private static final class XomElementsIterator extends ReadOnlyIterator<XomNode<Element>> {
 
         private final Elements elements;
         private int cursor;
@@ -172,11 +168,6 @@ public final class XomElement implements XomNode<Element> {
                 throw new NoSuchElementException("No more elements");
             }
             return new XomElement(elements.get(cursor++));
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException("remove");
         }
 
     }

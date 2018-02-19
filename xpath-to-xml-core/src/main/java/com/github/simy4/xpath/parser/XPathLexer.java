@@ -1,10 +1,9 @@
 package com.github.simy4.xpath.parser;
 
 import com.github.simy4.xpath.parser.Token.Type;
+import com.github.simy4.xpath.util.ReadOnlyIterator;
 
-import java.util.Iterator;
-
-class XPathLexer implements Iterator<Token> {
+class XPathLexer extends ReadOnlyIterator<Token> {
 
     private final String xpath;
     private int cursor;
@@ -127,11 +126,6 @@ class XPathLexer implements Iterator<Token> {
             }
         } while (token.getType() == Type.SKIP);
         return token;
-    }
-
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException("remove");
     }
 
     private Token literal() {

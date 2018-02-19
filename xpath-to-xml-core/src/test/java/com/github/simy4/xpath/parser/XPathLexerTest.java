@@ -157,11 +157,6 @@ public class XPathLexerTest {
         assertThat(expectedTokensIterator.hasNext()).as("expected to have no more tokens").isFalse();
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void shouldThrowOnRemove() {
-        new XPathLexer(xpath).remove();
-    }
-
     private static Token token(Type type, String token) {
         return new Token(type, token, 0, token.length());
     }

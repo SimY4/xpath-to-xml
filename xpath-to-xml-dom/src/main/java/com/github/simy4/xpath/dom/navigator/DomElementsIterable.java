@@ -1,5 +1,6 @@
 package com.github.simy4.xpath.dom.navigator;
 
+import com.github.simy4.xpath.util.ReadOnlyIterator;
 import org.w3c.dom.Node;
 
 import java.util.Iterator;
@@ -18,7 +19,7 @@ final class DomElementsIterable implements Iterable<DomNode> {
         return new DomElementsIterator(parent);
     }
 
-    private static final class DomElementsIterator implements Iterator<DomNode> {
+    private static final class DomElementsIterator extends ReadOnlyIterator<DomNode> {
 
         private Node child;
 
@@ -39,11 +40,6 @@ final class DomElementsIterable implements Iterable<DomNode> {
             final Node next = child;
             child = next.getNextSibling();
             return new DomNode(next);
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException("remove");
         }
 
     }
