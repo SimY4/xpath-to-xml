@@ -3,7 +3,7 @@ package com.github.simy4.xpath.util;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public final class FilteringIterator<T> implements Iterator<T> {
+public final class FilteringIterator<T> extends ReadOnlyIterator<T> {
 
     private final Iterator<? extends T> iterator;
     private final Predicate<? super T> predicate;
@@ -33,11 +33,6 @@ public final class FilteringIterator<T> implements Iterator<T> {
             throw new NoSuchElementException("No more elements");
         }
         return nextMatch();
-    }
-
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException();
     }
 
     private T nextMatch() {

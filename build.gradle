@@ -5,10 +5,10 @@ plugins {
 
 ext {
     jUnitVersion = '4.12'
-    mockitoVersion = '2.13.0'
-    assertjVersion = '3.9.0'
+    mockitoVersion = '2.15.0'
+    assertjVersion = '3.9.1'
     errorproneVersion = '2.2.0'
-    checkstyleVersion = '8.7'
+    checkstyleVersion = '8.8'
 
     def buildTimeAndDate = new Date()
     buildDate = buildTimeAndDate.format("yyyy-MM-dd")
@@ -74,5 +74,5 @@ subprojects {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.5'
+    gradleVersion = '4.6'
 }
