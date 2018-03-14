@@ -1,5 +1,9 @@
 apply plugin: 'checkstyle'
 
+dependencies {
+    checkstyle "com.puppycrawl.tools:checkstyle:$checkstyleVersion"
+}
+
 checkstyle {
     configFile = rootProject.file('config/checkstyle/checkstyle.xml')
     maxWarnings = 0
