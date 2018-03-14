@@ -6,8 +6,8 @@ import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewContext;
 
-import java.util.Iterator;
 import java.util.List;
+import java.util.StringJoiner;
 
 public class PathExpr implements Expr {
 
@@ -28,15 +28,11 @@ public class PathExpr implements Expr {
 
     @Override
     public String toString() {
-        final Iterator<StepExpr> pathExprIterator = pathExpr.iterator();
-        final StringBuilder stringBuilder = new StringBuilder();
-        if (pathExprIterator.hasNext()) {
-            stringBuilder.append(pathExprIterator.next());
-            while (pathExprIterator.hasNext()) {
-                stringBuilder.append('/').append(pathExprIterator.next());
-            }
+        final StringJoiner stringJoiner = new StringJoiner("/");
+        for (StepExpr stepExpr : pathExpr) {
+            stringJoiner.add(stepExpr.toString());
         }
-        return stringBuilder.toString();
+        return stringJoiner.toString();
     }
 
 }
