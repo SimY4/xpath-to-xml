@@ -1,9 +1,10 @@
 package com.github.simy4.xpath.parser;
 
 import com.github.simy4.xpath.parser.Token.Type;
-import com.github.simy4.xpath.util.ReadOnlyIterator;
 
-class XPathLexer extends ReadOnlyIterator<Token> {
+import java.util.Iterator;
+
+class XPathLexer implements Iterator<Token> {
 
     private final String xpath;
     private int cursor;

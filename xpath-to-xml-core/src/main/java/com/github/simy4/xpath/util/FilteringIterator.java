@@ -3,7 +3,7 @@ package com.github.simy4.xpath.util;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public final class FilteringIterator<T> extends ReadOnlyIterator<T> {
+public final class FilteringIterator<T> implements Iterator<T> {
 
     private final Iterator<? extends T> iterator;
     private final Predicate<? super T> predicate;
