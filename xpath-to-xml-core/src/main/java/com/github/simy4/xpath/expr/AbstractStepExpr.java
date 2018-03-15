@@ -10,6 +10,7 @@ import com.github.simy4.xpath.view.ViewContext;
 
 import javax.xml.namespace.QName;
 import java.util.Iterator;
+import java.util.StringJoiner;
 import java.util.concurrent.atomic.AtomicInteger;
 
 abstract class AbstractStepExpr implements StepExpr {
@@ -74,11 +75,11 @@ abstract class AbstractStepExpr implements StepExpr {
 
     @Override
     public String toString() {
-        final StringBuilder stringBuilder = new StringBuilder();
+        final StringJoiner stringJoiner = new StringJoiner("][", "[", "]");
         for (Predicate predicate : predicates) {
-            stringBuilder.append('[').append(predicate).append(']');
+            stringJoiner.add(predicate.toString());
         }
-        return stringBuilder.toString();
+        return stringJoiner.toString();
     }
 
     private static final class CountingPredicate implements Predicate<ViewContext<?>> {

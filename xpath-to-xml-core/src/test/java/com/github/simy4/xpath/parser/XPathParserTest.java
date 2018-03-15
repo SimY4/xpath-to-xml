@@ -142,6 +142,7 @@ public class XPathParserTest {
             "book[]",
             "book[]]",
             "book[[]",
+            "book[[]]",
             "book[@style='value\"]",
     };
 
