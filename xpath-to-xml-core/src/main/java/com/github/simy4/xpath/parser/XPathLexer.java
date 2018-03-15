@@ -21,7 +21,7 @@ class XPathLexer extends ReadOnlyIterator<Token> {
     public Token next() {
         Token token;
         do {
-            char ch = charAt(1);
+            final char ch = charAt(1);
             switch (ch) {
                 case '"':
                 case '\'':

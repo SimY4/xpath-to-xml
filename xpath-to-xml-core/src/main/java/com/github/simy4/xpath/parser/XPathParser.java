@@ -317,15 +317,15 @@ public class XPathParser {
         private final XPathLexer lexer;
         private final List<Token> tokens = new ArrayList<Token>();
 
-        Context(String xpath) {
+        private Context(String xpath) {
             this.lexer = new XPathLexer(xpath);
         }
 
-        boolean hasMoreElements() {
+        private boolean hasMoreElements() {
             return tokenAt(1).getType() != Type.EOF;
         }
 
-        Token tokenAt(int i) {
+        private Token tokenAt(int i) {
             if (tokens.size() <= i - 1) {
                 for (int j = 0; j < i; ++j) {
                     tokens.add(lexer.next());
@@ -334,7 +334,7 @@ public class XPathParser {
             return tokens.get(i - 1);
         }
 
-        Token match(Type type) throws XPathExpressionException {
+        private Token match(Type type) throws XPathExpressionException {
             final Token token = tokenAt(1);
             if (token.getType() == type) {
                 tokens.remove(0);
