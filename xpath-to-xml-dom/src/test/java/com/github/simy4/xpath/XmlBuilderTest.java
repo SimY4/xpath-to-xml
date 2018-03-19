@@ -48,27 +48,25 @@ public class XmlBuilderTest {
         DocumentBuilderFactory nsAwareDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
         nsAwareDocumentBuilderFactory.setNamespaceAware(true);
         return asList(new Object[][] {
-                { "simple", null, documentBuilderFactory},
-                { "simple", new SimpleNamespaceContext(), documentBuilderFactory},
-                { "ns-simple", new SimpleNamespaceContext(), nsAwareDocumentBuilderFactory},
-                { "attr", null, documentBuilderFactory},
-                { "attr", new SimpleNamespaceContext(), documentBuilderFactory},
+                { new FixtureAccessor("simple"), null, documentBuilderFactory},
+                { new FixtureAccessor("simple"), new SimpleNamespaceContext(), documentBuilderFactory},
+                { new FixtureAccessor("ns-simple"), new SimpleNamespaceContext(), nsAwareDocumentBuilderFactory},
+                { new FixtureAccessor("attr"), null, documentBuilderFactory},
+                { new FixtureAccessor("attr"), new SimpleNamespaceContext(), documentBuilderFactory},
         });
     }
 
     @Parameter(0)
-    public String fixtureName;
+    public FixtureAccessor fixtureAccessor;
     @Parameter(1)
     public NamespaceContext namespaceContext;
     @Parameter(2)
     public DocumentBuilderFactory documentBuilderFactory;
 
     private DocumentBuilder documentBuilder;
-    private FixtureAccessor fixtureAccessor;
 
     @Before
     public void setUp() throws ParserConfigurationException {
-        fixtureAccessor = new FixtureAccessor(fixtureName);
         documentBuilder = documentBuilderFactory.newDocumentBuilder();
     }
 
