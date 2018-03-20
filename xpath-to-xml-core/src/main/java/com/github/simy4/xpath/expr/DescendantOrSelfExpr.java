@@ -60,7 +60,7 @@ public class DescendantOrSelfExpr implements StepExpr {
         private Iterator<NodeView<T>> apply(NodeView<T> self) {
             return new FlatteningIterator<NodeView<T>>(self.iterator(),
                     new TransformingIterator<T, Iterator<NodeView<T>>>(navigator.elementsOf(self.getNode()).iterator(),
-                            new DescendantOrSelf<T>(navigator)));
+                            this));
         }
 
     }
