@@ -9,7 +9,6 @@ import nu.xom.Nodes;
 import nu.xom.ParsingException;
 import nu.xom.Serializer;
 import nu.xom.XPathContext;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -38,28 +37,21 @@ public class XmlBuilderTest {
         Element nsAwareRoot = new Element("breakfast_menu", "http://www.example.com/my");
         nsAwareRoot.setNamespacePrefix("my");
         return asList(new Object[][] {
-                { "simple", null, new Element("breakfast_menu") },
-                { "simple", new SimpleNamespaceContext(), new Element("breakfast_menu") },
-                { "ns-simple", new SimpleNamespaceContext(), nsAwareRoot },
+                { new FixtureAccessor("simple"), null, new Element("breakfast_menu") },
+                { new FixtureAccessor("simple"), new SimpleNamespaceContext(), new Element("breakfast_menu") },
+                { new FixtureAccessor("ns-simple"), new SimpleNamespaceContext(), nsAwareRoot },
                 // TODO although these cases are working fine the order of attributes is messed up
-                // { "attr", null },
-                // { "attr", new SimpleNamespaceContext() },
+                // { new FixtureAccessor("attr"), null },
+                // { new FixtureAccessor("attr"), new SimpleNamespaceContext() },
         });
     }
 
     @Parameter(0)
-    public String fixtureName;
+    public FixtureAccessor fixtureAccessor;
     @Parameter(1)
     public NamespaceContext namespaceContext;
     @Parameter(2)
     public Element root;
-
-    private FixtureAccessor fixtureAccessor;
-
-    @Before
-    public void setUp() {
-        fixtureAccessor = new FixtureAccessor(fixtureName);
-    }
 
     @Test
     public void shouldBuildDocumentFromSetOfXPaths() throws XPathExpressionException, IOException {

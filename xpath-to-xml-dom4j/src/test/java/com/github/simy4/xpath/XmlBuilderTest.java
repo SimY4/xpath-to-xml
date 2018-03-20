@@ -9,7 +9,6 @@ import org.dom4j.XPath;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -35,26 +34,19 @@ public class XmlBuilderTest {
     @Parameters(name = "With test fixture: {0} and namespace: {1}")
     public static Collection<Object[]> data() {
         return asList(new Object[][] {
-                { "simple", null },
-                { "simple", new SimpleNamespaceContext() },
-                { "ns-simple", new SimpleNamespaceContext() },
+                { new FixtureAccessor("simple"), null },
+                { new FixtureAccessor("simple"), new SimpleNamespaceContext() },
+                { new FixtureAccessor("ns-simple"), new SimpleNamespaceContext() },
                 // TODO although these cases are working fine the order of attribute is messed up
-                // { "attr", null },
-                // { "attr", new SimpleNamespaceContext() },
+                // { new FixtureAccessor("attr"), null },
+                // { new FixtureAccessor("attr"), new SimpleNamespaceContext() },
         });
     }
 
     @Parameter(0)
-    public String fixtureName;
+    public FixtureAccessor fixtureAccessor;
     @Parameter(1)
     public NamespaceContext namespaceContext;
-
-    private FixtureAccessor fixtureAccessor;
-
-    @Before
-    public void setUp() {
-        fixtureAccessor = new FixtureAccessor(fixtureName);
-    }
 
     @Test
     public void shouldBuildDocumentFromSetOfXPaths() throws XPathExpressionException, IOException {
