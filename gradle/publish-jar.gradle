@@ -7,6 +7,6 @@ jar {
             'Build-Time': project.buildTime,
             'Implementation-Title': project.name,
             'Implementation-Version': project.version,
-            'Automatic-Module-Name': project.name,
+            'Automatic-Module-Name': project.name.replace('-', '.'),
     )
 }
