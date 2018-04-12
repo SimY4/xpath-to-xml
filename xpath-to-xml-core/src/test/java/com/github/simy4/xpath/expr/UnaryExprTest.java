@@ -1,6 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.util.Pair;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.BooleanView;
@@ -57,8 +58,8 @@ public class UnaryExprTest {
 
     @Theory
     public void shouldAlwaysReturnNegatedNumberViewNode(
-            @FromDataPoints("views") Pair<View<TestNode>, NumberView<TestNode>> data) {
-        when(valueExpr.resolve(any(ViewContext.class))).thenReturn(data.getFirst());
+            @FromDataPoints("views") Pair<View<Node>, NumberView<Node>> data) {
+        when(valueExpr.resolve(any())).thenReturn(data.getFirst());
 
         View<TestNode> result = unaryExpr.resolve(new ViewContext<>(navigator,
                 new NodeView<>(node("xml")), false));

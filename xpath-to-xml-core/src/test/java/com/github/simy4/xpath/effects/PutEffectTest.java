@@ -31,7 +31,7 @@ public class PutEffectTest {
 
     @Before
     public void setUp() {
-        when(expr.resolve(any(ViewContext.class))).thenReturn(new NodeView<>(node("node")));
+        when(expr.resolve(any())).thenReturn(new NodeView<>(node("node")));
 
         putEffect = new PutEffect(expr);
     }
@@ -50,7 +50,7 @@ public class PutEffectTest {
     @Test(expected = XmlBuilderException.class)
     public void shouldPropagateOnAnyException() {
         // given
-        when(expr.resolve(any(ViewContext.class))).thenThrow(XmlBuilderException.class);
+        when(expr.resolve(any())).thenThrow(XmlBuilderException.class);
 
         // then
         putEffect.perform(navigator, node("xml"));

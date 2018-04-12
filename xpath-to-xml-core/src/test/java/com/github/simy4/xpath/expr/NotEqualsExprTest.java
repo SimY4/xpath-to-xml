@@ -2,6 +2,7 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.IterableNodeView;
@@ -59,11 +60,11 @@ public class NotEqualsExprTest {
     @Mock private Expr rightExpr;
 
     @Theory
-    public void shouldAssociativelyResolveEqualViewsToFalse(@FromDataPoints("ne left") View<TestNode> left,
-                                                            @FromDataPoints("ne left") View<TestNode> right) {
+    public void shouldAssociativelyResolveEqualViewsToFalse(@FromDataPoints("ne left") View<Node> left,
+                                                            @FromDataPoints("ne left") View<Node> right) {
         // given
-        when(leftExpr.resolve(any(ViewContext.class))).thenReturn(left);
-        when(rightExpr.resolve(any(ViewContext.class))).thenReturn(right);
+        when(leftExpr.resolve(any())).thenReturn(left);
+        when(rightExpr.resolve(any())).thenReturn(right);
         ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, false);
 
         // when
@@ -76,11 +77,11 @@ public class NotEqualsExprTest {
     }
 
     @Theory
-    public void shouldAssociativelyResolveNonEqualViewsToTrue(@FromDataPoints("ne left") View<TestNode> left,
-                                                              @FromDataPoints("ne right") View<TestNode> right) {
+    public void shouldAssociativelyResolveNonEqualViewsToTrue(@FromDataPoints("ne left") View<Node> left,
+                                                              @FromDataPoints("ne right") View<Node> right) {
         // given
-        when(leftExpr.resolve(any(ViewContext.class))).thenReturn(left);
-        when(rightExpr.resolve(any(ViewContext.class))).thenReturn(right);
+        when(leftExpr.resolve(any())).thenReturn(left);
+        when(rightExpr.resolve(any())).thenReturn(right);
         ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, false);
 
         // when
@@ -93,14 +94,14 @@ public class NotEqualsExprTest {
     }
 
     @Theory
-    public void shouldApplyRightViewToLeftViewWhenShouldCreate(@FromDataPoints("ne left") View<TestNode> left,
-                                                               @FromDataPoints("ne left") View<TestNode> right) {
+    public void shouldApplyRightViewToLeftViewWhenShouldCreate(@FromDataPoints("ne left") View<Node> left,
+                                                               @FromDataPoints("ne left") View<Node> right) {
         // given
-        if (!(left instanceof IterableNodeView && ((IterableNodeView<TestNode>) left).iterator().hasNext())) {
+        if (!(left instanceof IterableNodeView && ((IterableNodeView<Node>) left).iterator().hasNext())) {
             expectedException.expect(XmlBuilderException.class);
         }
-        when(leftExpr.resolve(any(ViewContext.class))).thenReturn(left);
-        when(rightExpr.resolve(any(ViewContext.class))).thenReturn(right);
+        when(leftExpr.resolve(any())).thenReturn(left);
+        when(rightExpr.resolve(any())).thenReturn(right);
         ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, true);
 
         // when

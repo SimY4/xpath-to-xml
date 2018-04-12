@@ -2,6 +2,7 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.IterableNodeView;
@@ -56,11 +57,11 @@ public class LessThanOrEqualsExprTest {
     @Mock private Expr rightExpr;
 
     @Theory
-    public void shouldResolveToTrueWhenLeftIsLessThanRight(@FromDataPoints("less") View<TestNode> less,
-                                                           @FromDataPoints("greater") View<TestNode> greater) {
+    public void shouldResolveToTrueWhenLeftIsLessThanRight(@FromDataPoints("less") View<Node> less,
+                                                           @FromDataPoints("greater") View<Node> greater) {
         // given
-        when(leftExpr.resolve(any(ViewContext.class))).thenReturn(less);
-        when(rightExpr.resolve(any(ViewContext.class))).thenReturn(greater);
+        when(leftExpr.resolve(any())).thenReturn(less);
+        when(rightExpr.resolve(any())).thenReturn(greater);
         ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, false);
 
         // when
@@ -71,11 +72,11 @@ public class LessThanOrEqualsExprTest {
     }
 
     @Theory
-    public void shouldResolveToFalseWhenLeftIsGreaterThanRight(@FromDataPoints("less") View<TestNode> less,
-                                                               @FromDataPoints("greater") View<TestNode> greater) {
+    public void shouldResolveToFalseWhenLeftIsGreaterThanRight(@FromDataPoints("less") View<Node> less,
+                                                               @FromDataPoints("greater") View<Node> greater) {
         // given
-        when(leftExpr.resolve(any(ViewContext.class))).thenReturn(greater);
-        when(rightExpr.resolve(any(ViewContext.class))).thenReturn(less);
+        when(leftExpr.resolve(any())).thenReturn(greater);
+        when(rightExpr.resolve(any())).thenReturn(less);
         ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, false);
 
         // when
@@ -86,11 +87,11 @@ public class LessThanOrEqualsExprTest {
     }
 
     @Theory
-    public void shouldResolveToTrueWhenLeftIsEqualToRight(@FromDataPoints("less") View<TestNode> left,
-                                                          @FromDataPoints("less") View<TestNode> right) {
+    public void shouldResolveToTrueWhenLeftIsEqualToRight(@FromDataPoints("less") View<Node> left,
+                                                          @FromDataPoints("less") View<Node> right) {
         // given
-        when(leftExpr.resolve(any(ViewContext.class))).thenReturn(left);
-        when(rightExpr.resolve(any(ViewContext.class))).thenReturn(right);
+        when(leftExpr.resolve(any())).thenReturn(left);
+        when(rightExpr.resolve(any())).thenReturn(right);
         ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, false);
 
         // when
@@ -101,14 +102,14 @@ public class LessThanOrEqualsExprTest {
     }
 
     @Theory
-    public void shouldApplyRightViewToLeftViewWhenShouldCreate(@FromDataPoints("less") View<TestNode> less,
-                                                               @FromDataPoints("greater") View<TestNode> greater) {
+    public void shouldApplyRightViewToLeftViewWhenShouldCreate(@FromDataPoints("less") View<Node> less,
+                                                               @FromDataPoints("greater") View<Node> greater) {
         // given
-        if (!(greater instanceof IterableNodeView && ((IterableNodeView<TestNode>) greater).iterator().hasNext())) {
+        if (!(greater instanceof IterableNodeView && ((IterableNodeView<Node>) greater).iterator().hasNext())) {
             expectedException.expect(XmlBuilderException.class);
         }
-        when(leftExpr.resolve(any(ViewContext.class))).thenReturn(greater);
-        when(rightExpr.resolve(any(ViewContext.class))).thenReturn(less);
+        when(leftExpr.resolve(any())).thenReturn(greater);
+        when(rightExpr.resolve(any())).thenReturn(less);
         ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, true);
 
         // when

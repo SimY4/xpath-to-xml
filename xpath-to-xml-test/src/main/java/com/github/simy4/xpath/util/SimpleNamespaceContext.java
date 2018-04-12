@@ -38,7 +38,7 @@ public final class SimpleNamespaceContext implements NamespaceContext {
     }
 
     @Override
-    public Iterator getPrefixes(String namespaceUri) {
+    public Iterator<String> getPrefixes(String namespaceUri) {
         if (null == namespaceUri) {
             throw new IllegalArgumentException("namespaceURI");
         } else if (XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(namespaceUri)) {

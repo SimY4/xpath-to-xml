@@ -1,6 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeView;
@@ -40,11 +41,11 @@ public class MultiplicationExprTest {
     @Mock private Expr rightExpr;
 
     @Theory
-    public void shouldMultiplyLeftViewToRightView(@FromDataPoints("3.0") View<TestNode> left,
-                                                  @FromDataPoints("3.0") View<TestNode> right) {
+    public void shouldMultiplyLeftViewToRightView(@FromDataPoints("3.0") View<Node> left,
+                                                  @FromDataPoints("3.0") View<Node> right) {
         // given
-        when(leftExpr.resolve(any(ViewContext.class))).thenReturn(left);
-        when(rightExpr.resolve(any(ViewContext.class))).thenReturn(right);
+        when(leftExpr.resolve(any())).thenReturn(left);
+        when(rightExpr.resolve(any())).thenReturn(right);
         ViewContext<TestNode> context = new ViewContext<>(navigator, new NodeView<>(node("node")), false);
 
         // when
