@@ -47,7 +47,7 @@ public class Dom4jNavigatorTest {
     @Mock private Attribute attr3;
 
 
-    private Navigator<Dom4jNode> navigator;
+    private Navigator<Dom4jNode<?>> navigator;
 
     @Before
     public void setUp() {

@@ -6,13 +6,21 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 
 ## 1.x Series
 
+### 1.0.2
+
+Improvements:
+
+- DOM4J
+  - Bump DOM4J version up to 2.1.0
+
 ### 1.0.1
 
 Bugfixes:
 
-- EqualsExpr now correctly reports an error if unable to satisfy given case
-- NotEqualsExpr supports more cases now and also correctly reports an error
-- LessThatOrEquals and GreaterThanOrEquals are now supported (with fallback to EqualsExpr resolver) 
+- Core:
+  - EqualsExpr now correctly reports an error if unable to satisfy given case
+  - NotEqualsExpr supports more cases now and also correctly reports an error
+  - LessThatOrEquals and GreaterThanOrEquals are now supported (with fallback to EqualsExpr resolver) 
 
 ### 1.0.0 Initial Release
 
