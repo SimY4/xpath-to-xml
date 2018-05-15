@@ -11,7 +11,9 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 Improvements:
 
 - DOM4J
-  - Bump DOM4J version up to 2.1.0
+  - Bump DOM4J version to 2.1.0
+- XOM
+  - Bump XOM version to 1.2.10
 
 ### 1.0.1
 

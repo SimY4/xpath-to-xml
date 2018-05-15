@@ -3,7 +3,7 @@ ext.pomDescription = "XPath-to-XML XOM"
 dependencies {
     api project(':xpath-to-xml-core')
 
-    implementation 'xom:xom:1.2.5'
+    implementation 'com.io7m.xom:xom:1.2.10'
 
     testImplementation project(':xpath-to-xml-test')
     testImplementation "org.junit.vintage:junit-vintage-engine:$jUnitVersion"
