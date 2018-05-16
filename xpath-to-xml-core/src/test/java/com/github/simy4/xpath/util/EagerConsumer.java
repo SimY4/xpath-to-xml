@@ -16,4 +16,7 @@ public final class EagerConsumer {
         return Collections.unmodifiableList(eager);
     }
 
+    private EagerConsumer() {
+    }
+
 }
