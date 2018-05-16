@@ -8,17 +8,10 @@ import org.dom4j.Element;
 import javax.xml.namespace.QName;
 import java.util.Collections;
 
-public final class Dom4jDocument implements Dom4jNode<Document> {
-
-    private final Document document;
+public final class Dom4jDocument extends AbstractDom4jNode<Document> {
 
     public Dom4jDocument(Document document) {
-        this.document = document;
-    }
-
-    @Override
-    public Document getNode() {
-        return document;
+        super(document);
     }
 
     @Override
@@ -27,13 +20,8 @@ public final class Dom4jDocument implements Dom4jNode<Document> {
     }
 
     @Override
-    public String getText() {
-        return document.getText();
-    }
-
-    @Override
     public Iterable<Dom4jNode<Element>> elements() {
-        final Element root = document.getRootElement();
+        final Element root = getNode().getRootElement();
         return null == root ? Collections.emptyList() : Collections.singletonList(new Dom4jElement(root));
     }
 
@@ -44,39 +32,15 @@ public final class Dom4jDocument implements Dom4jNode<Document> {
 
     @Override
     public Dom4jNode<Attribute> createAttribute(org.dom4j.QName attribute) throws XmlBuilderException {
-        throw new XmlBuilderException("Unable to append attribute to a document node " + document);
+        throw new XmlBuilderException("Unable to append attribute to a document node " + getNode());
     }
 
     @Override
     public Dom4jNode<Element> createElement(org.dom4j.QName element) throws XmlBuilderException {
-        if (null != document.getRootElement()) {
+        if (null != getNode().getRootElement()) {
             throw new XmlBuilderException("Unable to create element " + element + " . Root element already exist");
         }
-        return new Dom4jElement(document.addElement(element));
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        Dom4jDocument that = (Dom4jDocument) o;
-
-        return document.equals(that.document);
-    }
-
-    @Override
-    public int hashCode() {
-        return document.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return document.toString();
+        return new Dom4jElement(getNode().addElement(element));
     }
 
 }

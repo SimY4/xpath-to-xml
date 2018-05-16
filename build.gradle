@@ -1,15 +1,15 @@
 plugins {
-    id 'net.ltgt.errorprone' version '0.0.13' apply false
+    id 'net.ltgt.errorprone' version '0.0.14' apply false
     id 'ru.vyarus.animalsniffer' version '1.4.3' apply false
     id 'me.champeau.gradle.jmh' version '0.4.5' apply false
 }
 
 ext {
-    jUnitVersion = '4.12'
-    mockitoVersion = '2.17.0'
-    assertjVersion = '3.9.1'
-    errorproneVersion = '2.2.0'
-    checkstyleVersion = '8.8'
+    jUnitVersion = '5.2.0'
+    mockitoVersion = '2.18.3'
+    assertjVersion = '3.10.0'
+    errorproneVersion = '2.3.1'
+    checkstyleVersion = '8.10'
 
     def buildTimeAndDate = new Date()
     buildDate = buildTimeAndDate.format("yyyy-MM-dd")
@@ -37,6 +37,10 @@ subprojects {
         jmh configurations.testImplementation
     }
 
+    test {
+        useJUnitPlatform()
+    }
+
     task sourcesJar(type: Jar, dependsOn: classes) {
         classifier = 'sources'
         from sourceSets.main.allSource
@@ -48,7 +52,7 @@ subprojects {
     }
 
     jmh {
-        jmhVersion = '1.20'
+        jmhVersion = '1.21'
     }
 
     artifacts {
@@ -67,5 +71,5 @@ subprojects {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.6'
+    gradleVersion = '4.7'
 }

@@ -40,7 +40,7 @@ public class XomNavigatorSpi implements NavigatorSpi {
         } else {
             throw new IllegalArgumentException("XML node type is not supported");
         }
-        final Navigator<XomNode> navigator = new XomNavigator(xmlNode);
+        final Navigator<XomNode<?>> navigator = new XomNavigator(xmlNode);
         for (Effect effect : effects) {
             effect.perform(navigator, node);
         }
