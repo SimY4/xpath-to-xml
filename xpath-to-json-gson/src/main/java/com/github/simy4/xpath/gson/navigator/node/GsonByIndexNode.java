@@ -7,12 +7,19 @@ import javax.xml.namespace.QName;
 
 public final class GsonByIndexNode extends AbstractGsonNode {
 
-    private final JsonArray jsonArray;
+    private final JsonArray parentArray;
     private final int index;
 
-    public GsonByIndexNode(JsonArray jsonArray, int index, GsonNode parent) {
+    /**
+     * Constructor.
+     *
+     * @param parentArray parent json array element
+     * @param index       json array index
+     * @param parent      parent node
+     */
+    public GsonByIndexNode(JsonArray parentArray, int index, GsonNode parent) {
         super(parent);
-        this.jsonArray = jsonArray;
+        this.parentArray = parentArray;
         this.index = index;
     }
 
@@ -23,17 +30,17 @@ public final class GsonByIndexNode extends AbstractGsonNode {
 
     @Override
     public JsonElement get() {
-        return jsonArray.get(index);
+        return parentArray.get(index);
     }
 
     @Override
     public void set(JsonElement jsonElement) {
-        jsonArray.set(index, jsonElement);
+        parentArray.set(index, jsonElement);
     }
 
     @Override
     public void remove() {
-        jsonArray.remove(index);
+        parentArray.remove(index);
     }
 
 }

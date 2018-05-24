@@ -55,70 +55,12 @@ public class GsonNavigator implements Navigator<GsonNode> {
 
     @Override
     public GsonNode createAttribute(GsonNode parent, QName attribute) throws XmlBuilderException {
-        final JsonElement parentElement = parent.get();
-        if (parentElement.isJsonObject()) {
-            final JsonObject parentObject = parentElement.getAsJsonObject();
-            final String name = attribute.getLocalPart();
-            if (null == parentObject.get(name)) {
-                final GsonNode attributeNode = new GsonByNameNode(parentObject, name, parent);
-                attributeNode.set(new JsonPrimitive(""));
-                return attributeNode;
-            } else {
-                final JsonArray jsonArray = new JsonArray();
-                final JsonObject jsonObject = new JsonObject();
-                jsonArray.add(parentObject);
-                jsonArray.add(jsonObject);
-                final GsonNode jsonObjectNode = new GsonByIndexNode(jsonArray, 1, parent);
-                final GsonNode attributeNode = new GsonByNameNode(jsonObject, name, jsonObjectNode);
-                attributeNode.set(new JsonPrimitive(""));
-                parent.set(jsonArray);
-                return attributeNode;
-            }
-        } else if (parentElement.isJsonArray()) {
-            final JsonArray parentArray = parentElement.getAsJsonArray();
-            final JsonObject jsonObject = new JsonObject();
-            parentArray.add(jsonObject);
-            final GsonNode jsonObjectNode = new GsonByIndexNode(parentArray, parentArray.size() - 1, parent);
-            final GsonNode attributeNode = new GsonByNameNode(jsonObject, attribute.getLocalPart(), jsonObjectNode);
-            attributeNode.set(new JsonPrimitive(""));
-            return attributeNode;
-        } else {
-            throw new XmlBuilderException("Unable to create attribute for primitive node: " + parentElement);
-        }
+        return appendElement(parent, attribute.getLocalPart(), new JsonPrimitive(""));
     }
 
     @Override
     public GsonNode createElement(GsonNode parent, QName element) throws XmlBuilderException {
-        final JsonElement parentElement = parent.get();
-        if (parentElement.isJsonObject()) {
-            final JsonObject parentObject = parentElement.getAsJsonObject();
-            final String name = element.getLocalPart();
-            if (null == parentObject.get(name)) {
-                final GsonNode attributeNode = new GsonByNameNode(parentObject, name, parent);
-                attributeNode.set(new JsonObject());
-                return attributeNode;
-            } else {
-                final JsonArray jsonArray = new JsonArray();
-                final JsonObject jsonObject = new JsonObject();
-                jsonArray.add(parentObject);
-                jsonArray.add(jsonObject);
-                final GsonNode jsonObjectNode = new GsonByIndexNode(jsonArray, 1, parent);
-                final GsonNode elementNode = new GsonByNameNode(jsonObject, name, jsonObjectNode);
-                elementNode.set(new JsonObject());
-                parent.set(jsonArray);
-                return elementNode;
-            }
-        } else if (parentElement.isJsonArray()) {
-            final JsonArray parentArray = parentElement.getAsJsonArray();
-            final JsonObject parentObject = new JsonObject();
-            parentArray.add(parentObject);
-            final GsonNode parentObjectNode = new GsonByIndexNode(parentArray, parentArray.size() - 1, parent);
-            final GsonNode elementNode = new GsonByNameNode(parentObject, element.getLocalPart(), parentObjectNode);
-            elementNode.set(new JsonObject());
-            return elementNode;
-        } else {
-            throw new XmlBuilderException("Unable to create element for primitive node: " + parentElement);
-        }
+        return appendElement(parent, element.getLocalPart(), new JsonObject());
     }
 
     @Override
@@ -168,6 +110,38 @@ public class GsonNavigator implements Navigator<GsonNode> {
     @Override
     public void remove(GsonNode node) throws XmlBuilderException {
         node.remove();
+    }
+
+    private GsonNode appendElement(GsonNode parent, String name, JsonElement newElement) {
+        final JsonElement parentElement = parent.get();
+        if (parentElement.isJsonObject()) {
+            final JsonObject parentObject = parentElement.getAsJsonObject();
+            if (null == parentObject.get(name)) {
+                final GsonNode attributeNode = new GsonByNameNode(parentObject, name, parent);
+                attributeNode.set(newElement);
+                return attributeNode;
+            } else {
+                final JsonArray jsonArray = new JsonArray();
+                final JsonObject jsonObject = new JsonObject();
+                jsonArray.add(parentObject);
+                jsonArray.add(jsonObject);
+                final GsonNode jsonObjectNode = new GsonByIndexNode(jsonArray, 1, parent);
+                final GsonNode elementNode = new GsonByNameNode(jsonObject, name, jsonObjectNode);
+                elementNode.set(newElement);
+                parent.set(jsonArray);
+                return elementNode;
+            }
+        } else if (parentElement.isJsonArray()) {
+            final JsonArray parentArray = parentElement.getAsJsonArray();
+            final JsonObject parentObject = new JsonObject();
+            parentArray.add(parentObject);
+            final GsonNode parentObjectNode = new GsonByIndexNode(parentArray, parentArray.size() - 1, parent);
+            final GsonNode elementNode = new GsonByNameNode(parentObject, name, parentObjectNode);
+            elementNode.set(newElement);
+            return elementNode;
+        } else {
+            throw new XmlBuilderException("Unable to create element for primitive node: " + parentElement);
+        }
     }
 
     private static final class AttributePredicate implements Predicate<GsonNode> {

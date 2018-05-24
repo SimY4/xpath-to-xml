@@ -10,6 +10,13 @@ public final class GsonByNameNode extends AbstractGsonNode {
     private final JsonObject parentObject;
     private final String name;
 
+    /**
+     * Constructor.
+     *
+     * @param parentObject parent json object element
+     * @param name         json object key
+     * @param parent       parent node
+     */
     public GsonByNameNode(JsonObject parentObject, String name, GsonNode parent) {
         super(parent);
         this.parentObject = parentObject;
