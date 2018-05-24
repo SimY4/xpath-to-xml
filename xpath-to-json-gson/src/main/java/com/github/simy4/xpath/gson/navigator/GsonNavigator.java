@@ -67,9 +67,11 @@ public class GsonNavigator implements Navigator<GsonNode> {
                 final JsonArray jsonArray = new JsonArray();
                 final JsonObject jsonObject = new JsonObject();
                 jsonArray.add(parentObject);
+                jsonArray.add(jsonObject);
                 final GsonNode jsonObjectNode = new GsonByIndexNode(jsonArray, 1, parent);
                 final GsonNode attributeNode = new GsonByNameNode(jsonObject, name, jsonObjectNode);
                 attributeNode.set(new JsonPrimitive(""));
+                parent.set(jsonArray);
                 return attributeNode;
             }
         } else if (parentElement.isJsonArray()) {
@@ -99,9 +101,11 @@ public class GsonNavigator implements Navigator<GsonNode> {
                 final JsonArray jsonArray = new JsonArray();
                 final JsonObject jsonObject = new JsonObject();
                 jsonArray.add(parentObject);
+                jsonArray.add(jsonObject);
                 final GsonNode jsonObjectNode = new GsonByIndexNode(jsonArray, 1, parent);
                 final GsonNode elementNode = new GsonByNameNode(jsonObject, name, jsonObjectNode);
                 elementNode.set(new JsonObject());
+                parent.set(jsonArray);
                 return elementNode;
             }
         } else if (parentElement.isJsonArray()) {

@@ -1,44 +1,44 @@
 {
-    "breakfast_menu": [
-        {
-            "food": {
-                "calories": "",
-                "description": "",
-                "name": "Belgian Waffles",
-                "price": ""
-            }
-        },
-        {
-            "food": {
-                "calories": "",
-                "description": "",
-                "name": "Strawberry Belgian Waffles",
-                "price": ""
-            }
-        },
-        {
-            "food": {
-                "calories": "",
-                "description": "",
-                "name": "Berry-Berry Belgian Waffles",
-                "price": ""
-            }
-        },
-        {
-            "food": {
-                "calories": "",
-                "description": "",
-                "name": "French Toast",
-                "price": ""
-            }
-        },
-        {
-            "food": {
-                "calories": "",
-                "description": "Two eggs, bacon or sausage, toast, and our ever-popular hash browns",
-                "name": "Homestyle Breakfast",
-                "price": "$6.95"
-            }
-        }
-    ]
+  "breakfast_menu": [
+    {
+      "food": {
+        "name": "Belgian Waffles",
+        "price": "",
+        "description": "",
+        "calories": ""
+      }
+    },
+    {
+      "food": {
+        "name": "Strawberry Belgian Waffles",
+        "price": "",
+        "description": "",
+        "calories": ""
+      }
+    },
+    {
+      "food": {
+        "name": "Berry-Berry Belgian Waffles",
+        "price": "",
+        "description": "",
+        "calories": ""
+      }
+    },
+    {
+      "food": {
+        "name": "French Toast",
+        "price": "",
+        "description": "",
+        "calories": ""
+      }
+    },
+    {
+      "food": {
+        "name": "Homestyle Breakfast",
+        "price": "$6.95",
+        "description": "Two eggs, bacon or sausage, toast, and our ever-popular hash browns",
+        "calories": ""
+      }
+    }
+  ]
 }

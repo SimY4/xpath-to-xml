@@ -30,7 +30,14 @@ abstract class AbstractGsonNode implements GsonNode {
 
     @Override
     public final String getText() {
-        return get().toString();
+        final JsonElement jsonElement = get();
+        if (jsonElement.isJsonPrimitive()) {
+            return jsonElement.getAsString();
+        } else if (jsonElement.isJsonNull()) {
+            return "null";
+        } else {
+            return "";
+        }
     }
 
     @Override
@@ -70,7 +77,7 @@ abstract class AbstractGsonNode implements GsonNode {
     @Override
     public String toString() {
         final JsonElement jsonElement = get();
-        return null == jsonElement ? "null" : jsonElement.toString();
+        return null == jsonElement ? "???" : jsonElement.toString();
     }
 
     private static final class JsonObjectWrapper implements Function<String, GsonNode> {
