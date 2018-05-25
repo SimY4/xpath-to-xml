@@ -4,15 +4,12 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.util.FilteringIterator;
-import com.github.simy4.xpath.util.FlatteningIterator;
 import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.util.TransformingIterator;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 
 public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
@@ -105,22 +102,6 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
     }
 
     @Override
-    public IterableNodeView<N> flatMap(final Navigator<N> navigator, final boolean greedy,
-                                       final Function<ViewContext<N>, IterableNodeView<N>> fmap)
-            throws XmlBuilderException {
-        return new NodeSetView<N>(new Iterable<NodeView<N>>() {
-            @Override
-            public Iterator<NodeView<N>> iterator() {
-                final Iterator<NodeView<N>> iterator = nodeSet.iterator();
-                return new FilteringIterator<NodeView<N>>(new FlatteningIterator<NodeView<N>>(
-                        new TransformingIterator<NodeView<N>, Iterator<NodeView<N>>>(iterator,
-                                new TransformerWrapper<N>(navigator, iterator, greedy, fmap))
-                ), new Distinct<N>());
-            }
-        });
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -174,43 +155,6 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
             final ViewContext<T> context = new ViewContext<T>(navigator, node, greedy, wrappingNodeSet.hasNext(),
                     position++);
             return delegate.test(context);
-        }
-
-    }
-
-    private static final class TransformerWrapper<T extends Node>
-            implements Function<NodeView<T>, Iterator<NodeView<T>>> {
-
-        private final Navigator<T> navigator;
-        private final Iterator<NodeView<T>> wrappingNodeSet;
-        private final boolean greedy;
-        private final Function<ViewContext<T>, IterableNodeView<T>> delegate;
-        private int position = 1;
-
-        private TransformerWrapper(Navigator<T> navigator, Iterator<NodeView<T>> wrappingNodeSet, boolean greedy,
-                                   Function<ViewContext<T>, IterableNodeView<T>> delegate) {
-            this.navigator = navigator;
-            this.wrappingNodeSet = wrappingNodeSet;
-            this.greedy = greedy;
-            this.delegate = delegate;
-        }
-
-        @Override
-        public Iterator<NodeView<T>> apply(NodeView<T> node) {
-            final ViewContext<T> context = new ViewContext<T>(navigator, node, greedy, wrappingNodeSet.hasNext(),
-                    position++);
-            return delegate.apply(context).iterator();
-        }
-
-    }
-
-    private static final class Distinct<T extends Node> implements Predicate<NodeView<T>> {
-
-        private final Set<T> visited = new HashSet<T>();
-
-        @Override
-        public boolean test(NodeView<T> node) {
-            return visited.add(node.getNode());
         }
 
     }

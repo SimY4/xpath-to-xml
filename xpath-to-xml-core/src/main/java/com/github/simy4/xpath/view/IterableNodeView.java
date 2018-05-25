@@ -3,7 +3,6 @@ package com.github.simy4.xpath.view;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.util.Predicate;
 
 /**
@@ -22,8 +21,5 @@ public interface IterableNodeView<N extends Node> extends View<N>, Iterable<Node
 
     IterableNodeView<N> filter(Navigator<N> navigator, boolean greedy, int position,
                                Predicate<ViewContext<?>> predicate) throws XmlBuilderException;
-
-    IterableNodeView<N> flatMap(Navigator<N> navigator, boolean greedy,
-                                Function<ViewContext<N>, IterableNodeView<N>> fmap) throws XmlBuilderException;
 
 }
