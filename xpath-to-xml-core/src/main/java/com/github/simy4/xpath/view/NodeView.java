@@ -3,7 +3,6 @@ package com.github.simy4.xpath.view;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.util.Predicate;
 
 import java.util.Collections;
@@ -62,13 +61,6 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
                                       Predicate<ViewContext<?>> predicate) throws XmlBuilderException {
         final ViewContext<N> context = new ViewContext<N>(navigator, this, greedy, false, position);
         return predicate.test(context) ? this : NodeSetView.<N>empty();
-    }
-
-    @Override
-    public IterableNodeView<N> flatMap(Navigator<N> navigator, boolean greedy,
-                                       Function<ViewContext<N>, IterableNodeView<N>> fmap) throws XmlBuilderException {
-        final ViewContext<N> context = new ViewContext<N>(navigator, this, greedy, false, 1);
-        return fmap.apply(context);
     }
 
     @Override
