@@ -62,4 +62,9 @@ public final class FixtureAccessor {
         }
     }
 
+    @Override
+    public String toString() {
+        return fixtureName;
+    }
+
 }
