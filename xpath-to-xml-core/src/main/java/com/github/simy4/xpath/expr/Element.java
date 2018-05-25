@@ -33,11 +33,11 @@ public class Element extends AbstractStepExpr {
     }
 
     @Override
-    <N extends Node> N createStepNode(Navigator<N> navigator, NodeView<N> parentView) throws XmlBuilderException {
-        if ("*".equals(element.getNamespaceURI()) || "*".equals(element.getLocalPart())) {
+    public <N extends Node> NodeView<N> createStepNode(ViewContext<N> context) throws XmlBuilderException {
+        if (isWildcard(element)) {
             throw new XmlBuilderException("Wildcard attribute cannot be created");
         }
-        return navigator.createElement(parentView.getNode(), element);
+        return new NodeView<N>(context.getNavigator().createElement(context.getCurrent().getNode(), element));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.github.simy4.xpath.expr;
 
+import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.util.FlatteningIterator;
@@ -22,6 +23,11 @@ public class DescendantOrSelfExpr implements StepExpr {
     @Override
     public boolean test(ViewContext<?> viewContext) {
         return true;
+    }
+
+    @Override
+    public <N extends Node> NodeView<N> createStepNode(ViewContext<N> context) throws XmlBuilderException {
+        throw new XmlBuilderException("Descendant or self node cannot modify XML model");
     }
 
     @Override

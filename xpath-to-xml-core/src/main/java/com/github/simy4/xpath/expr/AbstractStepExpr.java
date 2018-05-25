@@ -38,7 +38,7 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
         }
 
         if (context.isGreedy() && !context.hasNext() && !result.toBoolean()) {
-            result = new NodeView<N>(createStepNode(context.getNavigator(), context.getCurrent()));
+            result = createStepNode(context);
             predicateIterator = predicates.iterator();
             if (predicateIterator.hasNext()) {
                 result = result.filter(context.getNavigator(), true, count.intValue() + 1, predicateIterator.next());
@@ -60,17 +60,9 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
      */
     abstract <N extends Node> IterableNodeView<N> traverseStep(Navigator<N> navigator, NodeView<N> parentView);
 
-    /**
-     * Creates new node of this step type.
-     *
-     * @param navigator  XML model navigator
-     * @param parentView XML node modify
-     * @param <N>        XML node type
-     * @return newly created node
-     * @throws XmlBuilderException if error occur during XML node creation
-     */
-    abstract <N extends Node> N createStepNode(Navigator<N> navigator, NodeView<N> parentView)
-            throws XmlBuilderException;
+    final boolean isWildcard(QName name) {
+        return "*".equals(name.getNamespaceURI()) || "*".equals(name.getLocalPart());
+    }
 
     @Override
     public String toString() {
