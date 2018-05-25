@@ -19,7 +19,7 @@ public class Identity extends AbstractStepExpr {
     }
 
     @Override
-    <N extends Node> N createStepNode(Navigator<N> navigator, NodeView<N> parentView) throws XmlBuilderException {
+    public <N extends Node> NodeView<N> createStepNode(ViewContext<N> context) throws XmlBuilderException {
         throw new XmlBuilderException("Identity node cannot modify XML model");
     }
 

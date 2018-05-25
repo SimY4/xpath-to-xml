@@ -22,7 +22,7 @@ public class Parent extends AbstractStepExpr {
     }
 
     @Override
-    <N extends Node> N createStepNode(Navigator<N> navigator, NodeView<N> parentView) throws XmlBuilderException {
+    public <N extends Node> NodeView<N> createStepNode(ViewContext<N> context) throws XmlBuilderException {
         throw new XmlBuilderException("Parent node cannot modify XML model");
     }
 
