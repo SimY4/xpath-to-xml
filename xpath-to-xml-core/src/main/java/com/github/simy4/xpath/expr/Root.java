@@ -13,11 +13,6 @@ public class Root implements StepExpr {
     }
 
     @Override
-    public boolean test(ViewContext<?> context) {
-        return true;
-    }
-
-    @Override
     public <N extends Node> NodeView<N> createStepNode(ViewContext<N> context) throws XmlBuilderException {
         throw new XmlBuilderException("Root node cannot modify XML model");
     }

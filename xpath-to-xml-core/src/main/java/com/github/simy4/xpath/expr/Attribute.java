@@ -21,7 +21,7 @@ public class Attribute extends AbstractStepExpr {
      * @param attribute  attribute name
      * @param predicates attribute predicates
      */
-    public Attribute(QName attribute, Iterable<Predicate<ViewContext<?>>> predicates) {
+    public Attribute(QName attribute, Iterable<Expr> predicates) {
         super(predicates);
         this.attribute = attribute;
         this.filter = new QNamePredicate(attribute);

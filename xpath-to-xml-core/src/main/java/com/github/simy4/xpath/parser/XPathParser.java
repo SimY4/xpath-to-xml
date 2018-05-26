@@ -17,13 +17,12 @@ import com.github.simy4.xpath.expr.NotEqualsExpr;
 import com.github.simy4.xpath.expr.NumberExpr;
 import com.github.simy4.xpath.expr.Parent;
 import com.github.simy4.xpath.expr.PathExpr;
+import com.github.simy4.xpath.expr.PredicateExpr;
 import com.github.simy4.xpath.expr.Root;
 import com.github.simy4.xpath.expr.StepExpr;
 import com.github.simy4.xpath.expr.SubtractionExpr;
 import com.github.simy4.xpath.expr.UnaryExpr;
 import com.github.simy4.xpath.parser.Token.Type;
-import com.github.simy4.xpath.util.Predicate;
-import com.github.simy4.xpath.view.ViewContext;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
@@ -221,7 +220,7 @@ public class XPathParser {
 
     private StepExpr StepExpr(Context context) throws XPathExpressionException {
         final QName nodeTest;
-        final List<Predicate<ViewContext<?>>> predicateList;
+        final List<Expr> predicateList;
         final StepExpr stepExpr;
         switch (context.tokenAt(1).getType()) {
             case DOT:
@@ -292,9 +291,9 @@ public class XPathParser {
         }
     }
 
-    private List<Predicate<ViewContext<?>>> PredicateList(Context context) throws XPathExpressionException {
+    private List<Expr> PredicateList(Context context) throws XPathExpressionException {
         if (Type.LEFT_BRACKET == context.tokenAt(1).getType()) {
-            final List<Predicate<ViewContext<?>>> predicateList = new ArrayList<Predicate<ViewContext<?>>>();
+            final List<Expr> predicateList = new ArrayList<Expr>();
             predicateList.add(Predicate(context));
             while (Type.LEFT_BRACKET == context.tokenAt(1).getType()) {
                 predicateList.add(Predicate(context));
@@ -305,11 +304,11 @@ public class XPathParser {
         }
     }
 
-    private Expr Predicate(Context context) throws XPathExpressionException {
+    private PredicateExpr Predicate(Context context) throws XPathExpressionException {
         context.match(Type.LEFT_BRACKET);
         Expr predicate = Expr(context);
         context.match(Type.RIGHT_BRACKET);
-        return predicate;
+        return new PredicateExpr(predicate);
     }
 
     private static final class Context {

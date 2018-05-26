@@ -21,7 +21,7 @@ public class Element extends AbstractStepExpr {
      * @param element    element name
      * @param predicates element predicates
      */
-    public Element(QName element, Iterable<Predicate<ViewContext<?>>> predicates) {
+    public Element(QName element, Iterable<Expr> predicates) {
         super(predicates);
         this.element = element;
         this.filter = new QNamePredicate(element);
