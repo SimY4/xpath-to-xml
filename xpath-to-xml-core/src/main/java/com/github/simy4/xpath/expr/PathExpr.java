@@ -18,7 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class PathExpr extends AbstractExpr {
+public class PathExpr implements Expr {
 
     private final List<StepExpr> pathExpr;
 

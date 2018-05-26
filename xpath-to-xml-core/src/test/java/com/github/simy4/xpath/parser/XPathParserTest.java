@@ -10,15 +10,14 @@ import com.github.simy4.xpath.expr.Identity;
 import com.github.simy4.xpath.expr.MultiplicationExpr;
 import com.github.simy4.xpath.expr.NumberExpr;
 import com.github.simy4.xpath.expr.PathExpr;
+import com.github.simy4.xpath.expr.PredicateExpr;
 import com.github.simy4.xpath.expr.Root;
 import com.github.simy4.xpath.expr.StepExpr;
 import com.github.simy4.xpath.expr.SubtractionExpr;
 import com.github.simy4.xpath.expr.UnaryExpr;
 import com.github.simy4.xpath.util.Pair;
-import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.util.SimpleNamespaceContext;
 import com.github.simy4.xpath.util.Triple;
-import com.github.simy4.xpath.view.ViewContext;
 import org.junit.Rule;
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.FromDataPoints;
@@ -41,7 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(Theories.class)
 public class XPathParserTest {
 
-    private static final List<Predicate<ViewContext<?>>> NIL = emptyList();
+    private static final List<Expr> NIL = emptyList();
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -61,16 +60,14 @@ public class XPathParserTest {
                 Pair.of("/bookstore", pathExpr(new Root(), new Element(new QName("bookstore"), NIL))),
                 Pair.of("//author", pathExpr(new Root(), new DescendantOrSelfExpr(),
                         new Element(new QName("author"), NIL))),
-                Pair.of("book[/bookstore/@specialty=@style]",
-                        pathExpr(new Element(new QName("book"),
-                                Collections.<Predicate<ViewContext<?>>>singletonList(
-                                        new EqualsExpr(
-                                                pathExpr(
-                                                        new Root(),
-                                                        new Element(new QName("bookstore"), NIL),
-                                                        new Attribute(new QName("specialty"), NIL)),
-                                                pathExpr(
-                                                        new Attribute(new QName("style"), NIL))))))),
+                Pair.of("book[/bookstore/@specialty=@style]", pathExpr(new Element(new QName("book"),
+                        Collections.<Expr>singletonList(new PredicateExpr(new EqualsExpr(
+                                pathExpr(
+                                        new Root(),
+                                        new Element(new QName("bookstore"), NIL),
+                                        new Attribute(new QName("specialty"), NIL)),
+                                pathExpr(
+                                        new Attribute(new QName("style"), NIL)))))))),
                 Pair.of("author/first-name", pathExpr(new Element(new QName("author"), NIL),
                         new Element(new QName("first-name"), NIL))),
                 Pair.of("bookstore//title", pathExpr(new Element(new QName("bookstore"), NIL),
@@ -94,18 +91,16 @@ public class XPathParserTest {
                         new Element(new QName("last-name"), NIL))),
                 Pair.of("*/*", pathExpr(new Element(new QName("*"), NIL),
                         new Element(new QName("*"), NIL))),
-                Pair.of("*[@specialty]", pathExpr(new Element(new QName("*"),
-                        Collections.<Predicate<ViewContext<?>>>singletonList(
-                                pathExpr(new Attribute(new QName("specialty"), NIL)))))),
+                Pair.of("*[@specialty]", pathExpr(new Element(new QName("*"), Collections.<Expr>singletonList(
+                        new PredicateExpr(pathExpr(new Attribute(new QName("specialty"), NIL))))))),
                 Pair.of("@style", pathExpr(new Attribute(new QName("style"), NIL))),
                 Pair.of("price/@exchange", pathExpr(new Element(new QName("price"), NIL),
                         new Attribute(new QName("exchange"), NIL))),
                 Pair.of("price/@exchange/total", pathExpr(new Element(new QName("price"), NIL),
                         new Attribute(new QName("exchange"), NIL),
                         new Element(new QName("total"), NIL))),
-                Pair.of("book[@style]", pathExpr(new Element(new QName("book"),
-                        Collections.<Predicate<ViewContext<?>>>singletonList(
-                                pathExpr(new Attribute(new QName("style"), NIL)))))),
+                Pair.of("book[@style]", pathExpr(new Element(new QName("book"), Collections.<Expr>singletonList(
+                        new PredicateExpr(pathExpr(new Attribute(new QName("style"), NIL))))))),
                 Pair.of("book/@style", pathExpr(new Element(new QName("book"), NIL),
                         new Attribute(new QName("style"), NIL))),
                 Pair.of("@*", pathExpr(new Attribute(new QName("*"), NIL))),
@@ -113,11 +108,11 @@ public class XPathParserTest {
                         new Element(new QName("first-name"), NIL))),
                 Pair.of("first-name", pathExpr(new Element(new QName("first-name"), NIL))),
                 Pair.of("author[1]", pathExpr(new Element(new QName("author"),
-                        Collections.<Predicate<ViewContext<?>>>singletonList(new NumberExpr(1.0))))),
-                Pair.of("author[first-name][3]", pathExpr(new Element(new QName("author"),
-                        Arrays.<Predicate<ViewContext<?>>>asList(
-                                pathExpr(new Element(new QName("first-name"), NIL)),
-                                new NumberExpr(3.0))))),
+                        Collections.<Expr>singletonList(new PredicateExpr(new NumberExpr(1.0)))))),
+                Pair.of("author[first-name][3]", pathExpr(new Element(new QName("author"), Arrays.<Expr>asList(
+                        new PredicateExpr(
+                                pathExpr(new Element(new QName("first-name"), NIL))),
+                                new PredicateExpr(new NumberExpr(3.0)))))),
                 Pair.of("1 + 2 + 2 * 2 - -4", new MultiplicationExpr(new AdditionExpr(new NumberExpr(1.0),
                         new AdditionExpr(new NumberExpr(2.0), new NumberExpr(2.0))),
                         new SubtractionExpr(new NumberExpr(2.0), new UnaryExpr(new NumberExpr(4.0))))),

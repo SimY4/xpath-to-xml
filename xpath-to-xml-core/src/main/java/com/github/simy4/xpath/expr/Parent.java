@@ -3,7 +3,6 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
@@ -11,7 +10,7 @@ import com.github.simy4.xpath.view.ViewContext;
 
 public class Parent extends AbstractStepExpr {
 
-    public Parent(Iterable<Predicate<ViewContext<?>>> predicates) {
+    public Parent(Iterable<Expr> predicates) {
         super(predicates);
     }
 

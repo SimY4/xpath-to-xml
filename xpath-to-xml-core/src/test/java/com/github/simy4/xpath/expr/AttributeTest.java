@@ -22,7 +22,9 @@ import static org.mockito.Mockito.when;
 public class AttributeTest extends AbstractStepExprTest<Attribute> {
 
     @Before
+    @Override
     public void setUp() {
+        super.setUp();
         QName attr = new QName("attr");
 
         when(navigator.createAttribute(any(TestNode.class), eq(attr))).thenReturn(node("attr"));
@@ -87,7 +89,7 @@ public class AttributeTest extends AbstractStepExprTest<Attribute> {
 
     @Test
     public void testToString() {
-        assertThat(stepExpr).hasToString("@attr[" + predicate1 + "][" + predicate2 + ']');
+        assertThat(stepExpr).hasToString("@attr" + predicate1 + predicate2);
     }
 
     @Override

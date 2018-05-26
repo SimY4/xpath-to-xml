@@ -12,25 +12,25 @@ import javax.xml.namespace.QName;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 
-abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
+abstract class AbstractStepExpr implements StepExpr {
 
-    private final Iterable<Predicate<ViewContext<?>>> predicates;
+    private final Iterable<Expr> predicates;
 
-    AbstractStepExpr(Iterable<Predicate<ViewContext<?>>> predicates) {
+    AbstractStepExpr(Iterable<Expr> predicates) {
         this.predicates = predicates;
     }
 
     @Override
     public final <N extends Node> IterableNodeView<N> resolve(ViewContext<N> context) throws XmlBuilderException {
         IterableNodeView<N> result = traverseStep(context.getNavigator(), context.getCurrent());
-        Iterator<Predicate<ViewContext<?>>> predicateIterator = predicates.iterator();
+        Iterator<Expr> predicateIterator = predicates.iterator();
         final Number count;
         if (predicateIterator.hasNext()) {
-            Predicate<ViewContext<?>> predicate = predicateIterator.next();
-            final CountingPredicate countingPredicate = new CountingPredicate(predicate);
+            Expr predicate = predicateIterator.next();
+            final CountingPredicate countingPredicate = new CountingPredicate(new PredicatePredicate(predicate));
             result = result.filter(context.getNavigator(), false, countingPredicate);
             while (predicateIterator.hasNext()) {
-                result = result.filter(context.getNavigator(), false, predicateIterator.next());
+                result = result.filter(context.getNavigator(), false, new PredicatePredicate(predicateIterator.next()));
             }
             count = countingPredicate.count();
         } else {
@@ -41,9 +41,11 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
             result = createStepNode(context);
             predicateIterator = predicates.iterator();
             if (predicateIterator.hasNext()) {
-                result = result.filter(context.getNavigator(), true, count.intValue() + 1, predicateIterator.next());
+                result = result.filter(context.getNavigator(), true, count.intValue() + 1,
+                        new PredicatePredicate(predicateIterator.next()));
                 while (predicateIterator.hasNext()) {
-                    result = result.filter(context.getNavigator(), true, predicateIterator.next());
+                    result = result.filter(context.getNavigator(), true,
+                            new PredicatePredicate(predicateIterator.next()));
                 }
             }
         }
@@ -67,8 +69,8 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
     @Override
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder();
-        for (Predicate predicate : predicates) {
-            stringBuilder.append('[').append(predicate).append(']');
+        for (Expr predicate : predicates) {
+            stringBuilder.append(predicate);
         }
         return stringBuilder.toString();
     }
@@ -111,6 +113,21 @@ abstract class AbstractStepExpr extends AbstractExpr implements StepExpr {
 
         private boolean test(String expected, String actual) {
             return "*".equals(expected) || "*".equals(actual) || expected.equals(actual);
+        }
+
+    }
+
+    private static final class PredicatePredicate implements Predicate<ViewContext<?>> {
+
+        private final Expr predicate;
+
+        private PredicatePredicate(Expr predicate) {
+            this.predicate = predicate;
+        }
+
+        @Override
+        public boolean test(ViewContext<?> context) {
+            return predicate.resolve(context).toBoolean();
         }
 
     }

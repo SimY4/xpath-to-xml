@@ -3,13 +3,12 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;
 
 public class Identity extends AbstractStepExpr {
 
-    public Identity(Iterable<Predicate<ViewContext<?>>> predicates) {
+    public Identity(Iterable<Expr> predicates) {
         super(predicates);
     }
 
