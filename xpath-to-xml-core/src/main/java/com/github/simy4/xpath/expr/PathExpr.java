@@ -2,10 +2,8 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.util.FilteringIterator;
 import com.github.simy4.xpath.util.FlatteningIterator;
 import com.github.simy4.xpath.util.Function;
-import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.util.TransformingIterator;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeSetView;
@@ -13,10 +11,8 @@ import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewContext;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 public class PathExpr implements Expr {
 
@@ -35,9 +31,9 @@ public class PathExpr implements Expr {
                 @Override
                 public Iterator<NodeView<N>> iterator() {
                     final Iterator<NodeView<N>> iterator = currentChildren.iterator();
-                    return new FilteringIterator<NodeView<N>>(new FlatteningIterator<NodeView<N>>(
+                    return new FlatteningIterator<NodeView<N>>(
                             new TransformingIterator<NodeView<N>, Iterator<NodeView<N>>>(iterator,
-                                    new StepResolver<N>(context, iterator, stepExpr))), new Distinct<N>());
+                                    new StepResolver<N>(context, iterator, stepExpr)));
                 }
             });
         }
@@ -72,20 +68,9 @@ public class PathExpr implements Expr {
 
         @Override
         public Iterator<NodeView<T>> apply(NodeView<T> view) {
-            final ViewContext<T> context = new ViewContext<T>(parentContext.getNavigator(),
-                    view, parentContext.isGreedy(), iterator.hasNext(), position++);
+            final ViewContext<T> context = new ViewContext<T>(parentContext.getNavigator(), view,
+                    parentContext.isGreedy(), iterator.hasNext(), position++);
             return stepExpr.resolve(context).iterator();
-        }
-
-    }
-
-    private static final class Distinct<T extends Node> implements Predicate<NodeView<T>> {
-
-        private final Set<T> visited = new HashSet<T>();
-
-        @Override
-        public boolean test(NodeView<T> node) {
-            return visited.add(node.getNode());
         }
 
     }
