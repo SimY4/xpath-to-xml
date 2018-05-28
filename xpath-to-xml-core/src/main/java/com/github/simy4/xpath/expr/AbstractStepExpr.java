@@ -148,8 +148,10 @@ abstract class AbstractStepExpr implements StepExpr {
 
         @Override
         public NodeView<T> apply(NodeView<T> view) {
-            this.last = null == last || !last.isNew() ? view : last;
-            this.position++;
+            if (null == last || !last.isNew()) {
+                last = view;
+                position++;
+            }
             return view;
         }
 
