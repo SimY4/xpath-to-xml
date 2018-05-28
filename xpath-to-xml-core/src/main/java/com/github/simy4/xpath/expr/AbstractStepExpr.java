@@ -119,7 +119,7 @@ abstract class AbstractStepExpr implements StepExpr {
 
     }
 
-    private final class PredicateResolver<T extends Node> implements Predicate<NodeView<T>> {
+    private static final class PredicateResolver<T extends Node> implements Predicate<NodeView<T>> {
 
         private final ViewContext<T> parentContext;
         private final Iterator<NodeView<T>> iterator;
@@ -141,7 +141,7 @@ abstract class AbstractStepExpr implements StepExpr {
 
     }
 
-    private final class PredicateContext<T extends Node> implements Function<NodeView<T>, NodeView<T>> {
+    private static final class PredicateContext<T extends Node> implements Function<NodeView<T>, NodeView<T>> {
 
         private NodeView<T> last;
         private int position;
