@@ -21,26 +21,23 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
         return (NodeSetView<T>) EMPTY_NODE_SET;
     }
 
+    private final Iterable<NodeView<N>> nodeSet;
+
     /**
-     * Creates filtered node view from given nodes and predicate.
+     * Creates NodeSetView from given nodes and predicate.
      *
      * @param nodes     nodes to wap in a view
      * @param predicate predicate to apply to nodes
-     * @param <T> XML model type
-     * @return newly created node set view
      */
-    public static <T extends Node> NodeSetView<T> filtered(final Iterable<? extends T> nodes,
-                                                           final Predicate<? super T> predicate) {
-        return new NodeSetView<T>(new Iterable<NodeView<T>>() {
+    public NodeSetView(final Iterable<? extends N> nodes, final Predicate<? super N> predicate) {
+        this(new Iterable<NodeView<N>>() {
             @Override
-            public Iterator<NodeView<T>> iterator() {
-                return new TransformingIterator<T, NodeView<T>>(
-                        new FilteringIterator<T>(nodes.iterator(), predicate), new NodeWrapper<T>());
+            public Iterator<NodeView<N>> iterator() {
+                return new TransformingIterator<N, NodeView<N>>(new FilteringIterator<N>(nodes.iterator(), predicate),
+                        new NodeWrapper<N>());
             }
         });
     }
-
-    private final Iterable<NodeView<N>> nodeSet;
 
     public NodeSetView(Iterable<NodeView<N>> nodeSet) {
         this.nodeSet = nodeSet;
