@@ -17,7 +17,7 @@ public class PredicateExpr implements Expr {
     }
 
     @Override
-    public <N extends Node> BooleanView<N> resolve(ViewContext<N> context) throws XmlBuilderException {
+    public <N extends Node> View<N> resolve(ViewContext<N> context) throws XmlBuilderException {
         return predicate.resolve(context).visit(new PredicateVisitor<N>(context));
     }
 
@@ -26,7 +26,7 @@ public class PredicateExpr implements Expr {
         return "[" + predicate + "]";
     }
 
-    private static final class PredicateVisitor<T extends Node> extends AbstractViewVisitor<T, BooleanView<T>> {
+    private static final class PredicateVisitor<T extends Node> extends AbstractViewVisitor<T, View<T>> {
 
         private final ViewContext<T> context;
 
@@ -35,25 +35,27 @@ public class PredicateExpr implements Expr {
         }
 
         @Override
-        public BooleanView<T> visit(NumberView<T> numberView) throws XmlBuilderException {
+        public View<T> visit(NumberView<T> numberView) throws XmlBuilderException {
             final double number = numberView.toNumber();
-            return BooleanView.of(0 == Double.compare(number, context.getPosition())
-                    || (context.isGreedy() && !context.hasNext() && number > context.getPosition()
-                    && test(context, number)));
+            if (0 == Double.compare(number, context.getPosition())) {
+                context.getCurrent().mark();
+                return BooleanView.of(true);
+            } else if (context.isGreedy() && !context.hasNext() && number > context.getPosition()
+                    && context.getCurrent().isNew()) {
+                final T node = context.getCurrent().getNode();
+                long numberOfNodesToCreate = (long) number - context.getPosition();
+                do {
+                    context.getNavigator().prependCopy(node);
+                } while (--numberOfNodesToCreate > 0);
+                return BooleanView.of(true);
+            } else {
+                return BooleanView.of(false);
+            }
         }
 
         @Override
-        protected BooleanView<T> returnDefault(View<T> view) throws XmlBuilderException {
-            return BooleanView.of(view.toBoolean());
-        }
-
-        private <N extends Node> boolean test(ViewContext<N> context, double number) {
-            final N node = context.getCurrent().getNode();
-            long numberOfNodesToCreate = (long) number - context.getPosition();
-            do {
-                context.getNavigator().prependCopy(node);
-            } while (--numberOfNodesToCreate > 0);
-            return true;
+        protected View<T> returnDefault(View<T> view) throws XmlBuilderException {
+            return view;
         }
 
     }

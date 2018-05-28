@@ -4,6 +4,7 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.util.Predicate;
+import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;
@@ -28,16 +29,22 @@ public class Element extends AbstractStepExpr {
     }
 
     @Override
-    <N extends Node> NodeSetView<N> traverseStep(Navigator<N> navigator, NodeView<N> parentView) {
-        return NodeSetView.filtered(navigator.elementsOf(parentView.getNode()), filter);
+    <N extends Node> IterableNodeView<N> resolveStep(ViewContext<N> context) throws XmlBuilderException {
+        final Navigator<N> navigator = context.getNavigator();
+        final N parentNode = context.getCurrent().getNode();
+        IterableNodeView<N> result = NodeSetView.filtered(navigator.elementsOf(parentNode), filter);
+        if (context.isGreedy() && !context.hasNext() && !result.toBoolean()) {
+            result = createStepNode(context);
+        }
+        return result;
     }
 
     @Override
-    public <N extends Node> NodeView<N> createStepNode(ViewContext<N> context) throws XmlBuilderException {
+    <N extends Node> NodeView<N> createStepNode(ViewContext<N> context) throws XmlBuilderException {
         if (isWildcard(element)) {
             throw new XmlBuilderException("Wildcard attribute cannot be created");
         }
-        return new NodeView<N>(context.getNavigator().createElement(context.getCurrent().getNode(), element));
+        return new NodeView<N>(context.getNavigator().createElement(context.getCurrent().getNode(), element), true);
     }
 
     @Override

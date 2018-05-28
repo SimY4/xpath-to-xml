@@ -69,10 +69,23 @@ public class PredicateExprTest {
     }
 
     @Test
-    public void shouldPrependMissingNodesAndReturnTrueOnGreedyNumberResolve() {
+    public void shouldReturnFalseOnGreedyFalseResolveAndNonNewNode() {
         // given
         ViewContext<TestNode> context = new ViewContext<TestNode>(navigator,
                 new NodeView<TestNode>(node("node")), true);
+
+        // when
+        boolean result = new PredicateExpr(new NumberExpr(3.0)).resolve(context).toBoolean();
+
+        // then
+        assertThat(result).isEqualTo(false);
+    }
+
+    @Test
+    public void shouldPrependMissingNodesAndReturnTrueOnGreedyFalsePredicateAndNewNode() {
+        // given
+        ViewContext<TestNode> context = new ViewContext<TestNode>(navigator,
+                new NodeView<TestNode>(node("node"), true), true);
 
         // when
         boolean result = new PredicateExpr(new NumberExpr(3.0)).resolve(context).toBoolean();

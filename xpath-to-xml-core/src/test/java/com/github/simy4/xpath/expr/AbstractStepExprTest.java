@@ -131,12 +131,16 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
 
         // then
         assertThat((Iterable<?>) result).isNotEmpty();
-        verify(predicate1).resolve(predicate1ContextCaptor.capture());
-        verify(predicate2).resolve(predicate2ContextCaptor.capture());
-        assertThat((Object) predicate1ContextCaptor.getValue()).extracting("navigator", "greedy", "position")
-                .containsExactly(navigator, true, 1);
-        assertThat((Object) predicate2ContextCaptor.getValue()).extracting("navigator", "greedy", "position")
-                .containsExactly(navigator, true, 1);
+        verify(predicate1, times(2)).resolve(predicate1ContextCaptor.capture());
+        verify(predicate2, times(2)).resolve(predicate2ContextCaptor.capture());
+        assertThat(predicate1ContextCaptor.getAllValues()).extracting("navigator", "greedy", "hasNext", "position")
+                .containsExactly(
+                        tuple(navigator, false, false, 1),
+                        tuple(navigator, true, false, 1));
+        assertThat(predicate2ContextCaptor.getAllValues()).extracting("navigator", "greedy", "hasNext", "position")
+                .containsExactly(
+                        tuple(navigator, false, false, 1),
+                        tuple(navigator, true, false, 1));
     }
 
     @Test
@@ -160,13 +164,15 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
         // then
         assertThat((Iterable<?>) result).isNotEmpty();
         verify(predicate1, times(2)).resolve(predicate1ContextCaptor.capture());
-        verify(predicate2).resolve(predicate2ContextCaptor.capture());
+        verify(predicate2, times(2)).resolve(predicate2ContextCaptor.capture());
         assertThat(predicate1ContextCaptor.getAllValues()).extracting("navigator", "greedy", "hasNext", "position")
                 .containsExactly(
                         tuple(navigator, false, false, 1),
                         tuple(navigator, true, false, 2));
         assertThat(predicate2ContextCaptor.getAllValues()).extracting("navigator", "greedy", "hasNext", "position")
-                .containsExactly(tuple(navigator, true, false, 1));
+                .containsExactly(
+                        tuple(navigator, false, false, 1),
+                        tuple(navigator, true, false, 1));
     }
 
     protected void setUpResolvableExpr() {
@@ -175,7 +181,9 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
     }
 
     protected void setUpUnresolvableExpr() {
+        when(predicate1.resolve(any(ViewContext.class))).thenReturn(BooleanView.of(false));
         when(predicate1.resolve(argThat(greedyContext()))).thenReturn(BooleanView.of(true));
+        when(predicate2.resolve(any(ViewContext.class))).thenReturn(BooleanView.of(false));
         when(predicate2.resolve(argThat(greedyContext()))).thenReturn(BooleanView.of(true));
     }
 
