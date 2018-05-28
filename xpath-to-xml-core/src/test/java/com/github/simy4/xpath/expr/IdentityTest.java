@@ -12,7 +12,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class IdentityTest extends AbstractStepExprTest<Identity> {
 
     @Before
+    @Override
     public void setUp() {
+        super.setUp();
         stepExpr = new Identity(asList(predicate1, predicate2));
     }
 
@@ -30,7 +32,7 @@ public class IdentityTest extends AbstractStepExprTest<Identity> {
 
     @Test
     public void testToString() {
-        assertThat(stepExpr).hasToString(".[" + predicate1 + "][" + predicate2 + ']');
+        assertThat(stepExpr).hasToString("." + predicate1 + predicate2);
     }
 
 }

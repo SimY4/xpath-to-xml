@@ -39,11 +39,6 @@ public class RootTest {
     }
 
     @Test
-    public void shouldAlwaysReturnTrueOnMatch() {
-        assertThat(root.test(new ViewContext<>(navigator, parentNode, false))).isTrue();
-    }
-
-    @Test
     public void testToString() {
         assertThat(root).hasToString("");
     }

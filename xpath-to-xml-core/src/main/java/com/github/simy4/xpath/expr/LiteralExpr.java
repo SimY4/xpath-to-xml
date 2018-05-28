@@ -6,7 +6,7 @@ import com.github.simy4.xpath.view.ViewContext;
 
 public class LiteralExpr implements Expr {
 
-    private final LiteralView literal;
+    private final LiteralView<?> literal;
 
     public LiteralExpr(String literal) {
         this.literal = new LiteralView(literal);

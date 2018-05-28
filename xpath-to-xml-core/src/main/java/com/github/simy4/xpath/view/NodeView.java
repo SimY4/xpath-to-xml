@@ -1,10 +1,7 @@
 package com.github.simy4.xpath.view;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.util.Function;
-import com.github.simy4.xpath.util.Predicate;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -12,9 +9,15 @@ import java.util.Iterator;
 public final class NodeView<N extends Node> implements IterableNodeView<N> {
 
     private final N node;
+    private boolean isNew;
 
     public NodeView(N node) {
+        this(node, false);
+    }
+
+    public NodeView(N node, boolean isNew) {
         this.node = node;
+        this.isNew = isNew;
     }
 
     @Override
@@ -52,20 +55,6 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
     }
 
     @Override
-    public IterableNodeView<N> filter(Navigator<N> navigator, boolean greedy, int position,
-                                      Predicate<ViewContext<?>> predicate) throws XmlBuilderException {
-        final ViewContext<N> context = new ViewContext<>(navigator, this, greedy, false, position);
-        return predicate.test(context) ? this : NodeSetView.empty();
-    }
-
-    @Override
-    public IterableNodeView<N> flatMap(Navigator<N> navigator, boolean greedy,
-                                       Function<ViewContext<N>, IterableNodeView<N>> fmap) throws XmlBuilderException {
-        final ViewContext<N> context = new ViewContext<>(navigator, this, greedy, false, 1);
-        return fmap.apply(context);
-    }
-
-    @Override
     public boolean equals(Object o) {
         return this == o || (o instanceof View && toString().equals(o.toString()));
     }
@@ -77,6 +66,14 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
 
     public N getNode() {
         return node;
+    }
+
+    public boolean isNew() {
+        return isNew;
+    }
+
+    public void mark() {
+        isNew = true;
     }
 
 }

@@ -11,6 +11,7 @@ import com.github.simy4.xpath.view.ViewContext;
  * @author Alex Simkin
  * @since 1.0
  */
+@FunctionalInterface
 public interface StepExpr extends Expr {
 
     @Override

@@ -19,7 +19,9 @@ public class ParentTest extends AbstractStepExprTest<Parent> {
     private static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));
 
     @Before
+    @Override
     public void setUp() {
+        super.setUp();
         when(navigator.parentOf(parentNode.getNode())).thenReturn(node("parent"));
 
         stepExpr = new Parent(asList(predicate1, predicate2));
@@ -48,7 +50,7 @@ public class ParentTest extends AbstractStepExprTest<Parent> {
 
     @Test
     public void testToString() {
-        assertThat(stepExpr).hasToString("..[" + predicate1 + "][" + predicate2 + ']');
+        assertThat(stepExpr).hasToString(".." + predicate1 + predicate2);
     }
 
     @Override

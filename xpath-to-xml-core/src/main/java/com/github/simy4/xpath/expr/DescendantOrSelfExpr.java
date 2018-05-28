@@ -21,11 +21,6 @@ public class DescendantOrSelfExpr implements StepExpr {
     }
 
     @Override
-    public boolean test(ViewContext<?> viewContext) {
-        return true;
-    }
-
-    @Override
     public String toString() {
         return "";
     }
@@ -45,8 +40,7 @@ public class DescendantOrSelfExpr implements StepExpr {
 
         private Iterator<NodeView<T>> apply(NodeView<T> self) {
             return new FlatteningIterator<>(self.iterator(),
-                    new TransformingIterator<>(navigator.elementsOf(self.getNode()).iterator(),
-                            this));
+                    new TransformingIterator<>(navigator.elementsOf(self.getNode()).iterator(), this));
         }
 
     }

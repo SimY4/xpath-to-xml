@@ -4,6 +4,7 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.util.Predicate;
+import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;
@@ -21,23 +22,29 @@ public class Attribute extends AbstractStepExpr {
      * @param attribute  attribute name
      * @param predicates attribute predicates
      */
-    public Attribute(QName attribute, Iterable<Predicate<ViewContext<?>>> predicates) {
+    public Attribute(QName attribute, Iterable<Expr> predicates) {
         super(predicates);
         this.attribute = attribute;
         this.filter = new QNamePredicate(attribute);
     }
 
     @Override
-    <N extends Node> NodeSetView<N> traverseStep(Navigator<N> navigator, NodeView<N> parentView) {
-        return NodeSetView.filtered(navigator.attributesOf(parentView.getNode()), filter);
+    <N extends Node> IterableNodeView<N> resolveStep(ViewContext<N> context) throws XmlBuilderException {
+        final Navigator<N> navigator = context.getNavigator();
+        final N parentNode = context.getCurrent().getNode();
+        IterableNodeView<N> result = NodeSetView.filtered(navigator.attributesOf(parentNode), filter);
+        if (context.isGreedy() && !context.hasNext() && !result.toBoolean()) {
+            result = createStepNode(context);
+        }
+        return result;
     }
 
     @Override
-    <N extends Node> N createStepNode(Navigator<N> navigator, NodeView<N> parentView) throws XmlBuilderException {
-        if ("*".equals(attribute.getNamespaceURI()) || "*".equals(attribute.getLocalPart())) {
+    <N extends Node> NodeView<N> createStepNode(ViewContext<N> context) throws XmlBuilderException {
+        if (isWildcard(attribute)) {
             throw new XmlBuilderException("Wildcard attribute cannot be created");
         }
-        return navigator.createAttribute(parentView.getNode(), attribute);
+        return new NodeView<>(context.getNavigator().createAttribute(context.getCurrent().getNode(), attribute), true);
     }
 
     @Override

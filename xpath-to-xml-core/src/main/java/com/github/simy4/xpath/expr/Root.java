@@ -12,11 +12,6 @@ public class Root implements StepExpr {
     }
 
     @Override
-    public boolean test(ViewContext<?> context) {
-        return true;
-    }
-
-    @Override
     public String toString() {
         return "";
     }

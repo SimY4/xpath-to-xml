@@ -15,7 +15,16 @@ public final class ViewContext<N extends Node> {
         this(navigator, current, greedy, false, 1);
     }
 
-    ViewContext(Navigator<N> navigator, NodeView<N> current, boolean greedy, boolean hasNext, int position) {
+    /**
+     * Constructor.
+     *
+     * @param navigator XML navigator
+     * @param current   XML context node view
+     * @param greedy    is context greedy
+     * @param hasNext   is there a node after this
+     * @param position  XML context node position
+     */
+    public ViewContext(Navigator<N> navigator, NodeView<N> current, boolean greedy, boolean hasNext, int position) {
         this.navigator = navigator;
         this.current = current;
         this.greedy = greedy;
