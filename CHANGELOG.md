@@ -6,6 +6,13 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 
 ## 1.x Series
 
+### 1.0.3
+
+Bugfixes:
+
+- Core
+  - Fix longstanding issue when index predicate may create more nodes than is has to
+
 ### 1.0.2
 
 Improvements:
