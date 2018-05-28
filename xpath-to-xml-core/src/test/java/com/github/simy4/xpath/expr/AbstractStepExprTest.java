@@ -175,6 +175,18 @@ public abstract class AbstractStepExprTest<E extends StepExpr> {
                         tuple(navigator, true, false, 1));
     }
 
+    @Test(expected = XmlBuilderException.class)
+    public void shouldThrowWhenUnableToSatisfyExpressionsConditions() {
+        // given
+        setUpResolvableExpr();
+        reset(predicate1, predicate2);
+        when(predicate1.resolve(any(ViewContext.class))).thenReturn(BooleanView.of(false));
+        when(predicate2.resolve(any(ViewContext.class))).thenReturn(BooleanView.of(false));
+
+        // when
+        stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, true));
+    }
+
     protected void setUpResolvableExpr() {
         when(predicate1.resolve(any(ViewContext.class))).thenReturn(BooleanView.of(true));
         when(predicate2.resolve(any(ViewContext.class))).thenReturn(BooleanView.of(true));
