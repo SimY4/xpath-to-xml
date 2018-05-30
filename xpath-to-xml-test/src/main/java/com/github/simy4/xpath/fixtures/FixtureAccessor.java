@@ -14,13 +14,19 @@ public final class FixtureAccessor {
 
     private static final String XML_PROPERTIES_PATH_FORMAT =
             "/com/github/simy4/xpath/fixtures/%1$s/%1$s.properties";
-    private static final String XML_PUT_PATH_FORMAT = "/com/github/simy4/xpath/fixtures/%1$s/%1$s-put.xml";
-    private static final String XML_PUT_VALUE_PATH_FORMAT = "/com/github/simy4/xpath/fixtures/%1$s/%1$s-put-value.xml";
+    private static final String XML_PUT_PATH_FORMAT = "/com/github/simy4/xpath/fixtures/%1$s/%1$s-put.%2$s";
+    private static final String XML_PUT_VALUE_PATH_FORMAT = "/com/github/simy4/xpath/fixtures/%1$s/%1$s-put-value.%2$s";
 
     private final String fixtureName;
+    private final String fixtureType;
 
     public FixtureAccessor(String fixtureName) {
+        this(fixtureName, "xml");
+    }
+
+    public FixtureAccessor(String fixtureName, String fixtureType) {
         this.fixtureName = fixtureName;
+        this.fixtureType = fixtureType;
     }
 
     /**
@@ -47,14 +53,14 @@ public final class FixtureAccessor {
     }
 
     private String getXml(String format) throws IOException {
-        try (InputStream xmlStream = getClass().getResourceAsStream(String.format(format, fixtureName))) {
+        try (InputStream xmlStream = getClass().getResourceAsStream(String.format(format, fixtureName, fixtureType))) {
             return new Scanner(xmlStream, "UTF-8").useDelimiter("\\A").next();
         }
     }
 
     @Override
     public String toString() {
-        return fixtureName;
+        return fixtureName + " for " + fixtureType;
     }
 
 }

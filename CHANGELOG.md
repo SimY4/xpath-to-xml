@@ -6,6 +6,12 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 
 ## 1.x Series
 
+### Upcoming
+
+Features:
+
+- Support for Gson JSON model
+
 ### 1.0.3
 
 Bugfixes:

@@ -1,0 +1,12 @@
+ext.pomDescription = "XPath-to-JSON Gson"
+
+dependencies {
+    api project(':xpath-to-xml-core')
+
+    implementation 'com.google.code.gson:gson:2.8.4'
+
+    testImplementation project(':xpath-to-xml-test')
+    testImplementation "org.junit.vintage:junit-vintage-engine:$jUnitVersion"
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    testImplementation "org.assertj:assertj-core:$assertjVersion"
+}
