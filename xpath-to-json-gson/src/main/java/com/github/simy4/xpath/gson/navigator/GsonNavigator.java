@@ -142,20 +142,20 @@ public class GsonNavigator implements Navigator<GsonNode> {
                 if (parentParent != null) {
                     final JsonElement parentParentElement = parentParent.get();
                     if (parentParentElement.isJsonArray()) {
-                        elementNode = appendToArray(parentParent, parent.getName().getLocalPart(),
-                                parentParentElement.getAsJsonArray());
-                        elementNode.set(newElement);
-                        return elementNode;
+                        elementNode = appendToArray(parent, name, parentParentElement.getAsJsonArray());
+                    } else {
+                        final JsonArray jsonArray = new JsonArray();
+                        jsonArray.add(parentObject);
+                        elementNode = appendToArray(parent, name, jsonArray);
+                        parent.set(jsonArray);
                     }
+                } else {
+                    final JsonArray jsonArray = new JsonArray();
+                    jsonArray.add(parentObject);
+                    elementNode = appendToArray(parent, name, jsonArray);
+                    parent.set(jsonArray);
                 }
-                final JsonArray jsonArray = new JsonArray();
-                final JsonObject jsonObject = new JsonObject();
-                jsonArray.add(parentObject);
-                jsonArray.add(jsonObject);
-                final GsonNode jsonObjectNode = new GsonByIndexNode(jsonArray, 1, parent);
-                elementNode = new GsonByNameNode(jsonObject, name, jsonObjectNode);
                 elementNode.set(newElement);
-                parent.set(jsonArray);
             }
         } else if (parentElement.isJsonArray()) {
             elementNode = appendToArray(parent, name, parentElement.getAsJsonArray());

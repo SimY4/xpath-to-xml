@@ -89,7 +89,7 @@ public class XmlBuilderTest {
     }
 
     private String jsonToString(JsonElement json) {
-        return gson.toJson(json);
+        return gson.toJson(json).replaceAll("\n", System.getProperty("line.separator"));
     }
 
 }
