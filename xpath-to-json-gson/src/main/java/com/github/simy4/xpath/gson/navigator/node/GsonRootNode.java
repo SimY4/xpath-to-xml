@@ -2,15 +2,14 @@ package com.github.simy4.xpath.gson.navigator.node;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 import javax.xml.namespace.QName;
 
 public final class GsonRootNode extends AbstractGsonNode {
 
-    private final JsonObject root;
+    private final JsonElement root;
 
-    public GsonRootNode(JsonObject root) {
+    public GsonRootNode(JsonElement root) {
         super(null);
         this.root = root;
     }
