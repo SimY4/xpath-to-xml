@@ -43,4 +43,8 @@ public final class GsonByIndexNode extends AbstractGsonNode {
         parentArray.remove(index);
     }
 
+    public int getIndex() {
+        return index;
+    }
+
 }
