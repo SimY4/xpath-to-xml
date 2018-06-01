@@ -30,7 +30,11 @@ public class GsonNavigator implements Navigator<GsonNode> {
 
     @Override
     public GsonNode parentOf(GsonNode node) {
-        return node.getParent();
+        GsonNode parent;
+        do {
+            parent = node.getParent();
+        } while (parent instanceof GsonByIndexNode);
+        return parent;
     }
 
     @Override
