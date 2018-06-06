@@ -1,46 +1,65 @@
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+task sourcesJar(type: Jar) {
+    classifier 'sources'
+    from sourceSets.main.allJava
+}
 
-            repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
-                authentication(userName: sonatypeUsername, password: sonatypePassword)
-            }
+task javadocJar(type: Jar) {
+    classifier 'javadoc'
+    from javadoc.destinationDir
+}
 
-            snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
-                authentication(userName: sonatypeUsername, password: sonatypePassword)
-            }
-
-            pom.project {
-                name "${project.name}"
-                packaging 'jar'
-                description projectDescription
-                url 'http://github.com/SimY4/xpath-to-xml'
-                inceptionYear '2017'
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact project.name
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom {
+                name = project.name
+                description = projectDescription
+                url = 'http://github.com/SimY4/xpath-to-xml'
+                inceptionYear = '2017'
 
                 scm {
-                    connection 'scm:git:http://github.com/SimY4/xpath-to-xml'
-                    developerConnection 'scm:git:http://github.com/SimY4/xpath-to-xml'
-                    url 'http://github.com/SimY4/xpath-to-xml'
+                    connection = 'scm:git:http://github.com/SimY4/xpath-to-xml'
+                    developerConnection = 'scm:git:http://github.com/SimY4/xpath-to-xml'
+                    url = 'http://github.com/SimY4/xpath-to-xml'
                 }
 
                 licenses {
                     license {
-                        name 'The Apache License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
                     }
                 }
 
                 developers {
                     developer {
-                        id 'SimY4'
-                        name 'Alex Simkin'
-                        url 'http://github.com/SimY4'
+                        id = 'SimY4'
+                        name = 'Alex Simkin'
+                        url = 'http://github.com/SimY4'
                     }
                 }
             }
         }
     }
+    repositories {
+        maven {
+            def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
+            url version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username = sonatypeUsername
+                password = sonatypePassword
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }
