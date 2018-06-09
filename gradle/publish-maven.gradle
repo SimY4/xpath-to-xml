@@ -14,34 +14,36 @@ task javadocJar(type: Jar) {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifact project.name
             from components.java
             artifact sourcesJar
             artifact javadocJar
-            pom {
-                name = project.name
-                description = projectDescription
-                url = 'http://github.com/SimY4/xpath-to-xml'
-                inceptionYear = '2017'
-
-                scm {
-                    connection = 'scm:git:http://github.com/SimY4/xpath-to-xml'
-                    developerConnection = 'scm:git:http://github.com/SimY4/xpath-to-xml'
+            afterEvaluate {
+                artifactId = project.name
+                pom {
+                    name = project.name
+                    description = projectDescription
                     url = 'http://github.com/SimY4/xpath-to-xml'
-                }
+                    inceptionYear = '2017'
 
-                licenses {
-                    license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    scm {
+                        connection = 'scm:git:http://github.com/SimY4/xpath-to-xml'
+                        developerConnection = 'scm:git:http://github.com/SimY4/xpath-to-xml'
+                        url = 'http://github.com/SimY4/xpath-to-xml'
                     }
-                }
 
-                developers {
-                    developer {
-                        id = 'SimY4'
-                        name = 'Alex Simkin'
-                        url = 'http://github.com/SimY4'
+                    licenses {
+                        license {
+                            name = 'The Apache License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id = 'SimY4'
+                            name = 'Alex Simkin'
+                            url = 'http://github.com/SimY4'
+                        }
                     }
                 }
             }
