@@ -6,7 +6,7 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 
 ## 1.x Series
 
-### Upcoming
+### 1.1.0
 
 Features:
 
