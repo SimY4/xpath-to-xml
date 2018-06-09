@@ -9,7 +9,7 @@ ext {
     mockitoVersion = '2.18.3'
     assertjVersion = '2.9.1'
     errorproneVersion = '2.3.1'
-    checkstyleVersion = '8.10'
+    checkstyleVersion = '8.10.1'
 
     def buildTimeAndDate = new Date()
     buildDate = buildTimeAndDate.format("yyyy-MM-dd")
