@@ -36,6 +36,9 @@ abstract class AbstractGsonNode implements GsonNode {
             return jsonElement.getAsString();
         } else if (jsonElement.isJsonNull()) {
             return "null";
+        } else if (jsonElement.isJsonObject()) {
+            final JsonElement text = jsonElement.getAsJsonObject().get("text");
+            return null == text ? "" : text.getAsString();
         } else {
             return "";
         }
@@ -43,17 +46,7 @@ abstract class AbstractGsonNode implements GsonNode {
 
     @Override
     public Iterator<GsonNode> iterator() {
-        final JsonElement jsonElement = get();
-        if (jsonElement.isJsonObject()) {
-            final JsonObject jsonObject = jsonElement.getAsJsonObject();
-            return new TransformingIterator<>(jsonObject.keySet().iterator(), new JsonObjectWrapper(jsonObject, this));
-        } else if (jsonElement.isJsonArray()) {
-            final JsonArray jsonArray = jsonElement.getAsJsonArray();
-            return new FlatteningIterator<>(new TransformingIterator<>(jsonArray.iterator(),
-                    new JsonArrayWrapper(jsonArray, this)));
-        } else {
-            return Collections.emptyIterator();
-        }
+        return traverse(get(), this);
     }
 
     @Override
@@ -77,6 +70,20 @@ abstract class AbstractGsonNode implements GsonNode {
     @Override
     public String toString() {
         return Objects.toString(get(), "???");
+    }
+
+    private static Iterator<GsonNode> traverse(JsonElement jsonElement, GsonNode parent) {
+        if (jsonElement.isJsonObject()) {
+            final JsonObject jsonObject = jsonElement.getAsJsonObject();
+            return new TransformingIterator<>(jsonObject.keySet().iterator(),
+                    new JsonObjectWrapper(jsonObject, parent));
+        } else if (jsonElement.isJsonArray()) {
+            final JsonArray jsonArray = jsonElement.getAsJsonArray();
+            return new FlatteningIterator<>(new TransformingIterator<>(jsonArray.iterator(),
+                    new JsonArrayWrapper(jsonArray, parent)));
+        } else {
+            return Collections.emptyIterator();
+        }
     }
 
     private static final class JsonObjectWrapper implements Function<String, GsonNode> {
@@ -110,13 +117,7 @@ abstract class AbstractGsonNode implements GsonNode {
         @Override
         public Iterator<GsonNode> apply(JsonElement jsonElement) {
             final GsonNode arrayElemNode = new GsonByIndexNode(parentArray, index++, parent);
-            if (jsonElement.isJsonObject()) {
-                final JsonObject jsonObject = jsonElement.getAsJsonObject();
-                return new TransformingIterator<>(jsonObject.keySet().iterator(),
-                        new JsonObjectWrapper(jsonObject, arrayElemNode));
-            } else {
-                return Collections.singletonList(arrayElemNode).iterator();
-            }
+            return traverse(jsonElement, arrayElemNode);
         }
 
     }

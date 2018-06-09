@@ -14,6 +14,10 @@ Convenient utility to build XML models by evaluating XPath expressions.
  - DOM
  - DOM4J
  - XOM
+ 
+## Additionally supported models
+
+ - Gson
 
 # Usage
 
@@ -23,7 +27,7 @@ Include an artifact with necessary model extension into your project:
 <dependency>
     <groupId>com.github.simy4</groupId>
     <artifactId>xpath-to-xml-dom</artifactId>
-    <version>1.0.3</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 

@@ -15,7 +15,7 @@ import com.github.simy4.xpath.view.ViewContext;
 public interface Expr {
 
     /**
-     * Evaluate this expression on given xml model view using given context.
+     * Evaluate this expression using given context.
      *
      * @param context XPath expression context
      * @param <N>     XML model type

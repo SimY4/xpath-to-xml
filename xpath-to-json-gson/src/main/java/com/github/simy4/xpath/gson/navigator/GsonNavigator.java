@@ -29,7 +29,11 @@ public class GsonNavigator implements Navigator<GsonNode> {
 
     @Override
     public GsonNode parentOf(GsonNode node) {
-        return node.getParent();
+        GsonNode parent;
+        do {
+            parent = node.getParent();
+        } while (parent instanceof GsonByIndexNode);
+        return parent;
     }
 
     @Override
@@ -54,7 +58,14 @@ public class GsonNavigator implements Navigator<GsonNode> {
 
     @Override
     public void setText(GsonNode node, String text) throws XmlBuilderException {
-        node.set(new JsonPrimitive(text));
+        final JsonElement jsonElement = node.get();
+        if (jsonElement.isJsonObject()) {
+            jsonElement.getAsJsonObject().add("text", new JsonPrimitive(text));
+        } else if (jsonElement.isJsonArray()) {
+            throw new XmlBuilderException("Unable to set text to JSON array: " + jsonElement);
+        } else {
+            node.set(new JsonPrimitive(text));
+        }
     }
 
     @Override
@@ -70,21 +81,26 @@ public class GsonNavigator implements Navigator<GsonNode> {
             final GsonNode parentParent = parent.getParent();
             final String name = node.getName().getLocalPart();
             final JsonObject jsonObject = new JsonObject();
-            final GsonNode copyNode;
+            final GsonByIndexNode copyNode;
             if (parentParent != null) {
                 final JsonElement parentParentElement = parentParent.get();
                 if (parentParentElement.isJsonArray()) {
-                    copyNode = prependToArray(parentParent, parentElement, parentParentElement.getAsJsonArray());
+                    final JsonArray jsonArray = parentParentElement.getAsJsonArray();
+                    copyNode = prependToArray(parentParent, parentElement, jsonArray);
+                    parent.setParent(new GsonByIndexNode(jsonArray, copyNode.getIndex() + 1, node.getParent()));
                 } else {
-                    copyNode = prependToNewArray(parentParent, parentElement);
+                    copyNode = prependToNewArray(parent, parentElement);
                 }
             } else {
-                copyNode = prependToNewArray(null, parentElement);
+                copyNode = prependToNewArray(parent, parentElement);
             }
             elementNode = new GsonByNameNode(jsonObject, name, copyNode);
             copyNode.set(jsonObject);
         } else if (parentElement.isJsonArray()) {
-            elementNode = prependToArray(parent, elementToCopy, parentElement.getAsJsonArray());
+            final JsonArray jsonArray = parentElement.getAsJsonArray();
+            final GsonByIndexNode copyNode = prependToArray(parent, elementToCopy, jsonArray);
+            node.setParent(new GsonByIndexNode(jsonArray, copyNode.getIndex() + 1, node.getParent()));
+            elementNode = copyNode;
         } else {
             throw new XmlBuilderException("Unable to prepend copy to primitive node: " + parentElement);
         }
@@ -142,17 +158,18 @@ public class GsonNavigator implements Navigator<GsonNode> {
         return new GsonByNameNode(jsonObject, name, parentObjectNode);
     }
 
-    private GsonNode prependToNewArray(GsonNode parent, JsonElement elementToCopy) {
+    private GsonByIndexNode prependToNewArray(GsonNode parent, JsonElement elementToCopy) {
         final JsonArray jsonArray = new JsonArray();
         jsonArray.add(elementToCopy);
-        final GsonNode elementNode = prependToArray(parent, elementToCopy, jsonArray);
+        final GsonByIndexNode elementNode = prependToArray(parent, elementToCopy, jsonArray);
         if (null != parent) {
             parent.set(jsonArray);
+            parent.setParent(new GsonByIndexNode(jsonArray, 1, parent.getParent()));
         }
         return elementNode;
     }
 
-    private GsonNode prependToArray(GsonNode parent, JsonElement elementToCopy, JsonArray parentArray) {
+    private GsonByIndexNode prependToArray(GsonNode parent, JsonElement elementToCopy, JsonArray parentArray) {
         int i = parentArray.size() - 1;
         JsonElement arrayElement = parentArray.get(i);
         parentArray.add(arrayElement);

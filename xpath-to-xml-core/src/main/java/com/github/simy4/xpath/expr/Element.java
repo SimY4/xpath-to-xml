@@ -32,7 +32,7 @@ public class Element extends AbstractStepExpr {
     <N extends Node> IterableNodeView<N> resolveStep(ViewContext<N> context) throws XmlBuilderException {
         final Navigator<N> navigator = context.getNavigator();
         final N parentNode = context.getCurrent().getNode();
-        IterableNodeView<N> result = new NodeSetView<N>(navigator.elementsOf(parentNode), filter);
+        IterableNodeView<N> result = new NodeSetView<>(navigator.elementsOf(parentNode), filter);
         if (context.isGreedy() && !context.hasNext() && !result.toBoolean()) {
             result = createStepNode(context);
         }

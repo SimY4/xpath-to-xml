@@ -9,7 +9,7 @@ ext {
     mockitoVersion = '2.18.3'
     assertjVersion = '3.10.0'
     errorproneVersion = '2.3.1'
-    checkstyleVersion = '8.10'
+    checkstyleVersion = '8.10.1'
 
     def buildTimeAndDate = new Date()
     buildDate = buildTimeAndDate.format("yyyy-MM-dd")
@@ -18,7 +18,6 @@ ext {
 
 subprojects {
     apply plugin: 'java-library'
-    apply plugin: 'signing'
     apply plugin: 'me.champeau.gradle.jmh'
     apply from: rootProject.file('gradle/animal-sniffer.gradle')
     apply from: rootProject.file('gradle/check-checkstyle.gradle')
@@ -41,35 +40,12 @@ subprojects {
         useJUnitPlatform()
     }
 
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
-        from sourceSets.main.allSource
-    }
-
-    task javadocJar(type: Jar, dependsOn: javadoc) {
-        classifier = 'javadoc'
-        from javadoc.destinationDir
-    }
-
     jmh {
         jmhVersion = '1.21'
-    }
-
-    artifacts {
-        archives jar
-        archives sourcesJar
-        archives javadocJar
-    }
-
-    signing {
-        required {
-            signatory != null && !(project.version =~ /-SNAPSHOT$/)
-        }
-        sign configurations.archives
     }
 
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.7'
+    gradleVersion = '4.8'
 }
