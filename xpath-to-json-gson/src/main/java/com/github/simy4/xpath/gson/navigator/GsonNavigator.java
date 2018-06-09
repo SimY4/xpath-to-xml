@@ -69,7 +69,14 @@ public class GsonNavigator implements Navigator<GsonNode> {
 
     @Override
     public void setText(GsonNode node, String text) throws XmlBuilderException {
-        node.set(new JsonPrimitive(text));
+        final JsonElement jsonElement = node.get();
+        if (jsonElement.isJsonObject()) {
+            jsonElement.getAsJsonObject().add("text", new JsonPrimitive(text));
+        } else if (jsonElement.isJsonArray()) {
+            throw new XmlBuilderException("Unable to set text to JSON array: " + jsonElement);
+        } else {
+            node.set(new JsonPrimitive(text));
+        }
     }
 
     @Override

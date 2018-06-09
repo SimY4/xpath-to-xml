@@ -26,6 +26,7 @@ public class XmlBuilderTest {
     public static Collection<Object[]> data() {
         return asList(new Object[][] {
                 { new FixtureAccessor("attr", "json") },
+                { new FixtureAccessor("simple", "json") },
         });
     }
 
