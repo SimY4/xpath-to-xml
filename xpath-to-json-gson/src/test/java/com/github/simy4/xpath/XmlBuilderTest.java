@@ -85,6 +85,18 @@ public class XmlBuilderTest {
         assertThat(jsonToString(builtDocument)).isEqualTo(json);
     }
 
+    @Test
+    public void shouldRemovePathsFromExistingXml() throws XPathExpressionException, IOException {
+        Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
+        String json = fixtureAccessor.getPutValueXml();
+        JsonElement oldDocument = stringToJson(json);
+        JsonElement builtDocument = new XmlBuilder()
+                .removeAll(xmlProperties.keySet())
+                .build(oldDocument);
+
+        assertThat(jsonToString(builtDocument)).isNotEqualTo(fixtureAccessor.getPutValueXml());
+    }
+
     private JsonElement stringToJson(String xml) {
         return gson.fromJson(xml, JsonElement.class);
     }

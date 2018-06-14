@@ -119,6 +119,25 @@ public class XmlBuilderTest {
         assertThat(xmlToString(builtDocument)).isEqualTo(xml);
     }
 
+    @Test
+    public void shouldRemovePathsFromExistingXml()
+            throws XPathExpressionException, ParsingException, IOException {
+        Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
+        String xml = fixtureAccessor.getPutValueXml();
+        Document oldDocument = stringToXml(xml);
+        Document builtDocument = new XmlBuilder(namespaceContext)
+                .removeAll(xmlProperties.keySet())
+                .build(oldDocument);
+
+        for (Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
+            Nodes nodes = null == namespaceContext
+                    ? builtDocument.query(xpathToValuePair.getKey())
+                    : builtDocument.query(xpathToValuePair.getKey(), toXpathContext(namespaceContext));
+            assertThat(nodes.size()).isEqualTo(0);
+        }
+        assertThat(xmlToString(builtDocument)).isNotEqualTo(fixtureAccessor.getPutValueXml());
+    }
+
     private Document stringToXml(String xml) throws ParsingException, IOException {
         Builder builder = new Builder();
         return builder.build(new ByteArrayInputStream(xml.getBytes(Charset.forName("UTF-8"))));
