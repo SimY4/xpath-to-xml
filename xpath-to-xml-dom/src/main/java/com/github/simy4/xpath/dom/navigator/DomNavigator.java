@@ -6,6 +6,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -14,8 +15,8 @@ public final class DomNavigator implements Navigator<DomNode> {
 
     private final Document document;
 
-    public DomNavigator(org.w3c.dom.Node xml) {
-        this.document = xml.getNodeType() == org.w3c.dom.Node.DOCUMENT_NODE ? (Document) xml : xml.getOwnerDocument();
+    public DomNavigator(Node xml) {
+        this.document = Node.DOCUMENT_NODE == xml.getNodeType() ? (Document) xml : xml.getOwnerDocument();
     }
 
     @Override
@@ -25,7 +26,9 @@ public final class DomNavigator implements Navigator<DomNode> {
 
     @Override
     public DomNode parentOf(DomNode node) {
-        org.w3c.dom.Node parent = node.getNode().getParentNode();
+        final Node wrappedNode = node.getNode();
+        final Node parent = Node.ATTRIBUTE_NODE == wrappedNode.getNodeType() ? ((Attr) wrappedNode).getOwnerElement()
+                : wrappedNode.getParentNode();
         return null == parent ? null : new DomNode(parent);
     }
 
@@ -41,8 +44,8 @@ public final class DomNavigator implements Navigator<DomNode> {
 
     @Override
     public DomNode createAttribute(DomNode parent, QName attribute) throws XmlBuilderException {
-        final org.w3c.dom.Node parentNode = parent.getNode();
-        if (org.w3c.dom.Node.ELEMENT_NODE != parentNode.getNodeType()) {
+        final Node parentNode = parent.getNode();
+        if (Node.ELEMENT_NODE != parentNode.getNodeType()) {
             throw new XmlBuilderException("Unable to append attribute to a non-element node " + parent);
         }
 
@@ -89,10 +92,10 @@ public final class DomNavigator implements Navigator<DomNode> {
 
     @Override
     public void prependCopy(DomNode node) throws XmlBuilderException {
-        final org.w3c.dom.Node wrappedNode = node.getNode();
-        final org.w3c.dom.Node copiedNode = wrappedNode.cloneNode(true);
+        final Node wrappedNode = node.getNode();
+        final Node copiedNode = wrappedNode.cloneNode(true);
         try {
-            final org.w3c.dom.Node parent = wrappedNode.getParentNode();
+            final Node parent = wrappedNode.getParentNode();
             if (null == parent) {
                 throw new XmlBuilderException("Unable to prepend - no parent found of " + node);
             }
@@ -105,13 +108,22 @@ public final class DomNavigator implements Navigator<DomNode> {
     @Override
     public void remove(DomNode node) {
         try {
-            org.w3c.dom.Node wrappedNode = node.getNode();
-            org.w3c.dom.Node parent = wrappedNode.getParentNode();
-            if (parent != null) {
-                parent.removeChild(wrappedNode);
+            final Node wrappedNode = node.getNode();
+            if (wrappedNode.getNodeType() == Node.ATTRIBUTE_NODE) {
+                final Attr attr = (Attr) wrappedNode;
+                final Element parent = attr.getOwnerElement();
+                if (null == parent) {
+                    throw new XmlBuilderException("Unable to remove attribute " + node
+                            + ". Node either root or in detached state");
+                }
+                parent.removeAttributeNode(attr);
             } else {
-                throw new XmlBuilderException("Unable to remove node " + node
-                        + ". Node either root or in detached state");
+                final Node parent = wrappedNode.getParentNode();
+                if (null == parent) {
+                    throw new XmlBuilderException("Unable to remove node " + node
+                            + ". Node either root or in detached state");
+                }
+                parent.removeChild(wrappedNode);
             }
         } catch (DOMException de) {
             throw new XmlBuilderException("Unable to remove child node " + node, de);
