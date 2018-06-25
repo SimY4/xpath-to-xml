@@ -13,7 +13,7 @@ Features:
 - DOM 
   - Fix attribute removal issue
 
-### 1.1.0
+### 1.1.0 Gson model support
 
 Features:
 
