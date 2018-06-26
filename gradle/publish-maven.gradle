@@ -26,9 +26,14 @@ publishing {
                     inceptionYear = '2017'
 
                     scm {
-                        connection = 'scm:git:http://github.com/SimY4/xpath-to-xml'
-                        developerConnection = 'scm:git:http://github.com/SimY4/xpath-to-xml'
-                        url = 'http://github.com/SimY4/xpath-to-xml'
+                        connection = projectScm
+                        developerConnection = projectScm
+                        url = projectUrl
+                    }
+
+                    issueManagement {
+                        system = 'GitHub'
+                        url = projectIssues
                     }
 
                     licenses {

@@ -6,7 +6,7 @@ plugins {
 
 ext {
     jUnitVersion = '5.2.0'
-    mockitoVersion = '2.18.3'
+    mockitoVersion = '2.19.0'
     assertjVersion = '2.9.1'
     errorproneVersion = '2.3.1'
     checkstyleVersion = '8.10.1'
