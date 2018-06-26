@@ -25,7 +25,7 @@ Include an artifact with necessary model extension into your project:
 
 ```xml
 <dependency>
-    <groupId>com.github.simy4</groupId>
+    <groupId>com.github.simy4.xpath</groupId>
     <artifactId>xpath-to-xml-dom</artifactId>
     <version>1.1.1</version>
 </dependency>
