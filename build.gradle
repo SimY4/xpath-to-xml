@@ -6,7 +6,7 @@ plugins {
 
 ext {
     jUnitVersion = '5.2.0'
-    mockitoVersion = '2.18.3'
+    mockitoVersion = '2.19.0'
     assertjVersion = '3.10.0'
     errorproneVersion = '2.3.1'
     checkstyleVersion = '8.10.1'
@@ -47,5 +47,5 @@ subprojects {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.8'
+    gradleVersion = '4.8.1'
 }
