@@ -1,0 +1,28 @@
+{
+  "records": [
+    {
+      "record": {
+        "title": {
+          "text": "First"
+        }
+      }
+    },
+    {
+      "record": {
+        "title": {
+          "text": "Second"
+        }
+      }
+    },
+    {
+      "record": {
+        "title": {
+          "text": "Third"
+        },
+        "tag": {
+          "text": "Tag"
+        }
+      }
+    }
+  ]
+}

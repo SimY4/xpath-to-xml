@@ -53,6 +53,8 @@ public class XmlBuilderTest {
                 { new FixtureAccessor("ns-simple"), new SimpleNamespaceContext(), nsAwareDocumentBuilderFactory},
                 { new FixtureAccessor("attr"), null, documentBuilderFactory},
                 { new FixtureAccessor("attr"), new SimpleNamespaceContext(), documentBuilderFactory},
+                { new FixtureAccessor("special"), null, documentBuilderFactory },
+                { new FixtureAccessor("special"), new SimpleNamespaceContext(), documentBuilderFactory },
         });
     }
 

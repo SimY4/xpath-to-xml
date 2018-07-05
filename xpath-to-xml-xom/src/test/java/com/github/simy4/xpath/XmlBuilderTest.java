@@ -43,6 +43,8 @@ public class XmlBuilderTest {
                 // TODO although these cases are working fine the order of attributes is messed up
                 // { new FixtureAccessor("attr"), null },
                 // { new FixtureAccessor("attr"), new SimpleNamespaceContext() },
+                { new FixtureAccessor("special"), null, new Element("records") },
+                { new FixtureAccessor("special"), new SimpleNamespaceContext(), new Element("records") },
         });
     }
 
