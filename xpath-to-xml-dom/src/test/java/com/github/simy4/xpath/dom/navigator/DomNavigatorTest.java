@@ -43,6 +43,10 @@ public class DomNavigatorTest {
         when(root.createElement(anyString())).thenReturn(xml);
         when(root.createElementNS(anyString(), anyString())).thenReturn(xml);
 
+        when(child1.getNodeType()).thenReturn(Node.ELEMENT_NODE);
+        when(child2.getNodeType()).thenReturn(Node.ELEMENT_NODE);
+        when(child3.getNodeType()).thenReturn(Node.ELEMENT_NODE);
+
         when(xml.getNodeType()).thenReturn(Node.ELEMENT_NODE);
         when(xml.getOwnerDocument()).thenReturn(root);
         when(xml.getParentNode()).thenReturn(root);

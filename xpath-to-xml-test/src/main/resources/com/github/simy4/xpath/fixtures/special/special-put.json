@@ -1,0 +1,22 @@
+{
+  "records": [
+    {
+      "record": {
+        "title": {}
+      }
+    },
+    {
+      "record": {
+        "title": {}
+      }
+    },
+    {
+      "record": {
+        "title": {
+          "text": "Third"
+        },
+        "tag": {}
+      }
+    }
+  ]
+}

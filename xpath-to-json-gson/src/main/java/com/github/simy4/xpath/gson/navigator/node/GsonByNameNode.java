@@ -43,4 +43,21 @@ public final class GsonByNameNode extends AbstractGsonNode {
         parentObject.remove(name);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        GsonByNameNode gsonNodes = (GsonByNameNode) o;
+        return getParent().equals(gsonNodes.getParent());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + getParent().hashCode();
+        return result;
+    }
+
 }

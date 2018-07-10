@@ -1,0 +1,12 @@
+<records>
+    <record>
+        <title>First</title>
+    </record>
+    <record>
+        <title>Second</title>
+    </record>
+    <record>
+        <title>Third</title>
+        <tag>Tag</tag>
+    </record>
+</records>

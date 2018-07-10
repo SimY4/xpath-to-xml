@@ -38,10 +38,15 @@ abstract class AbstractGsonNode implements GsonNode {
             return "null";
         } else if (jsonElement.isJsonObject()) {
             final JsonElement text = jsonElement.getAsJsonObject().get("text");
-            return null == text ? "" : text.getAsString();
-        } else {
-            return "";
+            if (null != text) {
+                if (text.isJsonNull()) {
+                    return "null";
+                } else if (text.isJsonPrimitive()) {
+                    return text.getAsString();
+                }
+            }
         }
+        return "";
     }
 
     @Override

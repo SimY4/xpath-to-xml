@@ -43,6 +43,23 @@ public final class GsonByIndexNode extends AbstractGsonNode {
         parentArray.remove(index);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        GsonByIndexNode gsonNodes = (GsonByIndexNode) o;
+        return index == gsonNodes.index;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + index;
+        return result;
+    }
+
     public int getIndex() {
         return index;
     }

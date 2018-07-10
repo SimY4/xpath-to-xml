@@ -23,7 +23,7 @@ final class DomElementsIterable implements Iterable<DomNode> {
         private Node child;
 
         private DomElementsIterator(Node parent) {
-            this.child = parent.getFirstChild();
+            this.child = nextElement(parent.getFirstChild());
         }
 
         @Override
@@ -37,8 +37,15 @@ final class DomElementsIterable implements Iterable<DomNode> {
                 throw new NoSuchElementException("No more elements");
             }
             final Node next = child;
-            child = next.getNextSibling();
+            child = nextElement(next.getNextSibling());
             return new DomNode(next);
+        }
+
+        private Node nextElement(Node next) {
+            while (next != null && Node.ELEMENT_NODE != next.getNodeType()) {
+                next = next.getNextSibling();
+            }
+            return next;
         }
 
     }
