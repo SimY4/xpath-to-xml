@@ -35,7 +35,7 @@ public class DomXmlBuilderBenchmark {
         NAMESPACE_CONTEXT_MAP = Collections.unmodifiableMap(namespaceContextMap);
     }
 
-    @Param({ "simple", "ns-simple", "attr" })
+    @Param({ "simple", "ns-simple", "attr", "special" })
     public String fixtureName;
 
     @Param({ "null" })

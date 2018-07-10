@@ -1,0 +1,12 @@
+ext.pomDescription = "XPath-to-JSON Gson"
+
+dependencies {
+    api project(':xpath-to-xml-core')
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.6'
+
+    testImplementation project(':xpath-to-xml-test')
+    testImplementation "org.junit.vintage:junit-vintage-engine:$jUnitVersion"
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    testImplementation "org.assertj:assertj-core:$assertjVersion"
+}
