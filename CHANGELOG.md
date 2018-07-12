@@ -6,9 +6,26 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 
 ## 1.x Series
 
-### 1.1.1
+### 1.2.0 Jackson model support
 
 Features:
+
+- Support for Jackson JSON model
+
+### 1.1.2
+
+Bugfixes:
+
+- DOM
+  - Fix navigator not always traversing element only nodes.
+
+- Gson
+  - Fix an infinite loop while fetching nodes parent
+  - Fix a node identity error when traversing an array
+
+### 1.1.1
+
+Bugfixes:
 
 - DOM 
   - Fix attribute removal issue
