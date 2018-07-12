@@ -1,6 +1,8 @@
 package com.github.simy4.xpath;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -104,8 +106,13 @@ public class XmlBuilderTest {
     }
 
     private String jsonToString(JsonNode json) throws JsonProcessingException {
-        return objectMapper.writerWithDefaultPrettyPrinter()
-                .writeValueAsString(json);
+        return objectMapper.writer(new DefaultPrettyPrinter() {
+            {
+                _objectFieldValueSeparatorWithSpaces = _separators.getObjectFieldValueSeparator() + " ";
+                _arrayIndenter = new DefaultIndenter();
+                _objectIndenter = new DefaultIndenter();
+            }
+        }).writeValueAsString(json).replaceAll("\\{ }", "{}");
     }
 
 }
