@@ -1,15 +1,15 @@
 plugins {
     id 'net.ltgt.errorprone' version '0.0.14' apply false
-    id 'ru.vyarus.animalsniffer' version '1.4.3' apply false
-    id 'me.champeau.gradle.jmh' version '0.4.5' apply false
+    id 'ru.vyarus.animalsniffer' version '1.4.4' apply false
+    id 'me.champeau.gradle.jmh' version '0.4.7' apply false
 }
 
 ext {
     jUnitVersion = '5.2.0'
-    mockitoVersion = '2.19.0'
+    mockitoVersion = '2.19.1'
     assertjVersion = '3.10.0'
     errorproneVersion = '2.3.1'
-    checkstyleVersion = '8.10.1'
+    checkstyleVersion = '8.11'
 
     def buildTimeAndDate = new Date()
     buildDate = buildTimeAndDate.format("yyyy-MM-dd")

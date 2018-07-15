@@ -1,7 +1,8 @@
 package com.github.simy4.xpath;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.simy4.xpath.fixtures.FixtureAccessor;
-import com.google.gson.JsonObject;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
@@ -17,7 +18,7 @@ import java.util.Map;
 
 @BenchmarkMode(Mode.AverageTime)
 @State(Scope.Benchmark)
-public class GsonJsonBuilderBenchmark {
+public class JacksonJsonBuilderBenchmark {
 
     @Param({ "attr", "simple", "special" })
     public String fixtureName;
@@ -34,7 +35,7 @@ public class GsonJsonBuilderBenchmark {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         blackhole.consume(new XmlBuilder()
                 .putAll(xmlProperties.keySet())
-                .build(new JsonObject()));
+                .build(new ObjectNode(JsonNodeFactory.instance)));
     }
 
 }
