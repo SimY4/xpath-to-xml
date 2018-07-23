@@ -1,5 +1,7 @@
-package com.github.simy4.xpath.expr;
+package com.github.simy4.xpath.expr.axis;
 
+import com.github.simy4.xpath.expr.AxisStepExprTest;
+import com.github.simy4.xpath.expr.axis.SelfAxisResolver;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.ViewContext;
@@ -9,13 +11,13 @@ import org.junit.Test;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class IdentityTest extends AbstractStepExprTest<Identity> {
+public class SelfAxisResolverTest extends AxisStepExprTest<SelfAxisResolver> {
 
     @Before
     @Override
     public void setUp() {
         super.setUp();
-        stepExpr = new Identity(asList(predicate1, predicate2));
+        stepExpr = new SelfAxisResolver(asList(predicate1, predicate2));
     }
 
     @Test

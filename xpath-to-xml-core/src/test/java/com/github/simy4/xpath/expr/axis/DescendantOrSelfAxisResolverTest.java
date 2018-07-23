@@ -1,5 +1,7 @@
-package com.github.simy4.xpath.expr;
+package com.github.simy4.xpath.expr.axis;
 
+import com.github.simy4.xpath.expr.Expr;
+import com.github.simy4.xpath.expr.axis.DescendantOrSelfAxisResolver;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.NodeView;
@@ -18,11 +20,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DescendantOrSelfExprTest {
+public class DescendantOrSelfAxisResolverTest {
 
     @Mock private Navigator<TestNode> navigator;
 
-    private final Expr descendantOrSelf = new DescendantOrSelfExpr();
+    private final Expr descendantOrSelf = new DescendantOrSelfAxisResolver();
 
     @Before
     public void setUp() {

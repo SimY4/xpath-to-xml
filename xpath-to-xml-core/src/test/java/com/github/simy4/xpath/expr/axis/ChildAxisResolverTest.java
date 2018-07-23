@@ -1,6 +1,8 @@
-package com.github.simy4.xpath.expr;
+package com.github.simy4.xpath.expr.axis;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.expr.AxisStepExprTest;
+import com.github.simy4.xpath.expr.axis.ChildAxisResolver;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.ViewContext;
@@ -19,7 +21,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class ElementTest extends AbstractStepExprTest<Element> {
+public class ChildAxisResolverTest extends AxisStepExprTest<ChildAxisResolver> {
 
     @Before
     @Override
@@ -29,7 +31,7 @@ public class ElementTest extends AbstractStepExprTest<Element> {
 
         when(navigator.createElement(any(TestNode.class), eq(elem))).thenReturn(node("elem"));
 
-        stepExpr = new Element(elem, asList(predicate1, predicate2));
+        stepExpr = new ChildAxisResolver(elem, asList(predicate1, predicate2));
     }
 
     @Test
@@ -61,7 +63,7 @@ public class ElementTest extends AbstractStepExprTest<Element> {
     public void shouldThrowForElementsWithWildcardNamespace() {
         // given
         setUpUnresolvableExpr();
-        stepExpr = new Element(new QName("*", "attr"), asList(predicate1, predicate2));
+        stepExpr = new ChildAxisResolver(new QName("*", "attr"), asList(predicate1, predicate2));
 
         // when
         consume(stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, true)));
@@ -71,7 +73,7 @@ public class ElementTest extends AbstractStepExprTest<Element> {
     public void shouldThrowForElementsWithWildcardLocalPart() {
         // given
         setUpUnresolvableExpr();
-        stepExpr = new Element(new QName("http://www.example.com/my", "*", "my"), asList(predicate1, predicate2));
+        stepExpr = new ChildAxisResolver(new QName("http://www.example.com/my", "*", "my"), asList(predicate1, predicate2));
 
         // when
         consume(stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, true)));

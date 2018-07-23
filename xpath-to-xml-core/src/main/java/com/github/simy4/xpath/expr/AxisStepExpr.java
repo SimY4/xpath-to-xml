@@ -1,6 +1,7 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.expr.axis.AxisResolver;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.util.FilteringIterator;
 import com.github.simy4.xpath.util.Function;
@@ -12,47 +13,25 @@ import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewContext;
 
-import javax.xml.namespace.QName;
 import java.util.Iterator;
 
-abstract class AbstractStepExpr implements StepExpr {
+public class AxisStepExpr implements StepExpr {
 
+    private final AxisResolver axisResolver;
     private final Iterable<Expr> predicates;
 
-    AbstractStepExpr(Iterable<Expr> predicates) {
+    public AxisStepExpr(AxisResolver axisResolver, Iterable<Expr> predicates) {
+        this.axisResolver = axisResolver;
         this.predicates = predicates;
     }
 
     @Override
     public final <N extends Node> IterableNodeView<N> resolve(ViewContext<N> context) throws XmlBuilderException {
-        IterableNodeView<N> result = resolveStep(context);
+        IterableNodeView<N> result = axisResolver.resolveAxis(context);
         for (Expr predicate : predicates) {
             result = resolvePredicate(context, result, predicate);
         }
         return result;
-    }
-
-    /**
-     * Traverses XML nodes for the nodes that matches this step expression.
-     *
-     * @param context XPath expression context
-     * @param <N>        XML node type
-     * @return ordered set of matching nodes
-     */
-    abstract <N extends Node> IterableNodeView<N> resolveStep(ViewContext<N> context) throws XmlBuilderException;
-
-    /**
-     * Creates new node of this step type.
-     *
-     * @param context XPath expression context
-     * @param <N>     XML node type
-     * @return newly created node
-     * @throws XmlBuilderException if error occur during XML node creation
-     */
-    abstract <N extends Node> NodeView<N> createStepNode(ViewContext<N> context) throws XmlBuilderException;
-
-    final boolean isWildcard(QName name) {
-        return "*".equals(name.getNamespaceURI()) || "*".equals(name.getLocalPart());
     }
 
     private <N extends Node> IterableNodeView<N> resolvePredicate(final ViewContext<N> context,
@@ -77,7 +56,7 @@ abstract class AbstractStepExpr implements StepExpr {
                 newNode = last;
                 newContext = new ViewContext<N>(context.getNavigator(), last, true, false, position);
             } else {
-                newNode = createStepNode(context);
+                newNode = axisResolver.createAxisNode(context);
                 newContext = new ViewContext<N>(context.getNavigator(), newNode, true, false, position + 1);
             }
             final View<N> resolve = predicate.resolve(newContext);
@@ -91,32 +70,11 @@ abstract class AbstractStepExpr implements StepExpr {
 
     @Override
     public String toString() {
-        final StringBuilder stringBuilder = new StringBuilder();
+        final StringBuilder stringBuilder = new StringBuilder(axisResolver.toString());
         for (Expr predicate : predicates) {
             stringBuilder.append(predicate);
         }
         return stringBuilder.toString();
-    }
-
-    static final class QNamePredicate implements Predicate<Node> {
-
-        private final QName expected;
-
-        QNamePredicate(QName expected) {
-            this.expected = expected;
-        }
-
-        @Override
-        public boolean test(Node t) {
-            final QName actual = t.getName();
-            return test(expected.getNamespaceURI(), actual.getNamespaceURI())
-                    && test(expected.getLocalPart(), actual.getLocalPart());
-        }
-
-        private boolean test(String expected, String actual) {
-            return "*".equals(expected) || "*".equals(actual) || expected.equals(actual);
-        }
-
     }
 
     private static final class PredicateResolver<T extends Node> implements Predicate<NodeView<T>> {

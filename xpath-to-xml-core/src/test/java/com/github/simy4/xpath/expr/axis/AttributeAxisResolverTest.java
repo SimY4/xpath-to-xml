@@ -1,6 +1,8 @@
-package com.github.simy4.xpath.expr;
+package com.github.simy4.xpath.expr.axis;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.expr.AxisStepExprTest;
+import com.github.simy4.xpath.expr.axis.AttributeAxisResolver;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.ViewContext;
@@ -19,7 +21,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class AttributeTest extends AbstractStepExprTest<Attribute> {
+public class AttributeAxisResolverTest extends AxisStepExprTest<AttributeAxisResolver> {
 
     @Before
     @Override
@@ -29,7 +31,7 @@ public class AttributeTest extends AbstractStepExprTest<Attribute> {
 
         when(navigator.createAttribute(any(TestNode.class), eq(attr))).thenReturn(node("attr"));
 
-        stepExpr = new Attribute(attr, asList(predicate1, predicate2));
+        stepExpr = new AttributeAxisResolver(attr, asList(predicate1, predicate2));
     }
 
     @Test
@@ -61,7 +63,7 @@ public class AttributeTest extends AbstractStepExprTest<Attribute> {
     public void shouldThrowForAttributesWithWildcardNamespace() {
         // given
         setUpUnresolvableExpr();
-        stepExpr = new Attribute(new QName("*", "attr"), asList(predicate1, predicate2));
+        stepExpr = new AttributeAxisResolver(new QName("*", "attr"), asList(predicate1, predicate2));
 
         // when
         consume(stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, true)));
@@ -71,7 +73,7 @@ public class AttributeTest extends AbstractStepExprTest<Attribute> {
     public void shouldThrowForAttributesWithWildcardLocalPart() {
         // given
         setUpUnresolvableExpr();
-        stepExpr = new Attribute(new QName("http://www.example.com/my", "*", "my"), asList(predicate1, predicate2));
+        stepExpr = new AttributeAxisResolver(new QName("http://www.example.com/my", "*", "my"), asList(predicate1, predicate2));
 
         // when
         consume(stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, true)));

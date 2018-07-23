@@ -1,5 +1,6 @@
 package com.github.simy4.xpath.expr;
 
+import com.github.simy4.xpath.expr.axis.SelfAxisResolver;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.NodeView;
@@ -15,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import javax.xml.namespace.QName;
 import java.util.Collections;
 
 import static com.github.simy4.xpath.util.TestNode.node;
@@ -30,7 +32,7 @@ public class PredicateExprTest {
     public static final Expr[] TRUTHY = {
             new LiteralExpr("2.0"),
             new EqualsExpr(new NumberExpr(1.0), new NumberExpr(1.0)),
-            new Identity(Collections.<Expr>emptyList()),
+            new AxisStepExpr(new SelfAxisResolver(new QName("*", "*")), Collections.<Expr>emptySet()),
     };
 
     @DataPoints("false")

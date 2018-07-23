@@ -1,6 +1,8 @@
-package com.github.simy4.xpath.expr;
+package com.github.simy4.xpath.expr.axis;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.expr.AxisStepExprTest;
+import com.github.simy4.xpath.expr.axis.ParentAxisResolver;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeView;
@@ -14,7 +16,7 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-public class ParentTest extends AbstractStepExprTest<Parent> {
+public class ParentAxisResolverTest extends AxisStepExprTest<ParentAxisResolver> {
 
     private static final NodeView<TestNode> parentNode = new NodeView<TestNode>(node("node"));
 
@@ -24,7 +26,7 @@ public class ParentTest extends AbstractStepExprTest<Parent> {
         super.setUp();
         when(navigator.parentOf(parentNode.getNode())).thenReturn(node("parent"));
 
-        stepExpr = new Parent(asList(predicate1, predicate2));
+        stepExpr = new ParentAxisResolver(asList(predicate1, predicate2));
     }
 
     @Test

@@ -67,8 +67,7 @@ class XPathLexer extends ReadOnlyIterator<Token> {
                     cursor += 1;
                     break;
                 case ':':
-                    token = new Token(Type.COLON, xpath, cursor, cursor + 1);
-                    cursor += 1;
+                    token = token2(':', Type.COLON, Type.DOUBLE_COLON);
                     break;
                 case '*':
                     token = new Token(Type.STAR, xpath, cursor, cursor + 1);
@@ -229,7 +228,7 @@ class XPathLexer extends ReadOnlyIterator<Token> {
         return new Token(Type.SKIP, xpath, 0, 0);
     }
 
-    private Token token2(char ch, Type if1, Type if2) {
+    private Token token2(char ch, short if1, short if2) {
         final Token token;
         if (charAt(2) == ch) {
             token = new Token(if2, xpath, cursor, cursor + 2);

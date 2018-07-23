@@ -157,7 +157,7 @@ public class XPathLexerTest {
         assertThat(expectedTokensIterator.hasNext()).as("expected to have no more tokens").isFalse();
     }
 
-    private static Token token(Type type, String token) {
+    private static Token token(short type, String token) {
         return new Token(type, token, 0, token.length());
     }
 
