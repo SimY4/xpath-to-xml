@@ -18,14 +18,14 @@ public class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
 
     @Before
     public void setUp() {
-        axisResolver = new DescendantOrSelfAxisResolver(name);
+        axisResolver = new DescendantOrSelfAxisResolver(name, true);
     }
 
     @Test
     public void shouldReturnSelfWithAllDescendantElements() {
         // given
         setUpResolvableAxis();
-        axisResolver = new DescendantOrSelfAxisResolver(new QName("*", "*"));
+        axisResolver = new DescendantOrSelfAxisResolver(new QName("*", "*"), true);
 
         // when
         View<TestNode> result = axisResolver.resolveAxis(new ViewContext<TestNode>(navigator, parentNode, false));
@@ -36,16 +36,43 @@ public class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     }
 
     @Test
+    public void shouldReturnOnlyDescendantElements() {
+        // given
+        setUpResolvableAxis();
+        axisResolver = new DescendantOrSelfAxisResolver(new QName("*", "*"), false);
+
+        // when
+        View<TestNode> result = axisResolver.resolveAxis(new ViewContext<TestNode>(navigator, parentNode, false));
+
+        // then
+        assertThat((Iterable<?>) result).extracting("node").containsExactly(node("node11"),
+                node("node1111"), node("node1112"), node("node12"), node("node1211"), node("node1212"), node(name));
+    }
+
+    @Test
     public void shouldReturnOnlySelfWhenThereAreNoChildren() {
         // given
         doReturn(emptyList()).when(navigator).elementsOf(parentNode.getNode());
-        axisResolver = new DescendantOrSelfAxisResolver(new QName("*", "*"));
+        axisResolver = new DescendantOrSelfAxisResolver(new QName("*", "*"), true);
 
         // when
         View<TestNode> result = axisResolver.resolveAxis(new ViewContext<TestNode>(navigator, parentNode, false));
 
         // then
         assertThat((Iterable<?>) result).extracting("node").containsExactly(parentNode.getNode());
+    }
+
+    @Test
+    public void shouldReturnEmptyWhenThereAreNoChildren() {
+        // given
+        doReturn(emptyList()).when(navigator).elementsOf(parentNode.getNode());
+        axisResolver = new DescendantOrSelfAxisResolver(new QName("*", "*"), false);
+
+        // when
+        View<TestNode> result = axisResolver.resolveAxis(new ViewContext<TestNode>(navigator, parentNode, false));
+
+        // then
+        assertThat((Iterable<?>) result).isEmpty();
     }
 
     @Override

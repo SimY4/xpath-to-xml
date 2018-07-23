@@ -2,6 +2,7 @@ package com.github.simy4.xpath.parser;
 
 import com.github.simy4.xpath.expr.AdditionExpr;
 import com.github.simy4.xpath.expr.AxisStepExpr;
+import com.github.simy4.xpath.expr.axis.AncestorOrSelfAxisResolver;
 import com.github.simy4.xpath.expr.axis.AttributeAxisResolver;
 import com.github.simy4.xpath.expr.axis.AxisResolver;
 import com.github.simy4.xpath.expr.axis.ChildAxisResolver;
@@ -193,7 +194,8 @@ public class XPathParser {
             case Type.DOUBLE_SLASH:
                 context.match(Type.DOUBLE_SLASH);
                 pathExpr.add(new Root());
-                pathExpr.add(new AxisStepExpr(new DescendantOrSelfAxisResolver(ANY), Collections.<Expr>emptySet()));
+                pathExpr.add(new AxisStepExpr(new DescendantOrSelfAxisResolver(ANY, true),
+                        Collections.<Expr>emptySet()));
                 RelativePathExpr(context, pathExpr);
                 break;
             default:
@@ -214,7 +216,8 @@ public class XPathParser {
                     break;
                 case Type.DOUBLE_SLASH:
                     context.match(Type.DOUBLE_SLASH);
-                    pathExpr.add(new AxisStepExpr(new DescendantOrSelfAxisResolver(ANY), Collections.<Expr>emptySet()));
+                    pathExpr.add(new AxisStepExpr(new DescendantOrSelfAxisResolver(ANY, true),
+                            Collections.<Expr>emptySet()));
                     pathExpr.add(StepExpr(context));
                     break;
                 default:
@@ -268,13 +271,13 @@ public class XPathParser {
                         axisResolver = new ChildAxisResolver(NodeTest(context));
                         break;
                     case Axis.DESCENDANT:
-                        axisResolver = new ChildAxisResolver(NodeTest(context));
+                        axisResolver = new DescendantOrSelfAxisResolver(NodeTest(context), false);
                         break;
                     case Axis.PARENT:
                         axisResolver = new ParentAxisResolver(NodeTest(context));
                         break;
                     case Axis.ANCESTOR:
-                        axisResolver = new ChildAxisResolver(NodeTest(context));
+                        axisResolver = new AncestorOrSelfAxisResolver(NodeTest(context), false);
                         break;
                     case Axis.ATTRIBUTE:
                         axisResolver = new AttributeAxisResolver(NodeTest(context));
@@ -283,10 +286,10 @@ public class XPathParser {
                         axisResolver = new SelfAxisResolver(NodeTest(context));
                         break;
                     case Axis.DESCENDANT_OR_SELF:
-                        axisResolver = new DescendantOrSelfAxisResolver(NodeTest(context));
+                        axisResolver = new DescendantOrSelfAxisResolver(NodeTest(context), true);
                         break;
                     case Axis.ANCESTOR_OR_SELF:
-                        axisResolver = new ChildAxisResolver(NodeTest(context));
+                        axisResolver = new AncestorOrSelfAxisResolver(NodeTest(context), true);
                         break;
                     default:
                         throw new XPathParserException(axisToken);
