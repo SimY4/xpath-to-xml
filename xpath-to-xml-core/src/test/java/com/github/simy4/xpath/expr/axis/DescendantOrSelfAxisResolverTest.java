@@ -1,17 +1,12 @@
 package com.github.simy4.xpath.expr.axis;
 
-import com.github.simy4.xpath.expr.Expr;
-import com.github.simy4.xpath.expr.axis.DescendantOrSelfAxisResolver;
-import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
-import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewContext;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+
+import javax.xml.namespace.QName;
 
 import static com.github.simy4.xpath.util.TestNode.node;
 import static java.util.Arrays.asList;
@@ -19,46 +14,45 @@ import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 
-@RunWith(MockitoJUnitRunner.class)
-public class DescendantOrSelfAxisResolverTest {
-
-    @Mock private Navigator<TestNode> navigator;
-
-    private final Expr descendantOrSelf = new DescendantOrSelfAxisResolver();
+public class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
 
     @Before
     public void setUp() {
-        doReturn(asList(node("node11"), node("node12"))).when(navigator).elementsOf(node("node"));
-        doReturn(asList(node("node1111"), node("node1112"))).when(navigator).elementsOf(node("node11"));
-        doReturn(asList(node("node1211"), node("node1212"))).when(navigator).elementsOf(node("node12"));
+        axisResolver = new DescendantOrSelfAxisResolver(name);
     }
 
     @Test
     public void shouldReturnSelfWithAllDescendantElements() {
         // given
-        TestNode self = node("node");
+        setUpResolvableAxis();
+        axisResolver = new DescendantOrSelfAxisResolver(new QName("*", "*"));
 
         // when
-        View<TestNode> result = descendantOrSelf.resolve(new ViewContext<TestNode>(navigator,
-                new NodeView<TestNode>(self), false));
+        View<TestNode> result = axisResolver.resolveAxis(new ViewContext<TestNode>(navigator, parentNode, false));
 
         // then
-        assertThat((Iterable<?>) result).extracting("node").containsExactly(self, node("node11"),
-                node("node1111"), node("node1112"), node("node12"), node("node1211"), node("node1212"));
+        assertThat((Iterable<?>) result).extracting("node").containsExactly(parentNode.getNode(), node("node11"),
+                node("node1111"), node("node1112"), node("node12"), node("node1211"), node("node1212"), node(name));
     }
 
     @Test
     public void shouldReturnOnlySelfWhenThereAreNoChildren() {
         // given
-        TestNode self = node("node");
-        doReturn(emptyList()).when(navigator).elementsOf(self);
+        doReturn(emptyList()).when(navigator).elementsOf(parentNode.getNode());
+        axisResolver = new DescendantOrSelfAxisResolver(new QName("*", "*"));
 
         // when
-        View<TestNode> result = descendantOrSelf.resolve(new ViewContext<TestNode>(navigator,
-                new NodeView<TestNode>(self), false));
+        View<TestNode> result = axisResolver.resolveAxis(new ViewContext<TestNode>(navigator, parentNode, false));
 
         // then
-        assertThat((Iterable<?>) result).extracting("node").containsExactly(self);
+        assertThat((Iterable<?>) result).extracting("node").containsExactly(parentNode.getNode());
+    }
+
+    @Override
+    protected void setUpResolvableAxis() {
+        doReturn(asList(node("node11"), node("node12"))).when(navigator).elementsOf(parentNode.getNode());
+        doReturn(asList(node("node1111"), node("node1112"))).when(navigator).elementsOf(node("node11"));
+        doReturn(asList(node("node1211"), node("node1212"), node(name))).when(navigator).elementsOf(node("node12"));
     }
 
 }

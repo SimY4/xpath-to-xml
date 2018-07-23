@@ -1,8 +1,6 @@
 package com.github.simy4.xpath.expr.axis;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.expr.AxisStepExprTest;
-import com.github.simy4.xpath.expr.axis.AttributeAxisResolver;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.ViewContext;
@@ -21,83 +19,60 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class AttributeAxisResolverTest extends AxisStepExprTest<AttributeAxisResolver> {
+public class AttributeAxisResolverTest extends AbstractAxisResolverTest {
 
     @Before
-    @Override
     public void setUp() {
-        super.setUp();
-        QName attr = new QName("attr");
+        when(navigator.createAttribute(any(TestNode.class), eq(name))).thenReturn(node("name"));
 
-        when(navigator.createAttribute(any(TestNode.class), eq(attr))).thenReturn(node("attr"));
-
-        stepExpr = new AttributeAxisResolver(attr, asList(predicate1, predicate2));
-    }
-
-    @Test
-    public void shouldMatchAttributesFromAListOfChildNodes() {
-        // given
-        setUpResolvableExpr();
-
-        // when
-        IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
-
-        // then
-        assertThat((Iterable<?>) result).extracting("node").containsExactly(node("attr"));
+        axisResolver = new AttributeAxisResolver(name);
     }
 
     @Test
     public void shouldCreateAttribute() {
-        // given
-        setUpUnresolvableExpr();
-
         // when
-        IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, true));
+        IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<TestNode>(navigator, parentNode, true));
 
         // then
-        assertThat((Iterable<?>) result).extracting("node").containsExactly(node("attr"));
-        verify(navigator).createAttribute(node("node"), new QName("attr"));
+        assertThat((Iterable<?>) result).extracting("node").containsExactly(node("name"));
+        verify(navigator).createAttribute(node("node"), new QName("name"));
     }
 
     @Test(expected = XmlBuilderException.class)
     public void shouldThrowForAttributesWithWildcardNamespace() {
         // given
-        setUpUnresolvableExpr();
-        stepExpr = new AttributeAxisResolver(new QName("*", "attr"), asList(predicate1, predicate2));
+        axisResolver = new AttributeAxisResolver(new QName("*", "attr"));
 
         // when
-        consume(stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, true)));
+        consume(axisResolver.resolveAxis(new ViewContext<TestNode>(navigator, parentNode, true)));
     }
 
     @Test(expected = XmlBuilderException.class)
     public void shouldThrowForAttributesWithWildcardLocalPart() {
         // given
-        setUpUnresolvableExpr();
-        stepExpr = new AttributeAxisResolver(new QName("http://www.example.com/my", "*", "my"), asList(predicate1, predicate2));
+        axisResolver = new AttributeAxisResolver(new QName("http://www.example.com/my", "*", "my"));
 
         // when
-        consume(stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, true)));
+        consume(axisResolver.resolveAxis(new ViewContext<TestNode>(navigator, parentNode, true)));
     }
 
     @Test(expected = XmlBuilderException.class)
     public void shouldPropagateIfFailedToCreateAttribute() {
         // given
-        setUpUnresolvableExpr();
         when(navigator.createAttribute(any(TestNode.class), any(QName.class))).thenThrow(XmlBuilderException.class);
 
         // when
-        consume(stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, true)));
+        consume(axisResolver.resolveAxis(new ViewContext<TestNode>(navigator, parentNode, true)));
     }
 
     @Test
     public void testToString() {
-        assertThat(stepExpr).hasToString("@attr" + predicate1 + predicate2);
+        assertThat(axisResolver).hasToString("attribute::" + name);
     }
 
     @Override
-    protected void setUpResolvableExpr() {
-        doReturn(asList(node("attr"), node("another-attr"))).when(navigator).attributesOf(parentNode.getNode());
-        super.setUpResolvableExpr();
+    protected void setUpResolvableAxis() {
+        doReturn(asList(node("name"), node("another-name"))).when(navigator).attributesOf(parentNode.getNode());
     }
 
 }

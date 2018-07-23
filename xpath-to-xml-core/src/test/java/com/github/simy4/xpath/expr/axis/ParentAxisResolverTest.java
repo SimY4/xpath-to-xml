@@ -1,64 +1,37 @@
 package com.github.simy4.xpath.expr.axis;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.expr.AxisStepExprTest;
-import com.github.simy4.xpath.expr.axis.ParentAxisResolver;
 import com.github.simy4.xpath.util.TestNode;
-import com.github.simy4.xpath.view.IterableNodeView;
-import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;
 import org.junit.Before;
 import org.junit.Test;
 
 import static com.github.simy4.xpath.util.EagerConsumer.consume;
 import static com.github.simy4.xpath.util.TestNode.node;
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-public class ParentAxisResolverTest extends AxisStepExprTest<ParentAxisResolver> {
-
-    private static final NodeView<TestNode> parentNode = new NodeView<TestNode>(node("node"));
+public class ParentAxisResolverTest extends AbstractAxisResolverTest {
 
     @Before
-    @Override
     public void setUp() {
-        super.setUp();
-        when(navigator.parentOf(parentNode.getNode())).thenReturn(node("parent"));
-
-        stepExpr = new ParentAxisResolver(asList(predicate1, predicate2));
-    }
-
-    @Test
-    public void shouldReturnParentNodeOnTraverse() {
-        // given
-        setUpResolvableExpr();
-
-        // when
-        IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
-
-        // then
-        assertThat((Iterable<?>) result).extracting("node").containsExactly(node("parent"));
+        axisResolver = new ParentAxisResolver(name);
     }
 
     @Test(expected = XmlBuilderException.class)
     public void shouldThrowOnCreateNode() {
-        // given
-        setUpUnresolvableExpr();
-
         // when
-        consume(stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, true)));
+        consume(axisResolver.resolveAxis(new ViewContext<TestNode>(navigator, parentNode, true)));
     }
 
     @Test
     public void testToString() {
-        assertThat(stepExpr).hasToString(".." + predicate1 + predicate2);
+        assertThat(axisResolver).hasToString("parent::" + name);
     }
 
     @Override
-    protected void setUpResolvableExpr() {
-        when(navigator.parentOf(node("node"))).thenReturn(node("parent"));
-        super.setUpResolvableExpr();
+    protected void setUpResolvableAxis() {
+        when(navigator.parentOf(parentNode.getNode())).thenReturn(node(name));
     }
 
 }
