@@ -2,6 +2,8 @@ package com.github.simy4.xpath.parser;
 
 import com.github.simy4.xpath.expr.AdditionExpr;
 import com.github.simy4.xpath.expr.AxisStepExpr;
+import com.github.simy4.xpath.expr.LiteralExpr;
+import com.github.simy4.xpath.expr.NotEqualsExpr;
 import com.github.simy4.xpath.expr.axis.AttributeAxisResolver;
 import com.github.simy4.xpath.expr.axis.AxisResolver;
 import com.github.simy4.xpath.expr.axis.DescendantOrSelfAxisResolver;
@@ -52,70 +54,154 @@ public class XPathParserTest {
     @DataPoints("Positive-Simple")
     public static Pair[] positiveSimple() {
         return new Pair[] {
-                Pair.of("./author", pathExpr(stepExpr(new SelfAxisResolver(ANY)),
+                Pair.of("./author", pathExpr(
+                        stepExpr(new SelfAxisResolver(ANY)),
                         stepExpr(new ChildAxisResolver(new QName("author"))))),
                 Pair.of("author", pathExpr(stepExpr(new ChildAxisResolver(new QName("author"))))),
                 Pair.of("first.name", pathExpr(stepExpr(new ChildAxisResolver(new QName("first.name"))))),
-                Pair.of("/bookstore", pathExpr(new Root(), stepExpr(new ChildAxisResolver(new QName("bookstore"))))),
-                Pair.of("//author", pathExpr(new Root(), stepExpr(new DescendantOrSelfAxisResolver(ANY, true)),
+                Pair.of("/bookstore", pathExpr(
+                        new Root(),
+                        stepExpr(new ChildAxisResolver(new QName("bookstore"))))),
+                Pair.of("//author", pathExpr(
+                        new Root(),
+                        stepExpr(new DescendantOrSelfAxisResolver(ANY, true)),
                         stepExpr(new ChildAxisResolver(new QName("author"))))),
-                Pair.of("book[/bookstore/@specialty=@style]", pathExpr(stepExpr(new ChildAxisResolver(new QName("book")),
-                        new PredicateExpr(new EqualsExpr(
+                Pair.of("book[/bookstore/@specialty=@style]", pathExpr(
+                        stepExpr(new ChildAxisResolver(new QName("book")), new PredicateExpr(new EqualsExpr(
                                 pathExpr(
                                         new Root(),
                                         stepExpr(new ChildAxisResolver(new QName("bookstore"))),
                                         stepExpr(new AttributeAxisResolver(new QName("specialty")))),
                                 pathExpr(
                                         stepExpr(new AttributeAxisResolver(new QName("style"))))))))),
-                Pair.of("author/first-name", pathExpr(stepExpr(new ChildAxisResolver(new QName("author"))),
+                Pair.of("author/first-name", pathExpr(
+                        stepExpr(new ChildAxisResolver(new QName("author"))),
                         stepExpr(new ChildAxisResolver(new QName("first-name"))))),
-                Pair.of("bookstore//title", pathExpr(stepExpr(new ChildAxisResolver(new QName("bookstore"))),
+                Pair.of("bookstore//title", pathExpr(
+                        stepExpr(new ChildAxisResolver(new QName("bookstore"))),
                         stepExpr(new DescendantOrSelfAxisResolver(ANY, true)),
                         stepExpr(new ChildAxisResolver(new QName("title"))))),
-                Pair.of("bookstore/*/title", pathExpr(stepExpr(new ChildAxisResolver(new QName("bookstore"))),
+                Pair.of("bookstore/*/title", pathExpr(
+                        stepExpr(new ChildAxisResolver(new QName("bookstore"))),
                         stepExpr(new ChildAxisResolver(new QName("*"))),
                         stepExpr(new ChildAxisResolver(new QName("title"))))),
-                Pair.of("bookstore//book/excerpt//emph", pathExpr(stepExpr(new ChildAxisResolver(new QName("bookstore"))),
+                Pair.of("bookstore//book/excerpt//emph", pathExpr(
+                        stepExpr(new ChildAxisResolver(new QName("bookstore"))),
                         stepExpr(new DescendantOrSelfAxisResolver(ANY, true)),
                         stepExpr(new ChildAxisResolver(new QName("book"))),
                         stepExpr(new ChildAxisResolver(new QName("excerpt"))),
                         stepExpr(new DescendantOrSelfAxisResolver(ANY, true)),
                         stepExpr(new ChildAxisResolver(new QName("emph"))))),
-                Pair.of(".//title", pathExpr(stepExpr(new SelfAxisResolver(ANY)),
+                Pair.of(".//title", pathExpr(
+                        stepExpr(new SelfAxisResolver(ANY)),
                         stepExpr(new DescendantOrSelfAxisResolver(ANY, true)),
                         stepExpr(new ChildAxisResolver(new QName("title"))))),
-                Pair.of("author/*", pathExpr(stepExpr(new ChildAxisResolver(new QName("author"))),
+                Pair.of("author/*", pathExpr(
+                        stepExpr(new ChildAxisResolver(new QName("author"))),
                         stepExpr(new ChildAxisResolver(new QName("*"))))),
-                Pair.of("book/*/last-name", pathExpr(stepExpr(new ChildAxisResolver(new QName("book"))),
+                Pair.of("book/*/last-name", pathExpr(
+                        stepExpr(new ChildAxisResolver(new QName("book"))),
                         stepExpr(new ChildAxisResolver(new QName("*"))),
                         stepExpr(new ChildAxisResolver(new QName("last-name"))))),
-                Pair.of("*/*", pathExpr(stepExpr(new ChildAxisResolver(new QName("*"))),
+                Pair.of("*/*", pathExpr(
+                        stepExpr(new ChildAxisResolver(new QName("*"))),
                         stepExpr(new ChildAxisResolver(new QName("*"))))),
-                Pair.of("*[@specialty]", pathExpr(stepExpr(new ChildAxisResolver(new QName("*")),
-                        new PredicateExpr(pathExpr(stepExpr(new AttributeAxisResolver(new QName("specialty")))))))),
+                Pair.of("*[@specialty]", pathExpr(
+                        stepExpr(new ChildAxisResolver(new QName("*")), new PredicateExpr(
+                                pathExpr(stepExpr(new AttributeAxisResolver(new QName("specialty")))))))),
                 Pair.of("@style", pathExpr(stepExpr(new AttributeAxisResolver(new QName("style"))))),
-                Pair.of("price/@exchange", pathExpr(stepExpr(new ChildAxisResolver(new QName("price"))),
+                Pair.of("price/@exchange", pathExpr(
+                        stepExpr(new ChildAxisResolver(new QName("price"))),
                         stepExpr(new AttributeAxisResolver(new QName("exchange"))))),
-                Pair.of("price/@exchange/total", pathExpr(stepExpr(new ChildAxisResolver(new QName("price"))),
+                Pair.of("price/@exchange/total", pathExpr(
+                        stepExpr(new ChildAxisResolver(new QName("price"))),
                         stepExpr(new AttributeAxisResolver(new QName("exchange"))),
                         stepExpr(new ChildAxisResolver(new QName("total"))))),
-                Pair.of("book[@style]", pathExpr(stepExpr(new ChildAxisResolver(new QName("book")),
-                        new PredicateExpr(pathExpr(stepExpr(new AttributeAxisResolver(new QName("style")))))))),
-                Pair.of("book/@style", pathExpr(stepExpr(new ChildAxisResolver(new QName("book"))),
+                Pair.of("book[@style]", pathExpr(
+                        stepExpr(new ChildAxisResolver(new QName("book")), new PredicateExpr(
+                                pathExpr(stepExpr(new AttributeAxisResolver(new QName("style")))))))),
+                Pair.of("book/@style", pathExpr(
+                        stepExpr(new ChildAxisResolver(new QName("book"))),
                         stepExpr(new AttributeAxisResolver(new QName("style"))))),
                 Pair.of("@*", pathExpr(stepExpr(new AttributeAxisResolver(new QName("*"))))),
-                Pair.of("./first-name", pathExpr(stepExpr(new SelfAxisResolver(ANY)),
+                Pair.of("./first-name", pathExpr(
+                        stepExpr(new SelfAxisResolver(ANY)),
                         stepExpr(new ChildAxisResolver(new QName("first-name"))))),
                 Pair.of("first-name", pathExpr(stepExpr(new ChildAxisResolver(new QName("first-name"))))),
                 Pair.of("author[1]", pathExpr(stepExpr(new ChildAxisResolver(new QName("author")),
                         new PredicateExpr(new NumberExpr(1.0))))),
-                Pair.of("author[first-name][3]", pathExpr(stepExpr(new ChildAxisResolver(new QName("author")),
-                        new PredicateExpr(
-                                pathExpr(stepExpr(new ChildAxisResolver(new QName("first-name"))))),
+                Pair.of("author[first-name][3]", pathExpr(
+                        stepExpr(new ChildAxisResolver(new QName("author")),
+                                new PredicateExpr(pathExpr(
+                                        stepExpr(new ChildAxisResolver(new QName("first-name"))))),
                                 new PredicateExpr(new NumberExpr(3.0))))),
                 Pair.of("1 + 2 + 2 * 2 - -4", new MultiplicationExpr(new AdditionExpr(new NumberExpr(1.0),
                         new AdditionExpr(new NumberExpr(2.0), new NumberExpr(2.0))),
                         new SubtractionExpr(new NumberExpr(2.0), new UnaryExpr(new NumberExpr(4.0))))),
+                Pair.of("book[excerpt]", pathExpr(stepExpr(new ChildAxisResolver(new QName("book")),
+                        new PredicateExpr(pathExpr(stepExpr(new ChildAxisResolver(new QName("excerpt")))))))),
+                Pair.of("book[excerpt]/title", pathExpr(
+                        stepExpr(new ChildAxisResolver(new QName("book")), new PredicateExpr(pathExpr(
+                                stepExpr(new ChildAxisResolver(new QName("excerpt")))))),
+                        stepExpr(new ChildAxisResolver(new QName("title"))))),
+                Pair.of("book[excerpt]/author[degree]", pathExpr(
+                        stepExpr(new ChildAxisResolver(new QName("book")), new PredicateExpr(pathExpr(
+                                stepExpr(new ChildAxisResolver(new QName("excerpt")))))),
+                        stepExpr(new ChildAxisResolver(new QName("author")), new PredicateExpr(pathExpr(
+                                stepExpr(new ChildAxisResolver(new QName("excerpt")))))))),
+                Pair.of("book[author/degree]", pathExpr(
+                        stepExpr(new ChildAxisResolver(new QName("book")), new PredicateExpr(pathExpr(
+                                stepExpr(new ChildAxisResolver(new QName("excerpt"))),
+                                stepExpr(new ChildAxisResolver(new QName("degree")))))))),
+                Pair.of("book[degree][award]", pathExpr(
+                        stepExpr(new ChildAxisResolver(new QName("book")),
+                                new PredicateExpr(pathExpr(stepExpr(new ChildAxisResolver(new QName("excerpt"))))),
+                                new PredicateExpr(pathExpr(stepExpr(new ChildAxisResolver(new QName("award")))))))),
+                Pair.of("author[last-name = \"Bob\"]", pathExpr(
+                        stepExpr(new ChildAxisResolver(new QName("author")), new PredicateExpr(new EqualsExpr(
+                                pathExpr(stepExpr(new ChildAxisResolver(new QName("last-name")))),
+                                new LiteralExpr("Bob")))))),
+                Pair.of("degree[@from != \"Harvard\"]", pathExpr(
+                        stepExpr(new ChildAxisResolver(new QName("degree")), new PredicateExpr(new NotEqualsExpr(
+                                pathExpr(stepExpr(new AttributeAxisResolver(new QName("from")))),
+                                new LiteralExpr("Harvard")))))),
+                Pair.of("author[. = \"Matthew Bob\"]", pathExpr(
+                        stepExpr(new ChildAxisResolver(new QName("author")), new PredicateExpr(new EqualsExpr(
+                                pathExpr(stepExpr(new SelfAxisResolver(ANY))), new LiteralExpr("Matthew Bob")))))),
+                Pair.of("author[last-name[1] = \"Bob\"]", pathExpr(
+                        stepExpr(new ChildAxisResolver(new QName("author")), new PredicateExpr(new EqualsExpr(
+                                pathExpr(stepExpr(new SelfAxisResolver(ANY))), new LiteralExpr("Matthew Bob")))))),
+                Pair.of("author[last-name[1] = \"Bob\"]",
+                        asList(token(Type.IDENTIFIER, "author"), token(Type.LEFT_BRACKET, "["),
+                                token(Type.IDENTIFIER, "last-name"), token(Type.LEFT_BRACKET, "["),
+                                token(Type.DOUBLE, "1"), token(Type.RIGHT_BRACKET, "]"), token(Type.EQUALS, "="),
+                                token(Type.LITERAL, "Bob"), token(Type.RIGHT_BRACKET, "]"))
+                },
+                Pair.of("author[* = \"Bob\"]",
+                        asList(token(Type.IDENTIFIER, "author"), token(Type.LEFT_BRACKET, "["),
+                                token(Type.STAR, "*"), token(Type.EQUALS, "="), token(Type.LITERAL, "Bob"),
+                                token(Type.RIGHT_BRACKET, "]"))
+                },
+                Pair.of("ancestor::book[1]",
+                        asList(token(Type.IDENTIFIER, "ancestor"), token(Type.DOUBLE_COLON, "::"),
+                                token(Type.IDENTIFIER, "book"), token(Type.LEFT_BRACKET, "["),
+                                token(Type.DOUBLE, "1"), token(Type.RIGHT_BRACKET, "]"))
+                },
+                Pair.of("ancestor::book[author][1]",
+                        asList(token(Type.IDENTIFIER, "ancestor"), token(Type.DOUBLE_COLON, "::"),
+                                token(Type.IDENTIFIER, "book"), token(Type.LEFT_BRACKET, "["),
+                                token(Type.IDENTIFIER, "author"), token(Type.RIGHT_BRACKET, "]"),
+                                token(Type.LEFT_BRACKET, "["), token(Type.DOUBLE, "1"),
+                                token(Type.RIGHT_BRACKET, "]"))
+                },
+                Pair.of("ancestor::author[parent::book][1]",
+                        asList(token(Type.IDENTIFIER, "ancestor"), token(Type.DOUBLE_COLON, "::"),
+                                token(Type.IDENTIFIER, "author"), token(Type.LEFT_BRACKET, "["),
+                                token(Type.IDENTIFIER, "parent"), token(Type.DOUBLE_COLON, "::"),
+                                token(Type.IDENTIFIER, "book"), token(Type.RIGHT_BRACKET, "]"),
+                                token(Type.LEFT_BRACKET, "["), token(Type.DOUBLE, "1"),
+                                token(Type.RIGHT_BRACKET, "]"))
+                },
         };
     }
 

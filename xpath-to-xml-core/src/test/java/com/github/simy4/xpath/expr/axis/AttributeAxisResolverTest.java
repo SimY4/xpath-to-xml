@@ -31,7 +31,8 @@ public class AttributeAxisResolverTest extends AbstractAxisResolverTest {
     @Test
     public void shouldCreateAttribute() {
         // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<TestNode>(navigator, parentNode, true));
+        IterableNodeView<TestNode> result = axisResolver.resolveAxis(
+                new ViewContext<TestNode>(navigator, parentNode, true));
 
         // then
         assertThat((Iterable<?>) result).extracting("node").containsExactly(node("name"));

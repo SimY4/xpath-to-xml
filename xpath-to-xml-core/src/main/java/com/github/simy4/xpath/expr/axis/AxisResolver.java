@@ -6,8 +6,6 @@ import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;
 
-import javax.xml.namespace.QName;
-
 /**
  * XPath step axis resolver.
  *

@@ -391,18 +391,19 @@ public class XPathParser {
         }
     }
 
-    final static class Axis {
-        static final short INVALID = -1;
-        static final short CHILD = 1;
-        static final short DESCENDANT = 2;
-        static final short PARENT = 3;
-        static final short ANCESTOR = 4;
-        static final short ATTRIBUTE = 9;
-        static final short SELF = 11;
-        static final short DESCENDANT_OR_SELF = 12;
-        static final short ANCESTOR_OR_SELF = 13;
+    private static final class Axis {
+        private static final short INVALID = -1;
+        private static final short CHILD = 1;
+        private static final short DESCENDANT = 2;
+        private static final short PARENT = 3;
+        private static final short ANCESTOR = 4;
+        private static final short ATTRIBUTE = 9;
+        private static final short SELF = 11;
+        private static final short DESCENDANT_OR_SELF = 12;
+        private static final short ANCESTOR_OR_SELF = 13;
 
         private static final Map<String, Short> LOOKUP_MAP;
+
         static {
             Map<String, Short> lookupMap = new HashMap<String, Short>();
             lookupMap.put("child", CHILD);
@@ -416,7 +417,7 @@ public class XPathParser {
             LOOKUP_MAP = Collections.unmodifiableMap(lookupMap);
         }
 
-        static short lookup(Token axisToken) {
+        private static short lookup(Token axisToken) {
             Short axis = LOOKUP_MAP.get(axisToken.getToken());
             return null == axis ? INVALID : axis;
         }

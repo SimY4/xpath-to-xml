@@ -31,7 +31,7 @@ final class Token {
         return "{" + Type.lookup(type) + "}" + xpath.substring(beginIndex, endIndex);
     }
 
-    final static class Type {
+    static final class Type {
         static final short EOF = -1;
         static final short SKIP = -2;
         static final short ERROR = -3;
@@ -67,6 +67,7 @@ final class Token {
         static final short DOUBLE = 29;
 
         private static final Map<Short, String> LOOKUP_MAP;
+
         static {
             Map<Short, String> lookupMap = new HashMap<Short, String>();
             lookupMap.put(EOF, "<eof>");

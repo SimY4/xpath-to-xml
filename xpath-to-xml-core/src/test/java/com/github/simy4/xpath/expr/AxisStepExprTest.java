@@ -49,7 +49,8 @@ public class AxisStepExprTest {
     @Before
     public void setUp() {
         when(axisResolver.resolveAxis(any(ViewContext.class))).thenReturn(NodeSetView.empty());
-        when(axisResolver.createAxisNode(any(ViewContext.class))).thenReturn(new NodeView<TestNode>(node("node"), true));
+        when(axisResolver.createAxisNode(any(ViewContext.class)))
+                .thenReturn(new NodeView<TestNode>(node("node"), true));
         when(predicate1.resolve(any(ViewContext.class))).thenReturn(BooleanView.of(false));
         when(predicate2.resolve(any(ViewContext.class))).thenReturn(BooleanView.of(false));
         stepExpr = new AxisStepExpr(axisResolver, asList(predicate1, predicate2));
