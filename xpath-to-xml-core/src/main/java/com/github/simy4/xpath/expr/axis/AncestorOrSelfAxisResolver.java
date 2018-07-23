@@ -69,7 +69,7 @@ public class AncestorOrSelfAxisResolver extends AbstractAxisResolver {
 
         @Override
         public boolean hasNext() {
-            return null == current;
+            return null != current;
         }
 
         @Override

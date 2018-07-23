@@ -179,6 +179,7 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
         return elementNode;
     }
 
+    @SuppressWarnings("ReferenceEquality")
     private JacksonByIndexNode prependToArray(JacksonNode parent, JsonNode nodeToCopy, ArrayNode parentArray) {
         int i = parentArray.size() - 1;
         JsonNode arrayNode = parentArray.get(i);

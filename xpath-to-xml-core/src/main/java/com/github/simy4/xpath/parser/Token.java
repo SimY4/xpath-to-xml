@@ -28,7 +28,7 @@ final class Token {
 
     @Override
     public String toString() {
-        return "{" + Type.lookup(type) + "}" + xpath.substring(beginIndex, endIndex);
+        return xpath.substring(beginIndex, endIndex);
     }
 
     static final class Type {

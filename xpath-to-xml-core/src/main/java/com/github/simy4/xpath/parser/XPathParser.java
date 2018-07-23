@@ -2,29 +2,29 @@ package com.github.simy4.xpath.parser;
 
 import com.github.simy4.xpath.expr.AdditionExpr;
 import com.github.simy4.xpath.expr.AxisStepExpr;
-import com.github.simy4.xpath.expr.axis.AncestorOrSelfAxisResolver;
-import com.github.simy4.xpath.expr.axis.AttributeAxisResolver;
-import com.github.simy4.xpath.expr.axis.AxisResolver;
-import com.github.simy4.xpath.expr.axis.ChildAxisResolver;
-import com.github.simy4.xpath.expr.axis.DescendantOrSelfAxisResolver;
 import com.github.simy4.xpath.expr.EqualsExpr;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.expr.GreaterThanExpr;
 import com.github.simy4.xpath.expr.GreaterThanOrEqualsExpr;
-import com.github.simy4.xpath.expr.axis.SelfAxisResolver;
 import com.github.simy4.xpath.expr.LessThanExpr;
 import com.github.simy4.xpath.expr.LessThanOrEqualsExpr;
 import com.github.simy4.xpath.expr.LiteralExpr;
 import com.github.simy4.xpath.expr.MultiplicationExpr;
 import com.github.simy4.xpath.expr.NotEqualsExpr;
 import com.github.simy4.xpath.expr.NumberExpr;
-import com.github.simy4.xpath.expr.axis.ParentAxisResolver;
 import com.github.simy4.xpath.expr.PathExpr;
 import com.github.simy4.xpath.expr.PredicateExpr;
 import com.github.simy4.xpath.expr.Root;
 import com.github.simy4.xpath.expr.StepExpr;
 import com.github.simy4.xpath.expr.SubtractionExpr;
 import com.github.simy4.xpath.expr.UnaryExpr;
+import com.github.simy4.xpath.expr.axis.AncestorOrSelfAxisResolver;
+import com.github.simy4.xpath.expr.axis.AttributeAxisResolver;
+import com.github.simy4.xpath.expr.axis.AxisResolver;
+import com.github.simy4.xpath.expr.axis.ChildAxisResolver;
+import com.github.simy4.xpath.expr.axis.DescendantOrSelfAxisResolver;
+import com.github.simy4.xpath.expr.axis.ParentAxisResolver;
+import com.github.simy4.xpath.expr.axis.SelfAxisResolver;
 import com.github.simy4.xpath.parser.Token.Type;
 
 import javax.xml.XMLConstants;
@@ -240,7 +240,8 @@ public class XPathParser {
                 predicateList = PredicateList(context);
                 return new AxisStepExpr(new ParentAxisResolver(ANY), predicateList);
             case Type.AT:
-                axisResolver = AxisTest(context);
+                context.match(Type.AT);
+                axisResolver = new AttributeAxisResolver(NodeTest(context));
                 break;
             case Type.STAR:
             case Type.IDENTIFIER:
@@ -260,44 +261,38 @@ public class XPathParser {
 
     private AxisResolver AxisTest(Context context) throws XPathExpressionException {
         final Token axisToken = context.tokenAt(1);
-        switch (axisToken.getType()) {
-            case Type.AT:
-                context.match(Type.AT);
-                return new AttributeAxisResolver(NodeTest(context));
+        context.match(Type.IDENTIFIER);
+        context.match(Type.DOUBLE_COLON);
+        final AxisResolver axisResolver;
+        switch (Axis.lookup(axisToken)) {
+            case Axis.CHILD:
+                axisResolver = new ChildAxisResolver(NodeTest(context));
+                break;
+            case Axis.DESCENDANT:
+                axisResolver = new DescendantOrSelfAxisResolver(NodeTest(context), false);
+                break;
+            case Axis.PARENT:
+                axisResolver = new ParentAxisResolver(NodeTest(context));
+                break;
+            case Axis.ANCESTOR:
+                axisResolver = new AncestorOrSelfAxisResolver(NodeTest(context), false);
+                break;
+            case Axis.ATTRIBUTE:
+                axisResolver = new AttributeAxisResolver(NodeTest(context));
+                break;
+            case Axis.SELF:
+                axisResolver = new SelfAxisResolver(NodeTest(context));
+                break;
+            case Axis.DESCENDANT_OR_SELF:
+                axisResolver = new DescendantOrSelfAxisResolver(NodeTest(context), true);
+                break;
+            case Axis.ANCESTOR_OR_SELF:
+                axisResolver = new AncestorOrSelfAxisResolver(NodeTest(context), true);
+                break;
             default:
-                AxisResolver axisResolver;
-                switch (Axis.lookup(axisToken)) {
-                    case Axis.CHILD:
-                        axisResolver = new ChildAxisResolver(NodeTest(context));
-                        break;
-                    case Axis.DESCENDANT:
-                        axisResolver = new DescendantOrSelfAxisResolver(NodeTest(context), false);
-                        break;
-                    case Axis.PARENT:
-                        axisResolver = new ParentAxisResolver(NodeTest(context));
-                        break;
-                    case Axis.ANCESTOR:
-                        axisResolver = new AncestorOrSelfAxisResolver(NodeTest(context), false);
-                        break;
-                    case Axis.ATTRIBUTE:
-                        axisResolver = new AttributeAxisResolver(NodeTest(context));
-                        break;
-                    case Axis.SELF:
-                        axisResolver = new SelfAxisResolver(NodeTest(context));
-                        break;
-                    case Axis.DESCENDANT_OR_SELF:
-                        axisResolver = new DescendantOrSelfAxisResolver(NodeTest(context), true);
-                        break;
-                    case Axis.ANCESTOR_OR_SELF:
-                        axisResolver = new AncestorOrSelfAxisResolver(NodeTest(context), true);
-                        break;
-                    default:
-                        throw new XPathParserException(axisToken);
-                }
-                context.match(Type.IDENTIFIER);
-                context.match(Type.DOUBLE_COLON);
-                return axisResolver;
+                throw new XPathParserException(axisToken, Type.lookup(Type.IDENTIFIER));
         }
+        return axisResolver;
     }
 
     private QName NodeTest(Context context) throws XPathExpressionException {

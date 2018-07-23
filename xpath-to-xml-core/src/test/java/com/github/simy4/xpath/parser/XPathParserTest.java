@@ -2,16 +2,11 @@ package com.github.simy4.xpath.parser;
 
 import com.github.simy4.xpath.expr.AdditionExpr;
 import com.github.simy4.xpath.expr.AxisStepExpr;
-import com.github.simy4.xpath.expr.LiteralExpr;
-import com.github.simy4.xpath.expr.NotEqualsExpr;
-import com.github.simy4.xpath.expr.axis.AttributeAxisResolver;
-import com.github.simy4.xpath.expr.axis.AxisResolver;
-import com.github.simy4.xpath.expr.axis.DescendantOrSelfAxisResolver;
-import com.github.simy4.xpath.expr.axis.ChildAxisResolver;
 import com.github.simy4.xpath.expr.EqualsExpr;
 import com.github.simy4.xpath.expr.Expr;
-import com.github.simy4.xpath.expr.axis.SelfAxisResolver;
+import com.github.simy4.xpath.expr.LiteralExpr;
 import com.github.simy4.xpath.expr.MultiplicationExpr;
+import com.github.simy4.xpath.expr.NotEqualsExpr;
 import com.github.simy4.xpath.expr.NumberExpr;
 import com.github.simy4.xpath.expr.PathExpr;
 import com.github.simy4.xpath.expr.PredicateExpr;
@@ -19,6 +14,13 @@ import com.github.simy4.xpath.expr.Root;
 import com.github.simy4.xpath.expr.StepExpr;
 import com.github.simy4.xpath.expr.SubtractionExpr;
 import com.github.simy4.xpath.expr.UnaryExpr;
+import com.github.simy4.xpath.expr.axis.AncestorOrSelfAxisResolver;
+import com.github.simy4.xpath.expr.axis.AttributeAxisResolver;
+import com.github.simy4.xpath.expr.axis.AxisResolver;
+import com.github.simy4.xpath.expr.axis.ChildAxisResolver;
+import com.github.simy4.xpath.expr.axis.DescendantOrSelfAxisResolver;
+import com.github.simy4.xpath.expr.axis.ParentAxisResolver;
+import com.github.simy4.xpath.expr.axis.SelfAxisResolver;
 import com.github.simy4.xpath.util.Pair;
 import com.github.simy4.xpath.util.SimpleNamespaceContext;
 import com.github.simy4.xpath.util.Triple;
@@ -148,14 +150,14 @@ public class XPathParserTest {
                         stepExpr(new ChildAxisResolver(new QName("book")), new PredicateExpr(pathExpr(
                                 stepExpr(new ChildAxisResolver(new QName("excerpt")))))),
                         stepExpr(new ChildAxisResolver(new QName("author")), new PredicateExpr(pathExpr(
-                                stepExpr(new ChildAxisResolver(new QName("excerpt")))))))),
+                                stepExpr(new ChildAxisResolver(new QName("degree")))))))),
                 Pair.of("book[author/degree]", pathExpr(
                         stepExpr(new ChildAxisResolver(new QName("book")), new PredicateExpr(pathExpr(
-                                stepExpr(new ChildAxisResolver(new QName("excerpt"))),
+                                stepExpr(new ChildAxisResolver(new QName("author"))),
                                 stepExpr(new ChildAxisResolver(new QName("degree")))))))),
                 Pair.of("book[degree][award]", pathExpr(
                         stepExpr(new ChildAxisResolver(new QName("book")),
-                                new PredicateExpr(pathExpr(stepExpr(new ChildAxisResolver(new QName("excerpt"))))),
+                                new PredicateExpr(pathExpr(stepExpr(new ChildAxisResolver(new QName("degree"))))),
                                 new PredicateExpr(pathExpr(stepExpr(new ChildAxisResolver(new QName("award")))))))),
                 Pair.of("author[last-name = \"Bob\"]", pathExpr(
                         stepExpr(new ChildAxisResolver(new QName("author")), new PredicateExpr(new EqualsExpr(
@@ -170,38 +172,23 @@ public class XPathParserTest {
                                 pathExpr(stepExpr(new SelfAxisResolver(ANY))), new LiteralExpr("Matthew Bob")))))),
                 Pair.of("author[last-name[1] = \"Bob\"]", pathExpr(
                         stepExpr(new ChildAxisResolver(new QName("author")), new PredicateExpr(new EqualsExpr(
-                                pathExpr(stepExpr(new SelfAxisResolver(ANY))), new LiteralExpr("Matthew Bob")))))),
-                Pair.of("author[last-name[1] = \"Bob\"]",
-                        asList(token(Type.IDENTIFIER, "author"), token(Type.LEFT_BRACKET, "["),
-                                token(Type.IDENTIFIER, "last-name"), token(Type.LEFT_BRACKET, "["),
-                                token(Type.DOUBLE, "1"), token(Type.RIGHT_BRACKET, "]"), token(Type.EQUALS, "="),
-                                token(Type.LITERAL, "Bob"), token(Type.RIGHT_BRACKET, "]"))
-                },
-                Pair.of("author[* = \"Bob\"]",
-                        asList(token(Type.IDENTIFIER, "author"), token(Type.LEFT_BRACKET, "["),
-                                token(Type.STAR, "*"), token(Type.EQUALS, "="), token(Type.LITERAL, "Bob"),
-                                token(Type.RIGHT_BRACKET, "]"))
-                },
-                Pair.of("ancestor::book[1]",
-                        asList(token(Type.IDENTIFIER, "ancestor"), token(Type.DOUBLE_COLON, "::"),
-                                token(Type.IDENTIFIER, "book"), token(Type.LEFT_BRACKET, "["),
-                                token(Type.DOUBLE, "1"), token(Type.RIGHT_BRACKET, "]"))
-                },
-                Pair.of("ancestor::book[author][1]",
-                        asList(token(Type.IDENTIFIER, "ancestor"), token(Type.DOUBLE_COLON, "::"),
-                                token(Type.IDENTIFIER, "book"), token(Type.LEFT_BRACKET, "["),
-                                token(Type.IDENTIFIER, "author"), token(Type.RIGHT_BRACKET, "]"),
-                                token(Type.LEFT_BRACKET, "["), token(Type.DOUBLE, "1"),
-                                token(Type.RIGHT_BRACKET, "]"))
-                },
-                Pair.of("ancestor::author[parent::book][1]",
-                        asList(token(Type.IDENTIFIER, "ancestor"), token(Type.DOUBLE_COLON, "::"),
-                                token(Type.IDENTIFIER, "author"), token(Type.LEFT_BRACKET, "["),
-                                token(Type.IDENTIFIER, "parent"), token(Type.DOUBLE_COLON, "::"),
-                                token(Type.IDENTIFIER, "book"), token(Type.RIGHT_BRACKET, "]"),
-                                token(Type.LEFT_BRACKET, "["), token(Type.DOUBLE, "1"),
-                                token(Type.RIGHT_BRACKET, "]"))
-                },
+                                pathExpr(stepExpr(new ChildAxisResolver(new QName("last-name")),
+                                        new PredicateExpr(new NumberExpr(1.0)))), new LiteralExpr("Bob")))))),
+                Pair.of("author[* = \"Bob\"]", pathExpr(
+                        stepExpr(new ChildAxisResolver(new QName("author")), new PredicateExpr(new EqualsExpr(
+                                pathExpr(stepExpr(new ChildAxisResolver(new QName("*")))),
+                                new LiteralExpr("Bob")))))),
+                Pair.of("ancestor::book[1]", pathExpr(
+                        stepExpr(new AncestorOrSelfAxisResolver(new QName("book"), false),
+                                new PredicateExpr(new NumberExpr(1.0))))),
+                Pair.of("ancestor::book[author][1]", pathExpr(
+                        stepExpr(new AncestorOrSelfAxisResolver(new QName("book"), false),
+                                new PredicateExpr(pathExpr(stepExpr(new ChildAxisResolver(new QName("author"))))),
+                                new PredicateExpr(new NumberExpr(1.0))))),
+                Pair.of("ancestor::author[parent::book][1]", pathExpr(
+                        stepExpr(new AncestorOrSelfAxisResolver(new QName("author"), false),
+                                new PredicateExpr(pathExpr(stepExpr(new ParentAxisResolver(new QName("book"))))),
+                                new PredicateExpr(new NumberExpr(1.0))))),
         };
     }
 
