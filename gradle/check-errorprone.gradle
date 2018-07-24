@@ -1,5 +1,9 @@
-apply plugin: 'net.ltgt.errorprone'
+import org.gradle.internal.jvm.Jvm
 
-dependencies {
-    errorprone "com.google.errorprone:error_prone_core:$errorproneVersion"
+if (!Jvm.current().javaVersion.java9Compatible) {
+    apply plugin: 'net.ltgt.errorprone'
+
+    dependencies {
+        errorprone "com.google.errorprone:error_prone_core:$errorproneVersion"
+    }
 }
