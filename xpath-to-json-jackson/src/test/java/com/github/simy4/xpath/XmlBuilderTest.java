@@ -25,6 +25,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(Parameterized.class)
 public class XmlBuilderTest {
 
+    @Parameter(0)
+    public FixtureAccessor fixtureAccessor;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Parameters(name = "With test fixture: {0}")
     public static Collection<Object[]> data() {
         return asList(new Object[][] {
@@ -33,11 +38,6 @@ public class XmlBuilderTest {
                 { new FixtureAccessor("special", "json") },
         });
     }
-
-    @Parameter(0)
-    public FixtureAccessor fixtureAccessor;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     public void shouldBuildJsonFromSetOfXPaths() throws XPathExpressionException, IOException {

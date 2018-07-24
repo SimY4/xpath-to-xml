@@ -42,6 +42,15 @@ public class XmlBuilderTest {
     private static final TransformerFactory transformerFactory = TransformerFactory.newInstance();
     private static final XPathFactory xpathFactory = XPathFactory.newInstance();
 
+    @Parameter(0)
+    public FixtureAccessor fixtureAccessor;
+    @Parameter(1)
+    public NamespaceContext namespaceContext;
+    @Parameter(2)
+    public DocumentBuilderFactory documentBuilderFactory;
+
+    private DocumentBuilder documentBuilder;
+
     @Parameters(name = "With test fixture: {0} and namespace: {1} and XML factory: {2}")
     public static Collection<Object[]> data() {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -57,15 +66,6 @@ public class XmlBuilderTest {
                 { new FixtureAccessor("special"), new SimpleNamespaceContext(), documentBuilderFactory },
         });
     }
-
-    @Parameter(0)
-    public FixtureAccessor fixtureAccessor;
-    @Parameter(1)
-    public NamespaceContext namespaceContext;
-    @Parameter(2)
-    public DocumentBuilderFactory documentBuilderFactory;
-
-    private DocumentBuilder documentBuilder;
 
     @Before
     public void setUp() throws ParserConfigurationException {

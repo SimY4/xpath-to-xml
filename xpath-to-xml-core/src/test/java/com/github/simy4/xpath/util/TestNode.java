@@ -6,6 +6,8 @@ import javax.xml.namespace.QName;
 
 public final class TestNode implements Node {
 
+    private final QName value;
+
     public static TestNode node(String value) {
         return node(new QName(value));
     }
@@ -13,8 +15,6 @@ public final class TestNode implements Node {
     public static TestNode node(QName value) {
         return new TestNode(value);
     }
-
-    private final QName value;
 
     private TestNode(QName value) {
         this.value = value;

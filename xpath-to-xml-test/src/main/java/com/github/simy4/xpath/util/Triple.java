@@ -2,13 +2,13 @@ package com.github.simy4.xpath.util;
 
 public final class Triple<F, S, T> {
 
-    public static <A, B, C> Triple<A, B, C> of(A first, B second, C third) {
-        return new Triple<A, B, C>(first, second, third);
-    }
-
     private final F first;
     private final S second;
     private final T third;
+
+    public static <A, B, C> Triple<A, B, C> of(A first, B second, C third) {
+        return new Triple<A, B, C>(first, second, third);
+    }
 
     /**
      * Constructor.
