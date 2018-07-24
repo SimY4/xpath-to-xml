@@ -27,6 +27,7 @@ public class GsonByNameNodeTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void shouldSetElementByIndexOnSet() {
         byNameNode.set(new JsonPrimitive(4));
 
@@ -38,6 +39,7 @@ public class GsonByNameNodeTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void shouldRemoveElementByIndexOnRemove() {
         byNameNode.remove();
 

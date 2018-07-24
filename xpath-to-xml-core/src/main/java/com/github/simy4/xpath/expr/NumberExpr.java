@@ -9,7 +9,7 @@ public class NumberExpr implements Expr {
     private final NumberView<?> number;
 
     public NumberExpr(double number) {
-        this.number = new NumberView(number);
+        this.number = new NumberView<>(number);
     }
 
     @Override

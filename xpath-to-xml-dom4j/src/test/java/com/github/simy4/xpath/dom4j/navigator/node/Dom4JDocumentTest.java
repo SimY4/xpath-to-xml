@@ -40,6 +40,7 @@ public class Dom4JDocumentTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void shouldReturnSingleRootNodeWhenObtainElements() {
         when(document.getRootElement()).thenReturn(root);
         assertThat(node.elements()).containsExactly(new Dom4jElement(root));

@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 public class MultiplicationExprTest {
 
     @DataPoints("3.0")
-    public static final View[] NUMBERS = {
+    public static final View<?>[] NUMBERS = {
             new LiteralView<>("3.0"),
             new NumberView<>(3.0),
             new NodeView<>(node("3.0")),

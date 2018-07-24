@@ -295,6 +295,7 @@ public class XPathParser {
         return axisResolver;
     }
 
+    @SuppressWarnings("fallthrough")
     private QName NodeTest(Context context) throws XPathExpressionException {
         switch (context.tokenAt(1).getType()) {
             case Type.STAR:
@@ -400,7 +401,7 @@ public class XPathParser {
         private static final Map<String, Short> LOOKUP_MAP;
 
         static {
-            Map<String, Short> lookupMap = new HashMap<String, Short>();
+            Map<String, Short> lookupMap = new HashMap<>();
             lookupMap.put("child", CHILD);
             lookupMap.put("descendant", DESCENDANT);
             lookupMap.put("parent", PARENT);

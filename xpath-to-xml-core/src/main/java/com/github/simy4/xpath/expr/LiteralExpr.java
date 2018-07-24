@@ -9,7 +9,7 @@ public class LiteralExpr implements Expr {
     private final LiteralView<?> literal;
 
     public LiteralExpr(String literal) {
-        this.literal = new LiteralView(literal);
+        this.literal = new LiteralView<>(literal);
     }
 
     @Override

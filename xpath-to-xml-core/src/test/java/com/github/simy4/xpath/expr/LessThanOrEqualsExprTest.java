@@ -34,14 +34,14 @@ import static org.mockito.Mockito.when;
 public class LessThanOrEqualsExprTest {
 
     @DataPoints("less")
-    public static final View[] LESSER = {
+    public static final View<?>[] LESSER = {
             new LiteralView<>("1.0"),
             new NumberView<>(1.0),
             new NodeView<>(node("1.0")),
     };
 
     @DataPoints("greater")
-    public static final View[] GREATER = {
+    public static final View<?>[] GREATER = {
             new LiteralView<>("2.0"),
             new NumberView<>(2.0),
             new NodeView<>(node("2.0")),

@@ -1,5 +1,5 @@
 plugins {
-    id 'net.ltgt.errorprone' version '0.0.14' apply false
+    id 'net.ltgt.errorprone' version '0.0.15' apply false
     id 'ru.vyarus.animalsniffer' version '1.4.4' apply false
     id 'me.champeau.gradle.jmh' version '0.4.7' apply false
 }
@@ -34,6 +34,10 @@ subprojects {
 
     dependencies {
         jmh configurations.testImplementation
+    }
+
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:all" << "-Xlint:-options" << "-Xlint:-classfile" << "-Werror"
     }
 
     test {

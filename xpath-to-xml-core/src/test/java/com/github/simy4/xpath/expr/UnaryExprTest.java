@@ -31,16 +31,16 @@ import static org.mockito.Mockito.when;
 @RunWith(Theories.class)
 public class UnaryExprTest {
 
-    @DataPoints("views") public static Pair[] parentNodes = {
-            Pair.of(new NumberView<>(2.0), new NumberView(-2.0)),
-            Pair.of(new NumberView<>(-2.0), new NumberView(2.0)),
-            Pair.of(new LiteralView<>("2.0"), new NumberView(-2.0)),
-            Pair.of(new LiteralView<>("literal"), new NumberView(Double.NaN)),
-            Pair.of(new NodeView<>(node("2.0")), new NumberView(-2.0)),
-            Pair.of(new NodeView<>(node("node")), new NumberView(Double.NaN)),
+    @DataPoints("views") public static Pair<?, ?>[] parentNodes = {
+            Pair.of(new NumberView<>(2.0), new NumberView<>(-2.0)),
+            Pair.of(new NumberView<>(-2.0), new NumberView<>(2.0)),
+            Pair.of(new LiteralView<>("2.0"), new NumberView<>(-2.0)),
+            Pair.of(new LiteralView<>("literal"), new NumberView<>(Double.NaN)),
+            Pair.of(new NodeView<>(node("2.0")), new NumberView<>(-2.0)),
+            Pair.of(new NodeView<>(node("node")), new NumberView<>(Double.NaN)),
             Pair.of(BooleanView.of(true), new NumberView<>(-1.0)),
             Pair.of(BooleanView.of(false), new NumberView<>(-0.0)),
-            Pair.of(empty(), new NumberView(Double.NaN)),
+            Pair.of(empty(), new NumberView<>(Double.NaN)),
     };
 
     @Rule

@@ -54,8 +54,8 @@ public class XPathParserTest {
     };
 
     @DataPoints("Positive-Simple")
-    public static Pair[] positiveSimple() {
-        return new Pair[] {
+    public static Pair<?, ?>[] positiveSimple() {
+        return new Pair<?, ?>[] {
                 Pair.of("./author", pathExpr(
                         stepExpr(new SelfAxisResolver(ANY)),
                         stepExpr(new ChildAxisResolver(new QName("author"))))),
@@ -193,8 +193,8 @@ public class XPathParserTest {
     }
 
     @DataPoints("Positive-Prefixed")
-    public static Triple[] positivePrefixed() {
-        return new Triple[] {
+    public static Triple<?, ?, ?>[] positivePrefixed() {
+        return new Triple<?, ?, ?>[] {
                 Triple.of("my:book", pathExpr(stepExpr(new ChildAxisResolver(new QName("book")))),
                         pathExpr(stepExpr(new ChildAxisResolver(new QName("http://www.example.com/my", "book", "my"))))),
                 Triple.of("my:*", pathExpr(stepExpr(new ChildAxisResolver(new QName("*")))),

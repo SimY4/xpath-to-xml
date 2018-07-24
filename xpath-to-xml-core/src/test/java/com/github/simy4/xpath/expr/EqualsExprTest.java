@@ -35,14 +35,14 @@ import static org.mockito.Mockito.when;
 public class EqualsExprTest {
 
     @DataPoints("eq left")
-    public static final View[] EQ_TEST = {
+    public static final View<?>[] EQ_TEST = {
             new LiteralView<>("2.0"),
             new NumberView<>(2.0),
             new NodeView<>(node("2.0")),
     };
 
     @DataPoints("eq right")
-    public static final View[] NE_TEST = {
+    public static final View<?>[] NE_TEST = {
             new LiteralView<>("literal"),
             new NumberView<>(10.0),
             new NodeView<>(node("node")),

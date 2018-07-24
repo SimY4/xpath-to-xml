@@ -69,7 +69,7 @@ final class Token {
         private static final Map<Short, String> LOOKUP_MAP;
 
         static {
-            Map<Short, String> lookupMap = new HashMap<Short, String>();
+            Map<Short, String> lookupMap = new HashMap<>();
             lookupMap.put(EOF, "<eof>");
             lookupMap.put(SKIP, "<skip>");
             lookupMap.put(ERROR, "<error>");

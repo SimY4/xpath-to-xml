@@ -3,6 +3,7 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.axis.AxisResolver;
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.IterableNodeView;
@@ -177,7 +178,7 @@ public class AxisStepExprTest {
         assertThat(stepExpr).hasToString(axisResolver.toString() + predicate1 + predicate2);
     }
 
-    private ArgumentMatcher<ViewContext<?>> greedyContext() {
+    private <N extends Node> ArgumentMatcher<ViewContext<N>> greedyContext() {
         return ViewContext::isGreedy;
     }
 
