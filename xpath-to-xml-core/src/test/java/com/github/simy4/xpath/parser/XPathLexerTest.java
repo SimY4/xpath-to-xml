@@ -135,6 +135,92 @@ public class XPathLexerTest {
                         asList(token(Type.AT, "@"), token(Type.IDENTIFIER, "my"), token(Type.COLON, ":"),
                                 token(Type.STAR, "*"))
                 },
+                {
+                        "book[excerpt]",
+                        asList(token(Type.IDENTIFIER, "book"), token(Type.LEFT_BRACKET, "["),
+                                token(Type.IDENTIFIER, "excerpt"), token(Type.RIGHT_BRACKET, "]"))
+                },
+                {
+                        "book[excerpt]/title",
+                        asList(token(Type.IDENTIFIER, "book"), token(Type.LEFT_BRACKET, "["),
+                                token(Type.IDENTIFIER, "excerpt"), token(Type.RIGHT_BRACKET, "]"),
+                                token(Type.SLASH, "/"), token(Type.IDENTIFIER, "title"))
+                },
+                {
+                        "book[excerpt]/author[degree]",
+                        asList(token(Type.IDENTIFIER, "book"), token(Type.LEFT_BRACKET, "["),
+                                token(Type.IDENTIFIER, "excerpt"), token(Type.RIGHT_BRACKET, "]"),
+                                token(Type.SLASH, "/"), token(Type.IDENTIFIER, "author"),
+                                token(Type.LEFT_BRACKET, "["), token(Type.IDENTIFIER, "degree"),
+                                token(Type.RIGHT_BRACKET, "]"))
+                },
+                {
+                        "book[author/degree]",
+                        asList(token(Type.IDENTIFIER, "book"), token(Type.LEFT_BRACKET, "["),
+                                token(Type.IDENTIFIER, "author"), token(Type.SLASH, "/"),
+                                token(Type.IDENTIFIER, "degree"), token(Type.RIGHT_BRACKET, "]"))
+                },
+                {
+                        "author[degree][award]",
+                        asList(token(Type.IDENTIFIER, "author"), token(Type.LEFT_BRACKET, "["),
+                                token(Type.IDENTIFIER, "degree"), token(Type.RIGHT_BRACKET, "]"),
+                                token(Type.LEFT_BRACKET, "["), token(Type.IDENTIFIER, "award"),
+                                token(Type.RIGHT_BRACKET, "]"))
+                },
+                {
+                        "author[last-name = \"Bob\"]",
+                        asList(token(Type.IDENTIFIER, "author"), token(Type.LEFT_BRACKET, "["),
+                                token(Type.IDENTIFIER, "last-name"), token(Type.EQUALS, "="),
+                                token(Type.LITERAL, "Bob"), token(Type.RIGHT_BRACKET, "]"))
+                },
+                {
+                        "degree[@from != \"Harvard\"]",
+                        asList(token(Type.IDENTIFIER, "degree"), token(Type.LEFT_BRACKET, "["),
+                                token(Type.AT, "@"), token(Type.IDENTIFIER, "from"), token(Type.NOT_EQUALS, "!="),
+                                token(Type.LITERAL, "Harvard"), token(Type.RIGHT_BRACKET, "]"))
+                },
+                {
+                        "author[. = \"Matthew Bob\"]",
+                        asList(token(Type.IDENTIFIER, "author"), token(Type.LEFT_BRACKET, "["),
+                                token(Type.DOT, "."), token(Type.EQUALS, "="), token(Type.LITERAL, "Matthew Bob"),
+                                token(Type.RIGHT_BRACKET, "]"))
+                },
+                {
+                        "author[last-name[1] = \"Bob\"]",
+                        asList(token(Type.IDENTIFIER, "author"), token(Type.LEFT_BRACKET, "["),
+                                token(Type.IDENTIFIER, "last-name"), token(Type.LEFT_BRACKET, "["),
+                                token(Type.DOUBLE, "1"), token(Type.RIGHT_BRACKET, "]"), token(Type.EQUALS, "="),
+                                token(Type.LITERAL, "Bob"), token(Type.RIGHT_BRACKET, "]"))
+                },
+                {
+                        "author[* = \"Bob\"]",
+                        asList(token(Type.IDENTIFIER, "author"), token(Type.LEFT_BRACKET, "["),
+                                token(Type.STAR, "*"), token(Type.EQUALS, "="), token(Type.LITERAL, "Bob"),
+                                token(Type.RIGHT_BRACKET, "]"))
+                },
+                {
+                        "ancestor::book[1]",
+                        asList(token(Type.IDENTIFIER, "ancestor"), token(Type.DOUBLE_COLON, "::"),
+                                token(Type.IDENTIFIER, "book"), token(Type.LEFT_BRACKET, "["),
+                                token(Type.DOUBLE, "1"), token(Type.RIGHT_BRACKET, "]"))
+                },
+                {
+                        "ancestor::book[author][1]",
+                        asList(token(Type.IDENTIFIER, "ancestor"), token(Type.DOUBLE_COLON, "::"),
+                                token(Type.IDENTIFIER, "book"), token(Type.LEFT_BRACKET, "["),
+                                token(Type.IDENTIFIER, "author"), token(Type.RIGHT_BRACKET, "]"),
+                                token(Type.LEFT_BRACKET, "["), token(Type.DOUBLE, "1"),
+                                token(Type.RIGHT_BRACKET, "]"))
+                },
+                {
+                        "ancestor::author[parent::book][1]",
+                        asList(token(Type.IDENTIFIER, "ancestor"), token(Type.DOUBLE_COLON, "::"),
+                                token(Type.IDENTIFIER, "author"), token(Type.LEFT_BRACKET, "["),
+                                token(Type.IDENTIFIER, "parent"), token(Type.DOUBLE_COLON, "::"),
+                                token(Type.IDENTIFIER, "book"), token(Type.RIGHT_BRACKET, "]"),
+                                token(Type.LEFT_BRACKET, "["), token(Type.DOUBLE, "1"),
+                                token(Type.RIGHT_BRACKET, "]"))
+                },
         });
     }
 
@@ -157,7 +243,7 @@ public class XPathLexerTest {
         assertThat(expectedTokensIterator.hasNext()).as("expected to have no more tokens").isFalse();
     }
 
-    private static Token token(Type type, String token) {
+    private static Token token(short type, String token) {
         return new Token(type, token, 0, token.length());
     }
 
