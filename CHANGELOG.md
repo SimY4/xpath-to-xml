@@ -12,6 +12,14 @@ Features:
 
 - Support for Jackson JSON model
 
+Improvements:
+
+- Core
+  - Improved XPath axis support. Newly supported axises are:
+    - descendant
+    - ancestor
+    - ancestor-or-self
+
 ### 1.1.2
 
 Bugfixes:
