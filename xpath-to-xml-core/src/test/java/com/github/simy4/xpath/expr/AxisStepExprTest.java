@@ -3,6 +3,7 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.axis.AxisResolver;
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.IterableNodeView;
@@ -14,6 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -25,7 +27,6 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -48,21 +49,26 @@ public class AxisStepExprTest {
 
     @Before
     public void setUp() {
-        when(axisResolver.resolveAxis(any(ViewContext.class))).thenReturn(NodeSetView.empty());
-        when(axisResolver.createAxisNode(any(ViewContext.class)))
+        when(axisResolver.resolveAxis(ArgumentMatchers.<ViewContext<TestNode>>any()))
+                .thenReturn(NodeSetView.<TestNode>empty());
+        when(axisResolver.createAxisNode(ArgumentMatchers.<ViewContext<TestNode>>any()))
                 .thenReturn(new NodeView<TestNode>(node("node"), true));
-        when(predicate1.resolve(any(ViewContext.class))).thenReturn(BooleanView.of(false));
-        when(predicate2.resolve(any(ViewContext.class))).thenReturn(BooleanView.of(false));
+        when(predicate1.resolve(ArgumentMatchers.<ViewContext<TestNode>>any()))
+                .thenReturn(BooleanView.<TestNode>of(false));
+        when(predicate2.resolve(ArgumentMatchers.<ViewContext<TestNode>>any()))
+                .thenReturn(BooleanView.<TestNode>of(false));
         stepExpr = new AxisStepExpr(axisResolver, asList(predicate1, predicate2));
     }
 
     @Test
     public void shouldMatchNodeViaPredicatesChainFromAListOfChildNodes() {
         // given
-        when(axisResolver.resolveAxis(any(ViewContext.class))).thenReturn(new NodeSetView<TestNode>(
-                singletonList(new NodeView<TestNode>(node("node")))));
-        when(predicate1.resolve(any(ViewContext.class))).thenReturn(BooleanView.of(true));
-        when(predicate2.resolve(any(ViewContext.class))).thenReturn(BooleanView.of(true));
+        when(axisResolver.resolveAxis(ArgumentMatchers.<ViewContext<TestNode>>any()))
+                .thenReturn(new NodeSetView<TestNode>(singletonList(new NodeView<TestNode>(node("node")))));
+        when(predicate1.resolve(ArgumentMatchers.<ViewContext<TestNode>>any()))
+                .thenReturn(BooleanView.<TestNode>of(true));
+        when(predicate2.resolve(ArgumentMatchers.<ViewContext<TestNode>>any()))
+                .thenReturn(BooleanView.<TestNode>of(true));
 
         // when
         IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
@@ -80,8 +86,8 @@ public class AxisStepExprTest {
     @Test
     public void shouldReturnNodesResolvedByStepExprOnly() {
         // given
-        when(axisResolver.resolveAxis(any(ViewContext.class))).thenReturn(new NodeSetView<TestNode>(
-                singletonList(new NodeView<TestNode>(node("node")))));
+        when(axisResolver.resolveAxis(ArgumentMatchers.<ViewContext<TestNode>>any()))
+                .thenReturn(new NodeSetView<TestNode>(singletonList(new NodeView<TestNode>(node("node")))));
         stepExpr = new AxisStepExpr(axisResolver, Collections.<Expr>emptyList());
 
         // when
@@ -89,8 +95,8 @@ public class AxisStepExprTest {
 
         // then
         assertThat((Iterable<?>) result).isNotEmpty();
-        verify(predicate1, never()).resolve(any(ViewContext.class));
-        verify(predicate2, never()).resolve(any(ViewContext.class));
+        verify(predicate1, never()).resolve(ArgumentMatchers.<ViewContext<TestNode>>any());
+        verify(predicate2, never()).resolve(ArgumentMatchers.<ViewContext<TestNode>>any());
     }
 
     @Test
@@ -105,15 +111,15 @@ public class AxisStepExprTest {
     @Test
     public void shouldShortCircuitWhenPredicateTraversalReturnsNothing() {
         // given
-        when(axisResolver.resolveAxis(any(ViewContext.class))).thenReturn(new NodeSetView<TestNode>(
-                singletonList(new NodeView<TestNode>(node("node")))));
+        when(axisResolver.resolveAxis(ArgumentMatchers.<ViewContext<TestNode>>any()))
+                .thenReturn(new NodeSetView<TestNode>(singletonList(new NodeView<TestNode>(node("node")))));
 
         // when
         IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
 
         // then
         assertThat((Iterable<?>) result).isEmpty();
-        verify(predicate2, never()).resolve(any(ViewContext.class));
+        verify(predicate2, never()).resolve(ArgumentMatchers.<ViewContext<TestNode>>any());
     }
 
     @Test
@@ -140,8 +146,8 @@ public class AxisStepExprTest {
     @Test
     public void shouldCreateNodeAndResolvePredicatesWhenStepExprIsPartiallyResolvable() {
         // given
-        when(axisResolver.resolveAxis(any(ViewContext.class))).thenReturn(new NodeSetView<TestNode>(
-                singletonList(new NodeView<TestNode>(node("node")))));
+        when(axisResolver.resolveAxis(ArgumentMatchers.<ViewContext<TestNode>>any()))
+                .thenReturn(new NodeSetView<TestNode>(singletonList(new NodeView<TestNode>(node("node")))));
         when(predicate1.resolve(argThat(greedyContext()))).thenReturn(BooleanView.of(true));
         when(predicate2.resolve(argThat(greedyContext()))).thenReturn(BooleanView.of(true));
 
@@ -165,8 +171,8 @@ public class AxisStepExprTest {
     @Test(expected = XmlBuilderException.class)
     public void shouldThrowWhenUnableToSatisfyExpressionsConditions() {
         // given
-        when(axisResolver.resolveAxis(any(ViewContext.class))).thenReturn(new NodeSetView<TestNode>(
-                singletonList(new NodeView<TestNode>(node("node")))));
+        when(axisResolver.resolveAxis(ArgumentMatchers.<ViewContext<TestNode>>any()))
+                .thenReturn(new NodeSetView<TestNode>(singletonList(new NodeView<TestNode>(node("node")))));
 
         // when
         stepExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, true));
@@ -177,10 +183,10 @@ public class AxisStepExprTest {
         assertThat(stepExpr).hasToString(axisResolver.toString() + predicate1 + predicate2);
     }
 
-    private ArgumentMatcher<ViewContext> greedyContext() {
-        return new ArgumentMatcher<ViewContext>() {
+    private <N extends Node> ArgumentMatcher<ViewContext<N>> greedyContext() {
+        return new ArgumentMatcher<ViewContext<N>>() {
             @Override
-            public boolean matches(ViewContext context) {
+            public boolean matches(ViewContext<N> context) {
                 return context.isGreedy();
             }
         };

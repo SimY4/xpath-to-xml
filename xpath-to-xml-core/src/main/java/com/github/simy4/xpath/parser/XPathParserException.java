@@ -5,6 +5,8 @@ import java.util.Arrays;
 
 class XPathParserException extends XPathExpressionException {
 
+    private static final long serialVersionUID = 1L;
+
     XPathParserException(Token actual) {
         super("Expected no more tokens but was: " + actual);
     }

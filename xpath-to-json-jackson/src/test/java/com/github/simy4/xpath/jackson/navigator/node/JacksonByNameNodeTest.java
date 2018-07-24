@@ -29,6 +29,7 @@ public class JacksonByNameNodeTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void shouldSetElementByIndexOnSet() {
         byNameNode.set(new IntNode(4));
 
@@ -40,6 +41,7 @@ public class JacksonByNameNodeTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void shouldRemoveElementByIndexOnRemove() {
         byNameNode.remove();
 

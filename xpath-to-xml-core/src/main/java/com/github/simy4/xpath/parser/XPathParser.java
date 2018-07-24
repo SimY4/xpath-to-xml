@@ -295,6 +295,7 @@ public class XPathParser {
         return axisResolver;
     }
 
+    @SuppressWarnings("fallthrough")
     private QName NodeTest(Context context) throws XPathExpressionException {
         switch (context.tokenAt(1).getType()) {
             case Type.STAR:

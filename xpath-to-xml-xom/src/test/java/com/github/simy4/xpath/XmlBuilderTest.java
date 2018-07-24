@@ -158,7 +158,7 @@ public class XmlBuilderTest {
 
     private XPathContext toXpathContext(NamespaceContext namespaceContext) {
         XPathContext context = new XPathContext();
-        Iterator prefixes = namespaceContext.getPrefixes("http://www.example.com/my");
+        Iterator<?> prefixes = namespaceContext.getPrefixes("http://www.example.com/my");
         while (prefixes.hasNext()) {
             String prefix = (String) prefixes.next();
             context.addNamespace(prefix, namespaceContext.getNamespaceURI(prefix));

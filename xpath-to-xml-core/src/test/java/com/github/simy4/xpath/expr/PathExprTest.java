@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -18,7 +19,6 @@ import static com.github.simy4.xpath.util.TestNode.node;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -66,7 +66,8 @@ public class PathExprTest {
     @Test
     public void shouldShortCircuitNonGreedyTraversalWhenStepTraversalReturnsNothing() {
         // given
-        when(stepExpr1.resolve(any(ViewContext.class))).thenReturn(new NodeView<TestNode>(node("node2")));
+        when(stepExpr1.resolve(ArgumentMatchers.<ViewContext<TestNode>>any()))
+                .thenReturn(new NodeView<TestNode>(node("node2")));
         when(stepExpr2.resolve(stepExpr2ContextCaptor.capture())).thenReturn(NodeSetView.<TestNode>empty());
 
         // when
@@ -74,7 +75,7 @@ public class PathExprTest {
 
         // then
         assertThat((Iterable<?>) result).isEmpty();
-        verify(stepExpr3, never()).resolve(any(ViewContext.class));
+        verify(stepExpr3, never()).resolve(ArgumentMatchers.<ViewContext<TestNode>>any());
     }
 
     @Test

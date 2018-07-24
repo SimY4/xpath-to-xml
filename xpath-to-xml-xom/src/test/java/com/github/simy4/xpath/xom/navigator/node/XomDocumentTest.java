@@ -28,6 +28,7 @@ public class XomDocumentTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void shouldReturnSingleRootNodeWhenObtainElements() {
         assertThat(node.elements()).containsExactly(new XomElement(root));
     }

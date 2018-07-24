@@ -39,11 +39,13 @@ public class Dom4JElementTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void shouldReturnListOfAttributesWhenObtainAttributes() {
         assertThat(node.attributes()).contains(new Dom4jAttribute(attr1), new Dom4jAttribute(attr2));
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void shouldReturnListOfElementsWhenObtainElements() {
         assertThat(node.elements()).contains(new Dom4jElement(child1), new Dom4jElement(child2));
     }

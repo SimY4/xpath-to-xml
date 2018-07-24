@@ -7,6 +7,7 @@ import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -14,7 +15,6 @@ import javax.xml.namespace.QName;
 
 import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -56,7 +56,7 @@ public abstract class AbstractAxisResolverTest {
         // then
         assertThat((Iterable<?>) result).isNotEmpty();
         assertThat((Iterable<?>) result).extracting("node").containsExactly(node(name));
-        verify(axisResolver, never()).createAxisNode(any(ViewContext.class));
+        verify(axisResolver, never()).createAxisNode(ArgumentMatchers.<ViewContext<TestNode>>any());
     }
 
     @Test

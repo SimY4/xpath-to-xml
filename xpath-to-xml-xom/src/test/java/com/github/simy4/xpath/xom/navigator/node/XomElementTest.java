@@ -35,11 +35,13 @@ public class XomElementTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void shouldReturnListOfAttributesWhenObtainAttributes() {
         assertThat(node.attributes()).contains(new XomAttribute(attr1), new XomAttribute(attr2));
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void shouldReturnListOfElementsWhenObtainElements() {
         assertThat(node.elements()).contains(new XomElement(child1), new XomElement(child2));
     }

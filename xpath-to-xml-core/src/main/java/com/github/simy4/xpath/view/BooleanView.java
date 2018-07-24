@@ -5,8 +5,8 @@ import com.github.simy4.xpath.navigator.Node;
 
 public final class BooleanView<N extends Node> implements View<N> {
 
-    private static final BooleanView FALSE = new BooleanView(false);
-    private static final BooleanView TRUE = new BooleanView(true);
+    private static final BooleanView<?> FALSE = new BooleanView<Node>(false);
+    private static final BooleanView<?> TRUE = new BooleanView<Node>(true);
 
     @SuppressWarnings("unchecked")
     public static <T extends Node> BooleanView<T> of(boolean bool) {

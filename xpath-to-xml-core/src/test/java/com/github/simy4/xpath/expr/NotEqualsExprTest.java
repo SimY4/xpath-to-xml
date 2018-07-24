@@ -19,6 +19,7 @@ import org.junit.experimental.theories.Theory;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
@@ -34,14 +35,14 @@ import static org.mockito.Mockito.when;
 public class NotEqualsExprTest {
 
     @DataPoints("ne left")
-    public static final View[] EQ_TEST = {
+    public static final View<?>[] EQ_TEST = {
             new LiteralView<TestNode>("2.0"),
             new NumberView<TestNode>(2.0),
             new NodeView<TestNode>(node("2.0")),
     };
 
     @DataPoints("ne right")
-    public static final View[] NE_TEST = {
+    public static final View<?>[] NE_TEST = {
             new LiteralView<TestNode>("literal"),
             new NumberView<TestNode>(10.0),
             new NodeView<TestNode>(node("node")),
@@ -62,8 +63,8 @@ public class NotEqualsExprTest {
     public void shouldAssociativelyResolveEqualViewsToFalse(@FromDataPoints("ne left") View<TestNode> left,
                                                             @FromDataPoints("ne left") View<TestNode> right) {
         // given
-        when(leftExpr.resolve(any(ViewContext.class))).thenReturn(left);
-        when(rightExpr.resolve(any(ViewContext.class))).thenReturn(right);
+        when(leftExpr.resolve(ArgumentMatchers.<ViewContext<TestNode>>any())).thenReturn(left);
+        when(rightExpr.resolve(ArgumentMatchers.<ViewContext<TestNode>>any())).thenReturn(right);
         ViewContext<TestNode> context = new ViewContext<TestNode>(navigator, parentNode, false);
 
         // when
@@ -79,8 +80,8 @@ public class NotEqualsExprTest {
     public void shouldAssociativelyResolveNonEqualViewsToTrue(@FromDataPoints("ne left") View<TestNode> left,
                                                               @FromDataPoints("ne right") View<TestNode> right) {
         // given
-        when(leftExpr.resolve(any(ViewContext.class))).thenReturn(left);
-        when(rightExpr.resolve(any(ViewContext.class))).thenReturn(right);
+        when(leftExpr.resolve(ArgumentMatchers.<ViewContext<TestNode>>any())).thenReturn(left);
+        when(rightExpr.resolve(ArgumentMatchers.<ViewContext<TestNode>>any())).thenReturn(right);
         ViewContext<TestNode> context = new ViewContext<TestNode>(navigator, parentNode, false);
 
         // when
@@ -99,8 +100,8 @@ public class NotEqualsExprTest {
         if (!(left instanceof IterableNodeView && ((IterableNodeView<TestNode>) left).iterator().hasNext())) {
             expectedException.expect(XmlBuilderException.class);
         }
-        when(leftExpr.resolve(any(ViewContext.class))).thenReturn(left);
-        when(rightExpr.resolve(any(ViewContext.class))).thenReturn(right);
+        when(leftExpr.resolve(ArgumentMatchers.<ViewContext<TestNode>>any())).thenReturn(left);
+        when(rightExpr.resolve(ArgumentMatchers.<ViewContext<TestNode>>any())).thenReturn(right);
         ViewContext<TestNode> context = new ViewContext<TestNode>(navigator, parentNode, true);
 
         // when

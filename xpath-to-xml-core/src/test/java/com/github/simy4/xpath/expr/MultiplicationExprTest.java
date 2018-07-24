@@ -14,20 +14,20 @@ import org.junit.experimental.theories.FromDataPoints;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(Theories.class)
 public class MultiplicationExprTest {
 
     @DataPoints("3.0")
-    public static final View[] NUMBERS = {
+    public static final View<?>[] NUMBERS = {
             new LiteralView<TestNode>("3.0"),
             new NumberView<TestNode>(3.0),
             new NodeView<TestNode>(node("3.0")),
@@ -43,8 +43,8 @@ public class MultiplicationExprTest {
     public void shouldMultiplyLeftViewToRightView(@FromDataPoints("3.0") View<TestNode> left,
                                                   @FromDataPoints("3.0") View<TestNode> right) {
         // given
-        when(leftExpr.resolve(any(ViewContext.class))).thenReturn(left);
-        when(rightExpr.resolve(any(ViewContext.class))).thenReturn(right);
+        when(leftExpr.resolve(ArgumentMatchers.<ViewContext<TestNode>>any())).thenReturn(left);
+        when(rightExpr.resolve(ArgumentMatchers.<ViewContext<TestNode>>any())).thenReturn(right);
         ViewContext<TestNode> context = new ViewContext<TestNode>(navigator,
                 new NodeView<TestNode>(node("node")), false);
 
