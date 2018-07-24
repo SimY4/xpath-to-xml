@@ -4,13 +4,13 @@ import java.util.Objects;
 
 public final class Triple<F, S, T> {
 
-    public static <A, B, C> Triple<A, B, C> of(A first, B second, C third) {
-        return new Triple<>(first, second, third);
-    }
-
     private final F first;
     private final S second;
     private final T third;
+
+    public static <A, B, C> Triple<A, B, C> of(A first, B second, C third) {
+        return new Triple<>(first, second, third);
+    }
 
     /**
      * Constructor.

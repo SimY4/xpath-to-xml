@@ -31,6 +31,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(Parameterized.class)
 public class XmlBuilderTest {
 
+    @Parameter(0)
+    public FixtureAccessor fixtureAccessor;
+    @Parameter(1)
+    public NamespaceContext namespaceContext;
+
     @Parameters(name = "With test fixture: {0} and namespace: {1}")
     public static Collection<Object[]> data() {
         return asList(new Object[][] {
@@ -44,11 +49,6 @@ public class XmlBuilderTest {
                 { new FixtureAccessor("special"), new SimpleNamespaceContext() },
         });
     }
-
-    @Parameter(0)
-    public FixtureAccessor fixtureAccessor;
-    @Parameter(1)
-    public NamespaceContext namespaceContext;
 
     @Test
     public void shouldBuildDocumentFromSetOfXPaths() throws XPathExpressionException, IOException {

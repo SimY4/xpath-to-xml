@@ -4,12 +4,12 @@ import java.util.Objects;
 
 public final class Pair<F, S> {
 
+    private final F first;
+    private final S second;
+
     public static <A, B> Pair<A, B> of(A first, B second) {
         return new Pair<>(first, second);
     }
-
-    private final F first;
-    private final S second;
 
     public Pair(F first, S second) {
         this.first = first;
