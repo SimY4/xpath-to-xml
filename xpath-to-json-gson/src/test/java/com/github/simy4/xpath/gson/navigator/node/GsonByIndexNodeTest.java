@@ -38,4 +38,15 @@ public class GsonByIndexNodeTest {
         assertThat(jsonArray).containsExactly(new JsonPrimitive(1), new JsonPrimitive(3));
     }
 
+    @Test
+    public void shouldTraverseArray() {
+        GsonNode parent = new GsonRootNode(jsonArray);
+
+        assertThat(parent.iterator()).containsExactlyInAnyOrder(
+                new GsonByIndexNode(jsonArray, 0, parent),
+                new GsonByIndexNode(jsonArray, 1, parent),
+                new GsonByIndexNode(jsonArray, 2, parent)
+        );
+    }
+
 }

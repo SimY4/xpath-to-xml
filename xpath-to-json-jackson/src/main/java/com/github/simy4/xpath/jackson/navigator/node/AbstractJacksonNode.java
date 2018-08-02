@@ -114,7 +114,8 @@ abstract class AbstractJacksonNode implements JacksonNode {
         @Override
         public Iterator<JacksonNode> apply(JsonNode jsonNode) {
             final JacksonNode arrayElemNode = new JacksonByIndexNode(parentArray, index++, parent);
-            return traverse(jsonNode, arrayElemNode);
+            return jsonNode.isValueNode() ? Collections.singleton(arrayElemNode).iterator()
+                    : traverse(jsonNode, arrayElemNode);
         }
 
     }

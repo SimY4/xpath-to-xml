@@ -122,7 +122,8 @@ abstract class AbstractGsonNode implements GsonNode {
         @Override
         public Iterator<GsonNode> apply(JsonElement jsonElement) {
             final GsonNode arrayElemNode = new GsonByIndexNode(parentArray, index++, parent);
-            return traverse(jsonElement, arrayElemNode);
+            return jsonElement.isJsonPrimitive() || jsonElement.isJsonNull()
+                    ? Collections.singleton(arrayElemNode).iterator() : traverse(jsonElement, arrayElemNode);
         }
 
     }
