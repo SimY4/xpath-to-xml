@@ -5,11 +5,13 @@ import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.util.FilteringIterator;
 import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.util.Predicate;
+import com.github.simy4.xpath.util.ReadOnlyIterator;
 import com.github.simy4.xpath.util.TransformingIterator;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
@@ -21,6 +23,7 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
         return (NodeSetView<T>) EMPTY_NODE_SET;
     }
 
+    private final Set<NodeView<N>> cache = new LinkedHashSet<NodeView<N>>();
     private final Iterable<NodeView<N>> nodeSet;
 
     /**
@@ -77,7 +80,7 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
     @Override
     public Iterator<NodeView<N>> iterator() {
-        return new FilteringIterator<NodeView<N>>(nodeSet.iterator(), new Distinct<N>());
+        return new NoseSetIterator();
     }
 
     @Override
@@ -112,13 +115,31 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
     }
 
-    private static final class Distinct<T extends Node> implements Predicate<NodeView<T>> {
+    private final class NoseSetIterator extends ReadOnlyIterator<NodeView<N>> implements Predicate<NodeView<N>> {
 
-        private final Set<T> visited = new HashSet<T>();
+        private Iterator<NodeView<N>> iterator = cache.iterator();
+        private boolean swapped;
 
         @Override
-        public boolean test(NodeView<T> node) {
-            return visited.add(node.getNode());
+        public boolean hasNext() {
+            if (!iterator.hasNext() && !swapped) {
+                iterator = new FilteringIterator<NodeView<N>>(nodeSet.iterator(), this);
+                swapped = true;
+            }
+            return iterator.hasNext();
+        }
+
+        @Override
+        public NodeView<N> next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException("No more elements");
+            }
+            return iterator.next();
+        }
+
+        @Override
+        public boolean test(NodeView<N> nodeView) {
+            return cache.add(nodeView);
         }
 
     }

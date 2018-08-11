@@ -56,12 +56,12 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
 
     @Override
     public boolean equals(Object o) {
-        return this == o || (o instanceof View && toString().equals(o.toString()));
+        return this == o || (o instanceof NodeView<?> && node.equals(((NodeView<?>) o).node));
     }
 
     @Override
     public int hashCode() {
-        return toString().hashCode();
+        return node.hashCode();
     }
 
     public N getNode() {
