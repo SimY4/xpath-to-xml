@@ -1,5 +1,7 @@
 ext.pomDescription = "XPath-to-XML DOM4J"
 
+apply from: rootProject.file('gradle/benchmark-jmh.gradle')
+
 dependencies {
     api project(':xpath-to-xml-core')
 

@@ -16,7 +16,7 @@ import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 import java.util.Map;
 
-@BenchmarkMode(Mode.AverageTime)
+@BenchmarkMode(Mode.Throughput)
 @State(Scope.Benchmark)
 public class JacksonJsonBuilderBenchmark {
 

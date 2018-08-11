@@ -1,0 +1,9 @@
+apply plugin: 'me.champeau.gradle.jmh'
+
+dependencies {
+    jmh configurations.testImplementation
+}
+
+jmh {
+    jmhVersion = '1.21'
+}
