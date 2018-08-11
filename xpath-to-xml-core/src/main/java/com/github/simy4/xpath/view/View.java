@@ -10,7 +10,15 @@ import com.github.simy4.xpath.navigator.Node;
  * @author Alex Simkin
  * @since 1.0
  */
-public interface View<N extends Node> extends Comparable<View<N>> {
+public interface View<N extends Node> {
+
+    /**
+     * Compare views by XQuery comparison rules.
+     *
+     * @param view view to compare with
+     * @return comparison result
+     */
+    int compareTo(View<N> view);
 
     /**
      * Converts this view to a boolean value.

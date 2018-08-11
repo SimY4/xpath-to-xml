@@ -80,30 +80,8 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
     @Override
     public Iterator<NodeView<N>> iterator() {
-        return new NoseSetIterator();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof View)) {
-            return false;
-        }
-
-        final Iterator<NodeView<N>> iterator = iterator();
-        if (iterator.hasNext()) {
-            return iterator.next().equals(o);
-        } else {
-            return !((View) o).toBoolean();
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        final Iterator<NodeView<N>> iterator = iterator();
-        return iterator.hasNext() ? iterator.next().hashCode() : 0;
+        return (nodeSet instanceof Set<?> || nodeSet instanceof IterableNodeView) ? nodeSet.iterator()
+                : new NodeSetIterator();
     }
 
     private static final class NodeWrapper<T extends Node> implements Function<T, NodeView<T>> {
@@ -115,7 +93,7 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
     }
 
-    private final class NoseSetIterator extends ReadOnlyIterator<NodeView<N>> implements Predicate<NodeView<N>> {
+    private final class NodeSetIterator extends ReadOnlyIterator<NodeView<N>> implements Predicate<NodeView<N>> {
 
         private Iterator<NodeView<N>> iterator = cache.iterator();
         private boolean swapped;
