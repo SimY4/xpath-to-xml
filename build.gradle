@@ -1,12 +1,12 @@
 plugins {
-    id 'net.ltgt.errorprone' version '0.0.15' apply false
-    id 'ru.vyarus.animalsniffer' version '1.4.4' apply false
+    id 'net.ltgt.errorprone' version '0.0.16' apply false
+    id 'ru.vyarus.animalsniffer' version '1.4.5' apply false
     id 'me.champeau.gradle.jmh' version '0.4.7' apply false
 }
 
 ext {
     jUnitVersion = '5.2.0'
-    mockitoVersion = '2.19.1'
+    mockitoVersion = '2.21.0'
     assertjVersion = '2.9.1'
     errorproneVersion = '2.3.1'
     checkstyleVersion = '8.11'
@@ -37,7 +37,7 @@ subprojects {
     }
 
     tasks.withType(JavaCompile) {
-        options.compilerArgs << "-Xlint:all" << "-Xlint:-options" << "-Xlint:-classfile" << "-Werror"
+        options.compilerArgs << "-Xlint:all" << "-Xlint:-options" << "-Werror"
     }
 
     test {
