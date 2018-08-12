@@ -1,12 +1,12 @@
 plugins {
-    id 'net.ltgt.errorprone' version '0.0.15' apply false
-    id 'ru.vyarus.animalsniffer' version '1.4.4' apply false
+    id 'net.ltgt.errorprone' version '0.0.16' apply false
+    id 'ru.vyarus.animalsniffer' version '1.4.5' apply false
     id 'me.champeau.gradle.jmh' version '0.4.7' apply false
 }
 
 ext {
     jUnitVersion = '5.2.0'
-    mockitoVersion = '2.19.1'
+    mockitoVersion = '2.21.0'
     assertjVersion = '3.10.0'
     errorproneVersion = '2.3.1'
     checkstyleVersion = '8.11'
@@ -18,7 +18,6 @@ ext {
 
 subprojects {
     apply plugin: 'java-library'
-    apply plugin: 'me.champeau.gradle.jmh'
     apply from: rootProject.file('gradle/animal-sniffer.gradle')
     apply from: rootProject.file('gradle/check-checkstyle.gradle')
     apply from: rootProject.file('gradle/check-codecoverage.gradle')
@@ -32,22 +31,13 @@ subprojects {
         mavenCentral()
     }
 
-    dependencies {
-        jmh configurations.testImplementation
-    }
-
     tasks.withType(JavaCompile) {
-        options.compilerArgs << "-Xlint:all" << "-Xlint:-options" << "-Xlint:-classfile" << "-Werror"
+        options.compilerArgs << "-Xlint:all" << "-Xlint:-options" << "-Werror"
     }
 
     test {
         useJUnitPlatform()
     }
-
-    jmh {
-        jmhVersion = '1.21'
-    }
-
 }
 
 task wrapper(type: Wrapper) {

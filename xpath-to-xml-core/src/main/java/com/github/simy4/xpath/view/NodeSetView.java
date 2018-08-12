@@ -7,8 +7,9 @@ import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.util.TransformingIterator;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
@@ -20,6 +21,7 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
         return (NodeSetView<T>) EMPTY_NODE_SET;
     }
 
+    private final Set<NodeView<N>> cache = new LinkedHashSet<>();
     private final Iterable<NodeView<N>> nodeSet;
 
     /**
@@ -71,39 +73,34 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
     @Override
     public Iterator<NodeView<N>> iterator() {
-        return new FilteringIterator<>(nodeSet.iterator(), new Distinct<>());
+        return nodeSet instanceof Set<?> ? nodeSet.iterator() : new NodeSetIterator();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof View)) {
-            return false;
-        }
+    private final class NodeSetIterator implements Iterator<NodeView<N>>, Predicate<NodeView<N>> {
 
-        final Iterator<NodeView<N>> iterator = iterator();
-        if (iterator.hasNext()) {
-            return iterator.next().equals(o);
-        } else {
-            return !((View) o).toBoolean();
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        final Iterator<NodeView<N>> iterator = iterator();
-        return iterator.hasNext() ? iterator.next().hashCode() : 0;
-    }
-
-    private static final class Distinct<T extends Node> implements Predicate<NodeView<T>> {
-
-        private final Set<T> visited = new HashSet<>();
+        private Iterator<NodeView<N>> iterator = cache.iterator();
+        private boolean swapped;
 
         @Override
-        public boolean test(NodeView<T> node) {
-            return visited.add(node.getNode());
+        public boolean hasNext() {
+            if (!iterator.hasNext() && !swapped) {
+                iterator = new FilteringIterator<>(nodeSet.iterator(), this);
+                swapped = true;
+            }
+            return iterator.hasNext();
+        }
+
+        @Override
+        public NodeView<N> next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException("No more elements");
+            }
+            return iterator.next();
+        }
+
+        @Override
+        public boolean test(NodeView<N> nodeView) {
+            return cache.add(nodeView);
         }
 
     }

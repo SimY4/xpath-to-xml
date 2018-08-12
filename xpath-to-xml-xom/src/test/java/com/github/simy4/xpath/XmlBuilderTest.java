@@ -21,6 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -152,7 +153,7 @@ public class XmlBuilderTest {
         serializer.setIndent(4);
         serializer.setLineSeparator(lineSeparator);
         serializer.write(xml);
-        String xmlString = new String(outputStream.toByteArray(), "UTF-8");
+        String xmlString = new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
         return xmlString.substring(xmlString.indexOf(lineSeparator) + lineSeparator.length());
     }
 

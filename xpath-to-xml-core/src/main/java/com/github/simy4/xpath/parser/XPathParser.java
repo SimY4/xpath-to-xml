@@ -194,8 +194,7 @@ public class XPathParser {
             case Type.DOUBLE_SLASH:
                 context.match(Type.DOUBLE_SLASH);
                 pathExpr.add(new Root());
-                pathExpr.add(new AxisStepExpr(new DescendantOrSelfAxisResolver(ANY, true),
-                        Collections.<Expr>emptySet()));
+                pathExpr.add(new AxisStepExpr(new DescendantOrSelfAxisResolver(ANY, true), Collections.emptySet()));
                 RelativePathExpr(context, pathExpr);
                 break;
             default:
@@ -216,8 +215,7 @@ public class XPathParser {
                     break;
                 case Type.DOUBLE_SLASH:
                     context.match(Type.DOUBLE_SLASH);
-                    pathExpr.add(new AxisStepExpr(new DescendantOrSelfAxisResolver(ANY, true),
-                            Collections.<Expr>emptySet()));
+                    pathExpr.add(new AxisStepExpr(new DescendantOrSelfAxisResolver(ANY, true), Collections.emptySet()));
                     pathExpr.add(StepExpr(context));
                     break;
                 default:

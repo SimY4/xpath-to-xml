@@ -23,7 +23,7 @@ import java.util.Collections;
 
 import static com.github.simy4.xpath.util.TestNode.node;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
@@ -60,7 +60,7 @@ public class AxisStepExprTest {
     public void shouldMatchNodeViaPredicatesChainFromAListOfChildNodes() {
         // given
         when(axisResolver.resolveAxis(any())).thenReturn(new NodeSetView<>(
-                singletonList(new NodeView<>(node("node")))));
+                singleton(new NodeView<>(node("node")))));
         when(predicate1.resolve(any())).thenReturn(BooleanView.of(true));
         when(predicate2.resolve(any())).thenReturn(BooleanView.of(true));
 
@@ -81,7 +81,7 @@ public class AxisStepExprTest {
     public void shouldReturnNodesResolvedByStepExprOnly() {
         // given
         when(axisResolver.resolveAxis(any())).thenReturn(new NodeSetView<>(
-                singletonList(new NodeView<>(node("node")))));
+                singleton(new NodeView<>(node("node")))));
         stepExpr = new AxisStepExpr(axisResolver, Collections.emptyList());
 
         // when
@@ -106,7 +106,7 @@ public class AxisStepExprTest {
     public void shouldShortCircuitWhenPredicateTraversalReturnsNothing() {
         // given
         when(axisResolver.resolveAxis(any())).thenReturn(new NodeSetView<>(
-                singletonList(new NodeView<>(node("node")))));
+                singleton(new NodeView<>(node("node")))));
 
         // when
         IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<>(navigator, parentNode, false));
@@ -117,32 +117,11 @@ public class AxisStepExprTest {
     }
 
     @Test
-    public void shouldCreateNodeAndResolvePredicatesWhenStepExprIsUnresolvable() {
-        // given
-        when(predicate1.resolve(argThat(greedyContext()))).thenReturn(BooleanView.of(true));
-        when(predicate2.resolve(argThat(greedyContext()))).thenReturn(BooleanView.of(true));
-
-        // when
-        IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<>(navigator, parentNode, true));
-
-        // then
-        assertThat((Iterable<?>) result).isNotEmpty();
-        verify(predicate1).resolve(predicate1ContextCaptor.capture());
-        verify(predicate2, times(2)).resolve(predicate2ContextCaptor.capture());
-        assertThat(predicate1ContextCaptor.getValue()).extracting("navigator", "greedy", "hasNext", "position")
-                .containsExactly(navigator, true, false, 1);
-        assertThat(predicate2ContextCaptor.getAllValues()).extracting("navigator", "greedy", "hasNext", "position")
-                .containsExactly(
-                        tuple(navigator, false, false, 1),
-                        tuple(navigator, true, false, 1));
-    }
-
-    @Test
     @SuppressWarnings("unchecked")
     public void shouldCreateNodeAndResolvePredicatesWhenStepExprIsPartiallyResolvable() {
         // given
-        when(axisResolver.resolveAxis(any())).thenReturn(new NodeSetView<>(
-                singletonList(new NodeView<>(node("node")))));
+        when(axisResolver.resolveAxis(argThat(greedyContext())))
+                .thenReturn(new NodeSetView<>(singleton(new NodeView<>(node("node")))));
         when(predicate1.resolve(argThat(greedyContext()))).thenReturn(BooleanView.of(true));
         when(predicate2.resolve(argThat(greedyContext()))).thenReturn(BooleanView.of(true));
 
@@ -166,8 +145,8 @@ public class AxisStepExprTest {
     @Test(expected = XmlBuilderException.class)
     public void shouldThrowWhenUnableToSatisfyExpressionsConditions() {
         // given
-        when(axisResolver.resolveAxis(any())).thenReturn(new NodeSetView<>(
-                singletonList(new NodeView<>(node("node")))));
+        when(axisResolver.resolveAxis(argThat(greedyContext())))
+                .thenReturn(new NodeSetView<>(singleton(new NodeView<>(node("node")))));
 
         // when
         stepExpr.resolve(new ViewContext<>(navigator, parentNode, true));

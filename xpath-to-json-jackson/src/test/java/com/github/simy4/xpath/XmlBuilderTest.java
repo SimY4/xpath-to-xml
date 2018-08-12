@@ -107,6 +107,8 @@ public class XmlBuilderTest {
 
     private String jsonToString(JsonNode json) throws JsonProcessingException {
         return objectMapper.writer(new DefaultPrettyPrinter() {
+            private static final long serialVersionUID = 1;
+
             {
                 _objectFieldValueSeparatorWithSpaces = _separators.getObjectFieldValueSeparator() + " ";
                 _arrayIndenter = new DefaultIndenter();

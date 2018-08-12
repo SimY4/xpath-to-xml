@@ -39,4 +39,15 @@ public class JacksonByIndexNodeTest {
         assertThat(jsonArray).containsExactly(new IntNode(1), new IntNode(3));
     }
 
+    @Test
+    public void shouldTraverseArray() {
+        JacksonNode parent = new JacksonRootNode(jsonArray);
+
+        assertThat(parent.iterator()).containsExactlyInAnyOrder(
+                new JacksonByIndexNode(jsonArray, 0, parent),
+                new JacksonByIndexNode(jsonArray, 1, parent),
+                new JacksonByIndexNode(jsonArray, 2, parent)
+        );
+    }
+
 }

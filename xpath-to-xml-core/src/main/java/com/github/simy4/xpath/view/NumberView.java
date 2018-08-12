@@ -36,14 +36,4 @@ public final class NumberView<N extends Node> implements View<N> {
         return visitor.visit(this);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return this == o || (o instanceof View && 0 == Double.compare(number, ((View<?>) o).toNumber()));
-    }
-
-    @Override
-    public int hashCode() {
-        return Double.hashCode(number);
-    }
-
 }
