@@ -8,7 +8,6 @@ import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;
 
 import javax.xml.namespace.QName;
-import java.util.Collections;
 
 public class ParentAxisResolver extends AbstractAxisResolver {
 
@@ -19,7 +18,7 @@ public class ParentAxisResolver extends AbstractAxisResolver {
     @Override
     <N extends Node> IterableNodeView<N> traverseAxis(ViewContext<N> context) {
         final N parent = context.getNavigator().parentOf(context.getCurrent().getNode());
-        return null == parent ? NodeSetView.<N>empty() : new NodeSetView<N>(Collections.singleton(parent), this);
+        return null == parent || !test(parent) ? NodeSetView.<N>empty() : new NodeView<N>(parent);
     }
 
     @Override
