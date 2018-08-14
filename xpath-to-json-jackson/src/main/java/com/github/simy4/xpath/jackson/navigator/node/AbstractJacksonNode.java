@@ -3,7 +3,7 @@ package com.github.simy4.xpath.jackson.navigator.node;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.simy4.xpath.util.FlatteningIterator;
+import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
 import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.util.TransformingIterator;
 
@@ -76,8 +76,8 @@ abstract class AbstractJacksonNode implements JacksonNode {
             return new TransformingIterator<String, JacksonNode>(jsonNode.fieldNames(),
                     new JsonObjectWrapper((ObjectNode) jsonNode, parent));
         } else if (jsonNode.isArray()) {
-            return new FlatteningIterator<JacksonNode>(new TransformingIterator<JsonNode, Iterator<JacksonNode>>(
-                    jsonNode.elements(), new JsonArrayWrapper((ArrayNode) jsonNode, parent)));
+            return new TransformingAndFlatteningIterator<JsonNode, JacksonNode>(jsonNode.elements(),
+                    new JsonArrayWrapper((ArrayNode) jsonNode, parent));
         } else {
             return Collections.<JacksonNode>emptyList().iterator();
         }
