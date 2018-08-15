@@ -4,7 +4,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f5d4a594c4b94e9980d69d4dba9b9dba)](https://www.codacy.com/app/SimY4/xpath-to-xml?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=SimY4/xpath-to-xml&amp;utm_campaign=Badge_Grade) 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.github.simy4.xpath/xpath-to-xml-core.svg)](http://search.maven.org/#artifactdetails%7Ccom.github.simy4.xpath%7Cxpath-to-xml-core%7C1.1.1%7C)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.simy4.xpath/xpath-to-xml-core.svg)](http://search.maven.org/#artifactdetails%7Ccom.github.simy4.xpath%7Cxpath-to-xml-core%7C1.2.1%7C)
 [![Javadocs](http://www.javadoc.io/badge/com.github.simy4.xpath/xpath-to-xml-core.svg)](http://www.javadoc.io/doc/com.github.simy4.xpath/xpath-to-xml-core)
 
 Convenient utility to build XML models by evaluating XPath expressions.
@@ -28,7 +28,7 @@ Include an artifact with necessary model extension into your project:
 <dependency>
     <groupId>com.github.simy4.xpath</groupId>
     <artifactId>xpath-to-xml-dom</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
 </dependency>
 ```
 
