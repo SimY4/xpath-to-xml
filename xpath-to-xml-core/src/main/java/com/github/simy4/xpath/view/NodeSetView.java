@@ -73,7 +73,7 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
     @Override
     public Iterator<NodeView<N>> iterator() {
-        return nodeSet instanceof Set<?> ? nodeSet.iterator() : new NodeSetIterator();
+        return new NodeSetIterator();
     }
 
     private final class NodeSetIterator implements Iterator<NodeView<N>>, Predicate<NodeView<N>> {

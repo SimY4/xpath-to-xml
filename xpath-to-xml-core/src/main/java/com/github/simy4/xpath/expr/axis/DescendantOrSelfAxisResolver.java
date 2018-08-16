@@ -3,9 +3,8 @@ package com.github.simy4.xpath.expr.axis;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.util.FlatteningIterator;
+import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
 import com.github.simy4.xpath.util.Function;
-import com.github.simy4.xpath.util.TransformingIterator;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
@@ -60,8 +59,8 @@ public class DescendantOrSelfAxisResolver extends AbstractAxisResolver {
 
         @Override
         public Iterator<T> apply(T self) {
-            return new FlatteningIterator<>(Collections.singleton(self).iterator(),
-                    new TransformingIterator<>(navigator.elementsOf(self).iterator(), this));
+            return new TransformingAndFlatteningIterator<>(navigator.elementsOf(self).iterator(),
+                    Collections.singleton(self).iterator(), this);
         }
 
     }

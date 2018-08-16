@@ -4,9 +4,7 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.axis.AxisResolver;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.util.FilteringIterator;
-import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.util.Predicate;
-import com.github.simy4.xpath.util.TransformingIterator;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
@@ -41,8 +39,8 @@ public class AxisStepExpr implements StepExpr {
         final PredicateContext<N> predicateContext = new PredicateContext<>();
         IterableNodeView<N> result = new NodeSetView<>(() -> {
             final Iterator<NodeView<N>> iterator = filtered.iterator();
-            return new FilteringIterator<>(new TransformingIterator<>(iterator, predicateContext),
-                    new PredicateResolver<>(context, iterator, predicate));
+            return new FilteringIterator<>(iterator,
+                    new PredicateResolver<>(context, predicateContext, iterator, predicate));
         });
         if (context.isGreedy() && !context.hasNext() && !result.toBoolean()) {
             final NodeView<N> last = predicateContext.last;
@@ -77,18 +75,25 @@ public class AxisStepExpr implements StepExpr {
     private static final class PredicateResolver<T extends Node> implements Predicate<NodeView<T>> {
 
         private final ViewContext<T> parentContext;
+        private final PredicateContext<T> predicateContext;
         private final Iterator<NodeView<T>> iterator;
         private final Expr predicate;
         private int position = 1;
 
-        private PredicateResolver(ViewContext<T> parentContext, Iterator<NodeView<T>> iterator, Expr predicate) {
+        private PredicateResolver(ViewContext<T> parentContext, PredicateContext<T> predicateContext,
+                                  Iterator<NodeView<T>> iterator, Expr predicate) {
             this.parentContext = parentContext;
+            this.predicateContext = predicateContext;
             this.iterator = iterator;
             this.predicate = predicate;
         }
 
         @Override
         public boolean test(NodeView<T> view) {
+            if (null == predicateContext.last || !predicateContext.last.isNew()) {
+                predicateContext.last = view;
+                predicateContext.position = position;
+            }
             final ViewContext<T> context = new ViewContext<>(parentContext.getNavigator(), view, false,
                     iterator.hasNext(), position++);
             return predicate.resolve(context).toBoolean();
@@ -96,19 +101,10 @@ public class AxisStepExpr implements StepExpr {
 
     }
 
-    private static final class PredicateContext<T extends Node> implements Function<NodeView<T>, NodeView<T>> {
+    private static final class PredicateContext<T extends Node> {
 
         private NodeView<T> last;
         private int position;
-
-        @Override
-        public NodeView<T> apply(NodeView<T> view) {
-            if (null == last || !last.isNew()) {
-                last = view;
-                position++;
-            }
-            return view;
-        }
 
     }
 

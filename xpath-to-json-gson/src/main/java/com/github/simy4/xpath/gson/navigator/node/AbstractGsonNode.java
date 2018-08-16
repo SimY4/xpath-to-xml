@@ -1,6 +1,6 @@
 package com.github.simy4.xpath.gson.navigator.node;
 
-import com.github.simy4.xpath.util.FlatteningIterator;
+import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
 import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.util.TransformingIterator;
 import com.google.gson.JsonArray;
@@ -84,8 +84,8 @@ abstract class AbstractGsonNode implements GsonNode {
                     new JsonObjectWrapper(jsonObject, parent));
         } else if (jsonElement.isJsonArray()) {
             final JsonArray jsonArray = jsonElement.getAsJsonArray();
-            return new FlatteningIterator<>(new TransformingIterator<>(jsonArray.iterator(),
-                    new JsonArrayWrapper(jsonArray, parent)));
+            return new TransformingAndFlatteningIterator<>(jsonArray.iterator(),
+                    new JsonArrayWrapper(jsonArray, parent));
         } else {
             return Collections.emptyIterator();
         }

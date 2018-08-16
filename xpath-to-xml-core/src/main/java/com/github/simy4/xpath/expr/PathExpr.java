@@ -2,9 +2,8 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.util.FlatteningIterator;
+import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
 import com.github.simy4.xpath.util.Function;
-import com.github.simy4.xpath.util.TransformingIterator;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
@@ -30,8 +29,8 @@ public class PathExpr implements Expr {
             final IterableNodeView<N> currentChildren = children;
             children = new NodeSetView<>(() -> {
                 final Iterator<NodeView<N>> iterator = currentChildren.iterator();
-                return new FlatteningIterator<>(new TransformingIterator<>(iterator,
-                        new StepResolver<>(context, iterator, stepExpr)));
+                return new TransformingAndFlatteningIterator<>(iterator,
+                        new StepResolver<>(context, iterator, stepExpr));
             });
         }
         return children;

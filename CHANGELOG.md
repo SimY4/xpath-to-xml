@@ -6,6 +6,13 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 
 ## 1.x Series
 
+### 1.2.1
+
+Improvements:
+
+- Core
+  - Fix performance regression between 1.1.0 and 1.2.0
+
 ### 1.2.0 Jackson model support
 
 Features:
