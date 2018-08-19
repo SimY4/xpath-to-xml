@@ -6,6 +6,12 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 
 ## 1.x Series
 
+### 1.2.2
+
+Improvements:
+
+- Fixing JavaDoc publishing
+
 ### 1.2.1
 
 Improvements:
