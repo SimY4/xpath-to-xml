@@ -1,6 +1,6 @@
 import org.gradle.internal.jvm.Jvm
 
-if (!Jvm.current().javaVersion.java9Compatible) {
+if (!JavaVersion.current().isJava9Compatible()) {
     apply plugin: 'net.ltgt.errorprone'
 
     dependencies {

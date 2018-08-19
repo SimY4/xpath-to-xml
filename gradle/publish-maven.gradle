@@ -8,7 +8,7 @@ task sourcesJar(type: Jar) {
 
 task javadocJar(type: Jar) {
     classifier 'javadoc'
-    from javadoc.destinationDir
+    from javadoc
 }
 
 publishing {
