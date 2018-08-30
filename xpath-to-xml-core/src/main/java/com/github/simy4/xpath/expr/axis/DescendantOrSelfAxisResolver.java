@@ -68,7 +68,7 @@ public class DescendantOrSelfAxisResolver extends AbstractAxisResolver {
 
         private final Navigator<T> navigator;
 
-        DescendantOrSelf(Navigator<T> navigator) {
+        private DescendantOrSelf(Navigator<T> navigator) {
             this.navigator = navigator;
         }
 
