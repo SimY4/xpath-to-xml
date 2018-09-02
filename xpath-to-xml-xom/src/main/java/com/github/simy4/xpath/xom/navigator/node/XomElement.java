@@ -40,7 +40,7 @@ public final class XomElement implements XomNode<Element> {
 
     @Override
     public XomNode<?> getParent() {
-        ParentNode parent = element.getParent();
+        final ParentNode parent = element.getParent();
         return parent instanceof Element ? new XomElement((Element) parent) : new XomDocument((Document) parent);
     }
 
