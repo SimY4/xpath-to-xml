@@ -1,11 +1,9 @@
 package com.github.simy4.xpath.parser;
 
 import com.github.simy4.xpath.parser.Token.Type;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameter;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -14,223 +12,109 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
-public class XPathLexerTest {
+class XPathLexerTest {
 
-    @Parameters(name = "Given XPath {0} should tokenize it into {1}")
-    public static Collection<Object[]> data() {
+    private static Collection<Arguments> data() {
         // Examples from https://msdn.microsoft.com/en-us/library/ms256086(v=vs.110).aspx
-        return asList(new Object[][] {
-                {
-                        "./author",
-                        asList(token(Type.DOT, "."), token(Type.SLASH, "/"),
-                                token(Type.IDENTIFIER, "author"))
-                },
-                {
-                        "author",
-                        singletonList(token(Type.IDENTIFIER, "author"))
-                },
-                {
-                        "first.name",
-                        singletonList(token(Type.IDENTIFIER, "first.name"))
-                },
-                {
-                        "/bookstore",
-                        asList(token(Type.SLASH, "/"), token(Type.IDENTIFIER, "bookstore"))
-                },
-                {
-                        "book[/bookstore/@specialty=@style]",
-                        asList(token(Type.IDENTIFIER, "book"), token(Type.LEFT_BRACKET, "["), token(Type.SLASH, "/"),
-                                token(Type.IDENTIFIER, "bookstore"), token(Type.SLASH, "/"), token(Type.AT, "@"),
-                                token(Type.IDENTIFIER, "specialty"), token(Type.EQUALS, "="), token(Type.AT, "@"),
-                                token(Type.IDENTIFIER, "style"), token(Type.RIGHT_BRACKET, "]"))
-                },
-                {
-                        "author/first-name",
-                        asList(token(Type.IDENTIFIER, "author"), token(Type.SLASH, "/"),
-                                token(Type.IDENTIFIER, "first-name"))
-                },
-                {
-                        "bookstore/*/title",
-                        asList(token(Type.IDENTIFIER, "bookstore"), token(Type.SLASH, "/"), token(Type.STAR, "*"),
-                                token(Type.SLASH, "/"), token(Type.IDENTIFIER, "title"))
-                },
-                {
-                        "author/*",
-                        asList(token(Type.IDENTIFIER, "author"), token(Type.SLASH, "/"), token(Type.STAR, "*"))
-                },
-                {
-                        "book/*/last-name",
-                        asList(token(Type.IDENTIFIER, "book"), token(Type.SLASH, "/"), token(Type.STAR, "*"),
-                                token(Type.SLASH, "/"), token(Type.IDENTIFIER, "last-name"))
-                },
-                {
-                        "*/*",
-                        asList(token(Type.STAR, "*"), token(Type.SLASH, "/"), token(Type.STAR, "*"))
-                },
-                {
-                        "*[@specialty]",
-                        asList(token(Type.STAR, "*"), token(Type.LEFT_BRACKET, "["), token(Type.AT, "@"),
-                                token(Type.IDENTIFIER, "specialty"), token(Type.RIGHT_BRACKET, "]"))
-                },
-                {
-                        "@style",
-                        asList(token(Type.AT, "@"), token(Type.IDENTIFIER, "style"))
-                },
-                {
-                        "price/@exchange",
-                        asList(token(Type.IDENTIFIER, "price"), token(Type.SLASH, "/"), token(Type.AT, "@"),
-                                token(Type.IDENTIFIER, "exchange"))
-                },
-                {
-                        "price/@exchange/total",
-                        asList(token(Type.IDENTIFIER, "price"), token(Type.SLASH, "/"), token(Type.AT, "@"),
-                                token(Type.IDENTIFIER, "exchange"), token(Type.SLASH, "/"),
-                                token(Type.IDENTIFIER, "total"))
-                },
-                {
-                        "book[@style]",
-                        asList(token(Type.IDENTIFIER, "book"), token(Type.LEFT_BRACKET, "["), token(Type.AT, "@"),
-                                token(Type.IDENTIFIER, "style"), token(Type.RIGHT_BRACKET, "]"))
-                },
-                {
-                        "book/@style",
-                        asList(token(Type.IDENTIFIER, "book"), token(Type.SLASH, "/"), token(Type.AT, "@"),
-                                token(Type.IDENTIFIER, "style"))
-                },
-                {
-                        "@*",
-                        asList(token(Type.AT, "@"), token(Type.STAR, "*"))
-                },
-                {
-                        "./first-name",
-                        asList(token(Type.DOT, "."), token(Type.SLASH, "/"), token(Type.IDENTIFIER, "first-name"))
-                },
-                {
-                        "first-name",
-                        singletonList(token(Type.IDENTIFIER, "first-name"))
-                },
-                {
-                        "author[1]",
-                        asList(token(Type.IDENTIFIER, "author"), token(Type.LEFT_BRACKET, "["),
-                                token(Type.DOUBLE, "1"), token(Type.RIGHT_BRACKET, "]"))
-                },
-                {
-                        "author[first-name][3]",
-                        asList(token(Type.IDENTIFIER, "author"), token(Type.LEFT_BRACKET, "["),
-                                token(Type.IDENTIFIER, "first-name"), token(Type.RIGHT_BRACKET, "]"),
-                                token(Type.LEFT_BRACKET, "["), token(Type.DOUBLE, "3"),
-                                token(Type.RIGHT_BRACKET, "]"))
-                },
-                {
-                        "my:book",
-                        asList(token(Type.IDENTIFIER, "my"), token(Type.COLON, ":"), token(Type.IDENTIFIER, "book"))
-                },
-                {
-                        "my:*",
-                        asList(token(Type.IDENTIFIER, "my"), token(Type.COLON, ":"), token(Type.STAR, "*"))
-                },
-                {
-                        "@my:*",
-                        asList(token(Type.AT, "@"), token(Type.IDENTIFIER, "my"), token(Type.COLON, ":"),
-                                token(Type.STAR, "*"))
-                },
-                {
-                        "book[excerpt]",
-                        asList(token(Type.IDENTIFIER, "book"), token(Type.LEFT_BRACKET, "["),
-                                token(Type.IDENTIFIER, "excerpt"), token(Type.RIGHT_BRACKET, "]"))
-                },
-                {
-                        "book[excerpt]/title",
-                        asList(token(Type.IDENTIFIER, "book"), token(Type.LEFT_BRACKET, "["),
-                                token(Type.IDENTIFIER, "excerpt"), token(Type.RIGHT_BRACKET, "]"),
-                                token(Type.SLASH, "/"), token(Type.IDENTIFIER, "title"))
-                },
-                {
-                        "book[excerpt]/author[degree]",
-                        asList(token(Type.IDENTIFIER, "book"), token(Type.LEFT_BRACKET, "["),
-                                token(Type.IDENTIFIER, "excerpt"), token(Type.RIGHT_BRACKET, "]"),
-                                token(Type.SLASH, "/"), token(Type.IDENTIFIER, "author"),
-                                token(Type.LEFT_BRACKET, "["), token(Type.IDENTIFIER, "degree"),
-                                token(Type.RIGHT_BRACKET, "]"))
-                },
-                {
-                        "book[author/degree]",
-                        asList(token(Type.IDENTIFIER, "book"), token(Type.LEFT_BRACKET, "["),
-                                token(Type.IDENTIFIER, "author"), token(Type.SLASH, "/"),
-                                token(Type.IDENTIFIER, "degree"), token(Type.RIGHT_BRACKET, "]"))
-                },
-                {
-                        "author[degree][award]",
-                        asList(token(Type.IDENTIFIER, "author"), token(Type.LEFT_BRACKET, "["),
-                                token(Type.IDENTIFIER, "degree"), token(Type.RIGHT_BRACKET, "]"),
-                                token(Type.LEFT_BRACKET, "["), token(Type.IDENTIFIER, "award"),
-                                token(Type.RIGHT_BRACKET, "]"))
-                },
-                {
-                        "author[last-name = \"Bob\"]",
-                        asList(token(Type.IDENTIFIER, "author"), token(Type.LEFT_BRACKET, "["),
-                                token(Type.IDENTIFIER, "last-name"), token(Type.EQUALS, "="),
-                                token(Type.LITERAL, "Bob"), token(Type.RIGHT_BRACKET, "]"))
-                },
-                {
-                        "degree[@from != \"Harvard\"]",
-                        asList(token(Type.IDENTIFIER, "degree"), token(Type.LEFT_BRACKET, "["),
-                                token(Type.AT, "@"), token(Type.IDENTIFIER, "from"), token(Type.NOT_EQUALS, "!="),
-                                token(Type.LITERAL, "Harvard"), token(Type.RIGHT_BRACKET, "]"))
-                },
-                {
-                        "author[. = \"Matthew Bob\"]",
-                        asList(token(Type.IDENTIFIER, "author"), token(Type.LEFT_BRACKET, "["),
-                                token(Type.DOT, "."), token(Type.EQUALS, "="), token(Type.LITERAL, "Matthew Bob"),
-                                token(Type.RIGHT_BRACKET, "]"))
-                },
-                {
-                        "author[last-name[1] = \"Bob\"]",
-                        asList(token(Type.IDENTIFIER, "author"), token(Type.LEFT_BRACKET, "["),
-                                token(Type.IDENTIFIER, "last-name"), token(Type.LEFT_BRACKET, "["),
-                                token(Type.DOUBLE, "1"), token(Type.RIGHT_BRACKET, "]"), token(Type.EQUALS, "="),
-                                token(Type.LITERAL, "Bob"), token(Type.RIGHT_BRACKET, "]"))
-                },
-                {
-                        "author[* = \"Bob\"]",
-                        asList(token(Type.IDENTIFIER, "author"), token(Type.LEFT_BRACKET, "["),
-                                token(Type.STAR, "*"), token(Type.EQUALS, "="), token(Type.LITERAL, "Bob"),
-                                token(Type.RIGHT_BRACKET, "]"))
-                },
-                {
-                        "ancestor::book[1]",
-                        asList(token(Type.IDENTIFIER, "ancestor"), token(Type.DOUBLE_COLON, "::"),
-                                token(Type.IDENTIFIER, "book"), token(Type.LEFT_BRACKET, "["),
-                                token(Type.DOUBLE, "1"), token(Type.RIGHT_BRACKET, "]"))
-                },
-                {
-                        "ancestor::book[author][1]",
-                        asList(token(Type.IDENTIFIER, "ancestor"), token(Type.DOUBLE_COLON, "::"),
-                                token(Type.IDENTIFIER, "book"), token(Type.LEFT_BRACKET, "["),
-                                token(Type.IDENTIFIER, "author"), token(Type.RIGHT_BRACKET, "]"),
-                                token(Type.LEFT_BRACKET, "["), token(Type.DOUBLE, "1"),
-                                token(Type.RIGHT_BRACKET, "]"))
-                },
-                {
-                        "ancestor::author[parent::book][1]",
-                        asList(token(Type.IDENTIFIER, "ancestor"), token(Type.DOUBLE_COLON, "::"),
-                                token(Type.IDENTIFIER, "author"), token(Type.LEFT_BRACKET, "["),
-                                token(Type.IDENTIFIER, "parent"), token(Type.DOUBLE_COLON, "::"),
-                                token(Type.IDENTIFIER, "book"), token(Type.RIGHT_BRACKET, "]"),
-                                token(Type.LEFT_BRACKET, "["), token(Type.DOUBLE, "1"),
-                                token(Type.RIGHT_BRACKET, "]"))
-                },
-        });
+        return asList(
+                arguments("./author", asList(token(Type.DOT, "."), token(Type.SLASH, "/"),
+                        token(Type.IDENTIFIER, "author"))),
+                arguments("author", singletonList(token(Type.IDENTIFIER, "author"))),
+                arguments("first.name", singletonList(token(Type.IDENTIFIER, "first.name"))),
+                arguments("/bookstore", asList(token(Type.SLASH, "/"), token(Type.IDENTIFIER, "bookstore"))),
+                arguments("book[/bookstore/@specialty=@style]", asList(token(Type.IDENTIFIER, "book"),
+                        token(Type.LEFT_BRACKET, "["), token(Type.SLASH, "/"), token(Type.IDENTIFIER, "bookstore"),
+                        token(Type.SLASH, "/"), token(Type.AT, "@"), token(Type.IDENTIFIER, "specialty"),
+                        token(Type.EQUALS, "="), token(Type.AT, "@"), token(Type.IDENTIFIER, "style"),
+                        token(Type.RIGHT_BRACKET, "]"))),
+                arguments("author/first-name", asList(token(Type.IDENTIFIER, "author"), token(Type.SLASH, "/"),
+                        token(Type.IDENTIFIER, "first-name"))),
+                arguments("bookstore/*/title", asList(token(Type.IDENTIFIER, "bookstore"), token(Type.SLASH, "/"),
+                        token(Type.STAR, "*"), token(Type.SLASH, "/"), token(Type.IDENTIFIER, "title"))),
+                arguments("author/*", asList(token(Type.IDENTIFIER, "author"), token(Type.SLASH, "/"),
+                        token(Type.STAR, "*"))),
+                arguments("book/*/last-name", asList(token(Type.IDENTIFIER, "book"), token(Type.SLASH, "/"),
+                        token(Type.STAR, "*"), token(Type.SLASH, "/"), token(Type.IDENTIFIER, "last-name"))),
+                arguments("*/*", asList(token(Type.STAR, "*"), token(Type.SLASH, "/"), token(Type.STAR, "*"))),
+                arguments("*[@specialty]", asList(token(Type.STAR, "*"), token(Type.LEFT_BRACKET, "["),
+                        token(Type.AT, "@"), token(Type.IDENTIFIER, "specialty"), token(Type.RIGHT_BRACKET, "]"))),
+                arguments("@style", asList(token(Type.AT, "@"), token(Type.IDENTIFIER, "style"))),
+                arguments("price/@exchange", asList(token(Type.IDENTIFIER, "price"), token(Type.SLASH, "/"),
+                        token(Type.AT, "@"), token(Type.IDENTIFIER, "exchange"))),
+                arguments("price/@exchange/total", asList(token(Type.IDENTIFIER, "price"), token(Type.SLASH, "/"),
+                        token(Type.AT, "@"), token(Type.IDENTIFIER, "exchange"), token(Type.SLASH, "/"),
+                        token(Type.IDENTIFIER, "total"))),
+                arguments("book[@style]", asList(token(Type.IDENTIFIER, "book"), token(Type.LEFT_BRACKET, "["),
+                        token(Type.AT, "@"), token(Type.IDENTIFIER, "style"), token(Type.RIGHT_BRACKET, "]"))),
+                arguments("book/@style", asList(token(Type.IDENTIFIER, "book"), token(Type.SLASH, "/"),
+                        token(Type.AT, "@"), token(Type.IDENTIFIER, "style"))),
+                arguments("@*", asList(token(Type.AT, "@"), token(Type.STAR, "*"))),
+                arguments("./first-name", asList(token(Type.DOT, "."), token(Type.SLASH, "/"),
+                        token(Type.IDENTIFIER, "first-name"))),
+                arguments("first-name", singletonList(token(Type.IDENTIFIER, "first-name"))),
+                arguments("author[1]", asList(token(Type.IDENTIFIER, "author"), token(Type.LEFT_BRACKET, "["),
+                        token(Type.DOUBLE, "1"), token(Type.RIGHT_BRACKET, "]"))),
+                arguments("author[first-name][3]", asList(token(Type.IDENTIFIER, "author"),
+                        token(Type.LEFT_BRACKET, "["), token(Type.IDENTIFIER, "first-name"),
+                        token(Type.RIGHT_BRACKET, "]"), token(Type.LEFT_BRACKET, "["), token(Type.DOUBLE, "3"),
+                        token(Type.RIGHT_BRACKET, "]"))),
+                arguments("my:book", asList(token(Type.IDENTIFIER, "my"), token(Type.COLON, ":"),
+                        token(Type.IDENTIFIER, "book"))),
+                arguments("my:*", asList(token(Type.IDENTIFIER, "my"), token(Type.COLON, ":"),
+                        token(Type.STAR, "*"))),
+                arguments("@my:*", asList(token(Type.AT, "@"), token(Type.IDENTIFIER, "my"), token(Type.COLON, ":"),
+                        token(Type.STAR, "*"))),
+                arguments("book[excerpt]", asList(token(Type.IDENTIFIER, "book"), token(Type.LEFT_BRACKET, "["),
+                        token(Type.IDENTIFIER, "excerpt"), token(Type.RIGHT_BRACKET, "]"))),
+                arguments("book[excerpt]/title", asList(token(Type.IDENTIFIER, "book"),
+                        token(Type.LEFT_BRACKET, "["), token(Type.IDENTIFIER, "excerpt"),
+                        token(Type.RIGHT_BRACKET, "]"), token(Type.SLASH, "/"), token(Type.IDENTIFIER, "title"))),
+                arguments("book[excerpt]/author[degree]", asList(token(Type.IDENTIFIER, "book"),
+                        token(Type.LEFT_BRACKET, "["), token(Type.IDENTIFIER, "excerpt"),
+                        token(Type.RIGHT_BRACKET, "]"), token(Type.SLASH, "/"), token(Type.IDENTIFIER, "author"),
+                        token(Type.LEFT_BRACKET, "["), token(Type.IDENTIFIER, "degree"),
+                        token(Type.RIGHT_BRACKET, "]"))),
+                arguments("book[author/degree]", asList(token(Type.IDENTIFIER, "book"),
+                        token(Type.LEFT_BRACKET, "["), token(Type.IDENTIFIER, "author"), token(Type.SLASH, "/"),
+                        token(Type.IDENTIFIER, "degree"), token(Type.RIGHT_BRACKET, "]"))),
+                arguments("author[degree][award]", asList(token(Type.IDENTIFIER, "author"),
+                        token(Type.LEFT_BRACKET, "["), token(Type.IDENTIFIER, "degree"), token(Type.RIGHT_BRACKET, "]"),
+                        token(Type.LEFT_BRACKET, "["), token(Type.IDENTIFIER, "award"),
+                        token(Type.RIGHT_BRACKET, "]"))),
+                arguments("author[last-name = \"Bob\"]", asList(token(Type.IDENTIFIER, "author"),
+                        token(Type.LEFT_BRACKET, "["), token(Type.IDENTIFIER, "last-name"), token(Type.EQUALS, "="),
+                        token(Type.LITERAL, "Bob"), token(Type.RIGHT_BRACKET, "]"))),
+                arguments("degree[@from != \"Harvard\"]", asList(token(Type.IDENTIFIER, "degree"),
+                        token(Type.LEFT_BRACKET, "["), token(Type.AT, "@"), token(Type.IDENTIFIER, "from"),
+                        token(Type.NOT_EQUALS, "!="), token(Type.LITERAL, "Harvard"), token(Type.RIGHT_BRACKET, "]"))),
+                arguments("author[. = \"Matthew Bob\"]", asList(token(Type.IDENTIFIER, "author"),
+                        token(Type.LEFT_BRACKET, "["), token(Type.DOT, "."), token(Type.EQUALS, "="),
+                        token(Type.LITERAL, "Matthew Bob"), token(Type.RIGHT_BRACKET, "]"))),
+                arguments("author[last-name[1] = \"Bob\"]", asList(token(Type.IDENTIFIER, "author"),
+                        token(Type.LEFT_BRACKET, "["), token(Type.IDENTIFIER, "last-name"),
+                        token(Type.LEFT_BRACKET, "["), token(Type.DOUBLE, "1"), token(Type.RIGHT_BRACKET, "]"),
+                        token(Type.EQUALS, "="), token(Type.LITERAL, "Bob"), token(Type.RIGHT_BRACKET, "]"))),
+                arguments("author[* = \"Bob\"]", asList(token(Type.IDENTIFIER, "author"),
+                        token(Type.LEFT_BRACKET, "["), token(Type.STAR, "*"), token(Type.EQUALS, "="),
+                        token(Type.LITERAL, "Bob"), token(Type.RIGHT_BRACKET, "]"))),
+                arguments("ancestor::book[1]", asList(token(Type.IDENTIFIER, "ancestor"),
+                        token(Type.DOUBLE_COLON, "::"), token(Type.IDENTIFIER, "book"), token(Type.LEFT_BRACKET, "["),
+                        token(Type.DOUBLE, "1"), token(Type.RIGHT_BRACKET, "]"))),
+                arguments("ancestor::book[author][1]", asList(token(Type.IDENTIFIER, "ancestor"),
+                        token(Type.DOUBLE_COLON, "::"), token(Type.IDENTIFIER, "book"), token(Type.LEFT_BRACKET, "["),
+                        token(Type.IDENTIFIER, "author"), token(Type.RIGHT_BRACKET, "]"), token(Type.LEFT_BRACKET, "["),
+                        token(Type.DOUBLE, "1"), token(Type.RIGHT_BRACKET, "]"))),
+                arguments("ancestor::author[parent::book][1]", asList(token(Type.IDENTIFIER, "ancestor"),
+                        token(Type.DOUBLE_COLON, "::"), token(Type.IDENTIFIER, "author"), token(Type.LEFT_BRACKET, "["),
+                        token(Type.IDENTIFIER, "parent"), token(Type.DOUBLE_COLON, "::"),
+                        token(Type.IDENTIFIER, "book"), token(Type.RIGHT_BRACKET, "]"), token(Type.LEFT_BRACKET, "["),
+                        token(Type.DOUBLE, "1"), token(Type.RIGHT_BRACKET, "]")))
+        );
     }
 
-    @Parameter(0)
-    public String xpath;
-    @Parameter(1)
-    public Iterable<Token> expectedTokens;
-
-    @Test
-    public void shouldTokenizeXPath() {
+    @ParameterizedTest(name = "Given XPath {0} should tokenize it into {1}")
+    @MethodSource("data")
+    void shouldTokenizeXPath(String xpath, Collection<Token> expectedTokens) {
         Iterator<Token> expectedTokensIterator = expectedTokens.iterator();
         Iterator<Token> actualTokensIterator = new XPathLexer(xpath);
         while (actualTokensIterator.hasNext()) {
@@ -245,6 +129,15 @@ public class XPathLexerTest {
 
     private static Token token(short type, String token) {
         return new Token(type, token, 0, token.length());
+    }
+
+    private static Arguments arguments(final Object... args) {
+        return new Arguments() {
+            @Override
+            public Object[] get() {
+                return args;
+            }
+        };
     }
 
 }
