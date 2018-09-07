@@ -22,6 +22,7 @@ import com.github.simy4.xpath.expr.axis.DescendantOrSelfAxisResolver;
 import com.github.simy4.xpath.expr.axis.ParentAxisResolver;
 import com.github.simy4.xpath.expr.axis.SelfAxisResolver;
 import com.github.simy4.xpath.util.SimpleNamespaceContext;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -232,6 +233,7 @@ class XPathParserTest {
     }
 
     @ParameterizedTest(name = "Given simple XPath {0} should parse it into {1} using context {2}")
+    @DisplayName("Should parse XPath using context")
     @MethodSource("positiveSimple")
     void shouldParseSimpleXPath(String xpath, Expr expectedExpr, NamespaceContext context)
             throws XPathExpressionException {
@@ -240,6 +242,7 @@ class XPathParserTest {
     }
 
     @ParameterizedTest(name = "Given prefixed XPath {0} and no context should parse it into {1}")
+    @DisplayName("Should parse prefixed XPath")
     @MethodSource("positivePrefixedNoContext")
     void shouldParsePrefixedXPathWithNoContext(String xpath, Expr expectedExpr) throws XPathExpressionException {
         Expr actualExpr = new XPathParser(null).parse(xpath);
@@ -247,6 +250,7 @@ class XPathParserTest {
     }
 
     @ParameterizedTest(name = "Given prefixed XPath {0} and some context should parse it into {1}")
+    @DisplayName("Should parse prefixed XPath")
     @MethodSource("positivePrefixedWithContext")
     void shouldParsePrefixedXPathWithContext(String xpath, Expr expectedExpr) throws XPathExpressionException {
         Expr actualExpr = new XPathParser(new SimpleNamespaceContext()).parse(xpath);
@@ -254,6 +258,7 @@ class XPathParserTest {
     }
 
     @ParameterizedTest(name = "Given invalid XPath {0} should fail to parse it using context {1}")
+    @DisplayName("Should fail to parse malformed XPath using context")
     @MethodSource("negative")
     void shouldThrowExceptionOnParse(final String invalidXPath, final NamespaceContext namespaceContext) {
         assertThatThrownBy(() -> new XPathParser(namespaceContext).parse(invalidXPath))

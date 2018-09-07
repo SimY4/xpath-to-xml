@@ -6,27 +6,28 @@ import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewContext;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.github.simy4.xpath.util.TestNode.node;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class PathExprTest {
+@ExtendWith(MockitoExtension.class)
+class PathExprTest {
 
-    private static final NodeView<TestNode> parentNode = new NodeView<TestNode>(node("node"));
+    private static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));
 
     @Mock private Navigator<TestNode> navigator;
     @Mock private StepExpr stepExpr1;
@@ -38,20 +39,21 @@ public class PathExprTest {
 
     private Expr pathExpr;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         pathExpr = new PathExpr(asList(stepExpr1, stepExpr2, stepExpr3));
     }
 
     @Test
-    public void shouldTraverseStepsOneByOneToGetTheResultingList() {
+    @DisplayName("Should traverse steps one by one to get the resulting list")
+    void shouldTraverseStepsOneByOneToGetTheResultingList() {
         // given
-        when(stepExpr1.resolve(stepExpr1ContextCaptor.capture())).thenReturn(new NodeView<TestNode>(node("node2")));
-        when(stepExpr2.resolve(stepExpr2ContextCaptor.capture())).thenReturn(new NodeView<TestNode>(node("node3")));
-        when(stepExpr3.resolve(stepExpr3ContextCaptor.capture())).thenReturn(new NodeView<TestNode>(node("node4")));
+        when(stepExpr1.resolve(stepExpr1ContextCaptor.capture())).thenReturn(new NodeView<>(node("node2")));
+        when(stepExpr2.resolve(stepExpr2ContextCaptor.capture())).thenReturn(new NodeView<>(node("node3")));
+        when(stepExpr3.resolve(stepExpr3ContextCaptor.capture())).thenReturn(new NodeView<>(node("node4")));
 
         // when
-        View<TestNode> result = pathExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
+        View<TestNode> result = pathExpr.resolve(new ViewContext<>(navigator, parentNode, false));
 
         // then
         assertThat((Iterable<?>) result).extracting("node").containsExactly(node("node4"));
@@ -64,22 +66,22 @@ public class PathExprTest {
     }
 
     @Test
-    public void shouldShortCircuitNonGreedyTraversalWhenStepTraversalReturnsNothing() {
+    @DisplayName("When step traverse returns nothing should short circuit non greedy traversal")
+    void shouldShortCircuitNonGreedyTraversalWhenStepTraversalReturnsNothing() {
         // given
-        when(stepExpr1.resolve(ArgumentMatchers.<ViewContext<TestNode>>any()))
-                .thenReturn(new NodeView<TestNode>(node("node2")));
-        when(stepExpr2.resolve(stepExpr2ContextCaptor.capture())).thenReturn(NodeSetView.<TestNode>empty());
+        when(stepExpr1.resolve(any())).thenReturn(new NodeView<>(node("node2")));
+        when(stepExpr2.resolve(stepExpr2ContextCaptor.capture())).thenReturn(NodeSetView.empty());
 
         // when
-        View<TestNode> result = pathExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
+        View<TestNode> result = pathExpr.resolve(new ViewContext<>(navigator, parentNode, false));
 
         // then
         assertThat((Iterable<?>) result).isEmpty();
-        verify(stepExpr3, never()).resolve(ArgumentMatchers.<ViewContext<TestNode>>any());
+        verify(stepExpr3, never()).resolve(any());
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         assertThat(pathExpr).hasToString(stepExpr1 + "/" + stepExpr2 + "/" + stepExpr3);
     }
 

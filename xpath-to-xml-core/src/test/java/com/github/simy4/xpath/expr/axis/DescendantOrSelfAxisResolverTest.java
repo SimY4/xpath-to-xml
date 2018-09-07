@@ -5,6 +5,7 @@ import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewContext;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -30,6 +31,7 @@ class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     }
 
     @Test
+    @DisplayName("When descendant-or-self should return self and descendant nodes")
     void shouldReturnSelfWithAllDescendantElements() {
         // given
         setUpResolvableAxis();
@@ -44,6 +46,7 @@ class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     }
 
     @Test
+    @DisplayName("When descendant should return descendant nodes")
     void shouldReturnOnlyDescendantElements() {
         // given
         setUpResolvableAxis();
@@ -58,6 +61,7 @@ class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     }
 
     @Test
+    @DisplayName("When descendant-or-self and there are no children should return self")
     void shouldReturnOnlySelfWhenThereAreNoChildren() {
         // given
         doReturn(emptyList()).when(navigator).elementsOf(parentNode.getNode());
@@ -71,6 +75,7 @@ class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     }
 
     @Test
+    @DisplayName("When descendant and there are no children should return empty")
     void shouldReturnEmptyWhenThereAreNoChildren() {
         // given
         doReturn(emptyList()).when(navigator).elementsOf(parentNode.getNode());
@@ -84,6 +89,7 @@ class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     }
 
     @Test
+    @DisplayName("Should throw on create node")
     void shouldThrowOnCreateNode() {
         // when
         assertThatThrownBy(() -> stream(axisResolver.resolveAxis(
@@ -98,7 +104,7 @@ class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     }
 
     @Override
-    protected void setUpResolvableAxis() {
+    void setUpResolvableAxis() {
         doReturn(asList(node("node11"), node("node12"))).when(navigator).elementsOf(parentNode.getNode());
         doReturn(asList(node("node1111"), node("node1112"))).when(navigator).elementsOf(node("node11"));
         doReturn(asList(node("node1211"), node("node1212"), node(name))).when(navigator).elementsOf(node("node12"));

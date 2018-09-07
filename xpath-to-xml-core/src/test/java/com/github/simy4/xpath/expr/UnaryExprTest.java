@@ -1,72 +1,90 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.util.Pair;
+import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.util.TestNode;
-import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.LiteralView;
+import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewContext;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.theories.DataPoints;
-import org.junit.experimental.theories.FromDataPoints;
-import org.junit.experimental.theories.Theories;
-import org.junit.experimental.theories.Theory;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.stream.Stream;
 
 import static com.github.simy4.xpath.util.TestNode.node;
 import static com.github.simy4.xpath.view.NodeSetView.empty;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@RunWith(Theories.class)
-public class UnaryExprTest {
+@ExtendWith(MockitoExtension.class)
+class UnaryExprTest {
 
-    @DataPoints("views") public static Pair<?, ?>[] parentNodes = {
-            Pair.of(new NumberView<TestNode>(2.0), new NumberView<TestNode>(-2.0)),
-            Pair.of(new NumberView<TestNode>(-2.0), new NumberView<TestNode>(2.0)),
-            Pair.of(new LiteralView<TestNode>("2.0"), new NumberView<TestNode>(-2.0)),
-            Pair.of(new LiteralView<TestNode>("literal"), new NumberView<TestNode>(Double.NaN)),
-            Pair.of(new NodeView<TestNode>(node("2.0")), new NumberView<TestNode>(-2.0)),
-            Pair.of(new NodeView<TestNode>(node("node")), new NumberView<TestNode>(Double.NaN)),
-            Pair.of(BooleanView.<TestNode>of(true), new NumberView<TestNode>(-1.0)),
-            Pair.of(BooleanView.<TestNode>of(false), new NumberView<TestNode>(-0.0)),
-            Pair.of(empty(), new NumberView<TestNode>(Double.NaN)),
-    };
+    private static Stream<Arguments> number() {
+        return Stream.of(
+                Arguments.of(new LiteralView<>("2.0")),
+                Arguments.of(new NumberView<>(2.0)),
+                Arguments.of(new NodeView<>(node("2.0"))),
+                Arguments.of(new NodeSetView<>(() -> singletonList(new NodeView<>(node("2.0"))).iterator()))
+        );
+    }
 
-    @Rule
-    public MockitoRule mockitoRule = MockitoJUnit.rule();
+    private static Stream<Arguments> nan() {
+        return Stream.of(
+                Arguments.of(new LiteralView<>("literal")),
+                Arguments.of(new NumberView<>(Double.NaN)),
+                Arguments.of(new NodeView<>(node("text"))),
+                Arguments.of(empty())
+        );
+    }
 
     @Mock private Navigator<TestNode> navigator;
     @Mock private Expr valueExpr;
 
     private Expr unaryExpr;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         unaryExpr = new UnaryExpr(valueExpr);
     }
 
-    @Theory
-    public void shouldAlwaysReturnNegatedNumberViewNode(
-            @FromDataPoints("views") Pair<View<TestNode>, NumberView<TestNode>> data) {
-        when(valueExpr.resolve(ArgumentMatchers.<ViewContext<TestNode>>any())).thenReturn(data.getFirst());
+    @ParameterizedTest(name = "Given {0}")
+    @DisplayName("Should negate number representation")
+    @MethodSource("number")
+    void shouldReturnNegatedNumberViewNode(View<Node> number) {
+        // given
+        when(valueExpr.resolve(any())).thenReturn(number);
+        ViewContext<TestNode> context = new ViewContext<>(navigator, new NodeView<>(node("node")), false);
 
-        View<TestNode> result = unaryExpr.resolve(new ViewContext<TestNode>(navigator,
-                new NodeView<TestNode>(node("xml")), false));
-        assertThat(result.toNumber()).isEqualTo(data.getSecond().toNumber());
+        // when
+        assertThat(unaryExpr.resolve(context)).extracting("number").contains(-number.toNumber());
+    }
+
+    @ParameterizedTest(name = "Given {0}")
+    @DisplayName("Should resolve to NaN")
+    @MethodSource("nan")
+    void negationWithNanShouldBeNan(View<Node> nan) {
+        // given
+        when(valueExpr.resolve(any())).thenReturn(nan);
+        ViewContext<TestNode> context = new ViewContext<>(navigator, new NodeView<>(node("node")), false);
+
+        // when
+        assertThat(unaryExpr.resolve(context)).extracting("number").contains(Double.NaN);
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         assertThat(unaryExpr).hasToString("-(" + valueExpr + ')');
     }
 

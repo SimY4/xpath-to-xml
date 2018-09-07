@@ -5,6 +5,7 @@ import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewContext;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.namespace.QName;
@@ -24,7 +25,8 @@ class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     }
 
     @Test
-    void shouldReturnSelfWithAllDescendantElements() {
+    @DisplayName("When ancestor-or-self should return self and ancestor nodes")
+    void shouldReturnSelfWithAllAncestorElements() {
         // given
         setUpResolvableAxis();
         axisResolver = new AncestorOrSelfAxisResolver(new QName("*", "*"), true);
@@ -38,7 +40,8 @@ class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     }
 
     @Test
-    void shouldReturnOnlyDescendantElements() {
+    @DisplayName("When ancestor should return ancestor nodes")
+    void shouldReturnOnlyAncestorElements() {
         // given
         setUpResolvableAxis();
         axisResolver = new AncestorOrSelfAxisResolver(new QName("*", "*"), false);
@@ -52,7 +55,8 @@ class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     }
 
     @Test
-    void shouldReturnOnlySelfWhenThereAreNoChildren() {
+    @DisplayName("When ancestor-or-self and there are no ancestors should return self")
+    void shouldReturnOnlySelfWhenThereAreNoAncestors() {
         // given
         doReturn(null).when(navigator).parentOf(parentNode.getNode());
         axisResolver = new AncestorOrSelfAxisResolver(new QName("*", "*"), true);
@@ -65,7 +69,8 @@ class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     }
 
     @Test
-    void shouldReturnEmptyWhenThereAreNoChildren() {
+    @DisplayName("When ancestor and there are no ancestors should return empty")
+    void shouldReturnEmptyWhenThereAreNoAncestors() {
         // given
         doReturn(null).when(navigator).parentOf(parentNode.getNode());
         axisResolver = new AncestorOrSelfAxisResolver(new QName("*", "*"), false);
@@ -78,6 +83,7 @@ class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     }
 
     @Test
+    @DisplayName("Should throw on create node")
     void shouldThrowOnCreateNode() {
         // when
         assertThatThrownBy(() -> stream(axisResolver.resolveAxis(

@@ -5,31 +5,33 @@ import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewContext;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
-public class LiteralExprTest {
+@ExtendWith(MockitoExtension.class)
+class LiteralExprTest {
 
-    private static final NodeView<TestNode> parentNode = new NodeView<TestNode>(node("node"));
+    private static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));
 
     @Mock private Navigator<TestNode> navigator;
 
     private final Expr literalExpr = new LiteralExpr("value");
 
     @Test
-    public void shouldAlwaysReturnSingleLiteralNode() {
-        View<TestNode> result = literalExpr.resolve(new ViewContext<TestNode>(navigator, parentNode, false));
+    @DisplayName("Should always return single literal node")
+    void shouldAlwaysReturnSingleLiteralNode() {
+        View<TestNode> result = literalExpr.resolve(new ViewContext<>(navigator, parentNode, false));
         assertThat(result).extracting("literal").contains("value");
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         assertThat(literalExpr).hasToString("'value'");
     }
 

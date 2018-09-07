@@ -8,6 +8,5 @@ dependencies {
     testImplementation "org.mockito:mockito-junit-jupiter:$mockitoVersion"
     testImplementation "org.assertj:assertj-core:$assertjVersion"
 
-    testImplementation "org.junit.vintage:junit-vintage-engine:$jUnitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jUnitVersion"
 }

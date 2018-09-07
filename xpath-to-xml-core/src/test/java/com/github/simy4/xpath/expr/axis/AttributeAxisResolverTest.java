@@ -5,6 +5,7 @@ import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.ViewContext;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -34,6 +35,7 @@ class AttributeAxisResolverTest extends AbstractAxisResolverTest {
     }
 
     @Test
+    @DisplayName("Should create attribute")
     void shouldCreateAttribute() {
         // when
         IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, true));
@@ -44,6 +46,7 @@ class AttributeAxisResolverTest extends AbstractAxisResolverTest {
     }
 
     @Test
+    @DisplayName("When wildcard namespace should throw")
     void shouldThrowForAttributesWithWildcardNamespace() {
         // given
         axisResolver = new AttributeAxisResolver(new QName("*", "attr"));
@@ -56,6 +59,7 @@ class AttributeAxisResolverTest extends AbstractAxisResolverTest {
     }
 
     @Test
+    @DisplayName("When wildcard local part should throw")
     void shouldThrowForAttributesWithWildcardLocalPart() {
         // given
         axisResolver = new AttributeAxisResolver(new QName("http://www.example.com/my", "*", "my"));
@@ -68,6 +72,7 @@ class AttributeAxisResolverTest extends AbstractAxisResolverTest {
     }
 
     @Test
+    @DisplayName("When error should propagate")
     void shouldPropagateIfFailedToCreateAttribute() {
         // given
         when(navigator.createAttribute(any(TestNode.class), any(QName.class))).thenThrow(XmlBuilderException.class);

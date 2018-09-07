@@ -1,60 +1,102 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.LiteralView;
+import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewContext;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.theories.DataPoints;
-import org.junit.experimental.theories.FromDataPoints;
-import org.junit.experimental.theories.Theories;
-import org.junit.experimental.theories.Theory;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.stream.Stream;
 
 import static com.github.simy4.xpath.util.TestNode.node;
+import static com.github.simy4.xpath.view.NodeSetView.empty;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@RunWith(Theories.class)
-public class AdditionExprTest {
+@ExtendWith(MockitoExtension.class)
+class AdditionExprTest {
 
-    @DataPoints("3.0")
-    public static final View<?>[] NUMBERS = {
-            new LiteralView<TestNode>("3.0"),
-            new NumberView<TestNode>(3.0),
-            new NodeView<TestNode>(node("3.0")),
-    };
+    private static Stream<View<?>> three() {
+        return Stream.of(
+                new LiteralView<>("3.0"),
+                new NumberView<>(3.0),
+                new NodeView<>(node("3.0")),
+                new NodeSetView<>(() -> singletonList(new NodeView<>(node("3.0"))).iterator())
+        );
+    }
 
-    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
+    private static Stream<Arguments> numberPairs() {
+        return three().flatMap(n1 -> three().map(n2 -> Arguments.of(n1, n2)));
+    }
+
+    private static Stream<View<?>> nan() {
+        return Stream.of(
+                new LiteralView<TestNode>("literal"),
+                new NumberView<TestNode>(Double.NaN),
+                new NodeView<>(node("text")),
+                empty()
+        );
+    }
+
+    private static Stream<Arguments> numberAndNan() {
+        return three().flatMap(n -> nan().map(nan -> Arguments.of(n, nan)));
+    }
 
     @Mock private Navigator<TestNode> navigator;
     @Mock private Expr leftExpr;
     @Mock private Expr rightExpr;
 
-    @Theory
-    public void shouldAddLeftViewToRightView(@FromDataPoints("3.0") View<TestNode> left,
-                                             @FromDataPoints("3.0") View<TestNode> right) {
+    private Expr additionExpr;
+
+    @BeforeEach
+    void setUp() {
+        additionExpr = new AdditionExpr(leftExpr, rightExpr);
+    }
+
+    @ParameterizedTest(name = "Given {0} and {1}")
+    @DisplayName("Should add number representations")
+    @MethodSource("numberPairs")
+    void shouldAddLeftViewToRightView(View<Node> left, View<Node> right) {
         // given
-        when(leftExpr.resolve(ArgumentMatchers.<ViewContext<TestNode>>any())).thenReturn(left);
-        when(rightExpr.resolve(ArgumentMatchers.<ViewContext<TestNode>>any())).thenReturn(right);
-        ViewContext<TestNode> context = new ViewContext<TestNode>(navigator,
-                new NodeView<TestNode>(node("node")), false);
+        when(leftExpr.resolve(any())).thenReturn(left);
+        when(rightExpr.resolve(any())).thenReturn(right);
+        ViewContext<TestNode> context = new ViewContext<>(navigator, new NodeView<>(node("node")), false);
 
         // when
-        assertThat(new AdditionExpr(leftExpr, rightExpr).resolve(context)).extracting("number").contains(6.0);
+        assertThat(additionExpr.resolve(context)).extracting("number").contains(6.0);
+    }
+
+    @ParameterizedTest(name = "Given {0} and {1}")
+    @DisplayName("Should resolve to NaN")
+    @MethodSource("numberAndNan")
+    void additionWithNanShouldBeNan(View<Node> number, View<Node> nan) {
+        // given
+        when(leftExpr.resolve(any())).thenReturn(number);
+        when(rightExpr.resolve(any())).thenReturn(nan);
+        ViewContext<TestNode> context = new ViewContext<>(navigator, new NodeView<>(node("node")), false);
+
+        // when
+        assertThat(additionExpr.resolve(context)).extracting("number").contains(Double.NaN);
     }
 
     @Test
-    public void testToString() {
-        assertThat(new AdditionExpr(leftExpr, rightExpr)).hasToString(leftExpr.toString() + "+" + rightExpr.toString());
+    void testToString() {
+        assertThat(additionExpr).hasToString(leftExpr.toString() + "+" + rightExpr.toString());
     }
 
 }

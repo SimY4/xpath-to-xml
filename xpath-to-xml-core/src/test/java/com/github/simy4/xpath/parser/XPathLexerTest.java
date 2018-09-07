@@ -1,6 +1,7 @@
 package com.github.simy4.xpath.parser;
 
 import com.github.simy4.xpath.parser.Token.Type;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -114,6 +115,7 @@ class XPathLexerTest {
     }
 
     @ParameterizedTest(name = "Given XPath {0} should tokenize it into {1}")
+    @DisplayName("Should tokenize XPath")
     @MethodSource("data")
     void shouldTokenizeXPath(String xpath, Collection<Token> expectedTokens) {
         Iterator<Token> expectedTokensIterator = expectedTokens.iterator();
