@@ -3,3 +3,7 @@ apply plugin: 'ru.vyarus.animalsniffer'
 dependencies {
     signature 'org.codehaus.mojo.signature:java16:1.1@signature'
 }
+
+animalsniffer {
+    sourceSets = [sourceSets.main]
+}

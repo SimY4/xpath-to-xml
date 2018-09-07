@@ -4,33 +4,39 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewContext;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import javax.xml.namespace.QName;
 
-import static com.github.simy4.xpath.util.EagerConsumer.consume;
+import java.util.stream.Collectors;
+
 import static com.github.simy4.xpath.util.TestNode.node;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.stream.StreamSupport.stream;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.doReturn;
 
-public class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
+@MockitoSettings(strictness = Strictness.LENIENT)
+class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         axisResolver = new DescendantOrSelfAxisResolver(name, true);
     }
 
     @Test
-    public void shouldReturnSelfWithAllDescendantElements() {
+    void shouldReturnSelfWithAllDescendantElements() {
         // given
         setUpResolvableAxis();
         axisResolver = new DescendantOrSelfAxisResolver(new QName("*", "*"), true);
 
         // when
-        View<TestNode> result = axisResolver.resolveAxis(new ViewContext<TestNode>(navigator, parentNode, false));
+        View<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
 
         // then
         assertThat((Iterable<?>) result).extracting("node").containsExactly(parentNode.getNode(), node("node11"),
@@ -38,13 +44,13 @@ public class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     }
 
     @Test
-    public void shouldReturnOnlyDescendantElements() {
+    void shouldReturnOnlyDescendantElements() {
         // given
         setUpResolvableAxis();
         axisResolver = new DescendantOrSelfAxisResolver(new QName("*", "*"), false);
 
         // when
-        View<TestNode> result = axisResolver.resolveAxis(new ViewContext<TestNode>(navigator, parentNode, false));
+        View<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
 
         // then
         assertThat((Iterable<?>) result).extracting("node").containsExactly(node("node11"),
@@ -52,39 +58,42 @@ public class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     }
 
     @Test
-    public void shouldReturnOnlySelfWhenThereAreNoChildren() {
+    void shouldReturnOnlySelfWhenThereAreNoChildren() {
         // given
         doReturn(emptyList()).when(navigator).elementsOf(parentNode.getNode());
         axisResolver = new DescendantOrSelfAxisResolver(new QName("*", "*"), true);
 
         // when
-        View<TestNode> result = axisResolver.resolveAxis(new ViewContext<TestNode>(navigator, parentNode, false));
+        View<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
 
         // then
         assertThat((Iterable<?>) result).extracting("node").containsExactly(parentNode.getNode());
     }
 
     @Test
-    public void shouldReturnEmptyWhenThereAreNoChildren() {
+    void shouldReturnEmptyWhenThereAreNoChildren() {
         // given
         doReturn(emptyList()).when(navigator).elementsOf(parentNode.getNode());
         axisResolver = new DescendantOrSelfAxisResolver(new QName("*", "*"), false);
 
         // when
-        View<TestNode> result = axisResolver.resolveAxis(new ViewContext<TestNode>(navigator, parentNode, false));
+        View<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
 
         // then
         assertThat((Iterable<?>) result).isEmpty();
     }
 
-    @Test(expected = XmlBuilderException.class)
-    public void shouldThrowOnCreateNode() {
+    @Test
+    void shouldThrowOnCreateNode() {
         // when
-        consume(axisResolver.resolveAxis(new ViewContext<TestNode>(navigator, parentNode, true)));
+        assertThatThrownBy(() -> stream(axisResolver.resolveAxis(
+                new ViewContext<>(navigator, parentNode, true)).spliterator(), false)
+                .collect(Collectors.toList()))
+                .isInstanceOf(XmlBuilderException.class);
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         assertThat(axisResolver).hasToString("descendant-or-self::" + name);
     }
 

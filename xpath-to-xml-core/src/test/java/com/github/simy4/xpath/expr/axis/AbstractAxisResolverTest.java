@@ -5,80 +5,81 @@ import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.xml.namespace.QName;
 
 import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
-public abstract class AbstractAxisResolverTest {
+@ExtendWith(MockitoExtension.class)
+abstract class AbstractAxisResolverTest {
 
-    protected static final NodeView<TestNode> parentNode = new NodeView<TestNode>(node("node"));
-    protected static final QName name = new QName("name");
+    static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));
+    static final QName name = new QName("name");
 
-    @Mock protected Navigator<TestNode> navigator;
+    @Mock Navigator<TestNode> navigator;
 
-    protected AxisResolver axisResolver;
+    AxisResolver axisResolver;
 
     @Test
-    public void shouldReturnTarversedNodesIfAxisIsTraversable() {
+    @DisplayName("When axis traversable should return traversed nodes")
+    void shouldReturnTraversedNodesIfAxisIsTraversable() {
         // given
         setUpResolvableAxis();
 
         // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(
-                new ViewContext<TestNode>(navigator, parentNode, false));
+        IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
 
         // then
-        assertThat((Iterable<?>) result).isNotEmpty();
         assertThat((Iterable<?>) result).extracting("node").containsExactly(node(name));
     }
 
     @Test
-    public void shouldNotCallToCreateIfAxisIsTraversable() {
+    @DisplayName("When axis traversable should not call to create")
+    void shouldNotCallToCreateIfAxisIsTraversable() {
         // given
         setUpResolvableAxis();
         axisResolver = spy(axisResolver);
 
         // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(
-                new ViewContext<TestNode>(navigator, parentNode, true));
+        IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, true));
 
         // then
         assertThat((Iterable<?>) result).isNotEmpty();
         assertThat((Iterable<?>) result).extracting("node").containsExactly(node(name));
-        verify(axisResolver, never()).createAxisNode(ArgumentMatchers.<ViewContext<TestNode>>any());
+        verify(axisResolver, never()).createAxisNode(any());
     }
 
     @Test
-    public void shouldReturnEmptyIfAxisIsNotTraversable() {
+    @DisplayName("When axis is not traversable return empty")
+    void shouldReturnEmptyIfAxisIsNotTraversable() {
         // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(
-                new ViewContext<TestNode>(navigator, parentNode, false));
+        IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
 
         // then
         assertThat((Iterable<?>) result).isEmpty();
     }
 
     @Test
-    public void shouldReturnEmptyIfAxisIsNotTraversableGreedyAndHasNext() {
+    @DisplayName("When axis is not traversable and greedy context and has next should return empty")
+    void shouldReturnEmptyIfAxisIsNotTraversableGreedyAndHasNext() {
         // when
         IterableNodeView<TestNode> result = axisResolver.resolveAxis(
-                new ViewContext<TestNode>(navigator, parentNode, true, true, 1));
+                new ViewContext<>(navigator, parentNode, true, true, 1));
 
         // then
         assertThat((Iterable<?>) result).isEmpty();
     }
 
-    protected abstract void setUpResolvableAxis();
+    abstract void setUpResolvableAxis();
 
 }

@@ -6,22 +6,24 @@ import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class PutEffectTest {
+@ExtendWith(MockitoExtension.class)
+class PutEffectTest {
 
     @Mock private Navigator<TestNode> navigator;
     @Mock private Expr expr;
@@ -29,32 +31,34 @@ public class PutEffectTest {
 
     private Effect putEffect;
 
-    @Before
-    public void setUp() {
-        when(expr.resolve(ArgumentMatchers.<ViewContext<TestNode>>any()))
-                .thenReturn(new NodeView<TestNode>(node("node")));
+    @BeforeEach
+    void setUp() {
+        when(expr.resolve(any())).thenReturn(new NodeView<>(node("node")));
 
         putEffect = new PutEffect(expr);
     }
 
     @Test
-    public void shouldGreedilyResolveExpr() {
+    @DisplayName("Should greedily resolve expr")
+    void shouldGreedilyResolveExpr() {
         // when
         putEffect.perform(navigator, node("xml"));
 
         // then
         verify(expr).resolve(contextCaptor.capture());
-        assertThat((Object) contextCaptor.getValue()).extracting("navigator", "greedy", "hasNext", "position")
+        assertThat(contextCaptor.getValue()).extracting("navigator", "greedy", "hasNext", "position")
                 .containsExactly(navigator, true, false, 1);
     }
 
-    @Test(expected = XmlBuilderException.class)
-    public void shouldPropagateOnAnyException() {
+    @Test
+    @DisplayName("When exception should propagate")
+    void shouldPropagateOnException() {
         // given
-        when(expr.resolve(ArgumentMatchers.<ViewContext<TestNode>>any())).thenThrow(XmlBuilderException.class);
+        XmlBuilderException failure = new XmlBuilderException("Failure");
+        when(expr.resolve(any())).thenThrow(failure);
 
         // then
-        putEffect.perform(navigator, node("xml"));
+        assertThatThrownBy(() -> putEffect.perform(navigator, node("xml"))).isSameAs(failure);
     }
 
 }
