@@ -11,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import javax.xml.namespace.QName;
-
 import java.util.stream.Collectors;
 
 import static com.github.simy4.xpath.util.TestNode.node;
@@ -90,6 +89,7 @@ class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
 
     @Test
     @DisplayName("Should throw on create node")
+    @SuppressWarnings("ReturnValueIgnored")
     void shouldThrowOnCreateNode() {
         // when
         assertThatThrownBy(() -> stream(axisResolver.resolveAxis(

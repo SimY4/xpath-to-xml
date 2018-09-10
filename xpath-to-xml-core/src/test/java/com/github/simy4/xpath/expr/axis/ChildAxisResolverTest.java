@@ -11,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import javax.xml.namespace.QName;
-
 import java.util.stream.Collectors;
 
 import static com.github.simy4.xpath.util.TestNode.node;
@@ -48,6 +47,7 @@ class ChildAxisResolverTest extends AbstractAxisResolverTest {
 
     @Test
     @DisplayName("When wildcard namespace should throw")
+    @SuppressWarnings("ReturnValueIgnored")
     void shouldThrowForElementsWithWildcardNamespace() {
         // given
         axisResolver = new ChildAxisResolver(new QName("*", "attr"));
@@ -61,6 +61,7 @@ class ChildAxisResolverTest extends AbstractAxisResolverTest {
 
     @Test
     @DisplayName("When wildcard local part should throw")
+    @SuppressWarnings("ReturnValueIgnored")
     void shouldThrowForElementsWithWildcardLocalPart() {
         // given
         axisResolver = new ChildAxisResolver(new QName("http://www.example.com/my", "*", "my"));
@@ -74,6 +75,7 @@ class ChildAxisResolverTest extends AbstractAxisResolverTest {
 
     @Test
     @DisplayName("When error should propagate")
+    @SuppressWarnings("ReturnValueIgnored")
     void shouldPropagateIfFailedToCreateElement() {
         // given
         when(navigator.createElement(any(TestNode.class), any(QName.class))).thenThrow(XmlBuilderException.class);

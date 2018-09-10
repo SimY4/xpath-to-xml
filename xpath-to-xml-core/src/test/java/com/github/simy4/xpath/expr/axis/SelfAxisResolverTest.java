@@ -14,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.xml.namespace.QName;
-
 import java.util.stream.Collectors;
 
 import static com.github.simy4.xpath.util.TestNode.node;
@@ -93,6 +92,7 @@ class SelfAxisResolverTest {
 
     @Test
     @DisplayName("Should throw on create node")
+    @SuppressWarnings("ReturnValueIgnored")
     void shouldThrowOnCreateNode() {
         // given
         axisResolver = new SelfAxisResolver(new QName("another-name"));

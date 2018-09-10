@@ -23,6 +23,7 @@ class ParentAxisResolverTest extends AbstractAxisResolverTest {
 
     @Test
     @DisplayName("Should throw on create node")
+    @SuppressWarnings("ReturnValueIgnored")
     void shouldThrowOnCreateNode() {
         // when
         assertThatThrownBy(() -> stream(axisResolver.resolveAxis(

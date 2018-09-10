@@ -47,6 +47,7 @@ class AttributeAxisResolverTest extends AbstractAxisResolverTest {
 
     @Test
     @DisplayName("When wildcard namespace should throw")
+    @SuppressWarnings("ReturnValueIgnored")
     void shouldThrowForAttributesWithWildcardNamespace() {
         // given
         axisResolver = new AttributeAxisResolver(new QName("*", "attr"));
@@ -60,6 +61,7 @@ class AttributeAxisResolverTest extends AbstractAxisResolverTest {
 
     @Test
     @DisplayName("When wildcard local part should throw")
+    @SuppressWarnings("ReturnValueIgnored")
     void shouldThrowForAttributesWithWildcardLocalPart() {
         // given
         axisResolver = new AttributeAxisResolver(new QName("http://www.example.com/my", "*", "my"));
@@ -73,6 +75,7 @@ class AttributeAxisResolverTest extends AbstractAxisResolverTest {
 
     @Test
     @DisplayName("When error should propagate")
+    @SuppressWarnings("ReturnValueIgnored")
     void shouldPropagateIfFailedToCreateAttribute() {
         // given
         when(navigator.createAttribute(any(TestNode.class), any(QName.class))).thenThrow(XmlBuilderException.class);
