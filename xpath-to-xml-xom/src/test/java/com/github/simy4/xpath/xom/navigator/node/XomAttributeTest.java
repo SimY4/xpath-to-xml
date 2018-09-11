@@ -3,46 +3,49 @@ package com.github.simy4.xpath.xom.navigator.node;
 import com.github.simy4.xpath.XmlBuilderException;
 import nu.xom.Attribute;
 import nu.xom.Element;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.xml.namespace.QName;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class XomAttributeTest {
+class XomAttributeTest {
 
     private XomNode<Attribute> node;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         Attribute attribute = new Attribute("attr", "text");
         attribute.setNamespace("my", "http://www.example.com/my");
         node = new XomAttribute(attribute);
     }
 
     @Test
-    public void shouldReturnEmptyListWhenObtainAttributes() {
+    void shouldReturnEmptyListWhenObtainAttributes() {
         assertThat(node.attributes()).isEmpty();
     }
 
     @Test
-    public void shouldReturnEmptyListWhenObtainElements() {
+    void shouldReturnEmptyListWhenObtainElements() {
         assertThat(node.elements()).isEmpty();
     }
 
-    @Test(expected = XmlBuilderException.class)
-    public void shouldThrowExceptionWhenAppendAttribute() {
-        node.appendAttribute(new Attribute("attr", ""));
-    }
-
-    @Test(expected = XmlBuilderException.class)
-    public void shouldThrowExceptionWhenAppendElement() {
-        node.appendElement(new Element("elem"));
+    @Test
+    void shouldThrowExceptionWhenAppendAttribute() {
+        assertThatThrownBy(() -> node.appendAttribute(new Attribute("attr", "")))
+                .isInstanceOf(XmlBuilderException.class);
     }
 
     @Test
-    public void shouldReturnNodeNameWithNamespaceUri() {
+    void shouldThrowExceptionWhenAppendElement() {
+        assertThatThrownBy(() -> node.appendElement(new Element("elem")))
+                .isInstanceOf(XmlBuilderException.class);
+    }
+
+    @Test
+    void shouldReturnNodeNameWithNamespaceUri() {
         QName result = node.getName();
 
         assertThat(result).extracting("namespaceURI", "localPart", "prefix")
@@ -50,7 +53,7 @@ public class XomAttributeTest {
     }
 
     @Test
-    public void shouldReturnNodeTextContent() {
+    void shouldReturnNodeTextContent() {
         assertThat(node.getText()).isEqualTo("text");
     }
 
