@@ -9,11 +9,9 @@ import org.dom4j.XPath;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameter;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPathExpressionException;
@@ -21,37 +19,31 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
-public class XmlBuilderTest {
+class XmlBuilderTest {
 
-    @Parameter(0)
-    public FixtureAccessor fixtureAccessor;
-    @Parameter(1)
-    public NamespaceContext namespaceContext;
-
-    @Parameters(name = "With test fixture: {0} and namespace: {1}")
-    public static Collection<Object[]> data() {
-        return asList(new Object[][] {
-                { new FixtureAccessor("simple"), null },
-                { new FixtureAccessor("simple"), new SimpleNamespaceContext() },
-                { new FixtureAccessor("ns-simple"), new SimpleNamespaceContext() },
+    private static Stream<Arguments> data() {
+        return Stream.of(
+                Arguments.of(new FixtureAccessor("simple"), null),
+                Arguments.of(new FixtureAccessor("simple"), new SimpleNamespaceContext()),
+                Arguments.of(new FixtureAccessor("ns-simple"), new SimpleNamespaceContext()),
                 // TODO although these cases are working fine the order of attribute is messed up
-                // { new FixtureAccessor("attr"), null },
-                // { new FixtureAccessor("attr"), new SimpleNamespaceContext() },
-                { new FixtureAccessor("special"), null },
-                { new FixtureAccessor("special"), new SimpleNamespaceContext() },
-        });
+                // Arguments.of(new FixtureAccessor("attr"), null),
+                // Arguments.of(new FixtureAccessor("attr"), new SimpleNamespaceContext()),
+                Arguments.of(new FixtureAccessor("special"), null),
+                Arguments.of(new FixtureAccessor("special"), new SimpleNamespaceContext())
+        );
     }
 
-    @Test
-    public void shouldBuildDocumentFromSetOfXPaths() throws XPathExpressionException, IOException {
+    @ParameterizedTest
+    @MethodSource("data")
+    void shouldBuildDocumentFromSetOfXPaths(FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext)
+            throws XPathExpressionException, IOException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         Document builtDocument = new XmlBuilder(namespaceContext)
                 .putAll(xmlProperties.keySet())
@@ -67,8 +59,11 @@ public class XmlBuilderTest {
         assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutXml());
     }
 
-    @Test
-    public void shouldBuildDocumentFromSetOfXPathsAndSetValues() throws XPathExpressionException, IOException {
+    @ParameterizedTest
+    @MethodSource("data")
+    void shouldBuildDocumentFromSetOfXPathsAndSetValues(FixtureAccessor fixtureAccessor,
+                                                        NamespaceContext namespaceContext)
+            throws XPathExpressionException, IOException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         Document builtDocument = new XmlBuilder(namespaceContext)
                 .putAll(xmlProperties)
@@ -84,8 +79,10 @@ public class XmlBuilderTest {
         assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
     }
 
-    @Test
-    public void shouldModifyDocumentWhenXPathsAreNotTraversable()
+    @ParameterizedTest
+    @MethodSource("data")
+    void shouldModifyDocumentWhenXPathsAreNotTraversable(FixtureAccessor fixtureAccessor,
+                                                         NamespaceContext namespaceContext)
             throws XPathExpressionException, DocumentException, IOException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         String xml = fixtureAccessor.getPutXml();
@@ -97,8 +94,10 @@ public class XmlBuilderTest {
         assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
     }
 
-    @Test
-    public void shouldNotModifyDocumentWhenAllXPathsTraversable()
+    @ParameterizedTest
+    @MethodSource("data")
+    void shouldNotModifyDocumentWhenAllXPathsTraversable(FixtureAccessor fixtureAccessor,
+                                                         NamespaceContext namespaceContext)
             throws XPathExpressionException, DocumentException, IOException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         String xml = fixtureAccessor.getPutValueXml();
@@ -116,8 +115,9 @@ public class XmlBuilderTest {
         assertThat(xmlToString(builtDocument)).isEqualTo(xml);
     }
 
-    @Test
-    public void shouldRemovePathsFromExistingXml()
+    @ParameterizedTest
+    @MethodSource("data")
+    void shouldRemovePathsFromExistingXml(FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext)
             throws XPathExpressionException, DocumentException, IOException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         String xml = fixtureAccessor.getPutValueXml();

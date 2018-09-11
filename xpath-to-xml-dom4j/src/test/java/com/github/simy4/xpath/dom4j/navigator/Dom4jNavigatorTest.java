@@ -12,12 +12,13 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.Node;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
@@ -25,13 +26,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class Dom4jNavigatorTest {
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
+class Dom4jNavigatorTest {
 
     @Mock private Document root;
     @Mock private Element parent;
@@ -49,8 +52,8 @@ public class Dom4jNavigatorTest {
 
     private Navigator<Dom4jNode<?>> navigator;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         when(root.getNodeType()).thenReturn(Node.DOCUMENT_NODE);
         when(root.getRootElement()).thenReturn(parent);
 
@@ -65,86 +68,88 @@ public class Dom4jNavigatorTest {
     }
 
     @Test
-    public void testRootNode() {
+    void testRootNode() {
         assertThat(navigator.root()).hasFieldOrPropertyWithValue("node", root);
     }
 
     @Test
-    public void testParentOfRegularNode() {
+    void testParentOfRegularNode() {
         assertThat(navigator.parentOf(new Dom4jElement(xml))).hasFieldOrPropertyWithValue("node", parent);
     }
 
     @Test
-    public void testParentOfRootNode() {
+    void testParentOfRootNode() {
         assertThat(navigator.parentOf(new Dom4jDocument(root))).isNull();
     }
 
     @Test
-    public void testElementsOfDocument() {
+    void testElementsOfDocument() {
         assertThat(navigator.elementsOf(new Dom4jDocument(root)))
                 .extracting("node", Element.class)
                 .containsExactly(parent);
     }
 
     @Test
-    public void testElementsOfElement() {
+    void testElementsOfElement() {
         assertThat(navigator.elementsOf(new Dom4jElement(xml)))
                 .extracting("node", Element.class)
                 .containsExactly(child1, child2, child3);
     }
 
     @Test
-    public void testElementsOfNonElement() {
+    void testElementsOfNonElement() {
         assertThat(navigator.elementsOf(new Dom4jAttribute(attr))).isEmpty();
     }
 
     @Test
-    public void testAttributesOf() {
+    void testAttributesOf() {
         assertThat(navigator.attributesOf(new Dom4jElement(xml)))
                 .extracting("node", Attribute.class)
                 .containsExactly(attr1, attr2, attr3);
     }
 
     @Test
-    public void testAttributesOfNonElementNode() {
+    void testAttributesOfNonElementNode() {
         assertThat(navigator.attributesOf(new Dom4jAttribute(attr))).isEmpty();
     }
 
     @Test
-    public void testCreateAttributeSuccess() {
+    void testCreateAttributeSuccess() {
         assertThat(navigator.createAttribute(new Dom4jElement(xml), new QName("attr"))).isNotNull();
     }
 
     @Test
-    public void testCreateNsAttributeSuccess() {
+    void testCreateNsAttributeSuccess() {
         assertThat(navigator.createAttribute(new Dom4jElement(xml), new QName("http://example.com/my", "attr", "my"))).isNotNull();
     }
 
-    @Test(expected = XmlBuilderException.class)
-    public void testCreateAttributeFailure() {
-        navigator.createAttribute(new Dom4jDocument(root), new QName("attr"));
+    @Test
+    void testCreateAttributeFailure() {
+        assertThatThrownBy(() -> navigator.createAttribute(new Dom4jDocument(root), new QName("attr")))
+                .isInstanceOf(XmlBuilderException.class);
     }
 
     @Test
-    public void testCreateElementSuccess() {
+    void testCreateElementSuccess() {
         assertThat(navigator.createElement(new Dom4jElement(xml), new QName("elem"))).isNotNull();
         verify(xml).addElement(new org.dom4j.QName("elem"));
     }
 
     @Test
-    public void testCreateNsElementSuccess() {
+    void testCreateNsElementSuccess() {
         assertThat(navigator.createElement(new Dom4jElement(xml), new QName("http://example.com/my", "elem", "my"))).isNotNull();
         verify(xml).addElement(new org.dom4j.QName("elem", new Namespace("my", "http://example.com/my")));
     }
 
-    @Test(expected = XmlBuilderException.class)
-    public void testCreateElementFailure() {
-        navigator.createElement(new Dom4jAttribute(attr), new QName("elem"));
+    @Test
+    void testCreateElementFailure() {
+        assertThatThrownBy(() -> navigator.createElement(new Dom4jAttribute(attr), new QName("elem")))
+                .isInstanceOf(XmlBuilderException.class);
     }
 
     @Test
-    public void testPrependCopySuccess() {
-        List<Element> elements = new ArrayList<Element>();
+    void testPrependCopySuccess() {
+        List<Element> elements = new ArrayList<>();
         elements.add(xml);
         when(parent.elements()).thenReturn(elements);
 
@@ -153,38 +158,41 @@ public class Dom4jNavigatorTest {
         assertThat(elements).containsExactly(xml, xml);
     }
 
-    @Test(expected = XmlBuilderException.class)
-    public void testPrependCopyNoParent() {
-        navigator.prependCopy(new Dom4jElement(DocumentHelper.createElement("elem")));
-    }
-
-    @Test(expected = XmlBuilderException.class)
-    public void testPrependCopyFailure() {
-        navigator.prependCopy(new Dom4jDocument(root));
+    @Test
+    void testPrependCopyNoParent() {
+        assertThatThrownBy(() -> navigator.prependCopy(new Dom4jElement(DocumentHelper.createElement("elem"))))
+                .isInstanceOf(XmlBuilderException.class);
     }
 
     @Test
-    public void testSetTextSuccess() {
+    void testPrependCopyFailure() {
+        assertThatThrownBy(() -> navigator.prependCopy(new Dom4jDocument(root)))
+                .isInstanceOf(XmlBuilderException.class);
+    }
+
+    @Test
+    void testSetTextSuccess() {
         navigator.setText(new Dom4jElement(xml), "text");
         verify(xml).setText("text");
     }
 
-    @Test(expected = XmlBuilderException.class)
-    public void testSetTextFailure() {
+    @Test
+    void testSetTextFailure() {
         doThrow(UnsupportedOperationException.class).when(xml).setText(anyString());
-        navigator.setText(new Dom4jElement(xml), "text");
+        assertThatThrownBy(() -> navigator.setText(new Dom4jElement(xml), "text"))
+                .isInstanceOf(XmlBuilderException.class);
     }
 
     @Test
-    @Ignore
-    public void testRemoveSuccess() {
+    void testRemoveSuccess() {
         navigator.remove(new Dom4jElement(xml));
-        verify(parent).remove(xml);
+        verify(parent).remove((Node) xml);
     }
 
-    @Test(expected = XmlBuilderException.class)
-    public void testRemoveFailure() {
-        navigator.remove(new Dom4jDocument(root));
+    @Test
+    void testRemoveFailure() {
+        assertThatThrownBy(() -> navigator.remove(new Dom4jDocument(root)))
+                .isInstanceOf(XmlBuilderException.class);
     }
 
 }

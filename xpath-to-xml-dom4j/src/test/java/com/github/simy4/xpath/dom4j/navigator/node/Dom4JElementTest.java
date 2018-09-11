@@ -3,11 +3,13 @@ package com.github.simy4.xpath.dom4j.navigator.node;
 import org.dom4j.Attribute;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -17,8 +19,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class Dom4JElementTest {
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
+class Dom4JElementTest {
 
     @Mock private Element element;
     @Mock private Element child1;
@@ -28,8 +31,8 @@ public class Dom4JElementTest {
 
     private Dom4jNode<Element> node;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         when(element.getText()).thenReturn("text");
         when(element.elementIterator()).thenReturn(asList(child1, child2).iterator());
         when(element.attributeIterator()).thenReturn(asList(attr1, attr2).iterator());
@@ -39,29 +42,27 @@ public class Dom4JElementTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void shouldReturnListOfAttributesWhenObtainAttributes() {
+    void shouldReturnListOfAttributesWhenObtainAttributes() {
         assertThat(node.attributes()).contains(new Dom4jAttribute(attr1), new Dom4jAttribute(attr2));
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void shouldReturnListOfElementsWhenObtainElements() {
+    void shouldReturnListOfElementsWhenObtainElements() {
         assertThat(node.elements()).contains(new Dom4jElement(child1), new Dom4jElement(child2));
     }
 
     @Test
-    public void shouldAppendNewAttributeWhenCreateAttribute() {
+    void shouldAppendNewAttributeWhenCreateAttribute() {
         assertThat(node.createAttribute(new org.dom4j.QName("attr"))).isNotNull();
     }
 
     @Test
-    public void shouldThrowExceptionWhenCreateElement() {
+    void shouldThrowExceptionWhenCreateElement() {
         assertThat(node.createElement(new org.dom4j.QName("elem"))).isEqualTo(new Dom4jElement(child1));
     }
 
     @Test
-    public void shouldReturnNodeNameForNamespaceUnawareElement() {
+    void shouldReturnNodeNameForNamespaceUnawareElement() {
         when(element.getName()).thenReturn("node");
         when(element.getNamespace()).thenReturn(Namespace.NO_NAMESPACE);
 
@@ -72,7 +73,7 @@ public class Dom4JElementTest {
     }
 
     @Test
-    public void shouldReturnNodeNameForNamespaceAwareElement() {
+    void shouldReturnNodeNameForNamespaceAwareElement() {
         when(element.getName()).thenReturn("node");
         when(element.getNamespace()).thenReturn(new Namespace("my", "http://www.example.com/my"));
 
@@ -83,7 +84,7 @@ public class Dom4JElementTest {
     }
 
     @Test
-    public void shouldReturnNodeTextContent() {
+    void shouldReturnNodeTextContent() {
         assertThat(node.getText()).isEqualTo("text");
     }
 
