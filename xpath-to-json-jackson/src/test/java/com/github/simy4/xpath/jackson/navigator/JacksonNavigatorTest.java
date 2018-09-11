@@ -8,28 +8,28 @@ import com.github.simy4.xpath.jackson.navigator.node.JacksonByNameNode;
 import com.github.simy4.xpath.jackson.navigator.node.JacksonNode;
 import com.github.simy4.xpath.jackson.navigator.node.JacksonRootNode;
 import com.github.simy4.xpath.navigator.Navigator;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class JacksonNavigatorTest {
+class JacksonNavigatorTest {
 
     private final ObjectNode json = new ObjectNode(JsonNodeFactory.instance);
     private final JacksonNode root = new JacksonRootNode(json);
     private final Navigator<JacksonNode> navigator = new JacksonNavigator(root);
 
     @Test
-    public void shouldReturnRoot() {
+    void shouldReturnRoot() {
         assertThat(navigator.root()).isEqualTo(root);
     }
 
     @Test
-    public void shouldReturnNullParentForRoot() {
+    void shouldReturnNullParentForRoot() {
         assertThat(navigator.parentOf(root)).isNull();
     }
 
     @Test
-    public void shouldReturnParentForElementChild() {
+    void shouldReturnParentForElementChild() {
         json.put("child", "zero");
         JacksonNode childNode = new JacksonByNameNode(json, "child", root);
 
@@ -37,7 +37,7 @@ public class JacksonNavigatorTest {
     }
 
     @Test
-    public void shouldReturnParentForArrayChild() {
+    void shouldReturnParentForArrayChild() {
         ArrayNode json = new ArrayNode(JsonNodeFactory.instance);
         json.add("zero");
         JacksonNode root = new JacksonRootNode(json);
@@ -48,7 +48,7 @@ public class JacksonNavigatorTest {
     }
 
     @Test
-    public void shouldReturnParentForNestedArrayChild() {
+    void shouldReturnParentForNestedArrayChild() {
         ArrayNode json = new ArrayNode(JsonNodeFactory.instance);
         ArrayNode child = new ArrayNode(JsonNodeFactory.instance);
         child.add("zero");
