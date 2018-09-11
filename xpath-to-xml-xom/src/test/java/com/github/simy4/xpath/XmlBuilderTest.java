@@ -9,11 +9,9 @@ import nu.xom.Nodes;
 import nu.xom.ParsingException;
 import nu.xom.Serializer;
 import nu.xom.XPathContext;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameter;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPathExpressionException;
@@ -22,42 +20,35 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
-public class XmlBuilderTest {
+class XmlBuilderTest {
 
-    @Parameters(name = "With test fixture: {0} and namespace: {1} and root element: {2}")
-    public static Collection<Object[]> data() {
+    private static Stream<Arguments> data() {
         Element nsAwareRoot = new Element("breakfast_menu", "http://www.example.com/my");
         nsAwareRoot.setNamespacePrefix("my");
-        return asList(new Object[][] {
-                { new FixtureAccessor("simple"), null, new Element("breakfast_menu") },
-                { new FixtureAccessor("simple"), new SimpleNamespaceContext(), new Element("breakfast_menu") },
-                { new FixtureAccessor("ns-simple"), new SimpleNamespaceContext(), nsAwareRoot },
+        return Stream.of(
+                Arguments.of(new FixtureAccessor("simple"), null, new Element("breakfast_menu")),
+                Arguments.of(new FixtureAccessor("simple"), new SimpleNamespaceContext(),
+                        new Element("breakfast_menu")),
+                Arguments.of(new FixtureAccessor("ns-simple"), new SimpleNamespaceContext(), nsAwareRoot),
                 // TODO although these cases are working fine the order of attributes is messed up
-                // { new FixtureAccessor("attr"), null },
-                // { new FixtureAccessor("attr"), new SimpleNamespaceContext() },
-                { new FixtureAccessor("special"), null, new Element("records") },
-                { new FixtureAccessor("special"), new SimpleNamespaceContext(), new Element("records") },
-        });
+                // Arguments.of(new FixtureAccessor("attr"), null },
+                // Arguments.of(new FixtureAccessor("attr"), new SimpleNamespaceContext() },
+                Arguments.of(new FixtureAccessor("special"), null, new Element("records")),
+                Arguments.of(new FixtureAccessor("special"), new SimpleNamespaceContext(), new Element("records"))
+        );
     }
 
-    @Parameter(0)
-    public FixtureAccessor fixtureAccessor;
-    @Parameter(1)
-    public NamespaceContext namespaceContext;
-    @Parameter(2)
-    public Element root;
-
-    @Test
-    public void shouldBuildDocumentFromSetOfXPaths() throws XPathExpressionException, IOException {
+    @ParameterizedTest
+    @MethodSource("data")
+    void shouldBuildDocumentFromSetOfXPaths(FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext,
+                                            Element root) throws XPathExpressionException, IOException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         Document newDocument = new Document((Element) root.copy());
         Document builtDocument = new XmlBuilder(namespaceContext)
@@ -73,8 +64,11 @@ public class XmlBuilderTest {
         assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutXml());
     }
 
-    @Test
-    public void shouldBuildDocumentFromSetOfXPathsAndSetValues() throws XPathExpressionException, IOException {
+    @ParameterizedTest
+    @MethodSource("data")
+    void shouldBuildDocumentFromSetOfXPathsAndSetValues(FixtureAccessor fixtureAccessor,
+                                                        NamespaceContext namespaceContext,
+                                                        Element root) throws XPathExpressionException, IOException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         Document newDocument = new Document((Element) root.copy());
         Document builtDocument = new XmlBuilder(namespaceContext)
@@ -90,8 +84,10 @@ public class XmlBuilderTest {
         assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
     }
 
-    @Test
-    public void shouldModifyDocumentWhenXPathsAreNotTraversable()
+    @ParameterizedTest
+    @MethodSource("data")
+    void shouldModifyDocumentWhenXPathsAreNotTraversable(FixtureAccessor fixtureAccessor,
+                                                         NamespaceContext namespaceContext)
             throws XPathExpressionException, ParsingException, IOException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         String xml = fixtureAccessor.getPutXml();
@@ -103,8 +99,10 @@ public class XmlBuilderTest {
         assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
     }
 
-    @Test
-    public void shouldNotModifyDocumentWhenAllXPathsTraversable()
+    @ParameterizedTest
+    @MethodSource("data")
+    void shouldNotModifyDocumentWhenAllXPathsTraversable(FixtureAccessor fixtureAccessor,
+                                                         NamespaceContext namespaceContext)
             throws XPathExpressionException, ParsingException, IOException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         String xml = fixtureAccessor.getPutValueXml();
@@ -122,8 +120,9 @@ public class XmlBuilderTest {
         assertThat(xmlToString(builtDocument)).isEqualTo(xml);
     }
 
-    @Test
-    public void shouldRemovePathsFromExistingXml()
+    @ParameterizedTest
+    @MethodSource("data")
+    void shouldRemovePathsFromExistingXml(FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext)
             throws XPathExpressionException, ParsingException, IOException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         String xml = fixtureAccessor.getPutValueXml();

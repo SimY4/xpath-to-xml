@@ -8,28 +8,28 @@ import com.github.simy4.xpath.navigator.Navigator;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GsonNavigatorTest {
+class GsonNavigatorTest {
 
     private final JsonObject json = new JsonObject();
     private final GsonNode root = new GsonRootNode(json);
     private final Navigator<GsonNode> navigator = new GsonNavigator(root);
 
     @Test
-    public void shouldReturnRoot() {
+    void shouldReturnRoot() {
         assertThat(navigator.root()).isEqualTo(root);
     }
 
     @Test
-    public void shouldReturnNullParentForRoot() {
+    void shouldReturnNullParentForRoot() {
         assertThat(navigator.parentOf(root)).isNull();
     }
 
     @Test
-    public void shouldReturnParentForElementChild() {
+    void shouldReturnParentForElementChild() {
         json.add("child", new JsonPrimitive("zero"));
         GsonNode childNode = new GsonByNameNode(json, "child", root);
 
@@ -37,7 +37,7 @@ public class GsonNavigatorTest {
     }
 
     @Test
-    public void shouldReturnParentForArrayChild() {
+    void shouldReturnParentForArrayChild() {
         JsonArray json = new JsonArray();
         json.add("zero");
         GsonNode root = new GsonRootNode(json);
@@ -48,7 +48,7 @@ public class GsonNavigatorTest {
     }
 
     @Test
-    public void shouldReturnParentForNestedArrayChild() {
+    void shouldReturnParentForNestedArrayChild() {
         JsonArray json = new JsonArray();
         JsonArray child = new JsonArray();
         child.add("zero");

@@ -22,7 +22,7 @@ Convenient utility to build XML models by evaluating XPath expressions.
 
 # Usage
 
-Include an artifact with necessary modelgit extension into your project:
+Include an artifact with necessary model extension into your project:
 
 ```xml
 <dependency>

@@ -3,54 +3,60 @@ package com.github.simy4.xpath.dom4j.navigator.node;
 import com.github.simy4.xpath.XmlBuilderException;
 import org.dom4j.Attribute;
 import org.dom4j.Namespace;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class Dom4JAttributeTest {
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
+class Dom4JAttributeTest {
 
     @Mock private Attribute attribute;
 
     private Dom4jNode<Attribute> node;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         when(attribute.getText()).thenReturn("text");
 
         node = new Dom4jAttribute(attribute);
     }
 
     @Test
-    public void shouldReturnEmptyListWhenObtainAttributes() {
+    void shouldReturnEmptyListWhenObtainAttributes() {
         assertThat(node.attributes()).isEmpty();
     }
 
     @Test
-    public void shouldReturnEmptyListWhenObtainElements() {
+    void shouldReturnEmptyListWhenObtainElements() {
         assertThat(node.elements()).isEmpty();
     }
 
-    @Test(expected = XmlBuilderException.class)
-    public void shouldThrowExceptionWhenCreateAttribute() {
-        node.createAttribute(new org.dom4j.QName("attr"));
-    }
-
-    @Test(expected = XmlBuilderException.class)
-    public void shouldThrowExceptionWhenCreateElement() {
-        node.createElement(new org.dom4j.QName("elem"));
+    @Test
+    void shouldThrowExceptionWhenCreateAttribute() {
+        assertThatThrownBy(() -> node.createAttribute(new org.dom4j.QName("attr")))
+                .isInstanceOf(XmlBuilderException.class);
     }
 
     @Test
-    public void shouldReturnNodeNameForNamespaceUnawareAttribute() {
+    void shouldThrowExceptionWhenCreateElement() {
+        assertThatThrownBy(() -> node.createElement(new org.dom4j.QName("elem")))
+                .isInstanceOf(XmlBuilderException.class);
+    }
+
+    @Test
+    void shouldReturnNodeNameForNamespaceUnawareAttribute() {
         when(attribute.getName()).thenReturn("node");
         when(attribute.getNamespace()).thenReturn(Namespace.NO_NAMESPACE);
 
@@ -61,7 +67,7 @@ public class Dom4JAttributeTest {
     }
 
     @Test
-    public void shouldReturnNodeNameForNamespaceAwareAttribute() {
+    void shouldReturnNodeNameForNamespaceAwareAttribute() {
         when(attribute.getName()).thenReturn("node");
         when(attribute.getNamespace()).thenReturn(new Namespace("my", "http://www.example.com/my"));
 
@@ -72,7 +78,7 @@ public class Dom4JAttributeTest {
     }
 
     @Test
-    public void shouldReturnNodeTextContent() {
+    void shouldReturnNodeTextContent() {
         assertThat(node.getText()).isEqualTo("text");
     }
 

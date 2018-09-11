@@ -17,8 +17,8 @@ public class SelfAxisResolver extends AbstractAxisResolver {
 
     @Override
     <N extends Node> IterableNodeView<N> traverseAxis(ViewContext<N> context) {
-        NodeView<N> self = context.getCurrent();
-        return test(self.getNode()) ? self : NodeSetView.empty();
+        final NodeView<N> self = context.getCurrent();
+        return test(self.getNode()) ? self : NodeSetView.<N>empty();
     }
 
     @Override

@@ -10,14 +10,15 @@ import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.xml.namespace.QName;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class XomNavigatorTest {
+class XomNavigatorTest {
 
     private final Element parent = new Element("parent");
     private final Document root = new Document(parent);
@@ -32,8 +33,8 @@ public class XomNavigatorTest {
 
     private Navigator<XomNode<?>> navigator;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         parent.appendChild(xml);
 
         xml.appendChild(child1);
@@ -47,105 +48,111 @@ public class XomNavigatorTest {
     }
 
     @Test
-    public void testRootNode() {
+    void testRootNode() {
         assertThat(navigator.root()).hasFieldOrPropertyWithValue("node", root);
     }
 
     @Test
-    public void testParentOfRegularNode() {
+    void testParentOfRegularNode() {
         assertThat(navigator.parentOf(new XomElement(xml))).hasFieldOrPropertyWithValue("node", parent);
     }
 
     @Test
-    public void testParentOfRootNode() {
+    void testParentOfRootNode() {
         assertThat(navigator.parentOf(new XomDocument(root))).isNull();
     }
 
     @Test
-    public void testElementsOfDocument() {
+    void testElementsOfDocument() {
         assertThat(navigator.elementsOf(new XomDocument(root)))
                 .extracting("node", Element.class)
                 .containsExactly(parent);
     }
 
     @Test
-    public void testElementsOfElement() {
+    void testElementsOfElement() {
         assertThat(navigator.elementsOf(new XomElement(xml)))
                 .extracting("node", Element.class)
                 .containsExactly(child1, child2, child3);
     }
 
     @Test
-    public void testElementsOfNonElement() {
+    void testElementsOfNonElement() {
         assertThat(navigator.elementsOf(new XomAttribute(new Attribute("attr", "")))).isEmpty();
     }
 
     @Test
-    public void testAttributesOf() {
+    void testAttributesOf() {
         assertThat(navigator.attributesOf(new XomElement(xml)))
                 .extracting("node", Attribute.class)
                 .containsExactly(attr1, attr2, attr3);
     }
 
     @Test
-    public void testAttributesOfNonElementNode() {
+    void testAttributesOfNonElementNode() {
         assertThat(navigator.attributesOf(new XomDocument(root))).isEmpty();
     }
 
     @Test
-    public void testCreateAttributeSuccess() {
+    void testCreateAttributeSuccess() {
         assertThat(xml.getAttribute("attr")).isNull();
         assertThat(navigator.createAttribute(new XomElement(xml), new QName("attr"))).isNotNull();
         assertThat(xml.getAttribute("attr")).isNotNull();
     }
 
-    @Test(expected = XmlBuilderException.class)
-    public void testCreateAttributeFailure() {
-        navigator.createAttribute(new XomDocument(root), new QName("attr"));
+    @Test
+    void testCreateAttributeFailure() {
+        assertThatThrownBy(() -> navigator.createAttribute(new XomDocument(root), new QName("attr")))
+                .isInstanceOf(XmlBuilderException.class);
     }
 
     @Test
-    public void testCreateElementSuccess() {
+    void testCreateElementSuccess() {
         assertThat(xml.getFirstChildElement("elem")).isNull();
         assertThat(navigator.createElement(new XomElement(xml), new QName("elem"))).isNotNull();
         assertThat(xml.getFirstChildElement("elem")).isNotNull();
     }
 
-    @Test(expected = XmlBuilderException.class)
-    public void testCreateElementFailure() {
-        navigator.createElement(new XomAttribute(new Attribute("attr", "")), new QName("elem"));
+    @Test
+    void testCreateElementFailure() {
+        assertThatThrownBy(() -> navigator.createElement(new XomAttribute(new Attribute("attr", "")),
+                new QName("elem")))
+                .isInstanceOf(XmlBuilderException.class);
     }
 
     @Test
-    public void testPrependCopySuccess() {
+    void testPrependCopySuccess() {
         navigator.prependCopy(new XomElement(xml));
         Elements childElements = parent.getChildElements();
         assertThat(childElements.size()).isEqualTo(2);
     }
 
-    @Test(expected = XmlBuilderException.class)
-    public void testPrependCopyNoParent() {
-        navigator.prependCopy(new XomElement(new Element("elem")));
-    }
-
-    @Test(expected = XmlBuilderException.class)
-    public void testPrependCopyNotAnElement() {
-        navigator.prependCopy(new XomDocument(root));
+    @Test
+    void testPrependCopyNoParent() {
+        assertThatThrownBy(() -> navigator.prependCopy(new XomElement(new Element("elem"))))
+                .isInstanceOf(XmlBuilderException.class);
     }
 
     @Test
-    public void testSetTextSuccess() {
+    void testPrependCopyNotAnElement() {
+        assertThatThrownBy(() -> navigator.prependCopy(new XomDocument(root)))
+                .isInstanceOf(XmlBuilderException.class);
+    }
+
+    @Test
+    void testSetTextSuccess() {
         navigator.setText(new XomAttribute(attr1), "text");
         assertThat(attr1.getValue()).isEqualTo("text");
     }
 
-    @Test(expected = XmlBuilderException.class)
-    public void testSetTextFailure() {
-        navigator.setText(new XomDocument(root), "text");
+    @Test
+    void testSetTextFailure() {
+        assertThatThrownBy(() -> navigator.setText(new XomDocument(root), "text"))
+                .isInstanceOf(XmlBuilderException.class);
     }
 
     @Test
-    public void testRemoveSuccess() {
+    void testRemoveSuccess() {
         navigator.remove(new XomElement(xml));
         assertThat(parent.getChildElements().size()).isEqualTo(0);
     }

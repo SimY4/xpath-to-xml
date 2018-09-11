@@ -2,12 +2,9 @@ package com.github.simy4.xpath;
 
 import com.github.simy4.xpath.fixtures.FixtureAccessor;
 import com.github.simy4.xpath.util.SimpleNamespaceContext;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameter;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -29,52 +26,42 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
-public class XmlBuilderTest {
+class XmlBuilderTest {
 
     private static final TransformerFactory transformerFactory = TransformerFactory.newInstance();
     private static final XPathFactory xpathFactory = XPathFactory.newInstance();
 
-    @Parameter(0)
-    public FixtureAccessor fixtureAccessor;
-    @Parameter(1)
-    public NamespaceContext namespaceContext;
-    @Parameter(2)
-    public DocumentBuilderFactory documentBuilderFactory;
-
-    private DocumentBuilder documentBuilder;
-
-    @Parameters(name = "With test fixture: {0} and namespace: {1} and XML factory: {2}")
-    public static Collection<Object[]> data() {
+    private static Stream<Arguments> data() {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilderFactory nsAwareDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
         nsAwareDocumentBuilderFactory.setNamespaceAware(true);
-        return asList(new Object[][] {
-                { new FixtureAccessor("simple"), null, documentBuilderFactory},
-                { new FixtureAccessor("simple"), new SimpleNamespaceContext(), documentBuilderFactory},
-                { new FixtureAccessor("ns-simple"), new SimpleNamespaceContext(), nsAwareDocumentBuilderFactory},
-                { new FixtureAccessor("attr"), null, documentBuilderFactory},
-                { new FixtureAccessor("attr"), new SimpleNamespaceContext(), documentBuilderFactory},
-                { new FixtureAccessor("special"), null, documentBuilderFactory },
-                { new FixtureAccessor("special"), new SimpleNamespaceContext(), documentBuilderFactory },
-        });
+        return Stream.of(
+                Arguments.of(new FixtureAccessor("simple"), null, documentBuilderFactory),
+                Arguments.of(new FixtureAccessor("simple"), new SimpleNamespaceContext(),
+                        documentBuilderFactory),
+                Arguments.of(new FixtureAccessor("ns-simple"), new SimpleNamespaceContext(),
+                        nsAwareDocumentBuilderFactory),
+                Arguments.of(new FixtureAccessor("attr"), null, documentBuilderFactory),
+                Arguments.of(new FixtureAccessor("attr"), new SimpleNamespaceContext(),
+                        documentBuilderFactory),
+                Arguments.of(new FixtureAccessor("special"), null, documentBuilderFactory),
+                Arguments.of(new FixtureAccessor("special"), new SimpleNamespaceContext(),
+                        documentBuilderFactory)
+        );
     }
 
-    @Before
-    public void setUp() throws ParserConfigurationException {
-        documentBuilder = documentBuilderFactory.newDocumentBuilder();
-    }
-
-    @Test
-    public void shouldBuildDocumentFromSetOfXPaths()
-            throws XPathExpressionException, TransformerException, IOException {
+    @ParameterizedTest
+    @MethodSource("data")
+    void shouldBuildDocumentFromSetOfXPaths(FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext,
+                                            DocumentBuilderFactory documentBuilderFactory)
+            throws XPathExpressionException, TransformerException, IOException, ParserConfigurationException {
+        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         Document document = documentBuilder.newDocument();
         document.setXmlStandalone(true);
@@ -92,9 +79,13 @@ public class XmlBuilderTest {
         assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutXml());
     }
 
-    @Test
-    public void shouldBuildDocumentFromSetOfXPathsAndSetValues()
-            throws XPathExpressionException, TransformerException, IOException {
+    @ParameterizedTest
+    @MethodSource("data")
+    void shouldBuildDocumentFromSetOfXPathsAndSetValues(FixtureAccessor fixtureAccessor,
+                                                        NamespaceContext namespaceContext,
+                                                        DocumentBuilderFactory documentBuilderFactory)
+            throws XPathExpressionException, TransformerException, IOException, ParserConfigurationException {
+        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         Document document = documentBuilder.newDocument();
         document.setXmlStandalone(true);
@@ -113,12 +104,17 @@ public class XmlBuilderTest {
         assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
     }
 
-    @Test
-    public void shouldModifyDocumentWhenXPathsAreNotTraversable()
-            throws XPathExpressionException, TransformerException, IOException, SAXException {
+    @ParameterizedTest
+    @MethodSource("data")
+    void shouldModifyDocumentWhenXPathsAreNotTraversable(FixtureAccessor fixtureAccessor,
+                                                         NamespaceContext namespaceContext,
+                                                         DocumentBuilderFactory documentBuilderFactory)
+            throws XPathExpressionException, TransformerException, IOException, SAXException,
+            ParserConfigurationException {
+        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         String xml = fixtureAccessor.getPutXml();
-        Document oldDocument = stringToXml(xml);
+        Document oldDocument = stringToXml(documentBuilder, xml);
         Document builtDocument = new XmlBuilder(namespaceContext)
                 .putAll(xmlProperties)
                 .build(oldDocument);
@@ -126,12 +122,17 @@ public class XmlBuilderTest {
         assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
     }
 
-    @Test
-    public void shouldNotModifyDocumentWhenAllXPathsTraversable()
-            throws XPathExpressionException, TransformerException, IOException, SAXException {
+    @ParameterizedTest
+    @MethodSource("data")
+    void shouldNotModifyDocumentWhenAllXPathsTraversable(FixtureAccessor fixtureAccessor,
+                                                         NamespaceContext namespaceContext,
+                                                         DocumentBuilderFactory documentBuilderFactory)
+            throws XPathExpressionException, TransformerException, IOException, SAXException,
+            ParserConfigurationException {
+        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         String xml = fixtureAccessor.getPutValueXml();
-        Document oldDocument = stringToXml(xml);
+        Document oldDocument = stringToXml(documentBuilder, xml);
         Document builtDocument = new XmlBuilder(namespaceContext)
                 .putAll(xmlProperties)
                 .build(oldDocument);
@@ -145,12 +146,16 @@ public class XmlBuilderTest {
         assertThat(xmlToString(builtDocument)).isEqualTo(xml);
     }
 
-    @Test
-    public void shouldRemovePathsFromExistingXml()
-            throws XPathExpressionException, TransformerException, IOException, SAXException {
+    @ParameterizedTest
+    @MethodSource("data")
+    void shouldRemovePathsFromExistingXml(FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext,
+                                          DocumentBuilderFactory documentBuilderFactory)
+            throws XPathExpressionException, TransformerException, IOException, SAXException,
+            ParserConfigurationException {
+        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         String xml = fixtureAccessor.getPutValueXml();
-        Document oldDocument = stringToXml(xml);
+        Document oldDocument = stringToXml(documentBuilder, xml);
         Document builtDocument = new XmlBuilder(namespaceContext)
                 .removeAll(xmlProperties.keySet())
                 .build(oldDocument);
@@ -165,7 +170,7 @@ public class XmlBuilderTest {
         assertThat(xmlToString(builtDocument)).isNotEqualTo(fixtureAccessor.getPutValueXml());
     }
 
-    private Document stringToXml(String xml) throws IOException, SAXException {
+    private Document stringToXml(DocumentBuilder documentBuilder, String xml) throws IOException, SAXException {
         Document document = documentBuilder.parse(new ByteArrayInputStream(xml.getBytes(Charset.forName("UTF-8"))));
         document.setXmlStandalone(true);
         return document;

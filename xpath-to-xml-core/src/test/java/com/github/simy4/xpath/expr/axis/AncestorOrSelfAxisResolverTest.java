@@ -4,25 +4,29 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewContext;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import javax.xml.namespace.QName;
+import java.util.stream.Collectors;
 
-import static com.github.simy4.xpath.util.EagerConsumer.consume;
 import static com.github.simy4.xpath.util.TestNode.node;
+import static java.util.stream.StreamSupport.stream;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.doReturn;
 
-public class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
+class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         axisResolver = new AncestorOrSelfAxisResolver(name, true);
     }
 
     @Test
-    public void shouldReturnSelfWithAllDescendantElements() {
+    @DisplayName("When ancestor-or-self should return self and ancestor nodes")
+    void shouldReturnSelfWithAllAncestorElements() {
         // given
         setUpResolvableAxis();
         axisResolver = new AncestorOrSelfAxisResolver(new QName("*", "*"), true);
@@ -36,7 +40,8 @@ public class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     }
 
     @Test
-    public void shouldReturnOnlyDescendantElements() {
+    @DisplayName("When ancestor should return ancestor nodes")
+    void shouldReturnOnlyAncestorElements() {
         // given
         setUpResolvableAxis();
         axisResolver = new AncestorOrSelfAxisResolver(new QName("*", "*"), false);
@@ -50,7 +55,8 @@ public class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     }
 
     @Test
-    public void shouldReturnOnlySelfWhenThereAreNoChildren() {
+    @DisplayName("When ancestor-or-self and there are no ancestors should return self")
+    void shouldReturnOnlySelfWhenThereAreNoAncestors() {
         // given
         doReturn(null).when(navigator).parentOf(parentNode.getNode());
         axisResolver = new AncestorOrSelfAxisResolver(new QName("*", "*"), true);
@@ -63,7 +69,8 @@ public class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     }
 
     @Test
-    public void shouldReturnEmptyWhenThereAreNoChildren() {
+    @DisplayName("When ancestor and there are no ancestors should return empty")
+    void shouldReturnEmptyWhenThereAreNoAncestors() {
         // given
         doReturn(null).when(navigator).parentOf(parentNode.getNode());
         axisResolver = new AncestorOrSelfAxisResolver(new QName("*", "*"), false);
@@ -75,19 +82,24 @@ public class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
         assertThat((Iterable<?>) result).isEmpty();
     }
 
-    @Test(expected = XmlBuilderException.class)
-    public void shouldThrowOnCreateNode() {
+    @Test
+    @DisplayName("Should throw on create node")
+    @SuppressWarnings("ReturnValueIgnored")
+    void shouldThrowOnCreateNode() {
         // when
-        consume(axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, true)));
+        assertThatThrownBy(() -> stream(axisResolver.resolveAxis(
+                new ViewContext<>(navigator, parentNode, true)).spliterator(), false)
+                .collect(Collectors.toList()))
+                .isInstanceOf(XmlBuilderException.class);
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         assertThat(axisResolver).hasToString("ancestor-or-self::" + name);
     }
 
     @Override
-    protected void setUpResolvableAxis() {
+    void setUpResolvableAxis() {
         doReturn(node("parent1")).when(navigator).parentOf(parentNode.getNode());
         doReturn(node("parent2")).when(navigator).parentOf(node("parent1"));
         doReturn(node(name)).when(navigator).parentOf(node("parent2"));

@@ -6,13 +6,14 @@ import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewContext;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.github.simy4.xpath.util.TestNode.node;
 import static java.util.Arrays.asList;
@@ -23,8 +24,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class PathExprTest {
+@ExtendWith(MockitoExtension.class)
+class PathExprTest {
 
     private static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));
 
@@ -38,13 +39,14 @@ public class PathExprTest {
 
     private Expr pathExpr;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         pathExpr = new PathExpr(asList(stepExpr1, stepExpr2, stepExpr3));
     }
 
     @Test
-    public void shouldTraverseStepsOneByOneToGetTheResultingList() {
+    @DisplayName("Should traverse steps one by one to get the resulting list")
+    void shouldTraverseStepsOneByOneToGetTheResultingList() {
         // given
         when(stepExpr1.resolve(stepExpr1ContextCaptor.capture())).thenReturn(new NodeView<>(node("node2")));
         when(stepExpr2.resolve(stepExpr2ContextCaptor.capture())).thenReturn(new NodeView<>(node("node3")));
@@ -64,7 +66,8 @@ public class PathExprTest {
     }
 
     @Test
-    public void shouldShortCircuitNonGreedyTraversalWhenStepTraversalReturnsNothing() {
+    @DisplayName("When step traverse returns nothing should short circuit non greedy traversal")
+    void shouldShortCircuitNonGreedyTraversalWhenStepTraversalReturnsNothing() {
         // given
         when(stepExpr1.resolve(any())).thenReturn(new NodeView<>(node("node2")));
         when(stepExpr2.resolve(stepExpr2ContextCaptor.capture())).thenReturn(NodeSetView.empty());
@@ -78,7 +81,7 @@ public class PathExprTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         assertThat(pathExpr).hasToString(stepExpr1 + "/" + stepExpr2 + "/" + stepExpr3);
     }
 

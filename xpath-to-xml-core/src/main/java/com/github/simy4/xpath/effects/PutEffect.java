@@ -9,8 +9,11 @@ import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewContext;
+import com.github.simy4.xpath.view.ViewVisitor;
 
 public class PutEffect implements Effect {
+
+    private static final ViewVisitor<? extends Node, Void> eagerVisitor = new EagerVisitor<Node>();
 
     private final Expr expr;
 
@@ -19,16 +22,18 @@ public class PutEffect implements Effect {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <N extends Node> void perform(Navigator<N> navigator, N xml) throws XmlBuilderException {
-        final ViewContext<N> context = new ViewContext<>(navigator, new NodeView<>(xml), true);
-        expr.resolve(context).visit(new EagerVisitor<>());
+        final ViewContext<N> context = new ViewContext<N>(navigator, new NodeView<N>(xml), true);
+        expr.resolve(context).visit((ViewVisitor<N, Void>) eagerVisitor);
     }
 
     private static final class EagerVisitor<N extends Node> extends AbstractViewVisitor<N, Void> {
 
         @Override
+        @SuppressWarnings("StatementWithEmptyBody")
         public Void visit(IterableNodeView<N> nodeSet) throws XmlBuilderException {
-            nodeSet.forEach(ignored -> { }); // eagerly consume resolved iterable
+            for (NodeView<N> ignored : nodeSet) { } // eagerly consume resolved iterable
             return null;
         }
 
@@ -36,6 +41,7 @@ public class PutEffect implements Effect {
         protected Void returnDefault(View<N> view) {
             return null;
         }
+
     }
 
 }

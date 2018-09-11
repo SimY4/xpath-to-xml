@@ -1,15 +1,19 @@
 package com.github.simy4.xpath;
 
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-public class XmlBuilderTest {
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+class XmlBuilderTest {
 
     private final XmlBuilder xmlBuilder = new XmlBuilder();
 
-    @Test(expected = XmlBuilderException.class)
-    public void shouldThrowOnBuildWithoutConcreteSpiImplementation() {
+    @Test
+    @DisplayName("When no concrete SPI implementation should throw XmlBuilderException")
+    void shouldThrowOnBuildWithoutConcreteSpiImplementation() {
         // when
-        xmlBuilder.build(new Object());
+        assertThatThrownBy(() -> xmlBuilder.build(new Object())).isInstanceOf(XmlBuilderException.class);
     }
 
 }

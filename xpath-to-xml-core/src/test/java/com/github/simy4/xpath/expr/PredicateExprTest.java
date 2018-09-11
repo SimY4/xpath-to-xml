@@ -5,19 +5,18 @@ import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.theories.DataPoints;
-import org.junit.experimental.theories.FromDataPoints;
-import org.junit.experimental.theories.Theories;
-import org.junit.experimental.theories.Theory;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.xml.namespace.QName;
 import java.util.Collections;
+import java.util.stream.Stream;
 
 import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,27 +24,30 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(Theories.class)
-public class PredicateExprTest {
+@ExtendWith(MockitoExtension.class)
+class PredicateExprTest {
 
-    @DataPoints("truthy")
-    public static final Expr[] TRUTHY = {
-            new LiteralExpr("2.0"),
-            new EqualsExpr(new NumberExpr(1.0), new NumberExpr(1.0)),
-            new AxisStepExpr(new SelfAxisResolver(new QName("*", "*")), Collections.emptySet()),
-    };
+    private static Stream<Arguments> truthy() {
+        return Stream.of(
+                Arguments.of(new LiteralExpr("2.0")),
+                Arguments.of(new EqualsExpr(new NumberExpr(1.0), new NumberExpr(1.0))),
+                Arguments.of(new AxisStepExpr(new SelfAxisResolver(new QName("*", "*")), Collections.emptySet()))
+        );
+    }
 
-    @DataPoints("false")
-    public static final Expr[] FALSE = {
-            new LiteralExpr(""),
-            new NotEqualsExpr(new NumberExpr(1.0), new NumberExpr(1.0))
-    };
+    private static Stream<Arguments> falsy() {
+        return Stream.of(
+                Arguments.of(new LiteralExpr("")),
+                Arguments.of(new NotEqualsExpr(new NumberExpr(1.0), new NumberExpr(1.0)))
+        );
+    }
 
-    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock private Navigator<TestNode> navigator;
 
-    @Theory
-    public void shouldReturnTrueForTruthyPredicate(@FromDataPoints("truthy") Expr truthy) {
+    @ParameterizedTest(name = "Given truthy predicate {0}")
+    @DisplayName("Should resolve to true")
+    @MethodSource("truthy")
+    void shouldReturnTrueForTruthyPredicate(Expr truthy) {
         // given
         ViewContext<TestNode> context = new ViewContext<>(navigator, new NodeView<>(node("node")), false);
 
@@ -56,8 +58,10 @@ public class PredicateExprTest {
         assertThat(result).isEqualTo(true);
     }
 
-    @Theory
-    public void shouldReturnFalseForNonGreedyFalsePredicate(@FromDataPoints("false") Expr falsy) {
+    @ParameterizedTest(name = "Given falsy predicate {0}")
+    @DisplayName("Should resolve to false")
+    @MethodSource("falsy")
+    void shouldReturnFalseForNonGreedyFalsePredicate(Expr falsy) {
         // given
         ViewContext<TestNode> context = new ViewContext<>(navigator, new NodeView<>(node("node")), false);
 
@@ -69,7 +73,8 @@ public class PredicateExprTest {
     }
 
     @Test
-    public void shouldReturnFalseOnGreedyFalseResolveAndNonNewNode() {
+    @DisplayName("When greedy context, falsy predicate and non new node should return false")
+    void shouldReturnFalseOnGreedyFalseResolveAndNonNewNode() {
         // given
         ViewContext<TestNode> context = new ViewContext<>(navigator, new NodeView<>(node("node")), true);
 
@@ -81,7 +86,8 @@ public class PredicateExprTest {
     }
 
     @Test
-    public void shouldPrependMissingNodesAndReturnTrueOnGreedyFalsePredicateAndNewNode() {
+    @DisplayName("When greedy context, falsy predicate and new node should prepend missing nodes and return true")
+    void shouldPrependMissingNodesAndReturnTrueOnGreedyFalsePredicateAndNewNode() {
         // given
         ViewContext<TestNode> context = new ViewContext<>(navigator, new NodeView<>(node("node"), true), true);
 
@@ -94,7 +100,7 @@ public class PredicateExprTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         // given
         Expr predicate = mock(Expr.class);
 

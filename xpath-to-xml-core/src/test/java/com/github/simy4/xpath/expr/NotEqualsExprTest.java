@@ -7,105 +7,123 @@ import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.LiteralView;
+import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewContext;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.theories.DataPoints;
-import org.junit.experimental.theories.FromDataPoints;
-import org.junit.experimental.theories.Theories;
-import org.junit.experimental.theories.Theory;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.stream.Stream;
 
 import static com.github.simy4.xpath.util.TestNode.node;
 import static com.github.simy4.xpath.view.NodeSetView.empty;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(Theories.class)
-public class NotEqualsExprTest {
+@ExtendWith(MockitoExtension.class)
+class NotEqualsExprTest {
 
-    @DataPoints("ne left")
-    public static final View<?>[] EQ_TEST = {
-            new LiteralView<>("2.0"),
-            new NumberView<>(2.0),
-            new NodeView<>(node("2.0")),
-    };
+    private static Stream<View<?>> equals() {
+        return Stream.of(
+                new LiteralView<>("2.0"),
+                new NumberView<>(2.0),
+                new NodeView<>(node("2.0")),
+                new NodeSetView<>(() -> singletonList(new NodeView<>(node("2.0"))).iterator())
+        );
+    }
 
-    @DataPoints("ne right")
-    public static final View<?>[] NE_TEST = {
-            new LiteralView<>("literal"),
-            new NumberView<>(10.0),
-            new NodeView<>(node("node")),
-            BooleanView.of(false),
-            empty(),
-    };
+    private static Stream<Arguments> equalPairs() {
+        return equals().flatMap(l -> equals().map(r -> Arguments.of(l, r)));
+    }
+
+    private static Stream<View<?>> nonEquals() {
+        return Stream.of(
+                new LiteralView<>("literal"),
+                new NumberView<>(10.0),
+                new NodeView<>(node("node")),
+                BooleanView.of(false),
+                empty()
+        );
+    }
+
+    private static Stream<Arguments> notEqualPairs() {
+        return equals().flatMap(l -> nonEquals().map(r -> Arguments.of(l, r)));
+    }
 
     private static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));
-
-    @Rule public ExpectedException expectedException = ExpectedException.none();
-    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock private Navigator<TestNode> navigator;
     @Mock private Expr leftExpr;
     @Mock private Expr rightExpr;
 
-    @Theory
-    public void shouldAssociativelyResolveEqualViewsToFalse(@FromDataPoints("ne left") View<Node> left,
-                                                            @FromDataPoints("ne left") View<Node> right) {
+    private Expr notEqualsExpr;
+
+    @BeforeEach
+    void setUp() {
+        notEqualsExpr = new NotEqualsExpr(leftExpr, rightExpr);
+    }
+
+    @ParameterizedTest(name = "Given equal views, {0} and {1}")
+    @DisplayName("Should resolve to false")
+    @MethodSource("equalPairs")
+    void shouldResolveEqualViewsToFalse(View<Node> left, View<Node> right) {
         // given
         when(leftExpr.resolve(any())).thenReturn(left);
         when(rightExpr.resolve(any())).thenReturn(right);
         ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, false);
 
         // when
-        View<TestNode> leftToRight = new NotEqualsExpr(leftExpr, rightExpr).resolve(context);
-        View<TestNode> rightToLeft = new NotEqualsExpr(rightExpr, leftExpr).resolve(context);
+        View<TestNode> result = notEqualsExpr.resolve(context);
 
         // then
-        assertThat(leftToRight).isEqualTo(BooleanView.of(false));
-        assertThat(rightToLeft).isEqualTo(BooleanView.of(false));
+        assertThat(result).isEqualTo(BooleanView.of(false));
     }
 
-    @Theory
-    public void shouldAssociativelyResolveNonEqualViewsToTrue(@FromDataPoints("ne left") View<Node> left,
-                                                              @FromDataPoints("ne right") View<Node> right) {
+    @ParameterizedTest(name = "Given non-equal views, {0} and {1}")
+    @DisplayName("Should resolve to true")
+    @MethodSource("notEqualPairs")
+    void shouldResolveNonEqualViewsToTrue(View<Node> left, View<Node> right) {
         // given
         when(leftExpr.resolve(any())).thenReturn(left);
         when(rightExpr.resolve(any())).thenReturn(right);
         ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, false);
 
         // when
-        View<TestNode> leftToRight = new NotEqualsExpr(leftExpr, rightExpr).resolve(context);
-        View<TestNode> rightToLeft = new NotEqualsExpr(rightExpr, leftExpr).resolve(context);
+        View<TestNode> result = notEqualsExpr.resolve(context);
 
         // then
-        assertThat(leftToRight).isEqualTo(BooleanView.of(true));
-        assertThat(rightToLeft).isEqualTo(BooleanView.of(true));
+        assertThat(result).isEqualTo(BooleanView.of(true));
     }
 
-    @Theory
-    public void shouldApplyRightViewToLeftViewWhenShouldCreate(@FromDataPoints("ne left") View<Node> left,
-                                                               @FromDataPoints("ne left") View<Node> right) {
+    @ParameterizedTest(name = "Given equal views, {0} and {1} and greedy context")
+    @DisplayName("Should match and resolve to true")
+    @MethodSource("equalPairs")
+    void shouldApplyRightViewToLeftViewWhenShouldCreate(View<Node> left, View<Node> right) {
+        assumeThat(left).isInstanceOf(IterableNodeView.class);
+        assumeThat(((Iterable<?>) left)).isNotEmpty();
+
         // given
-        if (!(left instanceof IterableNodeView && ((IterableNodeView<Node>) left).iterator().hasNext())) {
-            expectedException.expect(XmlBuilderException.class);
-        }
         when(leftExpr.resolve(any())).thenReturn(left);
         when(rightExpr.resolve(any())).thenReturn(right);
         ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, true);
 
         // when
-        View<TestNode> result = new NotEqualsExpr(leftExpr, rightExpr).resolve(context);
+        View<TestNode> result = notEqualsExpr.resolve(context);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(true));
@@ -114,10 +132,24 @@ public class NotEqualsExprTest {
         assertThat(textCaptor.getValue()).isNotEqualTo(right.toString());
     }
 
+    @ParameterizedTest(name = "Given equal views, {0} and {1} and greedy context")
+    @DisplayName("Should throw on resolve")
+    @MethodSource("equalPairs")
+    void shouldThrowWhenShouldCreate(View<Node> left, View<Node> right) {
+        assumeThat(left).isNotInstanceOf(IterableNodeView.class);
+        // given
+        when(leftExpr.resolve(any())).thenReturn(left);
+        when(rightExpr.resolve(any())).thenReturn(right);
+        ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, true);
+
+        // then
+        assertThatThrownBy(() -> notEqualsExpr.resolve(context))
+                .isInstanceOf(XmlBuilderException.class);
+    }
+
     @Test
-    public void testToString() {
-        assertThat(new NotEqualsExpr(leftExpr, rightExpr))
-                .hasToString(leftExpr.toString() + "!=" + rightExpr.toString());
+    void testToString() {
+        assertThat(notEqualsExpr).hasToString(leftExpr.toString() + "!=" + rightExpr.toString());
     }
 
 }
