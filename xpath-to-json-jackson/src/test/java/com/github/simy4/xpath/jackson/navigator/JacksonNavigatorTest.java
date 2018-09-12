@@ -101,6 +101,26 @@ class JacksonNavigatorTest {
     }
 
     @Test
+    void shouldCreateElementForNestedObjectInArrayChild() {
+        ArrayNode json = new ArrayNode(JsonNodeFactory.instance);
+        ObjectNode child = new ObjectNode(JsonNodeFactory.instance);
+        child.set("child", new ObjectNode(JsonNodeFactory.instance));
+        json.add(child);
+        JacksonNode root = new JacksonRootNode(json);
+        JacksonNavigator navigator = new JacksonNavigator(root);
+        JacksonNode objectNode = new JacksonByIndexNode(json, 0, root);
+
+        JacksonNode newChild = navigator.createElement(objectNode, new QName("child"));
+
+        ObjectNode expected = new ObjectNode(JsonNodeFactory.instance);
+        expected.set("child", new ObjectNode(JsonNodeFactory.instance));
+        assertThat(newChild)
+                .isNotSameAs(child)
+                .isEqualTo(new JacksonByNameNode(expected, "child", new JacksonByIndexNode(json, 1, root)));
+        assertThat(objectNode.get()).isSameAs(child);
+    }
+
+    @Test
     void shouldCreateElementForArrayParent() {
         ArrayNode json = new ArrayNode(JsonNodeFactory.instance);
         JacksonNode root = new JacksonRootNode(json);
@@ -129,6 +149,26 @@ class JacksonNavigatorTest {
 
         assertThat(child).isEqualTo(new JacksonByNameNode(json, "child", root));
         assertThat(json.get("child")).isEqualTo(new TextNode(""));
+    }
+
+    @Test
+    void shouldCreateAttributeForNestedObjectInArrayChild() {
+        ArrayNode json = new ArrayNode(JsonNodeFactory.instance);
+        ObjectNode child = new ObjectNode(JsonNodeFactory.instance);
+        child.set("child", new TextNode(""));
+        json.add(child);
+        JacksonNode root = new JacksonRootNode(json);
+        JacksonNavigator navigator = new JacksonNavigator(root);
+        JacksonNode objectNode = new JacksonByIndexNode(json, 0, root);
+
+        JacksonNode newChild = navigator.createAttribute(objectNode, new QName("child"));
+
+        ObjectNode expected = new ObjectNode(JsonNodeFactory.instance);
+        expected.set("child", new TextNode(""));
+        assertThat(newChild)
+                .isNotSameAs(child)
+                .isEqualTo(new JacksonByNameNode(expected, "child", new JacksonByIndexNode(json, 1, root)));
+        assertThat(objectNode.get()).isSameAs(child);
     }
 
     @Test

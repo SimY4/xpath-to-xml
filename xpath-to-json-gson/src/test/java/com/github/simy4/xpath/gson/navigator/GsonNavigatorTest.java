@@ -100,6 +100,26 @@ class GsonNavigatorTest {
     }
 
     @Test
+    void shouldCreateElementForNestedObjectInArrayChild() {
+        JsonArray json = new JsonArray();
+        JsonObject child = new JsonObject();
+        child.add("child", new JsonObject());
+        json.add(child);
+        GsonNode root = new GsonRootNode(json);
+        GsonNavigator navigator = new GsonNavigator(root);
+        GsonNode objectNode = new GsonByIndexNode(json, 0, root);
+
+        GsonNode newChild = navigator.createElement(objectNode, new QName("child"));
+
+        JsonObject expected = new JsonObject();
+        expected.add("child", new JsonObject());
+        assertThat(newChild)
+                .isNotSameAs(child)
+                .isEqualTo(new GsonByNameNode(expected, "child", new GsonByIndexNode(json, 1, root)));
+        assertThat(objectNode.get()).isSameAs(child);
+    }
+
+    @Test
     void shouldCreateElementForArrayParent() {
         JsonArray json = new JsonArray();
         GsonNode root = new GsonRootNode(json);
@@ -128,6 +148,26 @@ class GsonNavigatorTest {
 
         assertThat(child).isEqualTo(new GsonByNameNode(json, "child", root));
         assertThat(json.get("child")).isEqualTo(new JsonPrimitive(""));
+    }
+
+    @Test
+    void shouldCreateAttributeForNestedObjectInArrayChild() {
+        JsonArray json = new JsonArray();
+        JsonObject child = new JsonObject();
+        child.add("child", new JsonPrimitive(""));
+        json.add(child);
+        GsonNode root = new GsonRootNode(json);
+        GsonNavigator navigator = new GsonNavigator(root);
+        GsonNode objectNode = new GsonByIndexNode(json, 0, root);
+
+        GsonNode newChild = navigator.createAttribute(objectNode, new QName("child"));
+
+        JsonObject expected = new JsonObject();
+        expected.add("child", new JsonPrimitive(""));
+        assertThat(newChild)
+                .isNotSameAs(child)
+                .isEqualTo(new GsonByNameNode(expected, "child", new GsonByIndexNode(json, 1, root)));
+        assertThat(objectNode.get()).isSameAs(child);
     }
 
     @Test
