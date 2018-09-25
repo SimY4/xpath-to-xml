@@ -1,15 +1,17 @@
 plugins {
-    id 'net.ltgt.errorprone' version '0.0.16' apply false
+    id 'net.ltgt.errorprone' version '0.6' apply false
     id 'ru.vyarus.animalsniffer' version '1.4.6' apply false
     id 'me.champeau.gradle.jmh' version '0.4.7' apply false
 }
 
 ext {
+    assertjVersion = '3.11.1'
+    checkstyleVersion = '8.12'
+    errorproneJavacVersion = '9+181-r4173-1'
+    errorproneVersion = '2.3.1'
+    jacocoVersion = '0.8.2'
     jUnitVersion = '5.3.1'
     mockitoVersion = '2.22.0'
-    assertjVersion = '3.11.1'
-    errorproneVersion = '2.3.1'
-    checkstyleVersion = '8.12'
 
     def buildTimeAndDate = new Date()
     buildDate = buildTimeAndDate.format("yyyy-MM-dd")
@@ -61,5 +63,5 @@ subprojects {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.10'
+    gradleVersion = '4.10.2'
 }
