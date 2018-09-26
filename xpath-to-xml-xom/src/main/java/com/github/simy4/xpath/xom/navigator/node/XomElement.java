@@ -3,12 +3,10 @@ package com.github.simy4.xpath.xom.navigator.node;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.util.ReadOnlyIterator;
 import nu.xom.Attribute;
-import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
 import nu.xom.IllegalAddException;
 import nu.xom.Node;
-import nu.xom.ParentNode;
 import nu.xom.Text;
 
 import javax.xml.namespace.QName;
@@ -36,12 +34,6 @@ public final class XomElement implements XomNode<Element> {
     @Override
     public String getText() {
         return element.getValue();
-    }
-
-    @Override
-    public XomNode<?> getParent() {
-        final ParentNode parent = element.getParent();
-        return parent instanceof Element ? new XomElement((Element) parent) : new XomDocument((Document) parent);
     }
 
     @Override

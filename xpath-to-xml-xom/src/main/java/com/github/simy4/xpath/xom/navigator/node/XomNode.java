@@ -16,8 +16,6 @@ public interface XomNode<N extends nu.xom.Node> extends Node {
 
     N getNode();
 
-    XomNode<?> getParent();
-
     /**
      * Retrieves all child element nodes of this node.
      *

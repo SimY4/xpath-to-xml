@@ -32,11 +32,6 @@ public final class XomAttribute implements XomNode<Attribute> {
     }
 
     @Override
-    public XomNode<?> getParent() {
-        return new XomElement((Element) attribute.getParent());
-    }
-
-    @Override
     public Iterable<XomNode<Element>> elements() {
         return Collections.emptyList();
     }
