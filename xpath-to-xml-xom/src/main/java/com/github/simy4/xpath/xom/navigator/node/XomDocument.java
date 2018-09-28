@@ -32,11 +32,6 @@ public final class XomDocument implements XomNode<Document> {
     }
 
     @Override
-    public XomNode<?> getParent() {
-        return null;
-    }
-
-    @Override
     public Iterable<XomNode<Element>> elements() {
         return Collections.singletonList(new XomElement(document.getRootElement()));
     }

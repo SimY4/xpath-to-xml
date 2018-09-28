@@ -3,8 +3,10 @@ package com.github.simy4.xpath.xom.navigator;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.xom.navigator.node.XomDocument;
+import com.github.simy4.xpath.xom.navigator.node.XomElement;
 import com.github.simy4.xpath.xom.navigator.node.XomNode;
 import nu.xom.Attribute;
+import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.IllegalAddException;
 import nu.xom.Node;
@@ -29,7 +31,9 @@ public final class XomNavigator implements Navigator<XomNode<?>> {
 
     @Override
     public XomNode<?> parentOf(XomNode<?> node) {
-        return node.getParent();
+        final ParentNode parent = node.getNode().getParent();
+        return null == parent ? null
+                : parent instanceof Element ? new XomElement((Element) parent) : new XomDocument((Document) parent);
     }
 
     @Override

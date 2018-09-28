@@ -1,6 +1,7 @@
 package com.github.simy4.xpath.util;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public final class TransformingIterator<T, R> implements Iterator<R> {
 
@@ -19,6 +20,9 @@ public final class TransformingIterator<T, R> implements Iterator<R> {
 
     @Override
     public R next() {
+        if (!hasNext()) {
+            throw new NoSuchElementException("No more elements");
+        }
         return transformation.apply(delegate.next());
     }
 

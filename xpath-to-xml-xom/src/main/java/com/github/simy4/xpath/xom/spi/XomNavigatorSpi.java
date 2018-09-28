@@ -26,21 +26,17 @@ public class XomNavigatorSpi implements NavigatorSpi {
 
     @Override
     public <T> T process(T xml, Iterable<Effect> effects) throws XmlBuilderException {
-        if (!canHandle(xml)) {
+        final XomNode<?> node;
+        if (xml instanceof Document) {
+            node = new XomDocument((Document) xml);
+        } else if (xml instanceof Element) {
+            node = new XomElement((Element) xml);
+        } else if (xml instanceof Attribute) {
+            node = new XomAttribute((Attribute) xml);
+        } else {
             throw new IllegalArgumentException("XML model is not supported");
         }
-        final Node xmlNode = (Node) xml;
-        final XomNode<?> node;
-        if (xmlNode instanceof Document) {
-            node = new XomDocument((Document) xmlNode);
-        } else if (xmlNode instanceof Element) {
-            node = new XomElement((Element) xmlNode);
-        } else if (xmlNode instanceof Attribute) {
-            node = new XomAttribute((Attribute) xmlNode);
-        } else {
-            throw new IllegalArgumentException("XML node type is not supported");
-        }
-        final Navigator<XomNode<?>> navigator = new XomNavigator(xmlNode);
+        final Navigator<XomNode<?>> navigator = new XomNavigator(node.getNode());
         for (Effect effect : effects) {
             effect.perform(navigator, node);
         }
