@@ -2,6 +2,7 @@ package com.github.simy4.xpath.util;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public final class TransformingAndFlatteningIterator<T, R> implements Iterator<R> {
 
@@ -30,20 +31,18 @@ public final class TransformingAndFlatteningIterator<T, R> implements Iterator<R
 
     @Override
     public boolean hasNext() {
-        if (!current.hasNext()) {
-            while (delegate.hasNext()) {
-                current = transformation.apply(delegate.next());
-                if (current.hasNext()) {
-                    return true;
-                }
-            }
-            return false;
+        boolean currentHasNext;
+        while (!(currentHasNext = current.hasNext()) && delegate.hasNext()) {
+            current = transformation.apply(delegate.next());
         }
-        return true;
+        return currentHasNext;
     }
 
     @Override
     public R next() {
+        if (!hasNext()) {
+            throw new NoSuchElementException("No more elements");
+        }
         return current.next();
     }
 
