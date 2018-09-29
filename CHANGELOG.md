@@ -6,6 +6,15 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 
 ## 1.x Series
 
+### Upcoming
+
+Improvements:
+
+- XOM
+  - Minor performance improvements
+- Gson, Jackson
+  - Root node now can be overwritten
+
 ### 1.2.2
 
 Improvements:
