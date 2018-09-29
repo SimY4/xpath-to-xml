@@ -20,17 +20,17 @@ public class JacksonNavigatorSpi implements NavigatorSpi {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T process(T json, Iterable<Effect> effects) throws XmlBuilderException {
         if (!canHandle(json)) {
             throw new IllegalArgumentException("JSON model is not supported");
         }
-        final JsonNode jsonNode = (JsonNode) json;
-        final JacksonNode root = new JacksonRootNode(jsonNode);
+        final JacksonNode root = new JacksonRootNode((JsonNode) json);
         final Navigator<JacksonNode> navigator = new JacksonNavigator(root);
         for (Effect effect : effects) {
             effect.perform(navigator, root);
         }
-        return json;
+        return (T) root.get();
     }
 
 }

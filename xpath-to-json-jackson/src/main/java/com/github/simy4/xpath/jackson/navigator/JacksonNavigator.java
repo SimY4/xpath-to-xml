@@ -17,6 +17,7 @@ import javax.xml.namespace.QName;
 import java.util.Iterator;
 
 public class JacksonNavigator implements Navigator<JacksonNode> {
+
     private final JacksonNode json;
 
     public JacksonNavigator(JacksonNode json) {
