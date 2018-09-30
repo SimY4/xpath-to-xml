@@ -24,7 +24,7 @@ public class PutEffect implements Effect {
     @Override
     @SuppressWarnings("unchecked")
     public <N extends Node> void perform(Navigator<N> navigator, N xml) throws XmlBuilderException {
-        final ViewContext<N> context = new ViewContext<>(navigator, new NodeView<>(xml), true);
+        final var context = new ViewContext<>(navigator, new NodeView<>(xml), true);
         expr.resolve(context).visit((ViewVisitor<N, Void>) eagerVisitor);
     }
 
@@ -33,7 +33,7 @@ public class PutEffect implements Effect {
         @Override
         @SuppressWarnings("StatementWithEmptyBody")
         public Void visit(IterableNodeView<N> nodeSet) {
-            for (NodeView<N> ignored : nodeSet) { } // eagerly consume resolved iterable
+            for (var ignored : nodeSet) { } // eagerly consume resolved iterable
             return null;
         }
 

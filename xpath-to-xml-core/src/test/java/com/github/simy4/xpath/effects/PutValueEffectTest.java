@@ -57,7 +57,7 @@ class PutValueEffectTest {
     @DisplayName("When exception should propagate")
     void shouldPropagateOnException() {
         // given
-        XmlBuilderException failure = new XmlBuilderException("Failure");
+        var failure = new XmlBuilderException("Failure");
         doThrow(failure).when(navigator).setText(any(TestNode.class), anyString());
 
         // when
