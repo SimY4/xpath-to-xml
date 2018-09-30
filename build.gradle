@@ -21,21 +21,21 @@ ext {
 
 subprojects {
     apply plugin: 'java-library'
-    apply from: rootProject.file('gradle/animal-sniffer.gradle')
+    // apply from: rootProject.file('gradle/animal-sniffer.gradle')
     apply from: rootProject.file('gradle/check-checkstyle.gradle')
     apply from: rootProject.file('gradle/check-codecoverage.gradle')
     apply from: rootProject.file('gradle/check-errorprone.gradle')
     apply from: rootProject.file('gradle/publish-jar.gradle')
     apply from: rootProject.file('gradle/publish-maven.gradle')
 
-    sourceCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_11
 
     repositories {
         mavenCentral()
     }
 
     tasks.withType(JavaCompile) {
-        options.compilerArgs << "-Xlint:all" << "-Xlint:-options" << "-Werror"
+        options.compilerArgs << "-Xlint:all" << "-Werror"
     }
 
     test {
@@ -50,10 +50,7 @@ subprojects {
             setMemberLevel JavadocMemberLevel.PUBLIC
             setAuthor true
 
-            links "https://docs.oracle.com/javase/6/docs/api/"
-        }
-        if(JavaVersion.current().isJava9Compatible()) {
-            options.addBooleanOption('html4', true)
+            links "https://docs.oracle.com/javase/11/docs/api/"
         }
     }
 
@@ -67,7 +64,7 @@ release {
     failOnCommitNeeded = false
 
     git {
-        requireBranch = 'java6'
+        requireBranch = 'master'
     }
 }
 
