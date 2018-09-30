@@ -20,17 +20,17 @@ public class GsonNavigatorSpi implements NavigatorSpi {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T process(T json, Iterable<Effect> effects) throws XmlBuilderException {
         if (!canHandle(json)) {
             throw new IllegalArgumentException("JSON model is not supported");
         }
-        final JsonElement jsonNode = (JsonElement) json;
-        final GsonNode root = new GsonRootNode(jsonNode);
+        final GsonNode root = new GsonRootNode((JsonElement) json);
         final Navigator<GsonNode> navigator = new GsonNavigator(root);
         for (Effect effect : effects) {
             effect.perform(navigator, root);
         }
-        return json;
+        return (T) root.get();
     }
 
 }

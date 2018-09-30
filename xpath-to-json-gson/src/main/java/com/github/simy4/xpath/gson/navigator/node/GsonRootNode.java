@@ -7,7 +7,7 @@ import javax.xml.namespace.QName;
 
 public final class GsonRootNode extends AbstractGsonNode {
 
-    private final JsonElement root;
+    private JsonElement root;
 
     public GsonRootNode(JsonElement root) {
         super(null);
@@ -25,8 +25,8 @@ public final class GsonRootNode extends AbstractGsonNode {
     }
 
     @Override
-    public void set(JsonElement jsonElement) throws XmlBuilderException {
-        throw new XmlBuilderException("Unable to set to root element " + jsonElement);
+    public void set(JsonElement jsonElement) {
+        root = jsonElement;
     }
 
     @Override

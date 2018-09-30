@@ -7,7 +7,7 @@ import javax.xml.namespace.QName;
 
 public final class JacksonRootNode extends AbstractJacksonNode {
 
-    private final JsonNode root;
+    private JsonNode root;
 
     public JacksonRootNode(JsonNode root) {
         super(null);
@@ -25,8 +25,8 @@ public final class JacksonRootNode extends AbstractJacksonNode {
     }
 
     @Override
-    public void set(JsonNode jsonElement) throws XmlBuilderException {
-        throw new XmlBuilderException("Unable to set to root element " + jsonElement);
+    public void set(JsonNode jsonElement) {
+        root = jsonElement;
     }
 
     @Override

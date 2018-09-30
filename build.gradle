@@ -1,4 +1,5 @@
 plugins {
+    id 'net.researchgate.release' version '2.7.0'
     id 'net.ltgt.errorprone' version '0.6' apply false
     id 'ru.vyarus.animalsniffer' version '1.4.6' apply false
     id 'me.champeau.gradle.jmh' version '0.4.7' apply false
@@ -54,6 +55,19 @@ subprojects {
         if(JavaVersion.current().isJava9Compatible()) {
             options.addBooleanOption('html4', true)
         }
+    }
+
+    afterReleaseBuild.dependsOn publish
+}
+
+task build {
+}
+
+release {
+    failOnCommitNeeded = false
+
+    git {
+        requireBranch = 'java6'
     }
 }
 

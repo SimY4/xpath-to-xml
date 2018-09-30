@@ -16,6 +16,7 @@ import com.github.simy4.xpath.util.Predicate;
 import javax.xml.namespace.QName;
 
 public class JacksonNavigator implements Navigator<JacksonNode> {
+
     private final JacksonNode json;
 
     public JacksonNavigator(JacksonNode json) {
