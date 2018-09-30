@@ -32,10 +32,10 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.xpath.XPathExpressionException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Map.entry;
 
 /**
  * XPath parser.
@@ -62,8 +62,8 @@ public class XPathParser {
      * @throws XPathExpressionException if xpath cannot be parsed
      */
     public Expr parse(String xpath) throws XPathExpressionException {
-        final Context context = new Context(xpath);
-        final Expr expr = Expr(context);
+        final var context = new Context(xpath);
+        final var expr = Expr(context);
         if (context.hasMoreElements()) {
             throw new XPathParserException(context.tokenAt(1));
         }
@@ -75,7 +75,7 @@ public class XPathParser {
     }
 
     private Expr ComparisonExpr(Context context) throws XPathExpressionException {
-        final Expr left = AdditiveExpr(context);
+        final var left = AdditiveExpr(context);
         final Expr right;
         switch (context.tokenAt(1).getType()) {
             case Type.EQUALS:
@@ -108,8 +108,8 @@ public class XPathParser {
     }
 
     private Expr AdditiveExpr(Context context) throws XPathExpressionException {
-        Expr left = MultiplicativeExpr(context);
-        short type = context.tokenAt(1).getType();
+        var left = MultiplicativeExpr(context);
+        var type = context.tokenAt(1).getType();
         while (Type.PLUS == type || Type.MINUS == type) {
             Expr right;
             switch (type) {
@@ -132,7 +132,7 @@ public class XPathParser {
     }
 
     private Expr MultiplicativeExpr(Context context) throws XPathExpressionException {
-        Expr left = UnaryExpr(context);
+        var left = UnaryExpr(context);
         short type = context.tokenAt(1).getType();
         while (Type.STAR == type) {
             Expr right;
@@ -175,7 +175,7 @@ public class XPathParser {
     }
 
     private Expr PathExpr(Context context) throws XPathExpressionException {
-        final List<StepExpr> pathExpr = new ArrayList<>();
+        final var pathExpr = new ArrayList<StepExpr>();
         switch (context.tokenAt(1).getType()) {
             case Type.SLASH:
                 context.match(Type.SLASH);
@@ -194,7 +194,7 @@ public class XPathParser {
             case Type.DOUBLE_SLASH:
                 context.match(Type.DOUBLE_SLASH);
                 pathExpr.add(new Root());
-                pathExpr.add(new AxisStepExpr(new DescendantOrSelfAxisResolver(ANY, true), Collections.emptySet()));
+                pathExpr.add(new AxisStepExpr(new DescendantOrSelfAxisResolver(ANY, true), List.of()));
                 RelativePathExpr(context, pathExpr);
                 break;
             default:
@@ -206,7 +206,7 @@ public class XPathParser {
 
     private void RelativePathExpr(Context context, List<StepExpr> pathExpr) throws XPathExpressionException {
         pathExpr.add(StepExpr(context));
-        short type = context.tokenAt(1).getType();
+        var type = context.tokenAt(1).getType();
         while (Type.SLASH == type || Type.DOUBLE_SLASH == type) {
             switch (type) {
                 case Type.SLASH:
@@ -215,7 +215,7 @@ public class XPathParser {
                     break;
                 case Type.DOUBLE_SLASH:
                     context.match(Type.DOUBLE_SLASH);
-                    pathExpr.add(new AxisStepExpr(new DescendantOrSelfAxisResolver(ANY, true), Collections.emptySet()));
+                    pathExpr.add(new AxisStepExpr(new DescendantOrSelfAxisResolver(ANY, true), List.of()));
                     pathExpr.add(StepExpr(context));
                     break;
                 default:
@@ -258,7 +258,7 @@ public class XPathParser {
     }
 
     private AxisResolver AxisTest(Context context) throws XPathExpressionException {
-        final Token axisToken = context.tokenAt(1);
+        final var axisToken = context.tokenAt(1);
         context.match(Type.IDENTIFIER);
         context.match(Type.DOUBLE_COLON);
         final AxisResolver axisResolver;
@@ -297,7 +297,7 @@ public class XPathParser {
     private QName NodeTest(Context context) throws XPathExpressionException {
         switch (context.tokenAt(1).getType()) {
             case Type.STAR:
-                final Token star = context.match(Type.STAR);
+                final var star = context.match(Type.STAR);
                 if (Type.COLON == context.tokenAt(1).getType()) {
                     context.match(Type.COLON);
                     return new QName(star.getToken(), context.match(Type.IDENTIFIER).getToken());
@@ -305,7 +305,7 @@ public class XPathParser {
                     return new QName(star.getToken());
                 }
             case Type.IDENTIFIER:
-                final Token identifier = context.match(Type.IDENTIFIER);
+                final var identifier = context.match(Type.IDENTIFIER);
                 if (Type.COLON == context.tokenAt(1).getType()) {
                     context.match(Type.COLON);
                     final String prefix;
@@ -335,20 +335,20 @@ public class XPathParser {
 
     private List<Expr> PredicateList(Context context) throws XPathExpressionException {
         if (Type.LEFT_BRACKET == context.tokenAt(1).getType()) {
-            final List<Expr> predicateList = new ArrayList<>();
+            final var predicateList = new ArrayList<Expr>();
             predicateList.add(Predicate(context));
             while (Type.LEFT_BRACKET == context.tokenAt(1).getType()) {
                 predicateList.add(Predicate(context));
             }
             return predicateList;
         } else {
-            return Collections.emptyList();
+            return List.of();
         }
     }
 
     private PredicateExpr Predicate(Context context) throws XPathExpressionException {
         context.match(Type.LEFT_BRACKET);
-        Expr predicate = Expr(context);
+        var predicate = Expr(context);
         context.match(Type.RIGHT_BRACKET);
         return new PredicateExpr(predicate);
     }
@@ -368,7 +368,7 @@ public class XPathParser {
 
         private Token tokenAt(int i) {
             if (tokens.size() <= i - 1) {
-                for (int j = 0; j < i; ++j) {
+                for (var j = 0; j < i; ++j) {
                     tokens.add(lexer.next());
                 }
             }
@@ -376,7 +376,7 @@ public class XPathParser {
         }
 
         private Token match(short type) throws XPathExpressionException {
-            final Token token = tokenAt(1);
+            final var token = tokenAt(1);
             if (token.getType() == type) {
                 tokens.remove(0);
                 return token;
@@ -396,20 +396,15 @@ public class XPathParser {
         private static final short DESCENDANT_OR_SELF = 12;
         private static final short ANCESTOR_OR_SELF = 13;
 
-        private static final Map<String, Short> LOOKUP_MAP;
-
-        static {
-            Map<String, Short> lookupMap = new HashMap<>();
-            lookupMap.put("child", CHILD);
-            lookupMap.put("descendant", DESCENDANT);
-            lookupMap.put("parent", PARENT);
-            lookupMap.put("ancestor", ANCESTOR);
-            lookupMap.put("attribute", ATTRIBUTE);
-            lookupMap.put("self", SELF);
-            lookupMap.put("descendant-or-self", DESCENDANT_OR_SELF);
-            lookupMap.put("ancestor-or-self", ANCESTOR_OR_SELF);
-            LOOKUP_MAP = Collections.unmodifiableMap(lookupMap);
-        }
+        private static final Map<String, Short> LOOKUP_MAP = Map.ofEntries(
+                entry("child", CHILD),
+                entry("descendant", DESCENDANT),
+                entry("parent", PARENT),
+                entry("ancestor", ANCESTOR),
+                entry("attribute", ATTRIBUTE),
+                entry("self", SELF),
+                entry("descendant-or-self", DESCENDANT_OR_SELF),
+                entry("ancestor-or-self", ANCESTOR_OR_SELF));
 
         private static short lookup(Token axisToken) {
             return LOOKUP_MAP.getOrDefault(axisToken.getToken(), INVALID);

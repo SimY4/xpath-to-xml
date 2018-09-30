@@ -22,7 +22,7 @@ class XPathLexer implements Iterator<Token> {
     public Token next() {
         Token token;
         do {
-            final char ch = charAt(1);
+            final var ch = charAt(1);
             switch (ch) {
                 case '"':
                 case '\'':
@@ -129,8 +129,8 @@ class XPathLexer implements Iterator<Token> {
     }
 
     private Token literal() {
-        final char match = charAt(1);
-        final int start = cursor += 1;
+        final var match = charAt(1);
+        final var start = cursor += 1;
         Token token = null;
         while (null == token && hasNext()) {
             if (match == charAt(1)) {
@@ -142,7 +142,7 @@ class XPathLexer implements Iterator<Token> {
     }
 
     private Token identifier() {
-        final int start = cursor;
+        final var start = cursor;
         while (hasNext()) {
             if (isXmlCharacter(charAt(1))) {
                 cursor += 1;
@@ -154,8 +154,8 @@ class XPathLexer implements Iterator<Token> {
     }
 
     private Token number() {
-        final int start = cursor;
-        boolean periodAllowed = true;
+        final var start = cursor;
+        var periodAllowed = true;
         loop: while (true) {
             switch (charAt(1)) {
                 case '.':
@@ -242,7 +242,7 @@ class XPathLexer implements Iterator<Token> {
     }
 
     private char charAt(int i) {
-        final int pos = cursor + i - 1;
+        final var pos = cursor + i - 1;
         return pos >= xpath.length() ? (char) -1 : xpath.charAt(pos);
     }
 

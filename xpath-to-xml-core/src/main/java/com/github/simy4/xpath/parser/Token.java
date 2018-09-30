@@ -1,9 +1,8 @@
 package com.github.simy4.xpath.parser;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Map.entry;
 import static java.util.Objects.requireNonNull;
 
 final class Token {
@@ -68,44 +67,39 @@ final class Token {
 
         static final short DOUBLE = 29;
 
-        private static final Map<Short, String> LOOKUP_MAP;
-
-        static {
-            Map<Short, String> lookupMap = new HashMap<>();
-            lookupMap.put(EOF, "<eof>");
-            lookupMap.put(SKIP, "<skip>");
-            lookupMap.put(ERROR, "<error>");
-            lookupMap.put(EQUALS, "'='");
-            lookupMap.put(NOT_EQUALS, "'!='");
-            lookupMap.put(LESS_THAN, "'<'");
-            lookupMap.put(LESS_THAN_OR_EQUALS, "'<='");
-            lookupMap.put(GREATER_THAN, "'>'");
-            lookupMap.put(GREATER_THAN_OR_EQUALS, "'>='");
-            lookupMap.put(PLUS, "'+'");
-            lookupMap.put(MINUS, "'-'");
-            lookupMap.put(STAR, "'*'");
-            lookupMap.put(SLASH, "'/'");
-            lookupMap.put(DOUBLE_SLASH, "'//'");
-            lookupMap.put(DOT, "'.'");
-            lookupMap.put(DOUBLE_DOT, "'..'");
-            lookupMap.put(IDENTIFIER, "<identifier>");
-            lookupMap.put(AT, "'@'");
-            lookupMap.put(COLON, "':'");
-            lookupMap.put(DOUBLE_COLON, "'::'");
-            lookupMap.put(LEFT_BRACKET, "'['");
-            lookupMap.put(RIGHT_BRACKET, "']'");
-            lookupMap.put(LITERAL, "<literal>");
-            lookupMap.put(DOUBLE, "<number>");
-            LOOKUP_MAP = Collections.unmodifiableMap(lookupMap);
-        }
+        private static final Map<Short, String> LOOKUP_MAP = Map.ofEntries(
+                entry(EOF, "<eof>"),
+                entry(SKIP, "<skip>"),
+                entry(ERROR, "<error>"),
+                entry(EQUALS, "'='"),
+                entry(NOT_EQUALS, "'!='"),
+                entry(LESS_THAN, "'<'"),
+                entry(LESS_THAN_OR_EQUALS, "'<='"),
+                entry(GREATER_THAN, "'>'"),
+                entry(GREATER_THAN_OR_EQUALS, "'>='"),
+                entry(PLUS, "'+'"),
+                entry(MINUS, "'-'"),
+                entry(STAR, "'*'"),
+                entry(SLASH, "'/'"),
+                entry(DOUBLE_SLASH, "'//'"),
+                entry(DOT, "'.'"),
+                entry(DOUBLE_DOT, "'..'"),
+                entry(IDENTIFIER, "<identifier>"),
+                entry(AT, "'@'"),
+                entry(COLON, "':'"),
+                entry(DOUBLE_COLON, "'::'"),
+                entry(LEFT_BRACKET, "'['"),
+                entry(RIGHT_BRACKET, "']'"),
+                entry(LITERAL, "<literal>"),
+                entry(DOUBLE, "<number>"));
 
         static String lookup(short type) {
             return requireNonNull(LOOKUP_MAP.get(type), "Unknown token type: " + type);
         }
 
         static String[] lookup(short... types) {
-            String[] result = new String[types.length];
-            for (int i = 0; i < types.length; i++) {
+            var result = new String[types.length];
+            for (var i = 0; i < types.length; i++) {
                 result[i] = lookup(types[i]);
             }
             return result;
