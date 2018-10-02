@@ -2,9 +2,9 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
+import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
-import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,7 +37,7 @@ class PathExprTest {
     @Captor private ArgumentCaptor<ViewContext<TestNode>> stepExpr2ContextCaptor;
     @Captor private ArgumentCaptor<ViewContext<TestNode>> stepExpr3ContextCaptor;
 
-    private Expr pathExpr;
+    private PathExpr pathExpr;
 
     @BeforeEach
     void setUp() {
@@ -53,10 +53,10 @@ class PathExprTest {
         when(stepExpr3.resolve(stepExpr3ContextCaptor.capture())).thenReturn(new NodeView<>(node("node4")));
 
         // when
-        View<TestNode> result = pathExpr.resolve(new ViewContext<>(navigator, parentNode, false));
+        IterableNodeView<TestNode> result = pathExpr.resolve(new ViewContext<>(navigator, parentNode, false));
 
         // then
-        assertThat((Iterable<?>) result).extracting("node").containsExactly(node("node4"));
+        assertThat(result).extracting("node").containsExactly(node("node4"));
         assertThat(stepExpr1ContextCaptor.getAllValues()).extracting("navigator", "greedy", "hasNext", "position")
                 .containsExactly(tuple(navigator, false, false, 1));
         assertThat(stepExpr2ContextCaptor.getAllValues()).extracting("navigator", "greedy", "hasNext", "position")
@@ -73,10 +73,10 @@ class PathExprTest {
         when(stepExpr2.resolve(stepExpr2ContextCaptor.capture())).thenReturn(NodeSetView.empty());
 
         // when
-        View<TestNode> result = pathExpr.resolve(new ViewContext<>(navigator, parentNode, false));
+        IterableNodeView<TestNode> result = pathExpr.resolve(new ViewContext<>(navigator, parentNode, false));
 
         // then
-        assertThat((Iterable<?>) result).isEmpty();
+        assertThat(result).isEmpty();
         verify(stepExpr3, never()).resolve(any());
     }
 

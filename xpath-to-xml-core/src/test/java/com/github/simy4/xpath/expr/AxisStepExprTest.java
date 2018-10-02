@@ -71,7 +71,7 @@ class AxisStepExprTest {
         IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<>(navigator, parentNode, false));
 
         // then
-        assertThat((Iterable<?>) result).isNotEmpty();
+        assertThat(result).isNotEmpty();
         verify(predicate1).resolve(predicate1ContextCaptor.capture());
         verify(predicate2).resolve(predicate2ContextCaptor.capture());
         assertThat(predicate1ContextCaptor.getValue()).extracting("navigator", "greedy", "position")
@@ -91,7 +91,7 @@ class AxisStepExprTest {
         IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<>(navigator, parentNode, false));
 
         // then
-        assertThat((Iterable<?>) result).isNotEmpty();
+        assertThat(result).isNotEmpty();
         verify(predicate1, never()).resolve(any());
         verify(predicate2, never()).resolve(any());
     }
@@ -103,7 +103,7 @@ class AxisStepExprTest {
         IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<>(navigator, parentNode, false));
 
         // then
-        assertThat((Iterable<?>) result).isEmpty();
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -116,7 +116,7 @@ class AxisStepExprTest {
         IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<>(navigator, parentNode, false));
 
         // then
-        assertThat((Iterable<?>) result).isEmpty();
+        assertThat(result).isEmpty();
         verify(predicate2, never()).resolve(any());
     }
 
@@ -133,7 +133,7 @@ class AxisStepExprTest {
         IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<>(navigator, parentNode, true));
 
         // then
-        assertThat((Iterable<?>) result).isNotEmpty();
+        assertThat(result).isNotEmpty();
         verify(predicate1, times(2)).resolve(predicate1ContextCaptor.capture());
         verify(predicate2, times(2)).resolve(predicate2ContextCaptor.capture());
         assertThat(predicate1ContextCaptor.getAllValues()).extracting("navigator", "greedy", "hasNext", "position")
