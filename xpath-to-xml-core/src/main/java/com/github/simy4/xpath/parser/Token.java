@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Objects.requireNonNull;
+
 final class Token {
 
     private final short type;
@@ -98,11 +100,7 @@ final class Token {
         }
 
         static String lookup(short type) {
-            String result = LOOKUP_MAP.get(type);
-            if (null == result) {
-                throw new IllegalArgumentException("Unknown token type: " + type);
-            }
-            return result;
+            return requireNonNull(LOOKUP_MAP.get(type), "Unknown token type: " + type);
         }
 
         static String[] lookup(short... types) {

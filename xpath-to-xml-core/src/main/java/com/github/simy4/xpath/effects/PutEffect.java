@@ -13,7 +13,7 @@ import com.github.simy4.xpath.view.ViewVisitor;
 
 public class PutEffect implements Effect {
 
-    private static final ViewVisitor<? extends Node, Void> eagerVisitor = new EagerVisitor<Node>();
+    private static final ViewVisitor<? extends Node, Void> eagerVisitor = new EagerVisitor<>();
 
     private final Expr expr;
 
@@ -24,7 +24,7 @@ public class PutEffect implements Effect {
     @Override
     @SuppressWarnings("unchecked")
     public <N extends Node> void perform(Navigator<N> navigator, N xml) throws XmlBuilderException {
-        final ViewContext<N> context = new ViewContext<N>(navigator, new NodeView<N>(xml), true);
+        final ViewContext<N> context = new ViewContext<>(navigator, new NodeView<>(xml), true);
         expr.resolve(context).visit((ViewVisitor<N, Void>) eagerVisitor);
     }
 
@@ -32,7 +32,7 @@ public class PutEffect implements Effect {
 
         @Override
         @SuppressWarnings("StatementWithEmptyBody")
-        public Void visit(IterableNodeView<N> nodeSet) throws XmlBuilderException {
+        public Void visit(IterableNodeView<N> nodeSet) {
             for (NodeView<N> ignored : nodeSet) { } // eagerly consume resolved iterable
             return null;
         }

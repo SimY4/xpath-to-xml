@@ -12,7 +12,7 @@ public final class TransformingAndFlatteningIterator<T, R> implements Iterator<R
 
     public TransformingAndFlatteningIterator(Iterator<? extends T> delegate,
                                              Function<? super T, ? extends Iterator<? extends R>> transformation) {
-        this(delegate, Collections.<R>emptyList().iterator(), transformation);
+        this(delegate, Collections.emptyIterator(), transformation);
     }
 
     /**

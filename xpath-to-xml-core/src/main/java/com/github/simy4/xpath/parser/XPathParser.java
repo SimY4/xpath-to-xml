@@ -412,8 +412,7 @@ public class XPathParser {
         }
 
         private static short lookup(Token axisToken) {
-            Short axis = LOOKUP_MAP.get(axisToken.getToken());
-            return null == axis ? INVALID : axis;
+            return LOOKUP_MAP.getOrDefault(axisToken.getToken(), INVALID);
         }
 
         private Axis() { }
