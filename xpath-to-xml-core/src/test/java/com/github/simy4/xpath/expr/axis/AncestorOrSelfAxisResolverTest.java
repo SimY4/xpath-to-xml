@@ -33,7 +33,7 @@ class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
         var result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
 
         // then
-        assertThat((Iterable<?>) result).extracting("node").containsExactly(parentNode.getNode(),
+        assertThat(result).extracting("node").containsExactly(parentNode.getNode(),
                 node("parent1"), node("parent2"), node(name));
     }
 
@@ -48,7 +48,7 @@ class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
         var result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
 
         // then
-        assertThat((Iterable<?>) result).extracting("node").containsExactly(
+        assertThat(result).extracting("node").containsExactly(
                 node("parent1"), node("parent2"), node(name));
     }
 
@@ -63,7 +63,7 @@ class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
         var result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
 
         // then
-        assertThat((Iterable<?>) result).extracting("node").containsExactly(parentNode.getNode());
+        assertThat(result).extracting("node").containsExactly(parentNode.getNode());
     }
 
     @Test
@@ -77,7 +77,7 @@ class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
         var result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
 
         // then
-        assertThat((Iterable<?>) result).isEmpty();
+        assertThat(result).isEmpty();
     }
 
     @Test
