@@ -17,7 +17,7 @@ public class ParentAxisResolver extends AbstractAxisResolver {
 
     @Override
     <N extends Node> IterableNodeView<N> traverseAxis(ViewContext<N> context) {
-        final N parent = context.getNavigator().parentOf(context.getCurrent().getNode());
+        final var parent = context.getNavigator().parentOf(context.getCurrent().getNode());
         return null == parent || !test(parent) ? NodeSetView.empty() : new NodeView<>(parent);
     }
 

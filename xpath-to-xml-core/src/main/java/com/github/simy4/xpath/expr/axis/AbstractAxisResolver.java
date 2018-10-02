@@ -18,7 +18,7 @@ abstract class AbstractAxisResolver implements AxisResolver, Predicate<Node> {
 
     @Override
     public final <N extends Node> IterableNodeView<N> resolveAxis(ViewContext<N> context) throws XmlBuilderException {
-        IterableNodeView<N> result = traverseAxis(context);
+        var result = traverseAxis(context);
         if (context.isGreedy() && !context.hasNext() && !result.toBoolean()) {
             result = createAxisNode(context);
         }
@@ -33,7 +33,7 @@ abstract class AbstractAxisResolver implements AxisResolver, Predicate<Node> {
 
     @Override
     public boolean test(Node t) {
-        final QName actual = t.getName();
+        final var actual = t.getName();
         return test(name.getNamespaceURI(), actual.getNamespaceURI())
                 && test(name.getLocalPart(), actual.getLocalPart());
     }

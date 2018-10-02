@@ -3,16 +3,16 @@ package com.github.simy4.xpath.expr.axis;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
 import com.github.simy4.xpath.util.Function;
+import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;
 
 import javax.xml.namespace.QName;
-import java.util.Collections;
 import java.util.Iterator;
+import java.util.Set;
 
 public class DescendantOrSelfAxisResolver extends AbstractAxisResolver {
 
@@ -26,7 +26,7 @@ public class DescendantOrSelfAxisResolver extends AbstractAxisResolver {
     @Override
     <N extends Node> IterableNodeView<N> traverseAxis(ViewContext<N> context) {
         return new NodeSetView<>(() -> {
-            final Iterator<N> descendantOrSelf = new DescendantOrSelf<>(context.getNavigator())
+            final var descendantOrSelf = new DescendantOrSelf<>(context.getNavigator())
                     .apply(context.getCurrent().getNode());
             if (!self) {
                 descendantOrSelf.next();
@@ -60,7 +60,7 @@ public class DescendantOrSelfAxisResolver extends AbstractAxisResolver {
         @Override
         public Iterator<T> apply(T self) {
             return new TransformingAndFlatteningIterator<>(navigator.elementsOf(self).iterator(),
-                    Collections.singleton(self).iterator(), this);
+                    Set.of(self).iterator(), this);
         }
 
     }

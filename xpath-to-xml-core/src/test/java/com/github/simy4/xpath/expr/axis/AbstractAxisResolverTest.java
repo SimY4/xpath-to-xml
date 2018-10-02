@@ -2,7 +2,6 @@ package com.github.simy4.xpath.expr.axis;
 
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
-import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;
 import org.junit.jupiter.api.DisplayName;
@@ -37,7 +36,7 @@ abstract class AbstractAxisResolverTest {
         setUpResolvableAxis();
 
         // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
+        var result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
 
         // then
         assertThat((Iterable<?>) result).extracting("node").containsExactly(node(name));
@@ -51,7 +50,7 @@ abstract class AbstractAxisResolverTest {
         axisResolver = spy(axisResolver);
 
         // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, true));
+        var result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, true));
 
         // then
         assertThat((Iterable<?>) result).isNotEmpty();
@@ -63,7 +62,7 @@ abstract class AbstractAxisResolverTest {
     @DisplayName("When axis is not traversable return empty")
     void shouldReturnEmptyIfAxisIsNotTraversable() {
         // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
+        var result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
 
         // then
         assertThat((Iterable<?>) result).isEmpty();
@@ -73,8 +72,7 @@ abstract class AbstractAxisResolverTest {
     @DisplayName("When axis is not traversable and greedy context and has next should return empty")
     void shouldReturnEmptyIfAxisIsNotTraversableGreedyAndHasNext() {
         // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(
-                new ViewContext<>(navigator, parentNode, true, true, 1));
+        var result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, true, true, 1));
 
         // then
         assertThat((Iterable<?>) result).isEmpty();

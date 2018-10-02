@@ -41,7 +41,7 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
     @Override
     public int compareTo(View<N> other) {
-        final Iterator<NodeView<N>> iterator = iterator();
+        final var iterator = iterator();
         if (iterator.hasNext()) {
             return iterator.next().compareTo(other);
         } else {
@@ -56,13 +56,13 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
     @Override
     public double toNumber() {
-        final Iterator<NodeView<N>> iterator = iterator();
+        final var iterator = iterator();
         return iterator.hasNext() ? iterator.next().toNumber() : Double.NaN;
     }
 
     @Override
     public String toString() {
-        final Iterator<NodeView<N>> iterator = iterator();
+        final var iterator = iterator();
         return iterator.hasNext() ? iterator.next().toString() : "";
     }
 

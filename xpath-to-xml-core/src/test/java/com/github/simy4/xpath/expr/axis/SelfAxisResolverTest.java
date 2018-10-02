@@ -3,7 +3,6 @@ package com.github.simy4.xpath.expr.axis;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
-import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,7 +42,7 @@ class SelfAxisResolverTest {
     @DisplayName("When axis traversable should return traversed nodes")
     void shouldReturnTarversedNodesIfAxisIsTraversable() {
         // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, node, false));
+        var result = axisResolver.resolveAxis(new ViewContext<>(navigator, node, false));
 
         // then
         assertThat(result).containsExactly(node);
@@ -56,7 +55,7 @@ class SelfAxisResolverTest {
         axisResolver = spy(axisResolver);
 
         // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, node, true));
+        var result = axisResolver.resolveAxis(new ViewContext<>(navigator, node, true));
 
         // then
         assertThat(result).containsExactly(node);
@@ -70,7 +69,7 @@ class SelfAxisResolverTest {
         axisResolver = new SelfAxisResolver(new QName("another-name"));
 
         // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, node, false));
+        var result = axisResolver.resolveAxis(new ViewContext<>(navigator, node, false));
 
         // then
         assertThat((Iterable<?>) result).isEmpty();
@@ -83,8 +82,7 @@ class SelfAxisResolverTest {
         axisResolver = new SelfAxisResolver(new QName("another-name"));
 
         // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(
-                new ViewContext<>(navigator, node, true, true, 1));
+        var result = axisResolver.resolveAxis(new ViewContext<>(navigator, node, true, true, 1));
 
         // then
         assertThat((Iterable<?>) result).isEmpty();

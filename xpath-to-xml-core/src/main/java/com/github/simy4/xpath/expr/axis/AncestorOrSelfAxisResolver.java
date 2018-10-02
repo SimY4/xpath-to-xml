@@ -57,7 +57,7 @@ public class AncestorOrSelfAxisResolver extends AbstractAxisResolver {
 
         @Override
         public T next() {
-            final T next = current;
+            final var next = current;
             current = navigator.parentOf(next);
             return next;
         }

@@ -37,7 +37,7 @@ class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
         axisResolver = new DescendantOrSelfAxisResolver(new QName("*", "*"), true);
 
         // when
-        View<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
+        var result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
 
         // then
         assertThat((Iterable<?>) result).extracting("node").containsExactly(parentNode.getNode(), node("node11"),
@@ -52,7 +52,7 @@ class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
         axisResolver = new DescendantOrSelfAxisResolver(new QName("*", "*"), false);
 
         // when
-        View<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
+        var result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
 
         // then
         assertThat((Iterable<?>) result).extracting("node").containsExactly(node("node11"),

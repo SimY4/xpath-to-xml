@@ -1,7 +1,6 @@
 package com.github.simy4.xpath.expr.axis;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeSetView;
@@ -18,9 +17,7 @@ public class ChildAxisResolver extends AbstractAxisResolver {
 
     @Override
     <N extends Node> IterableNodeView<N> traverseAxis(ViewContext<N> context) {
-        final Navigator<N> navigator = context.getNavigator();
-        final N parentNode = context.getCurrent().getNode();
-        return new NodeSetView<>(navigator.elementsOf(parentNode), this);
+        return new NodeSetView<>(context.getNavigator().elementsOf(context.getCurrent().getNode()), this);
     }
 
     @Override

@@ -133,7 +133,7 @@ public class XPathParser {
 
     private Expr MultiplicativeExpr(Context context) throws XPathExpressionException {
         var left = UnaryExpr(context);
-        short type = context.tokenAt(1).getType();
+        var type = context.tokenAt(1).getType();
         while (Type.STAR == type) {
             Expr right;
             switch (type) {
