@@ -40,7 +40,7 @@ abstract class AbstractAxisResolverTest {
         IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
 
         // then
-        assertThat((Iterable<?>) result).extracting("node").containsExactly(node(name));
+        assertThat(result).extracting("node").containsExactly(node(name));
     }
 
     @Test
@@ -54,8 +54,8 @@ abstract class AbstractAxisResolverTest {
         IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, true));
 
         // then
-        assertThat((Iterable<?>) result).isNotEmpty();
-        assertThat((Iterable<?>) result).extracting("node").containsExactly(node(name));
+        assertThat(result).isNotEmpty();
+        assertThat(result).extracting("node").containsExactly(node(name));
         verify(axisResolver, never()).createAxisNode(any());
     }
 
@@ -66,7 +66,7 @@ abstract class AbstractAxisResolverTest {
         IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
 
         // then
-        assertThat((Iterable<?>) result).isEmpty();
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -77,7 +77,7 @@ abstract class AbstractAxisResolverTest {
                 new ViewContext<>(navigator, parentNode, true, true, 1));
 
         // then
-        assertThat((Iterable<?>) result).isEmpty();
+        assertThat(result).isEmpty();
     }
 
     abstract void setUpResolvableAxis();

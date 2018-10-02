@@ -73,7 +73,7 @@ class SelfAxisResolverTest {
         IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, node, false));
 
         // then
-        assertThat((Iterable<?>) result).isEmpty();
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -87,7 +87,7 @@ class SelfAxisResolverTest {
                 new ViewContext<>(navigator, node, true, true, 1));
 
         // then
-        assertThat((Iterable<?>) result).isEmpty();
+        assertThat(result).isEmpty();
     }
 
     @Test

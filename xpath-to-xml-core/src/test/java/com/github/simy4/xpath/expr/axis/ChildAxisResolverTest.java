@@ -41,7 +41,7 @@ class ChildAxisResolverTest extends AbstractAxisResolverTest {
         IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, true));
 
         // then
-        assertThat((Iterable<?>) result).extracting("node").containsExactly(node("name"));
+        assertThat(result).extracting("node").containsExactly(node("name"));
         verify(navigator).createElement(node("node"), new QName("name"));
     }
 

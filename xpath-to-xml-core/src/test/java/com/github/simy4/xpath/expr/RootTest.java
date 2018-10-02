@@ -40,7 +40,7 @@ class RootTest {
         IterableNodeView<TestNode> result = root.resolve(new ViewContext<>(navigator, parentNode, false));
 
         // then
-        assertThat((Iterable<?>) result).extracting("node").containsExactly(node("root"));
+        assertThat(result).extracting("node").containsExactly(node("root"));
     }
 
     @Test
