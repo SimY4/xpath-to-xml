@@ -25,6 +25,7 @@ import static com.github.simy4.xpath.util.TestNode.node;
 import static com.github.simy4.xpath.view.NodeSetView.empty;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -41,7 +42,7 @@ class MultiplicationExprTest {
     }
 
     private static Stream<Arguments> numberPairs() {
-        return three().flatMap(n1 -> three().map(n2 -> Arguments.of(n1, n2)));
+        return three().flatMap(n1 -> three().map(n2 -> arguments(n1, n2)));
     }
 
     private static Stream<View<?>> nan() {
@@ -54,7 +55,7 @@ class MultiplicationExprTest {
     }
 
     private static Stream<Arguments> numberAndNan() {
-        return three().flatMap(n -> nan().map(nan -> Arguments.of(n, nan)));
+        return three().flatMap(n -> nan().map(nan -> arguments(n, nan)));
     }
 
     @Mock private Navigator<TestNode> navigator;

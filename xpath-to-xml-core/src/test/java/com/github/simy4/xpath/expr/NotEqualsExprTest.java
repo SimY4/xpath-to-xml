@@ -31,6 +31,7 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assumptions.assumeThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -48,7 +49,7 @@ class NotEqualsExprTest {
     }
 
     private static Stream<Arguments> equalPairs() {
-        return equals().flatMap(l -> equals().map(r -> Arguments.of(l, r)));
+        return equals().flatMap(l -> equals().map(r -> arguments(l, r)));
     }
 
     private static Stream<View<?>> nonEquals() {
@@ -62,7 +63,7 @@ class NotEqualsExprTest {
     }
 
     private static Stream<Arguments> notEqualPairs() {
-        return equals().flatMap(l -> nonEquals().map(r -> Arguments.of(l, r)));
+        return equals().flatMap(l -> nonEquals().map(r -> arguments(l, r)));
     }
 
     private static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));

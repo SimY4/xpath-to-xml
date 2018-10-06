@@ -24,19 +24,20 @@ import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class XmlBuilderTest {
 
     private static Stream<Arguments> data() {
         return Stream.of(
-                Arguments.of(new FixtureAccessor("simple"), null),
-                Arguments.of(new FixtureAccessor("simple"), new SimpleNamespaceContext()),
-                Arguments.of(new FixtureAccessor("ns-simple"), new SimpleNamespaceContext()),
+                arguments(new FixtureAccessor("simple"), null),
+                arguments(new FixtureAccessor("simple"), new SimpleNamespaceContext()),
+                arguments(new FixtureAccessor("ns-simple"), new SimpleNamespaceContext()),
                 // TODO although these cases are working fine the order of attribute is messed up
-                // Arguments.of(new FixtureAccessor("attr"), null),
-                // Arguments.of(new FixtureAccessor("attr"), new SimpleNamespaceContext()),
-                Arguments.of(new FixtureAccessor("special"), null),
-                Arguments.of(new FixtureAccessor("special"), new SimpleNamespaceContext())
+                // arguments(new FixtureAccessor("attr"), null),
+                // arguments(new FixtureAccessor("attr"), new SimpleNamespaceContext()),
+                arguments(new FixtureAccessor("special"), null),
+                arguments(new FixtureAccessor("special"), new SimpleNamespaceContext())
         );
     }
 
