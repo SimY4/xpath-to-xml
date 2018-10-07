@@ -1,8 +1,8 @@
 package com.github.simy4.xpath.xom.spi;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.effects.Effect;
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.spi.Effect;
 import com.github.simy4.xpath.spi.NavigatorSpi;
 import com.github.simy4.xpath.xom.navigator.XomNavigator;
 import com.github.simy4.xpath.xom.navigator.node.XomAttribute;

@@ -31,6 +31,7 @@ import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class XmlBuilderTest {
 
@@ -42,16 +43,16 @@ class XmlBuilderTest {
         DocumentBuilderFactory nsAwareDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
         nsAwareDocumentBuilderFactory.setNamespaceAware(true);
         return Stream.of(
-                Arguments.of(new FixtureAccessor("simple"), null, documentBuilderFactory),
-                Arguments.of(new FixtureAccessor("simple"), new SimpleNamespaceContext(),
+                arguments(new FixtureAccessor("simple"), null, documentBuilderFactory),
+                arguments(new FixtureAccessor("simple"), new SimpleNamespaceContext(),
                         documentBuilderFactory),
-                Arguments.of(new FixtureAccessor("ns-simple"), new SimpleNamespaceContext(),
+                arguments(new FixtureAccessor("ns-simple"), new SimpleNamespaceContext(),
                         nsAwareDocumentBuilderFactory),
-                Arguments.of(new FixtureAccessor("attr"), null, documentBuilderFactory),
-                Arguments.of(new FixtureAccessor("attr"), new SimpleNamespaceContext(),
+                arguments(new FixtureAccessor("attr"), null, documentBuilderFactory),
+                arguments(new FixtureAccessor("attr"), new SimpleNamespaceContext(),
                         documentBuilderFactory),
-                Arguments.of(new FixtureAccessor("special"), null, documentBuilderFactory),
-                Arguments.of(new FixtureAccessor("special"), new SimpleNamespaceContext(),
+                arguments(new FixtureAccessor("special"), null, documentBuilderFactory),
+                arguments(new FixtureAccessor("special"), new SimpleNamespaceContext(),
                         documentBuilderFactory)
         );
     }

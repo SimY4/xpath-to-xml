@@ -25,6 +25,7 @@ import static com.github.simy4.xpath.util.TestNode.node;
 import static com.github.simy4.xpath.view.NodeSetView.empty;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -33,19 +34,19 @@ class UnaryExprTest {
 
     private static Stream<Arguments> number() {
         return Stream.of(
-                Arguments.of(new LiteralView<>("2.0")),
-                Arguments.of(new NumberView<>(2.0)),
-                Arguments.of(new NodeView<>(node("2.0"))),
-                Arguments.of(new NodeSetView<>(() -> singletonList(new NodeView<>(node("2.0"))).iterator()))
+                arguments(new LiteralView<>("2.0")),
+                arguments(new NumberView<>(2.0)),
+                arguments(new NodeView<>(node("2.0"))),
+                arguments(new NodeSetView<>(() -> singletonList(new NodeView<>(node("2.0"))).iterator()))
         );
     }
 
     private static Stream<Arguments> nan() {
         return Stream.of(
-                Arguments.of(new LiteralView<>("literal")),
-                Arguments.of(new NumberView<>(Double.NaN)),
-                Arguments.of(new NodeView<>(node("text"))),
-                Arguments.of(empty())
+                arguments(new LiteralView<>("literal")),
+                arguments(new NumberView<>(Double.NaN)),
+                arguments(new NodeView<>(node("text"))),
+                arguments(empty())
         );
     }
 

@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class XmlBuilderTest {
 
@@ -22,9 +23,9 @@ class XmlBuilderTest {
 
     private static Stream<Arguments> data() {
         return Stream.of(
-                Arguments.of(new FixtureAccessor("attr", "json")),
-                Arguments.of(new FixtureAccessor("simple", "json")),
-                Arguments.of(new FixtureAccessor("special", "json"))
+                arguments(new FixtureAccessor("attr", "json")),
+                arguments(new FixtureAccessor("simple", "json")),
+                arguments(new FixtureAccessor("special", "json"))
         );
     }
 

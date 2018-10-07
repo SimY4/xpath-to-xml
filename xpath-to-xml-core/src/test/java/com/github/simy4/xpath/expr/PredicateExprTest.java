@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 
 import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -29,16 +30,16 @@ class PredicateExprTest {
 
     private static Stream<Arguments> truthy() {
         return Stream.of(
-                Arguments.of(new LiteralExpr("2.0")),
-                Arguments.of(new EqualsExpr(new NumberExpr(1.0), new NumberExpr(1.0))),
-                Arguments.of(new AxisStepExpr(new SelfAxisResolver(new QName("*", "*")), Collections.emptySet()))
+                arguments(new LiteralExpr("2.0")),
+                arguments(new EqualsExpr(new NumberExpr(1.0), new NumberExpr(1.0))),
+                arguments(new AxisStepExpr(new SelfAxisResolver(new QName("*", "*")), Collections.emptySet()))
         );
     }
 
     private static Stream<Arguments> falsy() {
         return Stream.of(
-                Arguments.of(new LiteralExpr("")),
-                Arguments.of(new NotEqualsExpr(new NumberExpr(1.0), new NumberExpr(1.0)))
+                arguments(new LiteralExpr("")),
+                arguments(new NotEqualsExpr(new NumberExpr(1.0), new NumberExpr(1.0)))
         );
     }
 

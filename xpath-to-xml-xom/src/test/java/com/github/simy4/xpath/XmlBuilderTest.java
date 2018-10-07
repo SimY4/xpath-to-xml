@@ -26,6 +26,7 @@ import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class XmlBuilderTest {
 
@@ -33,15 +34,15 @@ class XmlBuilderTest {
         Element nsAwareRoot = new Element("breakfast_menu", "http://www.example.com/my");
         nsAwareRoot.setNamespacePrefix("my");
         return Stream.of(
-                Arguments.of(new FixtureAccessor("simple"), null, new Element("breakfast_menu")),
-                Arguments.of(new FixtureAccessor("simple"), new SimpleNamespaceContext(),
+                arguments(new FixtureAccessor("simple"), null, new Element("breakfast_menu")),
+                arguments(new FixtureAccessor("simple"), new SimpleNamespaceContext(),
                         new Element("breakfast_menu")),
-                Arguments.of(new FixtureAccessor("ns-simple"), new SimpleNamespaceContext(), nsAwareRoot),
+                arguments(new FixtureAccessor("ns-simple"), new SimpleNamespaceContext(), nsAwareRoot),
                 // TODO although these cases are working fine the order of attributes is messed up
-                // Arguments.of(new FixtureAccessor("attr"), null },
-                // Arguments.of(new FixtureAccessor("attr"), new SimpleNamespaceContext() },
-                Arguments.of(new FixtureAccessor("special"), null, new Element("records")),
-                Arguments.of(new FixtureAccessor("special"), new SimpleNamespaceContext(), new Element("records"))
+                // arguments(new FixtureAccessor("attr"), null },
+                // arguments(new FixtureAccessor("attr"), new SimpleNamespaceContext() },
+                arguments(new FixtureAccessor("special"), null, new Element("records")),
+                arguments(new FixtureAccessor("special"), new SimpleNamespaceContext(), new Element("records"))
         );
     }
 
