@@ -1,4 +1,4 @@
-package com.github.simy4.xpath.util;
+package com.github.simy4.xpath.helpers;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;

@@ -1,7 +1,8 @@
-package com.github.simy4.xpath;
+package com.github.simy4.xpath.xom;
 
+import com.github.simy4.xpath.XmlBuilder;
 import com.github.simy4.xpath.fixtures.FixtureAccessor;
-import com.github.simy4.xpath.util.SimpleNamespaceContext;
+import com.github.simy4.xpath.helpers.SimpleNamespaceContext;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Element;
