@@ -1,7 +1,8 @@
-package com.github.simy4.xpath;
+package com.github.simy4.xpath.dom;
 
+import com.github.simy4.xpath.XmlBuilder;
 import com.github.simy4.xpath.fixtures.FixtureAccessor;
-import com.github.simy4.xpath.util.SimpleNamespaceContext;
+import com.github.simy4.xpath.helpers.SimpleNamespaceContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

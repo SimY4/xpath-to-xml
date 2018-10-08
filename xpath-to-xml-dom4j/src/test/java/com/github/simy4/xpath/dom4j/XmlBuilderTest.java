@@ -1,7 +1,8 @@
-package com.github.simy4.xpath;
+package com.github.simy4.xpath.dom4j;
 
+import com.github.simy4.xpath.XmlBuilder;
 import com.github.simy4.xpath.fixtures.FixtureAccessor;
-import com.github.simy4.xpath.util.SimpleNamespaceContext;
+import com.github.simy4.xpath.helpers.SimpleNamespaceContext;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;

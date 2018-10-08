@@ -21,7 +21,7 @@ import com.github.simy4.xpath.expr.axis.ChildAxisResolver;
 import com.github.simy4.xpath.expr.axis.DescendantOrSelfAxisResolver;
 import com.github.simy4.xpath.expr.axis.ParentAxisResolver;
 import com.github.simy4.xpath.expr.axis.SelfAxisResolver;
-import com.github.simy4.xpath.util.SimpleNamespaceContext;
+import com.github.simy4.xpath.helpers.SimpleNamespaceContext;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
