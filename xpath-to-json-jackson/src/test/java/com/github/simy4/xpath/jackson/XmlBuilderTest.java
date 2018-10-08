@@ -1,10 +1,14 @@
-package com.github.simy4.xpath;
+package com.github.simy4.xpath.jackson;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.github.simy4.xpath.XmlBuilder;
 import com.github.simy4.xpath.fixtures.FixtureAccessor;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -19,7 +23,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class XmlBuilderTest {
 
-    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private static Stream<Arguments> data() {
         return Stream.of(
@@ -34,9 +38,9 @@ class XmlBuilderTest {
     void shouldBuildJsonFromSetOfXPaths(FixtureAccessor fixtureAccessor)
             throws XPathExpressionException, IOException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-        JsonObject builtDocument = new XmlBuilder()
+        ObjectNode builtDocument = new XmlBuilder()
                 .putAll(xmlProperties.keySet())
-                .build(new JsonObject());
+                .build(new ObjectNode(JsonNodeFactory.instance));
 
         assertThat(jsonToString(builtDocument)).isEqualTo(fixtureAccessor.getPutXml());
     }
@@ -46,9 +50,9 @@ class XmlBuilderTest {
     void shouldBuildJsonFromSetOfXPathsAndSetValues(FixtureAccessor fixtureAccessor)
             throws XPathExpressionException, IOException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-        JsonObject builtDocument = new XmlBuilder()
+        ObjectNode builtDocument = new XmlBuilder()
                 .putAll(xmlProperties)
-                .build(new JsonObject());
+                .build(new ObjectNode(JsonNodeFactory.instance));
 
         assertThat(jsonToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
     }
@@ -59,8 +63,8 @@ class XmlBuilderTest {
             throws XPathExpressionException, IOException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         String json = fixtureAccessor.getPutXml();
-        JsonElement oldDocument = stringToJson(json);
-        JsonElement builtDocument = new XmlBuilder()
+        JsonNode oldDocument = stringToJson(json);
+        JsonNode builtDocument = new XmlBuilder()
                 .putAll(xmlProperties)
                 .build(oldDocument);
 
@@ -73,8 +77,8 @@ class XmlBuilderTest {
             throws XPathExpressionException, IOException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         String json = fixtureAccessor.getPutValueXml();
-        JsonElement oldDocument = stringToJson(json);
-        JsonElement builtDocument = new XmlBuilder()
+        JsonNode oldDocument = stringToJson(json);
+        JsonNode builtDocument = new XmlBuilder()
                 .putAll(xmlProperties)
                 .build(oldDocument);
 
@@ -93,20 +97,28 @@ class XmlBuilderTest {
             throws XPathExpressionException, IOException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         String json = fixtureAccessor.getPutValueXml();
-        JsonElement oldDocument = stringToJson(json);
-        JsonElement builtDocument = new XmlBuilder()
+        JsonNode oldDocument = stringToJson(json);
+        JsonNode builtDocument = new XmlBuilder()
                 .removeAll(xmlProperties.keySet())
                 .build(oldDocument);
 
         assertThat(jsonToString(builtDocument)).isNotEqualTo(fixtureAccessor.getPutValueXml());
     }
 
-    private JsonElement stringToJson(String xml) {
-        return gson.fromJson(xml, JsonElement.class);
+    private JsonNode stringToJson(String xml) throws IOException {
+        return objectMapper.readTree(xml);
     }
 
-    private String jsonToString(JsonElement json) {
-        return gson.toJson(json).replaceAll("\n", System.getProperty("line.separator"));
+    private String jsonToString(JsonNode json) throws JsonProcessingException {
+        return objectMapper.writer(new DefaultPrettyPrinter() {
+            private static final long serialVersionUID = 1;
+
+            {
+                _objectFieldValueSeparatorWithSpaces = _separators.getObjectFieldValueSeparator() + " ";
+                _arrayIndenter = new DefaultIndenter();
+                _objectIndenter = new DefaultIndenter();
+            }
+        }).writeValueAsString(json).replaceAll("\\{ }", "{}");
     }
 
 }
