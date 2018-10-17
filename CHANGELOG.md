@@ -8,6 +8,13 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 
 ### Upcoming
 
+Features:
+
+- Support for javax.json model
+- Support for scala XML model
+
+### 1.2.3
+
 Improvements:
 
 - XOM
