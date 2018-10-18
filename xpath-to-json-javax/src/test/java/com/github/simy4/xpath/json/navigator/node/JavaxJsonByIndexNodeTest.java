@@ -16,7 +16,8 @@ class JavaxJsonByIndexNodeTest {
             .add(2)
             .add(3)
             .build();
-    private final JavaxJsonNode byIndexNode = new JavaxJsonByIndexNode(jsonArray, 1, null);
+    private final JavaxJsonNode rootNode = new JavaxJsonRootNode(jsonArray);
+    private final JavaxJsonNode byIndexNode = new JavaxJsonByIndexNode(jsonArray, 1, rootNode);
 
     @Test
     void shouldRetrieveElementByIndexOnGet() {
@@ -25,17 +26,18 @@ class JavaxJsonByIndexNodeTest {
 
     @Test
     void shouldSetElementByIndexOnSet() {
-        byIndexNode.set(jsonProvider.createValue(4));
+        byIndexNode.set(jsonProvider, jsonProvider.createValue(4));
 
-        assertThat(jsonArray).containsExactly(
+        assertThat(rootNode.get().asJsonArray()).containsExactly(
                 jsonProvider.createValue(1), jsonProvider.createValue(4), jsonProvider.createValue(3));
     }
 
     @Test
     void shouldRemoveElementByIndexOnRemove() {
-        byIndexNode.remove();
+        byIndexNode.remove(jsonProvider);
 
-        assertThat(jsonArray).containsExactly(jsonProvider.createValue(1), jsonProvider.createValue(3));
+        assertThat(rootNode.get().asJsonArray())
+                .containsExactly(jsonProvider.createValue(1), jsonProvider.createValue(3));
     }
 
     @Test

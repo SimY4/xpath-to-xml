@@ -3,6 +3,7 @@ package com.github.simy4.xpath.json.navigator.node;
 import com.github.simy4.xpath.XmlBuilderException;
 
 import javax.json.JsonValue;
+import javax.json.spi.JsonProvider;
 import javax.xml.namespace.QName;
 
 public final class JavaxJsonRootNode extends AbstractJavaxJsonNode {
@@ -25,12 +26,12 @@ public final class JavaxJsonRootNode extends AbstractJavaxJsonNode {
     }
 
     @Override
-    public void set(JsonValue jsonValue) {
+    public void set(JsonProvider jsonProvider, JsonValue jsonValue) {
         root = jsonValue;
     }
 
     @Override
-    public void remove() throws XmlBuilderException {
+    public void remove(JsonProvider jsonProvider) throws XmlBuilderException {
         throw new XmlBuilderException("Unable to remove from root element");
     }
 

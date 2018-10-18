@@ -31,13 +31,13 @@ class JavaxJsonRootNodeTest {
     @Test
     void shouldReplaceRootNodeOnSet() {
         JsonArray array = jsonProvider.createArrayBuilder().build();
-        rootNode.set(array);
+        rootNode.set(jsonProvider, array);
         assertThat(rootNode.get()).isSameAs(array);
     }
 
     @Test
     void shouldThrowOnRemove() {
-        assertThatThrownBy(rootNode::remove).isInstanceOf(XmlBuilderException.class);
+        assertThatThrownBy(() -> rootNode.remove(jsonProvider)).isInstanceOf(XmlBuilderException.class);
     }
 
 }

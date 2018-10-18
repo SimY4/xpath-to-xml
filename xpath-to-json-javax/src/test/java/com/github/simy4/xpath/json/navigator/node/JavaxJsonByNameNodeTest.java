@@ -17,7 +17,8 @@ class JavaxJsonByNameNodeTest {
             .add("two", 2)
             .add("three", 3)
             .build();
-    private final JavaxJsonNode byNameNode = new JavaxJsonByNameNode(jsonObject, "two", null);
+    private final JavaxJsonNode rootNode = new JavaxJsonRootNode(jsonObject);
+    private final JavaxJsonNode byNameNode = new JavaxJsonByNameNode(jsonObject, "two", rootNode);
 
     @Test
     void shouldRetrieveElementByIndexOnGet() {
@@ -26,9 +27,9 @@ class JavaxJsonByNameNodeTest {
 
     @Test
     void shouldSetElementByIndexOnSet() {
-        byNameNode.set(jsonProvider.createValue(4));
+        byNameNode.set(jsonProvider, jsonProvider.createValue(4));
 
-        assertThat(jsonObject).containsExactly(
+        assertThat(rootNode.get().asJsonObject()).containsExactly(
                 entry("one", jsonProvider.createValue(1)),
                 entry("two", jsonProvider.createValue(4)),
                 entry("three", jsonProvider.createValue(3))
@@ -37,9 +38,9 @@ class JavaxJsonByNameNodeTest {
 
     @Test
     void shouldRemoveElementByIndexOnRemove() {
-        byNameNode.remove();
+        byNameNode.remove(jsonProvider);
 
-        assertThat(jsonObject).containsExactly(
+        assertThat(rootNode.get().asJsonObject()).containsExactly(
                 entry("one", jsonProvider.createValue(1)),
                 entry("three", jsonProvider.createValue(3))
         );
