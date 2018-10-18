@@ -21,23 +21,31 @@ class JavaxJsonNavigatorTest {
 
     private static final JsonProvider jsonProvider = JsonProvider.provider();
 
-    private final JsonObject json = jsonProvider.createObjectBuilder().build();
-    private final JavaxJsonNode root = new JavaxJsonRootNode(json);
-    private final Navigator<JavaxJsonNode> navigator = new JavaxJsonNavigator(jsonProvider, root);
-
     @Test
     void shouldReturnRoot() {
+        JsonObject json = jsonProvider.createObjectBuilder().build();
+        JavaxJsonNode root = new JavaxJsonRootNode(json);
+        Navigator<JavaxJsonNode> navigator = new JavaxJsonNavigator(jsonProvider, root);
+
         assertThat(navigator.root()).isEqualTo(root);
     }
 
     @Test
     void shouldReturnNullParentForRoot() {
+        JsonObject json = jsonProvider.createObjectBuilder().build();
+        JavaxJsonNode root = new JavaxJsonRootNode(json);
+        Navigator<JavaxJsonNode> navigator = new JavaxJsonNavigator(jsonProvider, root);
+
         assertThat(navigator.parentOf(root)).isNull();
     }
 
     @Test
     void shouldReturnParentForElementChild() {
-        json.put("child", jsonProvider.createValue("zero"));
+        JsonObject json = jsonProvider.createObjectBuilder()
+                .add("child", jsonProvider.createValue("zero"))
+                .build();
+        JavaxJsonNode root = new JavaxJsonRootNode(json);
+        Navigator<JavaxJsonNode> navigator = new JavaxJsonNavigator(jsonProvider, root);
         JavaxJsonNode childNode = new JavaxJsonByNameNode(json, "child", root);
 
         assertThat(navigator.parentOf(childNode)).isEqualTo(root);
@@ -73,9 +81,13 @@ class JavaxJsonNavigatorTest {
 
     @Test
     void shouldSetTextForElementChild() {
+        JsonObject json = jsonProvider.createObjectBuilder().build();
+        JavaxJsonNode root = new JavaxJsonRootNode(json);
+        Navigator<JavaxJsonNode> navigator = new JavaxJsonNavigator(jsonProvider, root);
+
         navigator.setText(root, "test");
 
-        assertThat(json.get("text")).isEqualTo(jsonProvider.createValue("test"));
+        assertThat(root.get().asJsonObject().get("text")).isEqualTo(jsonProvider.createValue("test"));
     }
 
     @Test
@@ -90,19 +102,28 @@ class JavaxJsonNavigatorTest {
 
     @Test
     void shouldSetTextForPrimitiveChild() {
-        json.put("child", jsonProvider.createValue("zero"));
+        JsonObject json = jsonProvider.createObjectBuilder()
+                .add("child", jsonProvider.createValue("zero"))
+                .build();
+        JavaxJsonNode root = new JavaxJsonRootNode(json);
+        Navigator<JavaxJsonNode> navigator = new JavaxJsonNavigator(jsonProvider, root);
         JavaxJsonNode childNode = new JavaxJsonByNameNode(json, "child", root);
+
         navigator.setText(childNode, "test");
 
-        assertThat(json.get("child")).isEqualTo(jsonProvider.createValue("zero"));
+        assertThat(root.get().asJsonObject().get("child")).isEqualTo(jsonProvider.createValue("test"));
     }
 
     @Test
     void shouldCreateElementForElementParent() {
+        JsonObject json = jsonProvider.createObjectBuilder().build();
+        JavaxJsonNode root = new JavaxJsonRootNode(json);
+        JavaxJsonNavigator navigator = new JavaxJsonNavigator(jsonProvider, root);
+
         JavaxJsonNode child = navigator.createElement(root, new QName("child"));
 
-        assertThat(child).isEqualTo(new JavaxJsonByNameNode(json, "child", root));
-        assertThat(json.get("child")).isEqualTo(JsonValue.EMPTY_JSON_OBJECT);
+        assertThat(child).isEqualTo(new JavaxJsonByNameNode(root.get().asJsonObject(), "child", root));
+        assertThat(root.get().asJsonObject().get("child")).isEqualTo(JsonValue.EMPTY_JSON_OBJECT);
     }
 
     @Test
@@ -124,7 +145,7 @@ class JavaxJsonNavigatorTest {
                 .build();
         assertThat(newChild)
                 .isNotSameAs(child)
-                .isEqualTo(new JavaxJsonByNameNode(expected, "child", new JavaxJsonByIndexNode(json, 1, root)));
+                .isEqualTo(new JavaxJsonByNameNode(expected, "child", new JavaxJsonByIndexNode(root.get().asJsonArray(), 1, root)));
         assertThat(objectNode.get()).isSameAs(child);
     }
 
@@ -139,13 +160,17 @@ class JavaxJsonNavigatorTest {
         JsonObject expected = jsonProvider.createObjectBuilder()
                 .add("child", JsonValue.EMPTY_JSON_OBJECT)
                 .build();
-        assertThat(child).isEqualTo(new JavaxJsonByNameNode(expected, "child", new JavaxJsonByIndexNode(json, 0, root)));
-        assertThat(json.get(0)).isEqualTo(expected);
+        assertThat(child).isEqualTo(new JavaxJsonByNameNode(expected, "child", new JavaxJsonByIndexNode(root.get().asJsonArray(), 0, root)));
+        assertThat(root.get().asJsonArray().get(0)).isEqualTo(expected);
     }
 
     @Test
     void shouldCreateElementForPrimitiveParent() {
-        json.put("child", jsonProvider.createValue("zero"));
+        JsonObject json = jsonProvider.createObjectBuilder()
+                .add("child", jsonProvider.createValue("zero"))
+                .build();
+        JavaxJsonNode root = new JavaxJsonRootNode(json);
+        Navigator<JavaxJsonNode> navigator = new JavaxJsonNavigator(jsonProvider, root);
         JavaxJsonNode childNode = new JavaxJsonByNameNode(json, "child", root);
 
         assertThatThrownBy(() -> navigator.createElement(childNode, new QName("child")))
@@ -154,10 +179,14 @@ class JavaxJsonNavigatorTest {
 
     @Test
     void shouldCreateAttributeForElementParent() {
+        JsonObject json = jsonProvider.createObjectBuilder().build();
+        JavaxJsonNode root = new JavaxJsonRootNode(json);
+        JavaxJsonNavigator navigator = new JavaxJsonNavigator(jsonProvider, root);
+
         JavaxJsonNode child = navigator.createAttribute(root, new QName("child"));
 
-        assertThat(child).isEqualTo(new JavaxJsonByNameNode(json, "child", root));
-        assertThat(json.get("child")).isEqualTo(jsonProvider.createValue(""));
+        assertThat(child).isEqualTo(new JavaxJsonByNameNode(root.get().asJsonObject(), "child", root));
+        assertThat(root.get().asJsonObject().get("child")).isEqualTo(jsonProvider.createValue(""));
     }
 
     @Test
@@ -179,7 +208,7 @@ class JavaxJsonNavigatorTest {
                 .build();
         assertThat(newChild)
                 .isNotSameAs(child)
-                .isEqualTo(new JavaxJsonByNameNode(expected, "child", new JavaxJsonByIndexNode(json, 1, root)));
+                .isEqualTo(new JavaxJsonByNameNode(expected, "child", new JavaxJsonByIndexNode(root.get().asJsonArray(), 1, root)));
         assertThat(objectNode.get()).isSameAs(child);
     }
 
@@ -194,13 +223,18 @@ class JavaxJsonNavigatorTest {
         JsonObject expected = jsonProvider.createObjectBuilder()
                 .add("child", jsonProvider.createValue(""))
                 .build();
-        assertThat(child).isEqualTo(new JavaxJsonByNameNode(expected, "child", new JavaxJsonByIndexNode(json, 0, root)));
-        assertThat(json.get(0)).isEqualTo(expected);
+        assertThat(child).isEqualTo(new JavaxJsonByNameNode(expected, "child", new JavaxJsonByIndexNode(root.get().asJsonArray(), 0, root)));
+        assertThat(root.get().asJsonArray().get(0)).isEqualTo(expected);
     }
 
     @Test
     void shouldCreateAttributeForPrimitiveParent() {
-        json.put("child", jsonProvider.createValue("zero"));
+        JsonObject json = jsonProvider.createObjectBuilder()
+                .add("child", jsonProvider.createValue("zero"))
+                .build();
+        JavaxJsonNode root = new JavaxJsonRootNode(json);
+        JavaxJsonNavigator navigator = new JavaxJsonNavigator(jsonProvider, root);
+
         JavaxJsonNode childNode = new JavaxJsonByNameNode(json, "child", root);
 
         assertThatThrownBy(() -> navigator.createAttribute(childNode, new QName("child")))

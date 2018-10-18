@@ -59,17 +59,20 @@ public class JavaxJsonNavigator implements Navigator<JavaxJsonNode> {
 
     @Override
     public void setText(JavaxJsonNode node, String text) throws XmlBuilderException {
-        final JsonValue jsonValue = node.get();
+        JsonValue jsonValue = node.get();
         switch (jsonValue.getValueType()) {
             case OBJECT:
-                jsonValue.asJsonObject().put("text", jsonProvider.createValue(text));
+                jsonValue = jsonProvider.createObjectBuilder(jsonValue.asJsonObject())
+                        .add("text", jsonProvider.createValue(text))
+                        .build();
                 break;
             case ARRAY:
                 throw new XmlBuilderException("Unable to set text to JSON array: " + jsonValue);
             default:
-                node.set(jsonProvider.createValue(text));
+                jsonValue = jsonProvider.createValue(text);
                 break;
         }
+        node.set(jsonProvider, jsonValue);
     }
 
     @Override
@@ -100,7 +103,7 @@ public class JavaxJsonNavigator implements Navigator<JavaxJsonNode> {
                     copyNode = prependToNewArray(parent, parentValue);
                 }
                 elementNode = new JavaxJsonByNameNode(jsonObject, name, copyNode);
-                copyNode.set(jsonObject);
+                copyNode.set(jsonProvider, jsonObject);
                 break;
             case ARRAY:
                 final JsonArray jsonArray = parentValue.asJsonArray();
@@ -111,12 +114,12 @@ public class JavaxJsonNavigator implements Navigator<JavaxJsonNode> {
             default:
                 throw new XmlBuilderException("Unable to prepend copy to primitive node: " + parentValue);
         }
-//        elementNode.set(jsonProvider.createcreatevalueToCopy.clone());
+        elementNode.set(jsonProvider, valueToCopy);
     }
 
     @Override
     public void remove(JavaxJsonNode node) throws XmlBuilderException {
-        node.remove();
+        node.remove(jsonProvider);
     }
 
     private JavaxJsonNode appendElement(JavaxJsonNode parent, String name, JsonValue newValue) {
@@ -147,7 +150,7 @@ public class JavaxJsonNavigator implements Navigator<JavaxJsonNode> {
             default:
                 throw new XmlBuilderException("Unable to create element for primitive node: " + parentValue);
         }
-        elementNode.set(newValue);
+        elementNode.set(jsonProvider, newValue);
         return elementNode;
     }
 
@@ -155,17 +158,16 @@ public class JavaxJsonNavigator implements Navigator<JavaxJsonNode> {
         final JsonArray jsonArray = jsonProvider.createArrayBuilder()
                 .add(parentObject)
                 .build();
-        final JavaxJsonNode elementNode = appendToArray(parent, name, jsonArray);
-        if (null != parent) {
-            parent.set(jsonArray);
-        }
-        return elementNode;
+        return appendToArray(parent, name, jsonArray);
     }
 
     private JavaxJsonNode appendToArray(JavaxJsonNode parent, String name, JsonArray parentArray) {
         final JsonObject jsonObject = jsonProvider.createObjectBuilder().build();
-        parentArray.add(jsonObject);
-        final JavaxJsonNode parentObjectNode = new JavaxJsonByIndexNode(parentArray, parentArray.size() - 1, parent);
+        final JsonArray jsonArray = jsonProvider.createArrayBuilder(parentArray)
+                .add(jsonObject)
+                .build();
+        parent.set(jsonProvider, jsonArray);
+        final JavaxJsonNode parentObjectNode = new JavaxJsonByIndexNode(jsonArray, parentArray.size(), parent);
         return new JavaxJsonByNameNode(jsonObject, name, parentObjectNode);
     }
 
@@ -175,7 +177,7 @@ public class JavaxJsonNavigator implements Navigator<JavaxJsonNode> {
                 .build();
         final JavaxJsonByIndexNode elementNode = prependToArray(parent, valueToCopy, jsonArray);
         if (null != parent) {
-            parent.set(jsonArray);
+            parent.set(jsonProvider, jsonArray);
             parent.setParent(new JavaxJsonByIndexNode(jsonArray, 1, parent.getParent()));
         }
         return elementNode;

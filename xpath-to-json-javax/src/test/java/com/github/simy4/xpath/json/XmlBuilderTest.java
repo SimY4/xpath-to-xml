@@ -9,11 +9,13 @@ import org.junit.jupiter.params.provider.MethodSource;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 import javax.json.spi.JsonProvider;
+import javax.json.stream.JsonGenerator;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -110,8 +112,10 @@ class XmlBuilderTest {
 
     private String jsonToString(JsonValue json) {
         StringWriter sw = new StringWriter();
-        jsonProvider.createWriter(sw).write(json);
-        return sw.toString();
+        jsonProvider.createWriterFactory(Collections.singletonMap(JsonGenerator.PRETTY_PRINTING, true))
+                .createWriter(sw)
+                .write(json);
+        return sw.toString().replaceAll(" {4}", "  ");
     }
 
 }
