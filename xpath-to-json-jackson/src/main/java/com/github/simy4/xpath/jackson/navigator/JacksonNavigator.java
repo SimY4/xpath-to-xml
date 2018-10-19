@@ -156,9 +156,7 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
         final ArrayNode jsonArray = new ArrayNode(JsonNodeFactory.instance);
         jsonArray.add(parentObject);
         final JacksonNode elementNode = appendToArray(parent, name, jsonArray);
-        if (null != parent) {
-            parent.set(jsonArray);
-        }
+        parent.set(jsonArray);
         return elementNode;
     }
 
@@ -173,10 +171,8 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
         final ArrayNode jsonArray = new ArrayNode(JsonNodeFactory.instance);
         jsonArray.add(node);
         final JacksonByIndexNode elementNode = prependToArray(parent, node, jsonArray);
-        if (null != parent) {
-            parent.set(jsonArray);
-            parent.setParent(new JacksonByIndexNode(jsonArray, 1, parent.getParent()));
-        }
+        parent.set(jsonArray);
+        parent.setParent(new JacksonByIndexNode(jsonArray, 1, parent.getParent()));
         return elementNode;
     }
 
