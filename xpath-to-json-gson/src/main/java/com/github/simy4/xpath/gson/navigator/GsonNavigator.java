@@ -155,9 +155,7 @@ public class GsonNavigator implements Navigator<GsonNode> {
         final JsonArray jsonArray = new JsonArray();
         jsonArray.add(parentObject);
         final GsonNode elementNode = appendToArray(parent, name, jsonArray);
-        if (null != parent) {
-            parent.set(jsonArray);
-        }
+        parent.set(jsonArray);
         return elementNode;
     }
 
@@ -172,10 +170,8 @@ public class GsonNavigator implements Navigator<GsonNode> {
         final JsonArray jsonArray = new JsonArray();
         jsonArray.add(elementToCopy);
         final GsonByIndexNode elementNode = prependToArray(parent, elementToCopy, jsonArray);
-        if (null != parent) {
-            parent.set(jsonArray);
-            parent.setParent(new GsonByIndexNode(jsonArray, 1, parent.getParent()));
-        }
+        parent.set(jsonArray);
+        parent.setParent(new GsonByIndexNode(jsonArray, 1, parent.getParent()));
         return elementNode;
     }
 
