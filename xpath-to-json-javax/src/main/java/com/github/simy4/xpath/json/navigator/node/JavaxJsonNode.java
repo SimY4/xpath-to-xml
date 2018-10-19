@@ -4,7 +4,6 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
 
 import javax.json.JsonValue;
-import javax.json.spi.JsonProvider;
 
 /**
  * Javax JSON node contract.
@@ -20,8 +19,8 @@ public interface JavaxJsonNode extends Node, Iterable<JavaxJsonNode> {
 
     JsonValue get();
 
-    void set(JsonProvider jsonProvider, JsonValue jsonValue) throws XmlBuilderException;
+    void set(JsonValue jsonValue) throws XmlBuilderException;
 
-    void remove(JsonProvider jsonProvider) throws XmlBuilderException;
+    void remove() throws XmlBuilderException;
 
 }

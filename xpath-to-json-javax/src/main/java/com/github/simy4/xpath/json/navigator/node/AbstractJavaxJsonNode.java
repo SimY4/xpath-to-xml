@@ -76,48 +76,28 @@ abstract class AbstractJavaxJsonNode implements JavaxJsonNode {
         switch (jsonValue.getValueType()) {
             case OBJECT:
                 final JsonObject jsonObject = jsonValue.asJsonObject();
-                return new TransformingIterator<>(jsonObject.keySet().iterator(),
-                        new JsonObjectWrapper(jsonObject, parent));
+                return new TransformingIterator<>(jsonObject.keySet().iterator(), name ->
+                        new JavaxJsonByNameNode(name, parent));
             case ARRAY:
                 final JsonArray jsonArray = jsonValue.asJsonArray();
-                return new TransformingAndFlatteningIterator<>(jsonArray.iterator(),
-                        new JsonArrayWrapper(jsonArray, parent));
+                return new TransformingAndFlatteningIterator<>(jsonArray.iterator(), new JsonArrayWrapper(parent));
             default:
                 return Collections.<JavaxJsonNode>emptyList().iterator();
         }
     }
 
-    private static final class JsonObjectWrapper implements Function<String, JavaxJsonNode> {
-
-        private final JsonObject parentObject;
-        private final JavaxJsonNode parent;
-
-        private JsonObjectWrapper(JsonObject parentObject, JavaxJsonNode parent) {
-            this.parentObject = parentObject;
-            this.parent = parent;
-        }
-
-        @Override
-        public JavaxJsonNode apply(String name) {
-            return new JavaxJsonByNameNode(parentObject, name, parent);
-        }
-
-    }
-
     private static final class JsonArrayWrapper implements Function<JsonValue, Iterator<JavaxJsonNode>> {
 
-        private final JsonArray parentArray;
         private final JavaxJsonNode parent;
         private int index;
 
-        private JsonArrayWrapper(JsonArray parentArray, JavaxJsonNode parent) {
-            this.parentArray = parentArray;
+        private JsonArrayWrapper(JavaxJsonNode parent) {
             this.parent = parent;
         }
 
         @Override
         public Iterator<JavaxJsonNode> apply(JsonValue jsonValue) {
-            final JavaxJsonNode arrayElemNode = new JavaxJsonByIndexNode(parentArray, index++, parent);
+            final JavaxJsonNode arrayElemNode = new JavaxJsonByIndexNode(index++, parent);
             switch (jsonValue.getValueType()) {
                 case OBJECT:
                 case ARRAY:

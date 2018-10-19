@@ -6,9 +6,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
-import javax.json.spi.JsonProvider;
 import javax.json.stream.JsonGenerator;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.ByteArrayInputStream;
@@ -23,8 +23,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class XmlBuilderTest {
-
-    private static final JsonProvider jsonProvider = JsonProvider.provider();
 
     private static Stream<Arguments> data() {
         return Stream.of(
@@ -41,7 +39,7 @@ class XmlBuilderTest {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         JsonObject builtDocument = new XmlBuilder()
                 .putAll(xmlProperties.keySet())
-                .build(jsonProvider.createObjectBuilder().build());
+                .build(JsonValue.EMPTY_JSON_OBJECT);
 
         assertThat(jsonToString(builtDocument)).isEqualTo(fixtureAccessor.getPutXml());
     }
@@ -53,7 +51,7 @@ class XmlBuilderTest {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         JsonObject builtDocument = new XmlBuilder()
                 .putAll(xmlProperties)
-                .build(jsonProvider.createObjectBuilder().build());
+                .build(JsonValue.EMPTY_JSON_OBJECT);
 
         assertThat(jsonToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
     }
@@ -107,15 +105,15 @@ class XmlBuilderTest {
     }
 
     private JsonValue stringToJson(String xml) {
-        return jsonProvider.createReader(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8))).readValue();
+        return Json.createReader(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8))).readValue();
     }
 
     private String jsonToString(JsonValue json) {
         StringWriter sw = new StringWriter();
-        jsonProvider.createWriterFactory(Collections.singletonMap(JsonGenerator.PRETTY_PRINTING, true))
+        Json.createWriterFactory(Collections.singletonMap(JsonGenerator.PRETTY_PRINTING, true))
                 .createWriter(sw)
                 .write(json);
-        return sw.toString().replaceAll(" {4}", "  ");
+        return sw.toString().replaceAll(" {4}", "  ").replace("\n\\p{Space}*\n", "\n");
     }
 
 }

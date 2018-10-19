@@ -17,7 +17,7 @@ class JavaxJsonByIndexNodeTest {
             .add(3)
             .build();
     private final JavaxJsonNode rootNode = new JavaxJsonRootNode(jsonArray);
-    private final JavaxJsonNode byIndexNode = new JavaxJsonByIndexNode(jsonArray, 1, rootNode);
+    private final JavaxJsonNode byIndexNode = new JavaxJsonByIndexNode(1, rootNode);
 
     @Test
     void shouldRetrieveElementByIndexOnGet() {
@@ -26,7 +26,7 @@ class JavaxJsonByIndexNodeTest {
 
     @Test
     void shouldSetElementByIndexOnSet() {
-        byIndexNode.set(jsonProvider, jsonProvider.createValue(4));
+        byIndexNode.set(jsonProvider.createValue(4));
 
         assertThat(rootNode.get().asJsonArray()).containsExactly(
                 jsonProvider.createValue(1), jsonProvider.createValue(4), jsonProvider.createValue(3));
@@ -34,7 +34,7 @@ class JavaxJsonByIndexNodeTest {
 
     @Test
     void shouldRemoveElementByIndexOnRemove() {
-        byIndexNode.remove(jsonProvider);
+        byIndexNode.remove();
 
         assertThat(rootNode.get().asJsonArray())
                 .containsExactly(jsonProvider.createValue(1), jsonProvider.createValue(3));
@@ -45,9 +45,9 @@ class JavaxJsonByIndexNodeTest {
         JavaxJsonNode parent = new JavaxJsonRootNode(jsonArray);
 
         assertThat(parent.iterator()).containsExactlyInAnyOrder(
-                new JavaxJsonByIndexNode(jsonArray, 0, parent),
-                new JavaxJsonByIndexNode(jsonArray, 1, parent),
-                new JavaxJsonByIndexNode(jsonArray, 2, parent)
+                new JavaxJsonByIndexNode(0, parent),
+                new JavaxJsonByIndexNode(1, parent),
+                new JavaxJsonByIndexNode(2, parent)
         );
     }
 

@@ -1,26 +1,22 @@
 package com.github.simy4.xpath.json.navigator.node;
 
+import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonValue;
-import javax.json.spi.JsonProvider;
 import javax.xml.namespace.QName;
 
 public final class JavaxJsonByIndexNode extends AbstractJavaxJsonNode {
 
     private final int index;
 
-    private JsonArray parentArray;
-
     /**
      * Constructor.
      *
-     * @param parentArray parent json array element
      * @param index       json array index
      * @param parent      parent node
      */
-    public JavaxJsonByIndexNode(JsonArray parentArray, int index, JavaxJsonNode parent) {
+    public JavaxJsonByIndexNode(int index, JavaxJsonNode parent) {
         super(parent);
-        this.parentArray = parentArray;
         this.index = index;
     }
 
@@ -31,23 +27,21 @@ public final class JavaxJsonByIndexNode extends AbstractJavaxJsonNode {
 
     @Override
     public JsonValue get() {
-        return parentArray.get(index);
+        return getParentArray().get(index);
     }
 
     @Override
-    public void set(JsonProvider jsonProvider, JsonValue jsonValue) {
-        parentArray = jsonProvider.createArrayBuilder(parentArray)
+    public void set(JsonValue jsonValue) {
+        getParent().set(Json.createArrayBuilder(getParentArray())
                 .set(index, jsonValue)
-                .build();
-        getParent().set(jsonProvider, parentArray);
+                .build());
     }
 
     @Override
-    public void remove(JsonProvider jsonProvider) {
-        parentArray = jsonProvider.createArrayBuilder(parentArray)
+    public void remove() {
+        getParent().set(Json.createArrayBuilder(getParentArray())
                 .remove(index)
-                .build();
-        getParent().set(jsonProvider, parentArray);
+                .build());
     }
 
     @Override
@@ -69,6 +63,10 @@ public final class JavaxJsonByIndexNode extends AbstractJavaxJsonNode {
 
     public int getIndex() {
         return index;
+    }
+
+    private JsonArray getParentArray() {
+        return getParent().get().asJsonArray();
     }
 
 }
