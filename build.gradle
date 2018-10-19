@@ -63,6 +63,11 @@ subprojects {
 task build {
 }
 
+configure(build) {
+    group = BasePlugin.BUILD_GROUP
+    description = 'Project build'
+}
+
 release {
     failOnCommitNeeded = false
 

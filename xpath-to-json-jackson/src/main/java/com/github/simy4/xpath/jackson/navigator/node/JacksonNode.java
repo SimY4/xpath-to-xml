@@ -8,7 +8,7 @@ import com.github.simy4.xpath.navigator.Node;
  * Jackson node contract.
  *
  * @author Alex Simkin
- * @since 1.1
+ * @since 1.2
  */
 public interface JacksonNode extends Node, Iterable<JacksonNode> {
 
