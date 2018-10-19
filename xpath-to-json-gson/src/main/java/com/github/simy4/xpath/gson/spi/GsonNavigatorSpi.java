@@ -1,11 +1,11 @@
 package com.github.simy4.xpath.gson.spi;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.effects.Effect;
 import com.github.simy4.xpath.gson.navigator.GsonNavigator;
 import com.github.simy4.xpath.gson.navigator.node.GsonNode;
 import com.github.simy4.xpath.gson.navigator.node.GsonRootNode;
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.spi.Effect;
 import com.github.simy4.xpath.spi.NavigatorSpi;
 import com.google.gson.JsonElement;
 

@@ -3,6 +3,7 @@ package com.github.simy4.xpath.effects;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.spi.Effect;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;

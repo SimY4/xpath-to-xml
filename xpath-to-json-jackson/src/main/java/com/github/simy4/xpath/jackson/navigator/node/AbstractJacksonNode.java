@@ -73,31 +73,15 @@ abstract class AbstractJacksonNode implements JacksonNode {
 
     private static Iterator<JacksonNode> traverse(JsonNode jsonNode, JacksonNode parent) {
         if (jsonNode.isObject()) {
-            return new TransformingIterator<>(jsonNode.fieldNames(),
-                    new JsonObjectWrapper((ObjectNode) jsonNode, parent));
+            final ObjectNode objectNode = (ObjectNode) jsonNode;
+            return new TransformingIterator<>(jsonNode.fieldNames(), name ->
+                    new JacksonByNameNode(objectNode, name, parent));
         } else if (jsonNode.isArray()) {
             return new TransformingAndFlatteningIterator<>(jsonNode.elements(),
                     new JsonArrayWrapper((ArrayNode) jsonNode, parent));
         } else {
             return Collections.emptyIterator();
         }
-    }
-
-    private static final class JsonObjectWrapper implements Function<String, JacksonNode> {
-
-        private final ObjectNode parentObject;
-        private final JacksonNode parent;
-
-        private JsonObjectWrapper(ObjectNode parentObject, JacksonNode parent) {
-            this.parentObject = parentObject;
-            this.parent = parent;
-        }
-
-        @Override
-        public JacksonNode apply(String name) {
-            return new JacksonByNameNode(parentObject, name, parent);
-        }
-
     }
 
     private static final class JsonArrayWrapper implements Function<JsonNode, Iterator<JacksonNode>> {

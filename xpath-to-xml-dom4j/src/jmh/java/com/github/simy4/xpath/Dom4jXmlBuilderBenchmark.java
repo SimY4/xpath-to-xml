@@ -1,7 +1,7 @@
 package com.github.simy4.xpath;
 
 import com.github.simy4.xpath.fixtures.FixtureAccessor;
-import com.github.simy4.xpath.util.SimpleNamespaceContext;
+import com.github.simy4.xpath.helpers.SimpleNamespaceContext;
 import org.dom4j.DocumentHelper;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;

@@ -2,11 +2,11 @@ package com.github.simy4.xpath.jackson.spi;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.effects.Effect;
 import com.github.simy4.xpath.jackson.navigator.JacksonNavigator;
 import com.github.simy4.xpath.jackson.navigator.node.JacksonNode;
 import com.github.simy4.xpath.jackson.navigator.node.JacksonRootNode;
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.spi.Effect;
 import com.github.simy4.xpath.spi.NavigatorSpi;
 
 /**

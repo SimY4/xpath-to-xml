@@ -29,6 +29,7 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assumptions.assumeThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -57,11 +58,11 @@ class GreaterThanOrEqualsExprTest {
     }
 
     private static Stream<Arguments> lessThan() {
-        return lesser().flatMap(l -> greater().map(g -> Arguments.of(l, g)));
+        return lesser().flatMap(l -> greater().map(g -> arguments(l, g)));
     }
 
     private static Stream<Arguments> equals() {
-        return lesser().flatMap(l1 -> lesser().map(l2 -> Arguments.of(l1, l2)));
+        return lesser().flatMap(l1 -> lesser().map(l2 -> arguments(l1, l2)));
     }
 
     private static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));

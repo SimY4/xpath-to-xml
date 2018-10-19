@@ -6,7 +6,6 @@ import com.github.simy4.xpath.gson.navigator.node.GsonByNameNode;
 import com.github.simy4.xpath.gson.navigator.node.GsonNode;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.FilteringIterator;
-import com.github.simy4.xpath.util.Predicate;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -37,12 +36,18 @@ public class GsonNavigator implements Navigator<GsonNode> {
 
     @Override
     public Iterable<? extends GsonNode> elementsOf(final GsonNode parent) {
-        return () -> new FilteringIterator<>(parent.iterator(), new AttributePredicate(false));
+        return () -> new FilteringIterator<>(parent.iterator(), node -> {
+            final JsonElement jsonElement = node.get();
+            return jsonElement.isJsonObject() || jsonElement.isJsonArray();
+        });
     }
 
     @Override
     public Iterable<? extends GsonNode> attributesOf(final GsonNode parent) {
-        return () -> new FilteringIterator<>(parent.iterator(), new AttributePredicate(true));
+        return () -> new FilteringIterator<>(parent.iterator(), node -> {
+            final JsonElement jsonElement = node.get();
+            return jsonElement.isJsonNull() || jsonElement.isJsonPrimitive();
+        });
     }
 
     @Override
@@ -144,9 +149,7 @@ public class GsonNavigator implements Navigator<GsonNode> {
         final JsonArray jsonArray = new JsonArray();
         jsonArray.add(parentObject);
         final GsonNode elementNode = appendToArray(parent, name, jsonArray);
-        if (null != parent) {
-            parent.set(jsonArray);
-        }
+        parent.set(jsonArray);
         return elementNode;
     }
 
@@ -161,10 +164,8 @@ public class GsonNavigator implements Navigator<GsonNode> {
         final JsonArray jsonArray = new JsonArray();
         jsonArray.add(elementToCopy);
         final GsonByIndexNode elementNode = prependToArray(parent, elementToCopy, jsonArray);
-        if (null != parent) {
-            parent.set(jsonArray);
-            parent.setParent(new GsonByIndexNode(jsonArray, 1, parent.getParent()));
-        }
+        parent.set(jsonArray);
+        parent.setParent(new GsonByIndexNode(jsonArray, 1, parent.getParent()));
         return elementNode;
     }
 
@@ -178,22 +179,6 @@ public class GsonNavigator implements Navigator<GsonNode> {
             i -= 1;
         }
         return new GsonByIndexNode(parentArray, i, parent);
-    }
-
-    private static final class AttributePredicate implements Predicate<GsonNode> {
-
-        private final boolean attribute;
-
-        private AttributePredicate(boolean attribute) {
-            this.attribute = attribute;
-        }
-
-        @Override
-        public boolean test(GsonNode gsonNode) {
-            final JsonElement jsonElement = gsonNode.get();
-            return attribute == (jsonElement.isJsonNull() || jsonElement.isJsonPrimitive());
-        }
-
     }
 
 }

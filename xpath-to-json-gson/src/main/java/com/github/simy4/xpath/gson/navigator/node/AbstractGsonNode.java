@@ -1,7 +1,7 @@
 package com.github.simy4.xpath.gson.navigator.node;
 
-import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
 import com.github.simy4.xpath.util.Function;
+import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
 import com.github.simy4.xpath.util.TransformingIterator;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -80,8 +80,8 @@ abstract class AbstractGsonNode implements GsonNode {
     private static Iterator<GsonNode> traverse(JsonElement jsonElement, GsonNode parent) {
         if (jsonElement.isJsonObject()) {
             final JsonObject jsonObject = jsonElement.getAsJsonObject();
-            return new TransformingIterator<>(jsonObject.keySet().iterator(),
-                    new JsonObjectWrapper(jsonObject, parent));
+            return new TransformingIterator<>(jsonObject.keySet().iterator(), name ->
+                    new GsonByNameNode(jsonObject, name, parent));
         } else if (jsonElement.isJsonArray()) {
             final JsonArray jsonArray = jsonElement.getAsJsonArray();
             return new TransformingAndFlatteningIterator<>(jsonArray.iterator(),
@@ -89,23 +89,6 @@ abstract class AbstractGsonNode implements GsonNode {
         } else {
             return Collections.emptyIterator();
         }
-    }
-
-    private static final class JsonObjectWrapper implements Function<String, GsonNode> {
-
-        private final JsonObject parentObject;
-        private final GsonNode parent;
-
-        private JsonObjectWrapper(JsonObject parentObject, GsonNode parent) {
-            this.parentObject = parentObject;
-            this.parent = parent;
-        }
-
-        @Override
-        public GsonNode apply(String name) {
-            return new GsonByNameNode(parentObject, name, parent);
-        }
-
     }
 
     private static final class JsonArrayWrapper implements Function<JsonElement, Iterator<GsonNode>> {

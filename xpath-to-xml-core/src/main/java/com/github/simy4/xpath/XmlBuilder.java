@@ -1,19 +1,19 @@
 package com.github.simy4.xpath;
 
-import com.github.simy4.xpath.effects.Effect;
 import com.github.simy4.xpath.effects.PutEffect;
 import com.github.simy4.xpath.effects.PutValueEffect;
 import com.github.simy4.xpath.effects.RemoveEffect;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.parser.XPathParser;
+import com.github.simy4.xpath.spi.Effect;
 import com.github.simy4.xpath.spi.NavigatorSpi;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPathExpressionException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ServiceLoader;
@@ -30,7 +30,7 @@ public class XmlBuilder {
     private static final Iterable<NavigatorSpi> navigatorSpis = ServiceLoader.load(NavigatorSpi.class);
 
     private final XPathParser parser;
-    private final Collection<Effect> effects;
+    private final List<Effect> effects;
 
     public XmlBuilder() {
         this(null);
@@ -40,9 +40,9 @@ public class XmlBuilder {
         this(new XPathParser(namespaceContext), Collections.emptyList());
     }
 
-    private XmlBuilder(XPathParser parser, Collection<Effect> effects) {
+    private XmlBuilder(XPathParser parser, List<Effect> effects) {
         this.parser = parser;
-        this.effects = Collections.unmodifiableCollection(effects);
+        this.effects = effects;
     }
 
     /**
@@ -93,7 +93,7 @@ public class XmlBuilder {
      * @see #putAll(String...)
      */
     public XmlBuilder putAll(Iterable<String> xpaths) throws XPathExpressionException {
-        final Collection<Effect> effects = new ArrayList<>(this.effects);
+        final List<Effect> effects = new ArrayList<>(this.effects);
         for (String xpath : xpaths) {
             final Expr expr = parser.parse(xpath);
             effects.add(new PutEffect(expr));
@@ -111,7 +111,7 @@ public class XmlBuilder {
      * @see #put(String, Object)
      */
     public XmlBuilder putAll(Map<String, Object> xpathToValueMap) throws XPathExpressionException {
-        final Collection<Effect> effects = new ArrayList<>(this.effects);
+        final List<Effect> effects = new ArrayList<>(this.effects);
         for (Entry<String, Object> xpathToValuePair : xpathToValueMap.entrySet()) {
             final Expr expr = parser.parse(xpathToValuePair.getKey());
             effects.add(new PutValueEffect(expr, xpathToValuePair.getValue()));
@@ -153,7 +153,7 @@ public class XmlBuilder {
      * @see #removeAll(String...)
      */
     public XmlBuilder removeAll(Iterable<String> xpaths) throws XPathExpressionException {
-        final Collection<Effect> effects = new ArrayList<>(this.effects);
+        final List<Effect> effects = new ArrayList<>(this.effects);
         for (String xpath : xpaths) {
             final Expr expr = parser.parse(xpath);
             effects.add(new RemoveEffect(expr));

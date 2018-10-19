@@ -11,7 +11,6 @@ import com.github.simy4.xpath.jackson.navigator.node.JacksonByNameNode;
 import com.github.simy4.xpath.jackson.navigator.node.JacksonNode;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.FilteringIterator;
-import com.github.simy4.xpath.util.Predicate;
 
 import javax.xml.namespace.QName;
 
@@ -38,12 +37,12 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
 
     @Override
     public Iterable<? extends JacksonNode> elementsOf(final JacksonNode parent) {
-        return () -> new FilteringIterator<>(parent.iterator(), new AttributePredicate(false));
+        return () -> new FilteringIterator<>(parent.iterator(), node -> !node.get().isValueNode());
     }
 
     @Override
     public Iterable<? extends JacksonNode> attributesOf(final JacksonNode parent) {
-        return () -> new FilteringIterator<>(parent.iterator(), new AttributePredicate(true));
+        return () -> new FilteringIterator<>(parent.iterator(), node -> node.get().isValueNode());
     }
 
     @Override
@@ -145,9 +144,7 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
         final ArrayNode jsonArray = new ArrayNode(JsonNodeFactory.instance);
         jsonArray.add(parentObject);
         final JacksonNode elementNode = appendToArray(parent, name, jsonArray);
-        if (null != parent) {
-            parent.set(jsonArray);
-        }
+        parent.set(jsonArray);
         return elementNode;
     }
 
@@ -162,10 +159,8 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
         final ArrayNode jsonArray = new ArrayNode(JsonNodeFactory.instance);
         jsonArray.add(node);
         final JacksonByIndexNode elementNode = prependToArray(parent, node, jsonArray);
-        if (null != parent) {
-            parent.set(jsonArray);
-            parent.setParent(new JacksonByIndexNode(jsonArray, 1, parent.getParent()));
-        }
+        parent.set(jsonArray);
+        parent.setParent(new JacksonByIndexNode(jsonArray, 1, parent.getParent()));
         return elementNode;
     }
 
@@ -180,22 +175,6 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
             i -= 1;
         }
         return new JacksonByIndexNode(parentArray, i, parent);
-    }
-
-    private static final class AttributePredicate implements Predicate<JacksonNode> {
-
-        private final boolean attribute;
-
-        private AttributePredicate(boolean attribute) {
-            this.attribute = attribute;
-        }
-
-        @Override
-        public boolean test(JacksonNode jacksonNode) {
-            final JsonNode jsonNode = jacksonNode.get();
-            return attribute == jsonNode.isValueNode();
-        }
-
     }
 
 }
