@@ -74,8 +74,8 @@ abstract class AbstractJacksonNode implements JacksonNode {
     private static Iterator<JacksonNode> traverse(JsonNode jsonNode, JacksonNode parent) {
         if (jsonNode.isObject()) {
             final ObjectNode objectNode = (ObjectNode) jsonNode;
-            return new TransformingIterator<>(jsonNode.fieldNames(),
-                    name -> new JacksonByNameNode(objectNode, name, parent));
+            return new TransformingIterator<>(jsonNode.fieldNames(), name ->
+                    new JacksonByNameNode(objectNode, name, parent));
         } else if (jsonNode.isArray()) {
             return new TransformingAndFlatteningIterator<>(jsonNode.elements(),
                     new JsonArrayWrapper((ArrayNode) jsonNode, parent));

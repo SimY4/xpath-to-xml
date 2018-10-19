@@ -80,8 +80,8 @@ abstract class AbstractGsonNode implements GsonNode {
     private static Iterator<GsonNode> traverse(JsonElement jsonElement, GsonNode parent) {
         if (jsonElement.isJsonObject()) {
             final JsonObject jsonObject = jsonElement.getAsJsonObject();
-            return new TransformingIterator<>(jsonObject.keySet().iterator(),
-                    name -> new GsonByNameNode(jsonObject, name, parent));
+            return new TransformingIterator<>(jsonObject.keySet().iterator(), name ->
+                    new GsonByNameNode(jsonObject, name, parent));
         } else if (jsonElement.isJsonArray()) {
             final JsonArray jsonArray = jsonElement.getAsJsonArray();
             return new TransformingAndFlatteningIterator<>(jsonArray.iterator(),
