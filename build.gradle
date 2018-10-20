@@ -12,7 +12,7 @@ ext {
     errorproneVersion = '2.3.1'
     jacocoVersion = '0.8.2'
     jUnitVersion = '5.3.1'
-    mockitoVersion = '2.22.0'
+    mockitoVersion = '2.23.0'
 
     def buildTimeAndDate = new Date()
     buildDate = buildTimeAndDate.format("yyyy-MM-dd")
@@ -55,6 +55,21 @@ subprojects {
     }
 
     afterReleaseBuild.dependsOn publish
+}
+
+// DOM4J: Jaxen violates module isolation rules by having it's own org.w3c package. Therefore cannot be modularised.
+configure(subprojects - project(':xpath-to-xml-dom4j')) {
+    afterEvaluate {
+        compileJava {
+            inputs.property("moduleName", moduleName)
+            doFirst {
+                options.compilerArgs = [
+                        '--module-path', classpath.asPath,
+                ]
+                classpath = files()
+            }
+        }
+    }
 }
 
 task build {

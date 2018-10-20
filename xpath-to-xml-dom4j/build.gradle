@@ -1,4 +1,4 @@
-ext.pomDescription = "XPath-to-XML DOM4J"
+ext.moduleName = 'com.github.simych.xpath.dom4j'
 
 apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 

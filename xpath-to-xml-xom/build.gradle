@@ -1,4 +1,4 @@
-ext.pomDescription = "XPath-to-XML XOM"
+ext.moduleName = 'com.github.simych.xpath.xom'
 
 apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 
