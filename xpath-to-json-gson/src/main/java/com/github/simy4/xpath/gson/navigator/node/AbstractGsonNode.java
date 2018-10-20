@@ -1,7 +1,7 @@
 package com.github.simy4.xpath.gson.navigator.node;
 
-import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
 import com.github.simy4.xpath.util.Function;
+import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
 import com.github.simy4.xpath.util.TransformingIterator;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -54,6 +54,7 @@ abstract class AbstractGsonNode implements GsonNode {
     }
 
     @Override
+    @SuppressWarnings("EqualsGetClass")
     public boolean equals(Object o) {
         if (this == o) {
             return true;
