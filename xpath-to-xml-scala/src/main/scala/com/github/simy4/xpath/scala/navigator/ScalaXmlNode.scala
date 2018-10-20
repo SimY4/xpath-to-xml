@@ -9,28 +9,50 @@ import _root_.scala.xml.{ Elem, MetaData, Attribute => XmlAttribute }
 sealed trait ScalaXmlNode extends NavigatorNode
 
 object ScalaXmlNode {
-  sealed trait ScalaXmlParent extends ScalaXmlNode {
-    val elem: Elem
+  sealed trait Parent extends ScalaXmlNode {
+    def node: Elem
+    @inline def transform(transformation: Elem => Elem): Unit
+  }
+  private[navigator] object Parent {
+    def unapply(arg: Parent): Option[Elem] = Some(arg.node)
   }
 
-  case class Document(override val elem: Elem) extends ScalaXmlParent {
+  case class Root(private var _node: Elem) extends Parent {
     override def getName: QName = throw new UnsupportedOperationException("getName")
-    override def getText: String = elem.text
+    override def getText: String = node.text
+    override def node: Elem = _node
+    override def transform(transformation: Elem => Elem): Unit = {
+      _node = transformation(_node)
+    }
   }
 
-  case class Element(override val elem: Elem, parent: ScalaXmlParent) extends ScalaXmlParent {
-    override val getName: QName = Option(elem.prefix) match {
-      case Some(pre) => new QName(elem.namespace, elem.label, pre)
-      case None      => new QName(elem.label)
+  private[navigator] case class Element(private var _node: Elem, parent: Parent) extends Parent {
+    override def getName: QName = {
+      val curNode = node
+      Option(curNode.prefix) match {
+        case Some(pre) => new QName(curNode.namespace, curNode.label, pre)
+        case None      => new QName(curNode.label)
+      }
     }
-    override def getText: String = elem.text
+    override def getText: String = node.text
+    override def node: Elem = _node
+    override def transform(transformation: Elem => Elem): Unit = {
+      val children = parent.node.child.toList
+      val idx = children indexOf _node
+      _node = transformation(_node)
+      val newChildren = children patch (idx, Seq(_node), 1)
+      val newParent = parent.node.copy(child = newChildren)
+      parent transform (_ => newParent)
+    }
   }
 
-  case class Attribute(attribute: MetaData, parent: ScalaXmlParent) extends ScalaXmlNode {
-    override val getName: QName = attribute match {
-      case a : XmlAttribute if a.isPrefixed => new QName(attribute.getNamespace(parent.elem), a.key, a.pre)
-      case attr                             => new QName(attr.key)
+  private[navigator] case class Attribute(var meta: MetaData, parent: Parent) extends ScalaXmlNode {
+    override def getName: QName = {
+      meta match {
+        case a : XmlAttribute if a.isPrefixed => new QName(a.getNamespace(parent.node), a.key, a.pre)
+        case _                                => new QName(meta.key)
+      }
     }
-    override def getText: String = attribute.value.text
+    override def getText: String = meta.value.text
   }
 }

@@ -13,10 +13,10 @@ class ScalaXmlNavigatorSpi extends NavigatorSpi {
 
   override def process[T](xml: T, effects: java.lang.Iterable[Effect]): T = xml match {
     case elem: Elem =>
-      val root = ScalaXmlNode.Document(elem)
+      val root = ScalaXmlNode.Root(elem)
       val navigator = new ScalaXmlNavigator(root)
       effects.asScala foreach (_.perform(navigator, root))
-      navigator.transform(elem).asInstanceOf[T]
+      root.node.asInstanceOf[T]
     case _          => throw new IllegalArgumentException("XML model is not supported")
   }
 }

@@ -1,7 +1,6 @@
 package com.github.simy4.xpath
 package scala
 
-import java.io.StringWriter
 import java.util.stream.Stream
 
 import fixtures.FixtureAccessor
@@ -11,7 +10,7 @@ import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.{ Arguments, ArgumentsProvider, ArgumentsSource }
 
-import _root_.scala.xml.{ Node, XML }
+import _root_.scala.xml.{ Node, PrettyPrinter, XML }
 
 class DataProvider extends ArgumentsProvider {
   import Arguments._
@@ -79,8 +78,7 @@ class XmlBuilderTest {
   }
 
   private def xmlToString(xml: Node) = {
-    val out = new StringWriter
-    XML.write(out, xml, "UTF-8", xmlDecl = false, null)
-    out.toString
+    val printer = new PrettyPrinter(80, 4)
+    printer.format(xml)
   }
 }

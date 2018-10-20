@@ -4,106 +4,80 @@ package scala.navigator
 import javax.xml.namespace.QName
 import navigator.Navigator
 
-import _root_.scala.xml.transform.RewriteRule
-import _root_.scala.xml.{ Attribute, Elem, Node, Null, Text }
+import _root_.scala.xml.{ Attribute, Elem, Null, Text }
 
-class ScalaXmlNavigator(xml: ScalaXmlNode.Document) extends RewriteRule with Navigator[ScalaXmlNode] {
+class ScalaXmlNavigator(xml: ScalaXmlNode.Root) extends Navigator[ScalaXmlNode] {
+  import _root_.scala.collection.JavaConverters._
 
-  private val transformations = new java.util.IdentityHashMap[Node, Node]()
-
-  override val root: ScalaXmlNode.Document = xml.copy(update(xml.elem))
+  override val root: ScalaXmlNode = xml
   override def parentOf(node: ScalaXmlNode): ScalaXmlNode = node match {
-    case ScalaXmlNode.Document(_)                                       => null
-    case ScalaXmlNode.Element(_, parent @ ScalaXmlNode.Document(_))     => parent.copy(elem = update(parent.elem))
-    case ScalaXmlNode.Element(_, parent @ ScalaXmlNode.Element(_, _))   => parent.copy(elem = update(parent.elem))
-    case ScalaXmlNode.Attribute(_, parent @ ScalaXmlNode.Document(_))   => parent.copy(elem = update(parent.elem))
-    case ScalaXmlNode.Attribute(_, parent @ ScalaXmlNode.Element(_, _)) => parent.copy(elem = update(parent.elem))
+    case ScalaXmlNode.Root(_)              => null
+    case ScalaXmlNode.Element(_, parent)   => parent
+    case ScalaXmlNode.Attribute(_, parent) => parent
   }
   override def elementsOf(parent: ScalaXmlNode): java.lang.Iterable[_ <: ScalaXmlNode] = (parent match {
-    case parent @ ScalaXmlNode.Document(elem)          => Seq(ScalaXmlNode.Element(elem, parent))
-    case elem @ ScalaXmlNode.Element(node, _) => for {
-      child     <- node \ "_"
-      childElem <- child match {
-        case el: Elem => Seq(el)
-        case _        => Nil
-      }
-    } yield ScalaXmlNode.Element(childElem, elem)
-    case ScalaXmlNode.Attribute(_, _)         => Nil
+    case parent @ ScalaXmlNode.Root(elem)       => Seq(ScalaXmlNode.Element(elem, parent))
+    case parent @ ScalaXmlNode.Element(elem, _) => for {
+      child <- elem \ "_" if child.isInstanceOf[Elem]
+    } yield ScalaXmlNode.Element(child.asInstanceOf[Elem], parent)
+    case ScalaXmlNode.Attribute(_, _)           => Nil
   }).asJava
   override def attributesOf(parent: ScalaXmlNode): java.lang.Iterable[_ <: ScalaXmlNode] = (parent match {
-    case elem @ ScalaXmlNode.Element(node, _) => for {
-      attr <- node.attributes
-    } yield ScalaXmlNode.Attribute(attr, elem)
-    case _                                    => Nil
+    case parent @ ScalaXmlNode.Element(elem, _) => for {
+      attr <- elem.attributes
+    } yield ScalaXmlNode.Attribute(attr, parent)
+    case _                                      => Nil
   }).asJava
   override def createAttribute(parent: ScalaXmlNode, attribute: QName): ScalaXmlNode = parent match {
-    case parent @ ScalaXmlNode.Element(elem, _) =>
+    case parent: ScalaXmlNode.Parent =>
       val newAttr = Attribute(Some(attribute.getPrefix).filter(_.nonEmpty), attribute.getLocalPart, Text(""), Null)
-      val newParent = elem % newAttr
-      transformations.put(elem, newParent)
+      parent transform { _ % newAttr }
       ScalaXmlNode.Attribute(newAttr, parent)
-    case _                                        =>
+    case _                           =>
       throw new XmlBuilderException(s"Unable to create attribute for $parent")
   }
   override def createElement(parent: ScalaXmlNode, element: QName): ScalaXmlNode = parent match {
-    case parent @ ScalaXmlNode.Element(elem, _) =>
-      val newElem = Elem(
-        Some(element.getPrefix).filter(_.nonEmpty).orNull,
-        element.getLocalPart,
-        Null,
-        elem.scope,
-        minimizeEmpty = true
-      )
-      val newParent = elem.copy(child = elem.child ++ newElem)
-      transformations.put(elem, newParent)
+    case parent: ScalaXmlNode.Parent =>
+      val newElem = Elem(Some(element.getPrefix).filter(_.nonEmpty).orNull, element.getLocalPart, Null, parent.node.scope, minimizeEmpty = true)
+      parent transform { elem => elem.copy(child = elem.child ++ newElem) }
       ScalaXmlNode.Element(newElem, parent)
-    case _                                        =>
+    case _                           =>
       throw new XmlBuilderException(s"Unable to create element for $parent")
   }
   override def setText(node: ScalaXmlNode, text: String): Unit = node match {
-    case parent @ ScalaXmlNode.Element(elem, _)                                       =>
-      val newParent = elem.copy(child = elem.child.filter(_.isInstanceOf[Text]) ++ Text(text))
-      transformations.put(elem, newParent)
+    case parent: ScalaXmlNode.Parent                                                  =>
+      parent transform { elem => elem.copy(child = elem.child.filter(_.isInstanceOf[Text]) ++ Text(text)) }
     case ScalaXmlNode.Attribute(attribute: Attribute, parent) if attribute.isPrefixed =>
       val newAttr = Attribute(Some(attribute.pre), attribute.key, Text(text), Null)
-      val updatedParent = update(parent)
-      val newParent = updatedParent.elem % newAttr
-      transformations.put(updatedParent.elem, newParent)
+      parent transform { _ % newAttr }
     case ScalaXmlNode.Attribute(attribute, parent)                                    =>
       val newAttr = Attribute(None, attribute.key, Text(text), Null)
-      val updatedParent = update(parent)
-      val newParent = updatedParent.elem % newAttr
-      transformations.put(updatedParent.elem, updatedParent)
+      parent transform { _ % newAttr }
   }
   override def prependCopy(node: ScalaXmlNode): Unit = node match {
-    case ScalaXmlNode.Element(elem, ScalaXmlNode.Element(parent, _)) =>
-      val newElem = elem.copy()
-      val updatedParent = update(parent)
-      val newParent = updatedParent.copy(child = updatedParent.child ++ newElem)
-      transformations.put(updatedParent, newParent)
-    case _                                                           =>
+    case ScalaXmlNode.Element(toCopy, parent) =>
+      val copy = toCopy.copy()
+      parent transform { elem =>
+        val children = elem.child.toList
+        val idx = children indexOf elem
+        val newChildren = if (0 == idx)
+          copy :: children
+        else
+          children patch (idx - 1, Seq(copy), 1)
+        elem.copy(child = newChildren)
+      }
+    case _                                                          =>
       throw new XmlBuilderException(s"Unable to prepend copy to $node")
   }
   override def remove(node: ScalaXmlNode): Unit = node match {
-    case ScalaXmlNode.Element(elem, ScalaXmlNode.Element(parent, _))                                 =>
-      val updatedParent = update(parent)
-      val newParent = updatedParent.copy(child = updatedParent.child filter (_ eq elem))
-      transformations.put(updatedParent, newParent)
-    case ScalaXmlNode.Attribute(attr: Attribute, ScalaXmlNode.Element(parent, _)) if attr.isPrefixed =>
-      val updatedParent = update(parent)
-      val newParent = updatedParent.copy(attributes = updatedParent.attributes remove
-        (attr.getNamespace(parent), parent, attr.key))
-      transformations.put(updatedParent, newParent)
-    case ScalaXmlNode.Attribute(attr, ScalaXmlNode.Element(parent, _))                               =>
-      val updatedParent = update(parent)
-      val newParent = updatedParent.copy(attributes = updatedParent.attributes remove attr.key)
-      transformations.put(updatedParent, newParent)
-    case _                                                                                           =>
+    case ScalaXmlNode.Element(toDelete, parent)                                     =>
+      parent transform { elem => elem.copy(child = elem.child filter (_ eq toDelete)) }
+    case ScalaXmlNode.Attribute(toDelete: Attribute, parent) if toDelete.isPrefixed =>
+      parent transform { elem => elem.copy(attributes = elem.attributes remove
+        (toDelete.getNamespace(elem), elem, toDelete.key)) }
+    case ScalaXmlNode.Attribute(toDelete, parent)                                   =>
+      parent transform { elem => elem.copy(attributes = elem.attributes remove toDelete.key) }
+    case _                                                                          =>
       throw new XmlBuilderException(s"Unable to delete node $node")
-  }
-  private def update[T <: Node] (t: T): T =
-    Option(transformations.get(t)).map(_.asInstanceOf[T]) getOrElse t
-  override def transform(n: Node): Seq[Node] = if (transformations.isEmpty) n else {
-    super.transform(Option(transformations.get(n)) getOrElse n)
   }
 }
