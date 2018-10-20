@@ -1,4 +1,4 @@
-ext.pomDescription = "XPath-to-XML Core"
+ext.moduleName = 'com.github.simych.xpath.core'
 
 dependencies {
     testImplementation project(':xpath-to-xml-test')

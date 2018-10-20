@@ -3,8 +3,8 @@ package com.github.simy4.xpath.jackson.navigator.node;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
 import com.github.simy4.xpath.util.Function;
+import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
 import com.github.simy4.xpath.util.TransformingIterator;
 
 import java.util.Collections;
@@ -48,6 +48,7 @@ abstract class AbstractJacksonNode implements JacksonNode {
     }
 
     @Override
+    @SuppressWarnings("EqualsGetClass")
     public boolean equals(Object o) {
         if (this == o) {
             return true;

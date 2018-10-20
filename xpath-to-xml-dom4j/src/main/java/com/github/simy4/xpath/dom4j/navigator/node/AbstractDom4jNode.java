@@ -21,21 +21,12 @@ abstract class AbstractDom4jNode<N extends Node> implements Dom4jNode<N> {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        AbstractDom4jNode<?> that = (AbstractDom4jNode<?>) o;
-
-        return node.equals(that.node);
+    public final boolean equals(Object o) {
+        return (this == o || (o instanceof AbstractDom4jNode && node.equals(((AbstractDom4jNode<?>) o).node)));
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return node.hashCode();
     }
 
