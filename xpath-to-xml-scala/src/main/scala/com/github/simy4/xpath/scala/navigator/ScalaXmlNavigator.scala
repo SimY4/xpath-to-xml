@@ -24,9 +24,7 @@ class ScalaXmlNavigator(xml: ScalaXmlNode.Root) extends Navigator[ScalaXmlNode] 
     case _                         => Nil
   }).asJava
   override def attributesOf(parent: ScalaXmlNode): java.lang.Iterable[_ <: ScalaXmlNode] = (parent match {
-    case parent @ Element(elem, _) => for {
-      attr <- elem.attributes
-    } yield Attribute(attr, parent)
+    case parent @ Element(elem, _) => elem.attributes map (Attribute(_, parent))
     case _                         => Nil
   }).asJava
   override def createAttribute(parent: ScalaXmlNode, attribute: QName): ScalaXmlNode = parent match {
@@ -46,7 +44,7 @@ class ScalaXmlNavigator(xml: ScalaXmlNode.Root) extends Navigator[ScalaXmlNode] 
       throw new XmlBuilderException(s"Unable to create element for $parent")
   }
   override def setText(node: ScalaXmlNode, text: String): Unit = node match {
-    case parent: Parent                                                  =>
+    case parent: Parent                                                     =>
       parent transform { elem => elem.copy(child = elem.child.filterNot(_.isInstanceOf[Text]) :+ Text(text)) }
     case Attribute(attribute: XmlAttribute, parent) if attribute.isPrefixed =>
       val newAttr = XmlAttribute(Some(attribute.pre), attribute.key, Text(text), Null)
@@ -58,18 +56,14 @@ class ScalaXmlNavigator(xml: ScalaXmlNode.Root) extends Navigator[ScalaXmlNode] 
       throw new XmlBuilderException(s"Unable to set text to $node")
   }
   override def prependCopy(node: ScalaXmlNode): Unit = node match {
-    case Element(toCopy, parent) =>
+    case Element(toCopy, parent: Element) =>
       val copy = toCopy.copy()
       parent transform { elem =>
         val children = elem.child.toList
-        val idx = children indexOf elem
-        val newChildren = if (0 == idx)
-          copy :: children
-        else
-          children patch (idx - 1, Seq(copy), 1)
-        elem.copy(child = newChildren)
+        val idx = children indexOf toCopy
+        elem.copy(child = children patch (idx, Seq(copy, toCopy), 1))
       }
-    case _                       =>
+    case _                                       =>
       throw new XmlBuilderException(s"Unable to prepend copy to $node")
   }
   override def remove(node: ScalaXmlNode): Unit = node match {
