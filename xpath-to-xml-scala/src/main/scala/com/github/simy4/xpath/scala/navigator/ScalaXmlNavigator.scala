@@ -47,7 +47,7 @@ class ScalaXmlNavigator(xml: ScalaXmlNode.Root) extends Navigator[ScalaXmlNode] 
   }
   override def setText(node: ScalaXmlNode, text: String): Unit = node match {
     case parent: Parent                                                  =>
-      parent transform { elem => elem.copy(child = elem.child.filter(_.isInstanceOf[Text]) ++ Text(text)) }
+      parent transform { elem => elem.copy(child = elem.child.filterNot(_.isInstanceOf[Text]) :+ Text(text)) }
     case Attribute(attribute: XmlAttribute, parent) if attribute.isPrefixed =>
       val newAttr = XmlAttribute(Some(attribute.pre), attribute.key, Text(text), Null)
       parent transform { _ % newAttr }
@@ -74,7 +74,7 @@ class ScalaXmlNavigator(xml: ScalaXmlNode.Root) extends Navigator[ScalaXmlNode] 
   }
   override def remove(node: ScalaXmlNode): Unit = node match {
     case Element(toDelete, parent)                                        =>
-      parent transform { elem => elem.copy(child = elem.child filter (_ eq toDelete)) }
+      parent transform { elem => elem.copy(child = elem.child filterNot (_ eq toDelete)) }
     case Attribute(toDelete: XmlAttribute, parent) if toDelete.isPrefixed =>
       parent transform { elem => elem.copy(attributes = elem.attributes remove
         (toDelete.getNamespace(elem), elem, toDelete.key)) }

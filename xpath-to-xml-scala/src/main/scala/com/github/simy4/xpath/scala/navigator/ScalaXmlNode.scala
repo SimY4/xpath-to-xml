@@ -4,7 +4,7 @@ package scala.navigator
 import javax.xml.namespace.QName
 import navigator.{ Node => NavigatorNode }
 
-import _root_.scala.xml.{ Elem, MetaData, Attribute => XmlAttribute }
+import _root_.scala.xml.{ Elem, MetaData, Text, Attribute => XmlAttribute }
 
 sealed trait ScalaXmlNode extends NavigatorNode
 
@@ -31,7 +31,7 @@ object ScalaXmlNode {
       val curNode = node
       Option(curNode.prefix).fold(new QName(curNode.label))(new QName(curNode.namespace, curNode.label, _))
     }
-    override def getText: String = node.text
+    override def getText: String = node.child.collect { case Text(t) => t }.mkString
     override def node: Elem = _node
     override def transform(transformation: Elem => Elem): Unit = {
       val children = parent match {
