@@ -19,7 +19,7 @@ class ScalaXmlNavigator(xml: ScalaXmlNode.Root) extends Navigator[ScalaXmlNode] 
   override def elementsOf(parent: ScalaXmlNode): java.lang.Iterable[_ <: ScalaXmlNode] = (parent match {
     case parent @ Root(elem)       => Seq(Element(elem, parent))
     case parent @ Element(elem, _) => for {
-      child <- elem \ "_" if child.isInstanceOf[Elem]
+      child <- elem \ "_"
     } yield Element(child.asInstanceOf[Elem], parent)
     case _                         => Nil
   }).asJava
@@ -40,7 +40,7 @@ class ScalaXmlNavigator(xml: ScalaXmlNode.Root) extends Navigator[ScalaXmlNode] 
   override def createElement(parent: ScalaXmlNode, element: QName): ScalaXmlNode = parent match {
     case p: Parent =>
       val newElem = Elem(Some(element.getPrefix).filter(_.nonEmpty).orNull, element.getLocalPart, Null, p.node.scope, minimizeEmpty = true)
-      p transform { elem => elem.copy(child = elem.child ++ newElem) }
+      p transform { elem => elem.copy(child = elem.child :+ newElem) }
       Element(newElem, p)
     case _         =>
       throw new XmlBuilderException(s"Unable to create element for $parent")

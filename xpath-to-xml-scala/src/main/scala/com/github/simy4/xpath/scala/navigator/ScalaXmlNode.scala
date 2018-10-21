@@ -34,16 +34,20 @@ object ScalaXmlNode {
     override def getText: String = node.child.collect { case Text(t) => t }.mkString
     override def node: Elem = _node
     override def transform(transformation: Elem => Elem): Unit = {
-      val children = parent match {
-        case Root(elem)       => List(elem)
-        case Element(elem, _) => elem.child.toList
+      val oldNode = _node
+      val newNode = transformation(oldNode)
+      if (oldNode xml_!= newNode) {
+        parent match {
+          case _: Root    => parent transform (_ => newNode)
+          case _: Element => parent transform { elem =>
+            val children = elem.child.toList
+            val idx = children indexOf oldNode
+            val newChildren = children patch (idx, Seq(newNode), 1)
+            elem.copy(child = newChildren)
+          }
+        }
       }
-      val idx = children indexOf _node
-      _node = transformation(_node)
-      parent transform { elem =>
-        val newChildren = children patch (idx, Seq(_node), 1)
-        elem.copy(child = newChildren)
-      }
+      _node = newNode
     }
   }
 
