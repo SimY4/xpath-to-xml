@@ -4,6 +4,7 @@ package scala
 import java.util.stream.Stream
 
 import fixtures.FixtureAccessor
+import helpers.SimpleNamespaceContext
 import javax.xml.namespace.NamespaceContext
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.extension.ExtensionContext
@@ -17,7 +18,7 @@ class DataProvider extends ArgumentsProvider {
 
   override def provideArguments(context: ExtensionContext): Stream[_ <: Arguments] = Stream.of(
     arguments(new FixtureAccessor("simple"), null, <breakfast_menu/>),
-    arguments(new FixtureAccessor("simple"), null, <breakfast_menu/>)
+    arguments(new FixtureAccessor("simple"), new SimpleNamespaceContext(), <breakfast_menu/>)
   )
 }
 
