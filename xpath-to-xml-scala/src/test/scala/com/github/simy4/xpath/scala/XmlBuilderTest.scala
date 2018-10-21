@@ -11,14 +11,19 @@ import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.{ Arguments, ArgumentsProvider, ArgumentsSource }
 
-import _root_.scala.xml.{ Node, PrettyPrinter, XML }
+import _root_.scala.xml.{ Elem, NamespaceBinding, Node, Null, PrettyPrinter, TopScope, XML }
 
 class DataProvider extends ArgumentsProvider {
   import Arguments._
 
+  private val namespaceContext = new SimpleNamespaceContext
+  private val namespaceBinding = NamespaceBinding("my", namespaceContext.getNamespaceURI("my"), TopScope)
+
   override def provideArguments(context: ExtensionContext): Stream[_ <: Arguments] = Stream.of(
     arguments(new FixtureAccessor("simple"), null, <breakfast_menu/>),
-    arguments(new FixtureAccessor("simple"), new SimpleNamespaceContext(), <breakfast_menu/>)
+    arguments(new FixtureAccessor("simple"), namespaceContext, <breakfast_menu/>),
+    arguments(new FixtureAccessor("ns-simple"), namespaceContext, Elem("my", "breakfast_menu", Null,
+      namespaceBinding, minimizeEmpty = true))
   )
 }
 
