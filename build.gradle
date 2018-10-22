@@ -1,8 +1,9 @@
 plugins {
-    id 'net.researchgate.release' version '2.7.0'
-    id 'net.ltgt.errorprone' version '0.6' apply false
-    id 'ru.vyarus.animalsniffer' version '1.4.6' apply false
+    id 'com.adtran.scala-multiversion-plugin' version '1.0.32' apply false
     id 'me.champeau.gradle.jmh' version '0.4.7' apply false
+    id 'net.ltgt.errorprone' version '0.6' apply false
+    id 'net.researchgate.release' version '2.7.0'
+    id 'ru.vyarus.animalsniffer' version '1.4.6' apply false
 }
 
 ext {

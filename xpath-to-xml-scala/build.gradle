@@ -1,18 +1,20 @@
 ext {
     moduleName = 'com.github.simych.xpath.scala'
-    scalaCompilerVersion = '2.11'
+    scalaVersions = '2.11.12, 2.12.6'
+    defaultScalaVersions = '2.12.7'
 }
 
 apply plugin: 'scala'
+apply plugin: 'com.adtran.scala-multiversion-plugin'
 
 dependencies {
     api project(':xpath-to-xml-core')
 
-    implementation 'org.scala-lang:scala-library:2.11.12'
-    implementation "org.scala-lang.modules:scala-xml_$scalaCompilerVersion:1.1.1"
+    implementation 'org.scala-lang:scala-library:%scala-version%'
+    implementation 'org.scala-lang.modules:scala-xml_%%:1.1.1'
 
     testImplementation project(':xpath-to-xml-test')
-    testImplementation "com.nrinaudo:kantan.xpath_$scalaCompilerVersion:0.4.0"
+    testImplementation 'com.nrinaudo:kantan.xpath_%%:0.4.0'
     testImplementation "org.junit.jupiter:junit-jupiter-api:$jUnitVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-params:$jUnitVersion"
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
