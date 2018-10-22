@@ -8,7 +8,7 @@ import helpers.SimpleNamespaceContext
 import javax.xml.namespace.NamespaceContext
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.xpath.XPathFactory
-import kantan.xpath.{ CompileResult, ParseResult, XPathCompiler, XmlParser }
+import kantan.xpath.{ CompileResult, DecodeError, ParseResult, XPathCompiler, XmlParser }
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.params.ParameterizedTest
@@ -26,7 +26,9 @@ class DataProvider extends ArgumentsProvider {
     arguments(new FixtureAccessor("simple"), null, <breakfast_menu/>),
     arguments(new FixtureAccessor("simple"), namespaceContext, <breakfast_menu/>),
     arguments(new FixtureAccessor("ns-simple"), namespaceContext, Elem("my", "breakfast_menu", Null,
-      namespaceBinding, minimizeEmpty = true))
+      namespaceBinding, minimizeEmpty = true)),
+    arguments(new FixtureAccessor("special"), null, <records/>),
+    arguments(new FixtureAccessor("special"), namespaceContext, <records/>)
   )
 }
 
@@ -74,7 +76,7 @@ class XmlBuilderTest {
     val builtDocument = new XmlBuilder(namespaceContext).putAll(xmlProperties).build(root)
     val builtDocumentString = xmlToString(builtDocument)
 
-    xmlProperties.asScala.foreach { case (xpath, value) =>
+    xmlProperties.asScala foreach { case (xpath, value) =>
       assertThat(for {
         xp  <- xPathCompiler(namespaceContext).compile(xpath).right
         res <- builtDocumentString.evalXPath[String](xp).right
@@ -118,11 +120,12 @@ class XmlBuilderTest {
     val builtDocument = new XmlBuilder(namespaceContext).removeAll(xmlProperties.keySet).build(oldDocument)
     val builtDocumentString = xmlToString(builtDocument)
 
-    xmlProperties.keySet.asScala.foreach { xpath =>
+    println(builtDocumentString)
+    xmlProperties.keySet.asScala foreach { xpath =>
       assertThat(for {
         xp  <- xPathCompiler(namespaceContext).compile(xpath).right
-        res <- builtDocumentString.evalXPath[List[String]](xp).right
-      } yield res).as("Should not evaluate XPath %s", xpath) isEqualTo Right(Nil)
+        res <- builtDocumentString.evalXPath[kantan.xpath.Node](xp).right
+      } yield res).as("Should not evaluate XPath %s", xpath) isEqualTo Left(DecodeError.NotFound)
     }
     assertThat(builtDocumentString) isNotEqualTo fixtureAccessor.getPutValueXml
   }

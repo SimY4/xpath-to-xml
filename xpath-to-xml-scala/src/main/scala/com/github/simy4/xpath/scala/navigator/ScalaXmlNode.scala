@@ -11,22 +11,21 @@ sealed trait ScalaXmlNode extends NavigatorNode
 object ScalaXmlNode {
   private[navigator] sealed trait Parent extends ScalaXmlNode {
     def node: Elem
+    var index: Int
     @inline def transform(transformation: Elem => Elem): Unit
-  }
-  private[navigator] object Parent {
-    def unapply(arg: Parent): Option[Elem] = Some(arg.node)
   }
 
   case class Root(private var _node: Elem) extends Parent {
     override def getName: QName = throw new UnsupportedOperationException("getName")
     override def getText: String = throw new UnsupportedOperationException("getText")
     override def node: Elem = _node
+    override var index: Int = 0
     override def transform(transformation: Elem => Elem): Unit = {
       _node = transformation(_node)
     }
   }
 
-  private[navigator] case class Element(private var _node: Elem, parent: Parent) extends Parent {
+  private[navigator] case class Element(private var _node: Elem, override var index: Int, parent: Parent) extends Parent {
     override def getName: QName = {
       val curNode = node
       Option(curNode.prefix).fold(new QName(curNode.label))(new QName(curNode.namespace, curNode.label, _))
@@ -41,8 +40,7 @@ object ScalaXmlNode {
           case _: Root    => parent transform (_ => newNode)
           case _: Element => parent transform { elem =>
             val children = elem.child.toList
-            val idx = children indexOf oldNode
-            val newChildren = children patch (idx, Seq(newNode), 1)
+            val newChildren = children patch (index, Seq(newNode), 1)
             elem.copy(child = newChildren)
           }
         }

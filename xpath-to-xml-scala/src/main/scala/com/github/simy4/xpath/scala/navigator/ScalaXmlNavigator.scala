@@ -8,23 +8,22 @@ import _root_.scala.xml.{ Elem, Null, Text, Attribute => XmlAttribute }
 
 class ScalaXmlNavigator(xml: ScalaXmlNode.Root) extends Navigator[ScalaXmlNode] {
   import ScalaXmlNode._
+  import _root_.scala.collection.JavaConverters._
 
   override val root: ScalaXmlNode = xml
   override def parentOf(node: ScalaXmlNode): ScalaXmlNode = node match {
-    case Root(_)              => null
-    case Element(_, parent)   => parent
-    case Attribute(_, parent) => parent
+    case Root(_)               => null
+    case Element(_, _, parent) => parent
+    case Attribute(_, parent)  => parent
   }
   override def elementsOf(parent: ScalaXmlNode): java.lang.Iterable[_ <: ScalaXmlNode] = (parent match {
-    case parent @ Root(elem)       => Seq(Element(elem, parent))
-    case parent @ Element(elem, _) => for {
-      child <- elem \ "_"
-    } yield Element(child.asInstanceOf[Elem], parent)
-    case _                         => Nil
+    case parent @ Root(elem)          => Seq(Element(elem, parent.index, parent))
+    case parent @ Element(elem, _, _) => elem.child.zipWithIndex.filterNot(_._1.isAtom) map { case (node, i) => Element(node.asInstanceOf[Elem], i, parent) }
+    case _                            => Nil
   }).asJava
   override def attributesOf(parent: ScalaXmlNode): java.lang.Iterable[_ <: ScalaXmlNode] = (parent match {
-    case parent @ Element(elem, _) => elem.attributes map (Attribute(_, parent))
-    case _                         => Nil
+    case parent @ Element(elem, _, _) => elem.attributes map (Attribute(_, parent))
+    case _                            => Nil
   }).asJava
   override def createAttribute(parent: ScalaXmlNode, attribute: QName): ScalaXmlNode = parent match {
     case p: Parent =>
@@ -36,9 +35,11 @@ class ScalaXmlNavigator(xml: ScalaXmlNode.Root) extends Navigator[ScalaXmlNode] 
   }
   override def createElement(parent: ScalaXmlNode, element: QName): ScalaXmlNode = parent match {
     case p: Parent =>
-      val newElem = Elem(Some(element.getPrefix).filter(_.nonEmpty).orNull, element.getLocalPart, Null, p.node.scope, minimizeEmpty = true)
+      val node = p.node
+      val newElem = Elem(Some(element.getPrefix).filter(_.nonEmpty).orNull, element.getLocalPart, Null, node.scope, minimizeEmpty = true)
+      val idx = node.child.size
       p transform { elem => elem.copy(child = elem.child :+ newElem) }
-      Element(newElem, p)
+      Element(newElem, idx, p)
     case _         =>
       throw new XmlBuilderException(s"Unable to create element for $parent")
   }
@@ -57,19 +58,19 @@ class ScalaXmlNavigator(xml: ScalaXmlNode.Root) extends Navigator[ScalaXmlNode] 
       throw new XmlBuilderException(s"Unable to set text to $node")
   }
   override def prependCopy(node: ScalaXmlNode): Unit = node match {
-    case Element(toCopy, parent: Element) =>
+    case e @ Element(toCopy, idx, parent: Element) =>
       val copy = toCopy.copy()
       parent transform { elem =>
         val children = elem.child.toList
-        val idx = children indexOf toCopy
         elem.copy(child = children patch (idx, Seq(copy, toCopy), 1))
       }
+      e.index += 1
     case _                                       =>
       throw new XmlBuilderException(s"Unable to prepend copy to $node")
   }
   override def remove(node: ScalaXmlNode): Unit = node match {
-    case Element(toDelete, parent)                                        =>
-      parent transform { elem => elem.copy(child = elem.child filterNot (_ eq toDelete)) }
+    case Element(_, idx, parent)                                          =>
+      parent transform { elem => elem.copy(child = elem.child patch (idx, Nil, 1)) }
     case Attribute(toDelete: XmlAttribute, parent) if toDelete.isPrefixed =>
       parent transform { elem => elem.copy(attributes = elem.attributes remove
         (toDelete.getNamespace(elem), elem, toDelete.key)) }
