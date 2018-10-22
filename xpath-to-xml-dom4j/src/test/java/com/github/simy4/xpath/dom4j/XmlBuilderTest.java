@@ -3,6 +3,7 @@ package com.github.simy4.xpath.dom4j;
 import com.github.simy4.xpath.XmlBuilder;
 import com.github.simy4.xpath.fixtures.FixtureAccessor;
 import com.github.simy4.xpath.helpers.SimpleNamespaceContext;
+import org.assertj.core.api.Condition;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -34,9 +35,8 @@ class XmlBuilderTest {
                 arguments(new FixtureAccessor("simple"), null),
                 arguments(new FixtureAccessor("simple"), new SimpleNamespaceContext()),
                 arguments(new FixtureAccessor("ns-simple"), new SimpleNamespaceContext()),
-                // TODO although these cases are working fine the order of attribute is messed up
-                // arguments(new FixtureAccessor("attr"), null),
-                // arguments(new FixtureAccessor("attr"), new SimpleNamespaceContext()),
+                arguments(new FixtureAccessor("attr"), null),
+                arguments(new FixtureAccessor("attr"), new SimpleNamespaceContext()),
                 arguments(new FixtureAccessor("special"), null),
                 arguments(new FixtureAccessor("special"), new SimpleNamespaceContext())
         );
@@ -58,7 +58,9 @@ class XmlBuilderTest {
             }
             assertThat(xpath.evaluate(builtDocument)).isNotNull();
         }
-        assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutXml());
+        // although these cases are working fine the order of attribute is messed up
+        assertThat(xmlToString(builtDocument)).is(new Condition<>(xml -> fixtureAccessor.toString().startsWith("attr")
+                || xml.equals(fixtureAccessor.getPutXml()), "XML matches exactly"));
     }
 
     @ParameterizedTest
@@ -78,7 +80,9 @@ class XmlBuilderTest {
             }
             assertThat(xpath.selectSingleNode(builtDocument).getText()).isEqualTo(xpathToValuePair.getValue());
         }
-        assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
+        // although these cases are working fine the order of attribute is messed up
+        assertThat(xmlToString(builtDocument)).is(new Condition<>(xml -> fixtureAccessor.toString().startsWith("attr")
+                || xml.equals(fixtureAccessor.getPutValueXml()), "XML matches exactly"));
     }
 
     @ParameterizedTest
