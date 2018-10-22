@@ -8,7 +8,6 @@ import _root_.scala.xml.{ Elem, Null, Text, Attribute => XmlAttribute }
 
 class ScalaXmlNavigator(xml: ScalaXmlNode.Root) extends Navigator[ScalaXmlNode] {
   import ScalaXmlNode._
-  import _root_.scala.collection.JavaConverters._
 
   override val root: ScalaXmlNode = xml
   override def parentOf(node: ScalaXmlNode): ScalaXmlNode = node match {
@@ -44,15 +43,17 @@ class ScalaXmlNavigator(xml: ScalaXmlNode.Root) extends Navigator[ScalaXmlNode] 
       throw new XmlBuilderException(s"Unable to create element for $parent")
   }
   override def setText(node: ScalaXmlNode, text: String): Unit = node match {
-    case parent: Parent                                                     =>
+    case parent: Parent                                                         =>
       parent transform { elem => elem.copy(child = elem.child.filterNot(_.isInstanceOf[Text]) :+ Text(text)) }
-    case Attribute(attribute: XmlAttribute, parent) if attribute.isPrefixed =>
+    case a @ Attribute(attribute: XmlAttribute, parent) if attribute.isPrefixed =>
       val newAttr = XmlAttribute(Some(attribute.pre), attribute.key, Text(text), Null)
       parent transform { _ % newAttr }
-    case Attribute(attribute, parent)                                    =>
+      a.meta = newAttr
+    case a @ Attribute(attribute, parent)                                       =>
       val newAttr = XmlAttribute(None, attribute.key, Text(text), Null)
       parent transform { _ % newAttr }
-    case _                                                               =>
+      a.meta = newAttr
+    case _                                                                      =>
       throw new XmlBuilderException(s"Unable to set text to $node")
   }
   override def prependCopy(node: ScalaXmlNode): Unit = node match {

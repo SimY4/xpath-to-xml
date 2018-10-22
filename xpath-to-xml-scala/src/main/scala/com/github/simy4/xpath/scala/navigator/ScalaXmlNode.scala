@@ -51,7 +51,7 @@ object ScalaXmlNode {
     }
   }
 
-  private[navigator] case class Attribute(meta: MetaData, parent: Parent) extends ScalaXmlNode {
+  private[navigator] case class Attribute(var meta: MetaData, parent: Parent) extends ScalaXmlNode {
     override val getName: QName = {
       meta match {
         case a : XmlAttribute if a.isPrefixed => new QName(a.getNamespace(parent.node), a.key, a.pre)
