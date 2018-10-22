@@ -11,7 +11,18 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 Features:
 
 - Support for javax.json model
+
+### 1.3 Scala XML model support
+
+Features:
+
 - Support for scala XML model
+
+Improvements:
+
+- Core
+  - [BREAKING] Effect interface moved into `com.github.simy4.xpath.spi` package for better modularisation story in Java9.
+    All existing core extensions adopted this change 
 
 ### 1.2.3
 
