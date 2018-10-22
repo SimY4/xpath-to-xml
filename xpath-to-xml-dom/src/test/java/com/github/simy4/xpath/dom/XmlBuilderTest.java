@@ -62,7 +62,7 @@ class XmlBuilderTest {
     @MethodSource("data")
     void shouldBuildDocumentFromSetOfXPaths(FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext,
                                             DocumentBuilderFactory documentBuilderFactory)
-            throws XPathExpressionException, TransformerException, IOException, ParserConfigurationException {
+            throws XPathExpressionException, TransformerException, ParserConfigurationException {
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         Document document = documentBuilder.newDocument();
@@ -86,7 +86,7 @@ class XmlBuilderTest {
     void shouldBuildDocumentFromSetOfXPathsAndSetValues(FixtureAccessor fixtureAccessor,
                                                         NamespaceContext namespaceContext,
                                                         DocumentBuilderFactory documentBuilderFactory)
-            throws XPathExpressionException, TransformerException, IOException, ParserConfigurationException {
+            throws XPathExpressionException, TransformerException, ParserConfigurationException {
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         Document document = documentBuilder.newDocument();

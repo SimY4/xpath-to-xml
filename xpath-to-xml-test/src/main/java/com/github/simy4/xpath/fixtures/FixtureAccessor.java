@@ -33,38 +33,46 @@ public final class FixtureAccessor {
      * Reads XPath to Value properties from fixture resource as an ordered map.
      *
      * @return ordered XPath to Value mappings
-     * @throws IOException is failed to access fixture resource
      */
-    public Map<String, Object> getXmlProperties() throws IOException {
-        final InputStream xpathPropertiesStream = getClass().getResourceAsStream(
-                String.format(XML_PROPERTIES_PATH_FORMAT, fixtureName));
+    public Map<String, Object> getXmlProperties() {
+        final String resource = String.format(XML_PROPERTIES_PATH_FORMAT, fixtureName);
+        final InputStream xpathPropertiesStream = getClass().getResourceAsStream(resource);
         try {
-            OrderedProperties xpathProperties = new OrderedProperties();
-            xpathProperties.load(xpathPropertiesStream);
-            return xpathProperties.toMap();
-        } finally {
-            if (xpathPropertiesStream != null) {
-                xpathPropertiesStream.close();
+            try {
+                OrderedProperties xpathProperties = new OrderedProperties();
+                xpathProperties.load(xpathPropertiesStream);
+                return xpathProperties.toMap();
+            } finally {
+                if (xpathPropertiesStream != null) {
+                    xpathPropertiesStream.close();
+                }
             }
+        } catch (IOException ioe) {
+            throw new IllegalStateException("Unable to fetch XML properties " + resource, ioe);
         }
     }
 
-    public String getPutXml() throws IOException {
+    public String getPutXml() {
         return getXml(XML_PUT_PATH_FORMAT);
     }
 
-    public String getPutValueXml() throws IOException {
+    public String getPutValueXml() {
         return getXml(XML_PUT_VALUE_PATH_FORMAT);
     }
 
-    private String getXml(String format) throws IOException {
-        final InputStream xmlStream = getClass().getResourceAsStream(String.format(format, fixtureName, fixtureType));
+    private String getXml(String format) {
+        final String resource = String.format(format, fixtureName, fixtureType);
+        final InputStream xmlStream = getClass().getResourceAsStream(resource);
         try {
-            return new Scanner(xmlStream, "UTF-8").useDelimiter("\\A").next();
-        } finally {
-            if (xmlStream != null) {
-                xmlStream.close();
+            try {
+                return new Scanner(xmlStream, "UTF-8").useDelimiter("\\A").next();
+            } finally {
+                if (xmlStream != null) {
+                    xmlStream.close();
+                }
             }
+        } catch (IOException ioe) {
+            throw new IllegalStateException("Unable to fetch XML document " + resource, ioe);
         }
     }
 
