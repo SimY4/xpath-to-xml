@@ -17,13 +17,13 @@ class ScalaXmlNavigator(xml: ScalaXmlNode.Root) extends Navigator[ScalaXmlNode] 
     case Attribute(_, parent)  => parent
   }
   override def elementsOf(parent: ScalaXmlNode): java.lang.Iterable[_ <: ScalaXmlNode] = (parent match {
-    case parent @ Root(elem)          => Seq(Element(elem, parent.index, parent))
-    case parent @ Element(elem, _, _) => elem.child.zipWithIndex.filterNot(_._1.isAtom) map { case (node, i) => Element(node.asInstanceOf[Elem], i, parent) }
-    case _                            => Nil
+    case p @ Root(elem)          => Seq(Element(elem, p.index, p))
+    case p @ Element(elem, _, _) => elem.child.zipWithIndex.filterNot(_._1.isAtom) map { case (node, i) => Element(node.asInstanceOf[Elem], i, p) }
+    case _                       => Nil
   }).asJava
   override def attributesOf(parent: ScalaXmlNode): java.lang.Iterable[_ <: ScalaXmlNode] = (parent match {
-    case parent @ Element(elem, _, _) => elem.attributes map (Attribute(_, parent))
-    case _                            => Nil
+    case p @ Element(elem, _, _) => elem.attributes map (Attribute(_, p))
+    case _                       => Nil
   }).asJava
   override def createAttribute(parent: ScalaXmlNode, attribute: QName): ScalaXmlNode = parent match {
     case p: Parent =>
