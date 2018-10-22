@@ -6,6 +6,9 @@ import java.util.stream.Stream
 import fixtures.FixtureAccessor
 import helpers.SimpleNamespaceContext
 import javax.xml.namespace.NamespaceContext
+import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.xpath.XPathFactory
+import kantan.xpath.{ CompileResult, ParseResult, XPathCompiler, XmlParser }
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.params.ParameterizedTest
@@ -29,6 +32,29 @@ class DataProvider extends ArgumentsProvider {
 
 class XmlBuilderTest {
   import Assertions._
+  import kantan.xpath.implicits._
+
+  import _root_.scala.collection.JavaConverters._
+
+  private def xPathCompiler(namespaceContext: NamespaceContext): XPathCompiler = Option(namespaceContext)
+    .fold(XPathCompiler.builtIn) { nc =>
+      val xPathFactory = XPathFactory.newInstance
+      XPathCompiler { xpathString =>
+        CompileResult {
+          val xpath = xPathFactory.newXPath
+          xpath.setNamespaceContext(nc)
+          xpath.compile(xpathString)
+        }
+      }
+    }
+
+  private def xmlParser(namespaceContext: NamespaceContext): XmlParser = Option(namespaceContext)
+    .fold(XmlParser.builtIn) { _ =>
+      val factory: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
+      factory.setNamespaceAware(true)
+      factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false)
+      XmlParser { source => ParseResult(factory.newDocumentBuilder().parse(source)) }
+    }
 
   @ParameterizedTest
   @ArgumentsSource(classOf[DataProvider])
@@ -43,9 +69,18 @@ class XmlBuilderTest {
   @ArgumentsSource(classOf[DataProvider])
   def shouldBuildDocumentFromSetOfXPathsAndSetValues(fixtureAccessor: FixtureAccessor,
                                                      namespaceContext: NamespaceContext, root: Node): Unit = {
+    implicit val parser: XmlParser = xmlParser(namespaceContext)
     val xmlProperties = fixtureAccessor.getXmlProperties
     val builtDocument = new XmlBuilder(namespaceContext).putAll(xmlProperties).build(root)
-    assertThat(xmlToString(builtDocument)) isEqualTo fixtureAccessor.getPutValueXml
+    val builtDocumentString = xmlToString(builtDocument)
+
+    xmlProperties.asScala.foreach { case (xpath, value) =>
+      assertThat(for {
+        xp  <- xPathCompiler(namespaceContext).compile(xpath).right
+        res <- builtDocumentString.evalXPath[String](xp).right
+      } yield res).as("Should evaluate XPath %s to %s", xpath, value) isEqualTo Right(value)
+    }
+    assertThat(builtDocumentString) isEqualTo fixtureAccessor.getPutValueXml
   }
 
   @ParameterizedTest
@@ -67,20 +102,29 @@ class XmlBuilderTest {
     val xml = fixtureAccessor.getPutValueXml
     val oldDocument = XML.loadString(xml)
     var builtDocument = new XmlBuilder(namespaceContext).putAll(xmlProperties).build(oldDocument)
-    assertThat(xmlToString(builtDocument)).isEqualTo(xml)
+    assertThat(xmlToString(builtDocument)) isEqualTo xml
     builtDocument = new XmlBuilder(namespaceContext).putAll(xmlProperties.keySet).build(oldDocument)
-    assertThat(xmlToString(builtDocument)).isEqualTo(xml)
+    assertThat(xmlToString(builtDocument)) isEqualTo xml
   }
 
   @ParameterizedTest
   @ArgumentsSource(classOf[DataProvider])
   def shouldRemovePathsFromExistingXml(fixtureAccessor: FixtureAccessor, namespaceContext: NamespaceContext,
                                        root: Node): Unit = {
+    implicit val parser: XmlParser = xmlParser(namespaceContext)
     val xmlProperties = fixtureAccessor.getXmlProperties
     val xml = fixtureAccessor.getPutValueXml
     val oldDocument = XML.loadString(xml)
     val builtDocument = new XmlBuilder(namespaceContext).removeAll(xmlProperties.keySet).build(oldDocument)
-    assertThat(xmlToString(builtDocument)).isNotEqualTo(fixtureAccessor.getPutValueXml)
+    val builtDocumentString = xmlToString(builtDocument)
+
+    xmlProperties.keySet.asScala.foreach { xpath =>
+      assertThat(for {
+        xp  <- xPathCompiler(namespaceContext).compile(xpath).right
+        res <- builtDocumentString.evalXPath[List[String]](xp).right
+      } yield res).as("Should not evaluate XPath %s", xpath) isEqualTo Right(Nil)
+    }
+    assertThat(builtDocumentString) isNotEqualTo fixtureAccessor.getPutValueXml
   }
 
   private def xmlToString(xml: Node) = {
