@@ -39,8 +39,7 @@ object ScalaXmlNode {
         parent match {
           case _: Root    => parent transform (_ => newNode)
           case _: Element => parent transform { elem =>
-            val children = elem.child.toList
-            val newChildren = children patch (index, Seq(newNode), 1)
+            val newChildren = elem.child patch (index, Seq(newNode), 1)
             elem.copy(child = newChildren)
           }
         }

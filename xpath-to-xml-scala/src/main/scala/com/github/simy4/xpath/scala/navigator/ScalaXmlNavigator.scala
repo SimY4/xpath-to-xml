@@ -60,10 +60,7 @@ class ScalaXmlNavigator(xml: ScalaXmlNode.Root) extends Navigator[ScalaXmlNode] 
   override def prependCopy(node: ScalaXmlNode): Unit = node match {
     case e @ Element(toCopy, idx, parent: Element) =>
       val copy = toCopy.copy()
-      parent transform { elem =>
-        val children = elem.child.toList
-        elem.copy(child = children patch (idx, Seq(copy, toCopy), 1))
-      }
+      parent transform { elem => elem.copy(child = elem.child patch (idx, Seq(copy, toCopy), 1)) }
       e.index += 1
     case _                                       =>
       throw new XmlBuilderException(s"Unable to prepend copy to $node")
