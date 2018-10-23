@@ -1,4 +1,4 @@
-ext.pomDescription = "XPath-to-JSON Gson"
+ext.moduleName = 'com.github.simych.xpath.gson'
 
 apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 

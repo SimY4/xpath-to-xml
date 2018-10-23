@@ -48,6 +48,7 @@ abstract class AbstractJacksonNode implements JacksonNode {
     }
 
     @Override
+    @SuppressWarnings("EqualsGetClass")
     public boolean equals(Object o) {
         if (this == o) {
             return true;

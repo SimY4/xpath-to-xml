@@ -1,1 +1,1 @@
-ext.pomDescription = "XPath-to-XML test suite"
+ext.moduleName = 'com.github.simych.xpath.test'
