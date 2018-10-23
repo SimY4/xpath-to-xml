@@ -19,7 +19,8 @@ jacocoTestCoverageVerification {
             includes = ['com.github.simy4.xpath.*']
             excludes = [
                     'com.github.simy4.xpath.view.AbstractViewVisitor',
-                    'com.github.simy4.xpath.XmlBuilder'
+                    'com.github.simy4.xpath.XmlBuilder',
+                    '*.scala.*'
             ]
 
             limit {

@@ -4,6 +4,7 @@ import com.github.simy4.xpath.helpers.OrderedProperties;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -33,28 +34,31 @@ public final class FixtureAccessor {
      * Reads XPath to Value properties from fixture resource as an ordered map.
      *
      * @return ordered XPath to Value mappings
-     * @throws IOException is failed to access fixture resource
      */
-    public Map<String, Object> getXmlProperties() throws IOException {
+    public Map<String, Object> getXmlProperties() {
         try (InputStream xpathPropertiesStream = getClass().getResourceAsStream(
                 String.format(XML_PROPERTIES_PATH_FORMAT, fixtureName))) {
             OrderedProperties xpathProperties = new OrderedProperties();
             xpathProperties.load(xpathPropertiesStream);
             return xpathProperties.toMap();
+        } catch (IOException ioe) {
+            throw new UncheckedIOException(ioe);
         }
     }
 
-    public String getPutXml() throws IOException {
+    public String getPutXml() {
         return getXml(XML_PUT_PATH_FORMAT);
     }
 
-    public String getPutValueXml() throws IOException {
+    public String getPutValueXml() {
         return getXml(XML_PUT_VALUE_PATH_FORMAT);
     }
 
-    private String getXml(String format) throws IOException {
+    private String getXml(String format) {
         try (InputStream xmlStream = getClass().getResourceAsStream(String.format(format, fixtureName, fixtureType))) {
             return new Scanner(xmlStream, "UTF-8").useDelimiter("\\A").next();
+        } catch (IOException ioe) {
+            throw new UncheckedIOException(ioe);
         }
     }
 

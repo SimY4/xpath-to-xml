@@ -45,7 +45,7 @@ public class XomXmlBuilderBenchmark {
 
     @Setup
     public void setUp() {
-        root = new Element("breakfast_menu");
+        root = "special".equals(fixtureName) ? new Element("records") : new Element("breakfast_menu");
         fixtureAccessor = new FixtureAccessor(fixtureName);
         namespaceContext = NAMESPACE_CONTEXT_MAP.get(nsContext);
     }
