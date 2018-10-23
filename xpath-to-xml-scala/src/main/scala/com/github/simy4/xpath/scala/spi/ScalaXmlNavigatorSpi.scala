@@ -1,7 +1,7 @@
 package com.github.simy4.xpath
 package scala.spi
 
-import scala.navigator.{ ScalaXmlNavigator, ScalaXmlNode }
+import scala.navigator.{ Root, ScalaXmlNavigator }
 import spi.{ Effect, NavigatorSpi }
 
 import _root_.scala.xml.Elem
@@ -13,7 +13,7 @@ class ScalaXmlNavigatorSpi extends NavigatorSpi {
 
   override def process[T](xml: T, effects: java.lang.Iterable[Effect]): T = xml match {
     case elem: Elem =>
-      val root = ScalaXmlNode.Root(elem)
+      val root = new Root(elem)
       val navigator = new ScalaXmlNavigator(root)
       effects.asScala foreach (_.perform(navigator, root))
       root.node.asInstanceOf[T]
