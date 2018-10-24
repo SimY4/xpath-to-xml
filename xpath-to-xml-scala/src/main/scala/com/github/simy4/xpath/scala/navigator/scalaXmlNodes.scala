@@ -13,7 +13,7 @@ sealed trait ScalaXmlNode extends NavigatorNode {
 }
 private[navigator] sealed trait Parent extends ScalaXmlNode {
   def node: Elem
-  @inline def transform(transformation: Elem => Elem): Unit
+  def transform(transformation: Elem => Elem): Unit
 }
 
 final class Root(private var _node: Elem) extends Parent {
@@ -41,15 +41,12 @@ private[navigator] case class Element(private var _node: Elem, var index: Int,
   override def attributes: Iterable[Attribute] = _node.attributes map (Attribute(_, this))
   override def node: Elem = _node
   override def transform(transformation: Elem => Elem): Unit = {
-    val oldNode = _node
-    val newNode = transformation(oldNode)
-    if (oldNode xml_!= newNode) {
-      parent match {
-        case _: Root    => parent transform (_ => newNode)
-        case _: Element => parent transform { elem =>
-          val newChildren = elem.child patch (index, Seq(newNode), 1)
-          elem.copy(child = newChildren)
-        }
+    val newNode = transformation(_node)
+    parent match {
+      case _: Root    => parent transform (_ => newNode)
+      case _: Element => parent transform { elem =>
+        val newChildren = elem.child patch (index, Seq(newNode), 1)
+        elem.copy(child = newChildren)
       }
     }
     _node = newNode
