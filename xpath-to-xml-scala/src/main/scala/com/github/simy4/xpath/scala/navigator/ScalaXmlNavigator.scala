@@ -16,31 +16,31 @@ class ScalaXmlNavigator(xml: Root) extends Navigator[ScalaXmlNode] {
   override def createAttribute(parent: ScalaXmlNode, attribute: QName): ScalaXmlNode = parent match {
     case e: Element =>
       val newAttr = XmlAttribute(Some(attribute.getPrefix).filter(_.nonEmpty), attribute.getLocalPart, Text(""), Null)
-      e transform { _ % newAttr }
+      e.node = e.node % newAttr
       Attribute(newAttr, e)
     case _          =>
       throw new XmlBuilderException(s"Unable to create attribute for $parent")
   }
   override def createElement(parent: ScalaXmlNode, element: QName): ScalaXmlNode = parent match {
-    case e: Element =>
-      val node = e.node
+    case e @ Element(node, _, _) =>
       val newElem = Elem(Some(element.getPrefix).filter(_.nonEmpty).orNull, element.getLocalPart, Null, node.scope, minimizeEmpty = true)
-      val idx = node.child.size
-      e transform { elem => elem.copy(child = elem.child :+ newElem) }
+      val children = node.child
+      val idx = children.size
+      e.node = node.copy(child = children :+ newElem)
       Element(newElem, idx, e)
-    case _          =>
+    case _                       =>
       throw new XmlBuilderException(s"Unable to create element for $parent")
   }
   override def setText(node: ScalaXmlNode, text: String): Unit = node match {
-    case e: Element                                                             =>
-      e transform { elem => elem.copy(child = elem.child.filterNot(_.isInstanceOf[Text]) :+ Text(text)) }
+    case e @ Element(elem, _, _)                                                =>
+      e.node = elem.copy(child = elem.child.filterNot(_.isInstanceOf[Text]) :+ Text(text))
     case a @ Attribute(attribute: XmlAttribute, parent) if attribute.isPrefixed =>
       val newAttr = XmlAttribute(Some(attribute.pre), attribute.key, Text(text), Null)
-      parent transform { _ % newAttr }
+      parent.node = parent.node % newAttr
       a.meta = newAttr
     case a @ Attribute(attribute, parent)                                       =>
       val newAttr = XmlAttribute(None, attribute.key, Text(text), Null)
-      parent transform { _ % newAttr }
+      parent.node = parent.node % newAttr
       a.meta = newAttr
     case _                                                                      =>
       throw new XmlBuilderException(s"Unable to set text to $node")
@@ -48,19 +48,19 @@ class ScalaXmlNavigator(xml: Root) extends Navigator[ScalaXmlNode] {
   override def prependCopy(node: ScalaXmlNode): Unit = node match {
     case e @ Element(toCopy, idx, parent: Element) =>
       val copy = toCopy.copy()
-      parent transform { elem => elem.copy(child = elem.child patch (idx, Seq(copy, toCopy), 1)) }
+      parent.node = parent.node.copy(child = parent.node.child patch (idx, Seq(copy, toCopy), 1))
       e.index += 1
     case _                                         =>
       throw new XmlBuilderException(s"Unable to prepend copy to $node")
   }
   override def remove(node: ScalaXmlNode): Unit = node match {
     case Element(_, idx, parent)                                          =>
-      parent transform { elem => elem.copy(child = elem.child patch (idx, Nil, 1)) }
+      parent.node = parent.node.copy(child = parent.node.child patch (idx, Nil, 1))
     case Attribute(toDelete: XmlAttribute, parent) if toDelete.isPrefixed =>
-      parent transform { elem => elem.copy(attributes = elem.attributes remove
-        (toDelete.getNamespace(elem), elem, toDelete.key)) }
+      parent.node = parent.node.copy(attributes = parent.node.attributes remove
+        (toDelete.getNamespace(parent.node), parent.node, toDelete.key))
     case Attribute(toDelete, parent)                                      =>
-      parent transform { elem => elem.copy(attributes = elem.attributes remove toDelete.key) }
+      parent.node = parent.node.copy(attributes = parent.node.attributes remove toDelete.key)
     case _                                                                =>
       throw new XmlBuilderException(s"Unable to delete node $node")
   }
