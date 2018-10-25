@@ -127,7 +127,7 @@ public class GsonNavigator implements Navigator<GsonNode> {
         final GsonNode elementNode;
         if (parentElement.isJsonObject()) {
             final JsonObject parentObject = parentElement.getAsJsonObject();
-            if (null == parentObject.get(name)) {
+            if (!parentObject.has(name)) {
                 elementNode = new GsonByNameNode(parentObject, name, parent);
             } else {
                 final GsonNode parentParent = parent.getParent();
