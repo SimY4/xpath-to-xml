@@ -6,6 +6,7 @@ import com.github.simy4.xpath.util.TransformingIterator;
 
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonString;
 import javax.json.JsonValue;
 import java.util.Collections;
 import java.util.Iterator;
@@ -36,6 +37,8 @@ abstract class AbstractJavaxJsonNode implements JavaxJsonNode {
                 return jsonValue.asJsonObject().getString("text", "null");
             case ARRAY:
                 return "";
+            case STRING:
+                return ((JsonString) jsonValue).getString();
             case NULL:
                 return "null";
             default:
@@ -49,6 +52,7 @@ abstract class AbstractJavaxJsonNode implements JavaxJsonNode {
     }
 
     @Override
+    @SuppressWarnings("EqualsGetClass")
     public boolean equals(Object o) {
         if (this == o) {
             return true;

@@ -12,7 +12,6 @@ import javax.json.JsonValue;
 import javax.json.stream.JsonGenerator;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
@@ -34,8 +33,7 @@ class XmlBuilderTest {
 
     @ParameterizedTest
     @MethodSource("data")
-    void shouldBuildJsonFromSetOfXPaths(FixtureAccessor fixtureAccessor)
-            throws XPathExpressionException, IOException {
+    void shouldBuildJsonFromSetOfXPaths(FixtureAccessor fixtureAccessor) throws XPathExpressionException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         JsonObject builtDocument = new XmlBuilder()
                 .putAll(xmlProperties.keySet())
@@ -46,8 +44,7 @@ class XmlBuilderTest {
 
     @ParameterizedTest
     @MethodSource("data")
-    void shouldBuildJsonFromSetOfXPathsAndSetValues(FixtureAccessor fixtureAccessor)
-            throws XPathExpressionException, IOException {
+    void shouldBuildJsonFromSetOfXPathsAndSetValues(FixtureAccessor fixtureAccessor) throws XPathExpressionException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         JsonObject builtDocument = new XmlBuilder()
                 .putAll(xmlProperties)
@@ -58,8 +55,7 @@ class XmlBuilderTest {
 
     @ParameterizedTest
     @MethodSource("data")
-    void shouldModifyJsonWhenXPathsAreNotTraversable(FixtureAccessor fixtureAccessor)
-            throws XPathExpressionException, IOException {
+    void shouldModifyJsonWhenXPathsAreNotTraversable(FixtureAccessor fixtureAccessor) throws XPathExpressionException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         String json = fixtureAccessor.getPutXml();
         JsonValue oldDocument = stringToJson(json);
@@ -72,8 +68,7 @@ class XmlBuilderTest {
 
     @ParameterizedTest
     @MethodSource("data")
-    void shouldNotModifyJsonWhenAllXPathsTraversable(FixtureAccessor fixtureAccessor)
-            throws XPathExpressionException, IOException {
+    void shouldNotModifyJsonWhenAllXPathsTraversable(FixtureAccessor fixtureAccessor) throws XPathExpressionException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         String json = fixtureAccessor.getPutValueXml();
         JsonValue oldDocument = stringToJson(json);
@@ -92,8 +87,7 @@ class XmlBuilderTest {
 
     @ParameterizedTest
     @MethodSource("data")
-    void shouldRemovePathsFromExistingXml(FixtureAccessor fixtureAccessor)
-            throws XPathExpressionException, IOException {
+    void shouldRemovePathsFromExistingXml(FixtureAccessor fixtureAccessor) throws XPathExpressionException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         String json = fixtureAccessor.getPutValueXml();
         JsonValue oldDocument = stringToJson(json);
@@ -113,7 +107,9 @@ class XmlBuilderTest {
         Json.createWriterFactory(Collections.singletonMap(JsonGenerator.PRETTY_PRINTING, true))
                 .createWriter(sw)
                 .write(json);
-        return sw.toString().replaceAll(" {4}", "  ").replace("\n\\p{Space}*\n", "\n");
+        return sw.toString().substring(1)
+                .replaceAll(" {4}", "  ")
+                .replaceAll("\\{\n\\s*\n}", "{}");
     }
 
 }
