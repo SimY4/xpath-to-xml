@@ -128,7 +128,7 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
         final JacksonNode elementNode;
         if (parentNode.isObject()) {
             final ObjectNode parentObject = (ObjectNode) parentNode;
-            if (null == parentObject.get(name)) {
+            if (!parentObject.has(name)) {
                 elementNode = new JacksonByNameNode(parentObject, name, parent);
             } else {
                 final JacksonNode parentParent = parent.getParent();
