@@ -1,6 +1,7 @@
 rootProject.name = 'xpath-to-xml'
 include 'xpath-to-json-gson'
 include 'xpath-to-json-jackson'
+include 'xpath-to-json-javax'
 include 'xpath-to-xml-core'
 include 'xpath-to-xml-dom'
 include 'xpath-to-xml-dom4j'

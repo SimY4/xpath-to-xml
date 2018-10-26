@@ -24,7 +24,7 @@ abstract class AbstractJacksonNode implements JacksonNode {
     }
 
     @Override
-    public void setParent(JacksonNode parent) {
+    public final void setParent(JacksonNode parent) {
         this.parent = parent;
     }
 
@@ -43,7 +43,7 @@ abstract class AbstractJacksonNode implements JacksonNode {
     }
 
     @Override
-    public Iterator<JacksonNode> iterator() {
+    public final Iterator<JacksonNode> iterator() {
         return traverse(get(), this);
     }
 

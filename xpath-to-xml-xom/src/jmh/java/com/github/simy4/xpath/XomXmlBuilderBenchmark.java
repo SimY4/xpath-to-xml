@@ -15,7 +15,6 @@ import org.openjdk.jmh.infra.Blackhole;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPathExpressionException;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +51,7 @@ public class XomXmlBuilderBenchmark {
 
     @Benchmark
     public void shouldBuildDocumentFromSetOfXPaths(Blackhole blackhole)
-            throws XPathExpressionException, IOException {
+            throws XPathExpressionException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         Document newDocument = new Document((Element) root.copy());
         blackhole.consume(new XmlBuilder(namespaceContext)

@@ -18,6 +18,7 @@ Convenient utility to build XML models by evaluating XPath expressions.
  
 ## Additionally supported models
 
+ - javax.json
  - Gson
  - Jackson
 
