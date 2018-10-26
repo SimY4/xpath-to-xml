@@ -31,9 +31,9 @@ final class Root(override var node: Elem) extends Parent {
 
 private[navigator] final class Element(private var _node: Elem, var index: Int,
                                       override val parent: Parent) extends Parent {
-  override def getName: QName = {
-    val curNode = node
-    Option(curNode.prefix).fold(new QName(curNode.label))(new QName(curNode.namespace, curNode.label, _))
+  override def getName: QName = node match {
+    case prefixed if null != prefixed.prefix => new QName(prefixed.namespace, prefixed.label, prefixed.prefix)
+    case simple                              => new QName(simple.label)
   }
   override def getText: String = node.child.collect { case Text(t) => t }.mkString
   override def elements: Iterable[Element] = for {
@@ -65,11 +65,9 @@ private[navigator] final class Element(private var _node: Elem, var index: Int,
 }
 
 private[navigator] final class Attribute(var meta: MetaData, override val parent: Parent) extends ScalaXmlNode {
-  override val getName: QName = {
-    meta match {
-      case a : XmlAttribute if a.isPrefixed => new QName(a.getNamespace(parent.node), a.key, a.pre)
-      case _                                => new QName(meta.key)
-    }
+  override def getName: QName = meta match {
+    case a : XmlAttribute if a.isPrefixed => new QName(a.getNamespace(parent.node), a.key, a.pre)
+    case _                                => new QName(meta.key)
   }
   override def getText: String = meta.value.text
   override def elements: Iterable[Element] = Nil
