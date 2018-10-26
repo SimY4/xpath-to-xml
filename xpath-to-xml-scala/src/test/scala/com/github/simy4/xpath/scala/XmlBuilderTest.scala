@@ -191,7 +191,7 @@ class XmlBuilderTest {
   }
 
   private def xmlToString(xml: Node) = {
-    val lineSeparator = System.getProperty("line.separator")
+    val lineSeparator = System.lineSeparator()
     val printer = new PrettyPrinter(255, 4)
     val string = printer.format(xml).replaceAll(s">\n\\s*(\\w.+?)\n\\s*</", ">$1</") + "\n"
     string.replaceAll("\n", lineSeparator)
