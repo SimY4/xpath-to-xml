@@ -23,52 +23,60 @@ public final class Dom4jElement extends AbstractDom4jNode<Element> {
     }
 
     @Override
-    public Iterable<Dom4jNode<Element>> elements() {
-        return new Iterable<Dom4jNode<Element>>() {
+    public Dom4jNode getParent() {
+        final Element node = getNode();
+        final Element parent = node.getParent();
+        return null == parent ? node.getDocument().getRootElement() == node ? new Dom4jDocument(node.getDocument())
+                : null : new Dom4jElement(parent);
+    }
+
+    @Override
+    public Iterable<? extends Dom4jNode> elements() {
+        return new Iterable<Dom4jElement>() {
             @Override
-            public Iterator<Dom4jNode<Element>> iterator() {
-                return new TransformingIterator<Element, Dom4jNode<Element>>(getNode().elementIterator(),
+            public Iterator<Dom4jElement> iterator() {
+                return new TransformingIterator<Element, Dom4jElement>(getNode().elementIterator(),
                         new Dom4jElementWrapper());
             }
         };
     }
 
     @Override
-    public Iterable<Dom4jNode<Attribute>> attributes() {
-        return new Iterable<Dom4jNode<Attribute>>() {
+    public Iterable<? extends Dom4jNode> attributes() {
+        return new Iterable<Dom4jAttribute>() {
             @Override
-            public Iterator<Dom4jNode<Attribute>> iterator() {
-                return new TransformingIterator<Attribute, Dom4jNode<Attribute>>(getNode().attributeIterator(),
+            public Iterator<Dom4jAttribute> iterator() {
+                return new TransformingIterator<Attribute, Dom4jAttribute>(getNode().attributeIterator(),
                         new Dom4jAttributeWrapper());
             }
         };
     }
 
     @Override
-    public Dom4jNode<Attribute> createAttribute(org.dom4j.QName attribute) {
+    public Dom4jNode createAttribute(org.dom4j.QName attribute) {
         final Attribute attr = DocumentHelper.createAttribute(getNode(), attribute, "");
         getNode().attributes().add(attr);
         return new Dom4jAttribute(attr);
     }
 
     @Override
-    public Dom4jNode<Element> createElement(org.dom4j.QName element) {
-        return new Dom4jElement(this.getNode().addElement(element));
+    public Dom4jNode createElement(org.dom4j.QName element) {
+        return new Dom4jElement(getNode().addElement(element));
     }
 
-    private static final class Dom4jAttributeWrapper implements Function<Attribute, Dom4jNode<Attribute>> {
+    private static final class Dom4jAttributeWrapper implements Function<Attribute, Dom4jAttribute> {
 
         @Override
-        public Dom4jNode<Attribute> apply(Attribute attribute) {
+        public Dom4jAttribute apply(Attribute attribute) {
             return new Dom4jAttribute(attribute);
         }
 
     }
 
-    private static final class Dom4jElementWrapper implements Function<Element, Dom4jNode<Element>> {
+    private static final class Dom4jElementWrapper implements Function<Element, Dom4jElement> {
 
         @Override
-        public Dom4jNode<Element> apply(Element element) {
+        public Dom4jElement apply(Element element) {
             return new Dom4jElement(element);
         }
 

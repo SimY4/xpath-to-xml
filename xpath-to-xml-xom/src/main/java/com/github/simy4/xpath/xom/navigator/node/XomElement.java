@@ -13,27 +13,20 @@ import javax.xml.namespace.QName;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public final class XomElement implements XomNode {
-
-    private final Element element;
+public final class XomElement extends AbstractXomNode<Element> {
 
     public XomElement(Element element) {
-        this.element = element;
-    }
-
-    @Override
-    public Element getNode() {
-        return element;
+        super(element);
     }
 
     @Override
     public QName getName() {
-        return new QName(element.getNamespaceURI(), element.getLocalName(), element.getNamespacePrefix());
+        return new QName(getNode().getNamespaceURI(), getNode().getLocalName(), getNode().getNamespacePrefix());
     }
 
     @Override
     public String getText() {
-        return element.getValue();
+        return getNode().getValue();
     }
 
     @Override
@@ -41,7 +34,7 @@ public final class XomElement implements XomNode {
         return new Iterable<XomElement>() {
             @Override
             public Iterator<XomElement> iterator() {
-                return new XomElementsIterator(element.getChildElements());
+                return new XomElementsIterator(getNode().getChildElements());
             }
         };
     }
@@ -51,7 +44,7 @@ public final class XomElement implements XomNode {
         return new Iterable<XomAttribute>() {
             @Override
             public Iterator<XomAttribute> iterator() {
-                return new XomAttributesIterator(element);
+                return new XomAttributesIterator(getNode());
             }
         };
     }
@@ -59,61 +52,37 @@ public final class XomElement implements XomNode {
     @Override
     public XomNode appendAttribute(Attribute attribute) throws XmlBuilderException {
         try {
-            element.addAttribute(attribute);
+            getNode().addAttribute(attribute);
             return new XomAttribute(attribute);
         } catch (IllegalAddException iae) {
-            throw new XmlBuilderException("Unable to append an attribute to " + element, iae);
+            throw new XmlBuilderException("Unable to append an attribute to " + getNode(), iae);
         }
     }
 
     @Override
     public XomNode appendElement(Element element) throws XmlBuilderException {
         try {
-            this.element.appendChild(element);
+            getNode().appendChild(element);
             return new XomElement(element);
         } catch (IllegalAddException iae) {
-            throw new XmlBuilderException("Unable to append an element to " + element, iae);
+            throw new XmlBuilderException("Unable to append an element to " + getNode(), iae);
         }
     }
 
     @Override
     public void setText(String text) throws XmlBuilderException {
         try {
-            for (int i = 0; i < element.getChildCount(); i++) {
-                final Node child = element.getChild(i);
+            for (int i = 0; i < getNode().getChildCount(); i++) {
+                final Node child = getNode().getChild(i);
                 if (child instanceof Text) {
                     ((Text) child).setValue(text);
                     return;
                 }
             }
-            element.appendChild(text);
+            getNode().appendChild(text);
         } catch (IllegalAddException iae) {
-            throw new XmlBuilderException("Unable to set value to " + element, iae);
+            throw new XmlBuilderException("Unable to set value to " + getNode(), iae);
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        XomElement that = (XomElement) o;
-
-        return element.equals(that.element);
-    }
-
-    @Override
-    public int hashCode() {
-        return element.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return element.toString();
     }
 
     private static final class XomAttributesIterator extends ReadOnlyIterator<XomAttribute> {

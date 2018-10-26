@@ -25,7 +25,7 @@ class Dom4JDocumentTest {
     @Mock private Document document;
     @Mock private Element root;
 
-    private Dom4jNode<Document> node;
+    private Dom4jNode node;
 
     @BeforeEach
     void setUp() {
@@ -48,7 +48,7 @@ class Dom4JDocumentTest {
     @Test
     void shouldReturnSingleRootNodeWhenObtainElements() {
         when(document.getRootElement()).thenReturn(root);
-        assertThat(node.elements()).containsExactly(new Dom4jElement(root));
+        assertThat(node.elements()).asList().containsExactly(new Dom4jElement(root));
     }
 
     @Test
