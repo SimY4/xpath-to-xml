@@ -13,7 +13,7 @@ import javax.xml.namespace.QName;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public final class XomElement implements XomNode<Element> {
+public final class XomElement implements XomNode {
 
     private final Element element;
 
@@ -37,27 +37,27 @@ public final class XomElement implements XomNode<Element> {
     }
 
     @Override
-    public Iterable<XomNode<Element>> elements() {
-        return new Iterable<XomNode<Element>>() {
+    public Iterable<? extends XomNode> elements() {
+        return new Iterable<XomElement>() {
             @Override
-            public Iterator<XomNode<Element>> iterator() {
+            public Iterator<XomElement> iterator() {
                 return new XomElementsIterator(element.getChildElements());
             }
         };
     }
 
     @Override
-    public Iterable<XomNode<Attribute>> attributes() {
-        return new Iterable<XomNode<Attribute>>() {
+    public Iterable<? extends XomNode> attributes() {
+        return new Iterable<XomAttribute>() {
             @Override
-            public Iterator<XomNode<Attribute>> iterator() {
+            public Iterator<XomAttribute> iterator() {
                 return new XomAttributesIterator(element);
             }
         };
     }
 
     @Override
-    public XomNode<Attribute> appendAttribute(Attribute attribute) throws XmlBuilderException {
+    public XomNode appendAttribute(Attribute attribute) throws XmlBuilderException {
         try {
             element.addAttribute(attribute);
             return new XomAttribute(attribute);
@@ -67,7 +67,7 @@ public final class XomElement implements XomNode<Element> {
     }
 
     @Override
-    public XomNode<Element> appendElement(Element element) throws XmlBuilderException {
+    public XomNode appendElement(Element element) throws XmlBuilderException {
         try {
             this.element.appendChild(element);
             return new XomElement(element);
@@ -116,7 +116,7 @@ public final class XomElement implements XomNode<Element> {
         return element.toString();
     }
 
-    private static final class XomAttributesIterator extends ReadOnlyIterator<XomNode<Attribute>> {
+    private static final class XomAttributesIterator extends ReadOnlyIterator<XomAttribute> {
 
         private final Element element;
         private int cursor;
@@ -131,7 +131,7 @@ public final class XomElement implements XomNode<Element> {
         }
 
         @Override
-        public XomNode<Attribute> next() {
+        public XomAttribute next() {
             if (!hasNext()) {
                 throw new NoSuchElementException("No more elements");
             }
@@ -140,7 +140,7 @@ public final class XomElement implements XomNode<Element> {
 
     }
 
-    private static final class XomElementsIterator extends ReadOnlyIterator<XomNode<Element>> {
+    private static final class XomElementsIterator extends ReadOnlyIterator<XomElement> {
 
         private final Elements elements;
         private int cursor;
@@ -155,7 +155,7 @@ public final class XomElement implements XomNode<Element> {
         }
 
         @Override
-        public XomNode<Element> next() {
+        public XomElement next() {
             if (!hasNext()) {
                 throw new NoSuchElementException("No more elements");
             }

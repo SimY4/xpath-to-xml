@@ -16,7 +16,7 @@ class XomDocumentTest {
 
     private final Element root = new Element("root");
 
-    private XomNode<Document> node;
+    private XomNode node;
 
     @BeforeEach
     void setUp() {
@@ -32,7 +32,7 @@ class XomDocumentTest {
 
     @Test
     void shouldReturnSingleRootNodeWhenObtainElements() {
-        assertThat(node.elements()).containsExactly(new XomElement(root));
+        assertThat(node.elements()).asList().containsExactly(new XomElement(root));
     }
 
     @Test
