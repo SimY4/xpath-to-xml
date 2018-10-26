@@ -49,8 +49,8 @@ public final class JacksonByIndexNode extends AbstractJacksonNode {
             return false;
         }
 
-        JacksonByIndexNode gsonNodes = (JacksonByIndexNode) o;
-        return index == gsonNodes.index;
+        JacksonByIndexNode jacksonNodes = (JacksonByIndexNode) o;
+        return index == jacksonNodes.index;
     }
 
     @Override

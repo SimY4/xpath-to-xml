@@ -60,8 +60,8 @@ public final class JavaxJsonByIndexNode extends AbstractJavaxJsonNode {
             return false;
         }
 
-        JavaxJsonByIndexNode gsonNodes = (JavaxJsonByIndexNode) o;
-        return index == gsonNodes.index;
+        JavaxJsonByIndexNode javaxJsonNodes = (JavaxJsonByIndexNode) o;
+        return index == javaxJsonNodes.index;
     }
 
     @Override

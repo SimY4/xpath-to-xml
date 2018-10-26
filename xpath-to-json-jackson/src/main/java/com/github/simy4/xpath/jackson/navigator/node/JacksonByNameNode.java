@@ -49,8 +49,8 @@ public final class JacksonByNameNode extends AbstractJacksonNode {
             return false;
         }
 
-        JacksonByNameNode gsonNodes = (JacksonByNameNode) o;
-        return getParent().equals(gsonNodes.getParent());
+        JacksonByNameNode jacksonNodes = (JacksonByNameNode) o;
+        return getParent().equals(jacksonNodes.getParent());
     }
 
     @Override

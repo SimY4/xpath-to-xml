@@ -60,8 +60,8 @@ public final class JavaxJsonByNameNode extends AbstractJavaxJsonNode {
             return false;
         }
 
-        JavaxJsonByNameNode gsonNodes = (JavaxJsonByNameNode) o;
-        return getParent().equals(gsonNodes.getParent());
+        JavaxJsonByNameNode javaxJsonNodes = (JavaxJsonByNameNode) o;
+        return getParent().equals(javaxJsonNodes.getParent());
     }
 
     @Override
