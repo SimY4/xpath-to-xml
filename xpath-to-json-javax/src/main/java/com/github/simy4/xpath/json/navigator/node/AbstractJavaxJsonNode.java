@@ -4,8 +4,6 @@ import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
 import com.github.simy4.xpath.util.TransformingIterator;
 
-import javax.json.JsonArray;
-import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 import java.util.Collections;
@@ -25,7 +23,7 @@ abstract class AbstractJavaxJsonNode implements JavaxJsonNode {
     }
 
     @Override
-    public void setParent(JavaxJsonNode parent) {
+    public final void setParent(JavaxJsonNode parent) {
         this.parent = parent;
     }
 
@@ -47,7 +45,7 @@ abstract class AbstractJavaxJsonNode implements JavaxJsonNode {
     }
 
     @Override
-    public Iterator<JavaxJsonNode> iterator() {
+    public final Iterator<JavaxJsonNode> iterator() {
         return traverse(get(), this);
     }
 
@@ -79,12 +77,11 @@ abstract class AbstractJavaxJsonNode implements JavaxJsonNode {
     private static Iterator<JavaxJsonNode> traverse(JsonValue jsonValue, JavaxJsonNode parent) {
         switch (jsonValue.getValueType()) {
             case OBJECT:
-                final JsonObject jsonObject = jsonValue.asJsonObject();
-                return new TransformingIterator<>(jsonObject.keySet().iterator(), name ->
+                return new TransformingIterator<>(jsonValue.asJsonObject().keySet().iterator(), name ->
                         new JavaxJsonByNameNode(name, parent));
             case ARRAY:
-                final JsonArray jsonArray = jsonValue.asJsonArray();
-                return new TransformingAndFlatteningIterator<>(jsonArray.iterator(), new JsonArrayWrapper(parent));
+                return new TransformingAndFlatteningIterator<>(jsonValue.asJsonArray().iterator(),
+                        new JsonArrayWrapper(parent));
             default:
                 return Collections.<JavaxJsonNode>emptyList().iterator();
         }

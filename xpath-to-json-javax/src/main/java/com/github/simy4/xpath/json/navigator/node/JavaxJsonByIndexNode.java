@@ -32,16 +32,26 @@ public final class JavaxJsonByIndexNode extends AbstractJavaxJsonNode {
 
     @Override
     public void set(JsonValue jsonValue) {
-        getParent().set(Json.createArrayBuilder(getParentArray())
-                .set(index, jsonValue)
-                .build());
+        final JsonArray parentArray = getParentArray();
+        try {
+            parentArray.set(index, jsonValue);
+        } catch (UnsupportedOperationException uoe) {
+            getParent().set(Json.createArrayBuilder(parentArray)
+                    .set(index, jsonValue)
+                    .build());
+        }
     }
 
     @Override
     public void remove() {
-        getParent().set(Json.createArrayBuilder(getParentArray())
-                .remove(index)
-                .build());
+        final JsonArray parentArray = getParentArray();
+        try {
+            parentArray.remove(index);
+        } catch (UnsupportedOperationException uoe) {
+            getParent().set(Json.createArrayBuilder(parentArray)
+                    .remove(index)
+                    .build());
+        }
     }
 
     @Override

@@ -109,7 +109,7 @@ class XmlBuilderTest {
                 .write(json);
         return sw.toString().substring(1)
                 .replaceAll(" {4}", "  ")
-                .replaceAll("\\{\n\\s*\n}", "{}");
+                .replaceAll("\\{\n\\p{Space}*}", "{}");
     }
 
 }

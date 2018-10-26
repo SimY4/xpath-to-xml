@@ -10,6 +10,7 @@ import com.github.simy4.xpath.util.FilteringIterator;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonString;
 import javax.json.JsonValue;
 import javax.xml.namespace.QName;
 
@@ -64,20 +65,31 @@ public class JavaxJsonNavigator implements Navigator<JavaxJsonNode> {
 
     @Override
     public void setText(JavaxJsonNode node, String text) throws XmlBuilderException {
+        final JsonString jsonText = Json.createValue(text);
         JsonValue jsonValue = node.get();
+        boolean requireUpdate = false;
         switch (jsonValue.getValueType()) {
             case OBJECT:
-                jsonValue = Json.createObjectBuilder(jsonValue.asJsonObject())
-                        .add("text", Json.createValue(text))
-                        .build();
+                final JsonObject jsonObject = jsonValue.asJsonObject();
+                try {
+                    jsonValue.asJsonObject().put("text", jsonText);
+                } catch (UnsupportedOperationException uoe) {
+                    jsonValue = Json.createObjectBuilder(jsonObject)
+                            .add("text", Json.createValue(text))
+                            .build();
+                    requireUpdate = true;
+                }
                 break;
             case ARRAY:
                 throw new XmlBuilderException("Unable to set text to JSON array: " + jsonValue);
             default:
-                jsonValue = Json.createValue(text);
+                jsonValue = jsonText;
+                requireUpdate = true;
                 break;
         }
-        node.set(jsonValue);
+        if (requireUpdate) {
+            node.set(jsonValue);
+        }
     }
 
     @Override
@@ -133,7 +145,7 @@ public class JavaxJsonNavigator implements Navigator<JavaxJsonNode> {
         switch (parentValue.getValueType()) {
             case OBJECT:
                 final JsonObject parentObject = parentValue.asJsonObject();
-                if (null == parentObject.get(name)) {
+                if (!parentObject.containsKey(name)) {
                     elementNode = new JavaxJsonByNameNode(name, parent);
                 } else {
                     final JavaxJsonNode parentParent = parent.getParent();
