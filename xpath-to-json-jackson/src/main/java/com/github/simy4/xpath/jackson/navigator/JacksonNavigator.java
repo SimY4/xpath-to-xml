@@ -57,7 +57,7 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
 
     @Override
     public void setText(JacksonNode node, String text) throws XmlBuilderException {
-        final JsonNode jsonNode = node.get();
+        final var jsonNode = node.get();
         if (jsonNode.isObject()) {
             ((ObjectNode) jsonNode).set("text", new TextNode(text));
         } else if (jsonNode.isArray()) {
@@ -69,22 +69,22 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
 
     @Override
     public void prependCopy(JacksonNode node) throws XmlBuilderException {
-        final JacksonNode parent = node.getParent();
+        final var parent = node.getParent();
         if (null == parent) {
             throw new XmlBuilderException("Unable to prependcopy to root node " + node.get());
         }
-        final JsonNode nodeToCopy = node.get();
-        final JsonNode parentNode = parent.get();
+        final var nodeToCopy = node.get();
+        final var parentNode = parent.get();
         final JacksonNode elementNode;
         if (parentNode.isObject()) {
-            final JacksonNode parentParent = parent.getParent();
-            final String name = node.getName().getLocalPart();
-            final ObjectNode jsonObject = new ObjectNode(JsonNodeFactory.instance);
+            final var parentParent = parent.getParent();
+            final var name = node.getName().getLocalPart();
+            final var jsonObject = new ObjectNode(JsonNodeFactory.instance);
             final JacksonByIndexNode copyNode;
             if (parentParent != null) {
-                final JsonNode parentParentNode = parentParent.get();
+                final var parentParentNode = parentParent.get();
                 if (parentParentNode.isArray()) {
-                    final ArrayNode jsonArray = (ArrayNode) parentParentNode;
+                    final var jsonArray = (ArrayNode) parentParentNode;
                     copyNode = prependToArray(parentParent, parentNode, jsonArray);
                     parent.setParent(new JacksonByIndexNode(jsonArray, copyNode.getIndex() + 1, parentParent));
                 } else {
@@ -97,8 +97,8 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
             elementNode = new JacksonByNameNode(jsonObject, name, copyNode);
             copyNode.set(jsonObject);
         } else if (parentNode.isArray()) {
-            final ArrayNode jsonArray = (ArrayNode) parentNode;
-            final JacksonByIndexNode copyNode = prependToArray(parent, nodeToCopy, jsonArray);
+            final var jsonArray = (ArrayNode) parentNode;
+            final var copyNode = prependToArray(parent, nodeToCopy, jsonArray);
             node.setParent(new JacksonByIndexNode(jsonArray, copyNode.getIndex() + 1, parent));
             elementNode = copyNode;
         } else {
@@ -113,16 +113,16 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
     }
 
     private JacksonNode appendElement(JacksonNode parent, String name, JsonNode newNode) {
-        final JsonNode parentNode = parent.get();
+        final var parentNode = parent.get();
         final JacksonNode elementNode;
         if (parentNode.isObject()) {
-            final ObjectNode parentObject = (ObjectNode) parentNode;
+            final var parentObject = (ObjectNode) parentNode;
             if (!parentObject.has(name)) {
                 elementNode = new JacksonByNameNode(parentObject, name, parent);
             } else {
-                final JacksonNode parentParent = parent.getParent();
+                final var parentParent = parent.getParent();
                 if (parentParent != null) {
-                    final JsonNode parentParentNode = parentParent.get();
+                    final var parentParentNode = parentParent.get();
                     if (parentParentNode.isArray()) {
                         elementNode = appendToArray(parentParent, name, (ArrayNode) parentParentNode);
                     } else {
@@ -142,24 +142,24 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
     }
 
     private JacksonNode appendToNewArray(JacksonNode parent, String name, ObjectNode parentObject) {
-        final ArrayNode jsonArray = new ArrayNode(JsonNodeFactory.instance);
+        final var jsonArray = new ArrayNode(JsonNodeFactory.instance);
         jsonArray.add(parentObject);
-        final JacksonNode elementNode = appendToArray(parent, name, jsonArray);
+        final var elementNode = appendToArray(parent, name, jsonArray);
         parent.set(jsonArray);
         return elementNode;
     }
 
     private JacksonNode appendToArray(JacksonNode parent, String name, ArrayNode parentArray) {
-        final ObjectNode jsonObject = new ObjectNode(JsonNodeFactory.instance);
+        final var jsonObject = new ObjectNode(JsonNodeFactory.instance);
         parentArray.add(jsonObject);
         final JacksonNode parentObjectNode = new JacksonByIndexNode(parentArray, parentArray.size() - 1, parent);
         return new JacksonByNameNode(jsonObject, name, parentObjectNode);
     }
 
     private JacksonByIndexNode prependToNewArray(JacksonNode parent, JsonNode node) {
-        final ArrayNode jsonArray = new ArrayNode(JsonNodeFactory.instance);
+        final var jsonArray = new ArrayNode(JsonNodeFactory.instance);
         jsonArray.add(node);
-        final JacksonByIndexNode elementNode = prependToArray(parent, node, jsonArray);
+        final var elementNode = prependToArray(parent, node, jsonArray);
         parent.set(jsonArray);
         parent.setParent(new JacksonByIndexNode(jsonArray, 1, parent.getParent()));
         return elementNode;
@@ -167,8 +167,8 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
 
     @SuppressWarnings("ReferenceEquality")
     private JacksonByIndexNode prependToArray(JacksonNode parent, JsonNode nodeToCopy, ArrayNode parentArray) {
-        int i = parentArray.size() - 1;
-        JsonNode arrayNode = parentArray.get(i);
+        var i = parentArray.size() - 1;
+        var arrayNode = parentArray.get(i);
         parentArray.add(arrayNode);
         while (nodeToCopy != arrayNode && i > 0) {
             arrayNode = parentArray.get(i - 1);

@@ -30,11 +30,11 @@ abstract class AbstractJacksonNode implements JacksonNode {
 
     @Override
     public final String getText() {
-        final JsonNode jsonNode = get();
+        final var jsonNode = get();
         if (jsonNode.isValueNode()) {
             return jsonNode.asText();
         } else if (jsonNode.isObject()) {
-            final JsonNode text = jsonNode.get("text");
+            final var text = jsonNode.get("text");
             if (text != null) {
                 return text.asText("");
             }
@@ -57,7 +57,7 @@ abstract class AbstractJacksonNode implements JacksonNode {
             return false;
         }
 
-        AbstractJacksonNode that = (AbstractJacksonNode) o;
+        var that = (AbstractJacksonNode) o;
         return get().equals(that.get());
     }
 
@@ -68,13 +68,13 @@ abstract class AbstractJacksonNode implements JacksonNode {
 
     @Override
     public String toString() {
-        final JsonNode jsonNode = get();
+        final var jsonNode = get();
         return null == jsonNode ? "???" : jsonNode.toString();
     }
 
     private static Iterator<JacksonNode> traverse(JsonNode jsonNode, JacksonNode parent) {
         if (jsonNode.isObject()) {
-            final ObjectNode objectNode = (ObjectNode) jsonNode;
+            final var objectNode = (ObjectNode) jsonNode;
             return new TransformingIterator<>(jsonNode.fieldNames(), name ->
                     new JacksonByNameNode(objectNode, name, parent));
         } else if (jsonNode.isArray()) {

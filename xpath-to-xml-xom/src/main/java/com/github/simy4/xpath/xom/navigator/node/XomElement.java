@@ -5,7 +5,6 @@ import nu.xom.Attribute;
 import nu.xom.Element;
 import nu.xom.Elements;
 import nu.xom.IllegalAddException;
-import nu.xom.Node;
 import nu.xom.Text;
 
 import javax.xml.namespace.QName;
@@ -68,8 +67,8 @@ public final class XomElement implements XomNode<Element> {
     @Override
     public void setText(String text) throws XmlBuilderException {
         try {
-            for (int i = 0; i < element.getChildCount(); i++) {
-                final Node child = element.getChild(i);
+            for (var i = 0; i < element.getChildCount(); i++) {
+                final var child = element.getChild(i);
                 if (child instanceof Text) {
                     ((Text) child).setValue(text);
                     return;
@@ -90,7 +89,7 @@ public final class XomElement implements XomNode<Element> {
             return false;
         }
 
-        XomElement that = (XomElement) o;
+        var that = (XomElement) o;
 
         return element.equals(that.element);
     }

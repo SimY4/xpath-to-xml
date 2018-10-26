@@ -3,7 +3,6 @@ package com.github.simy4.xpath.dom4j.navigator.node;
 import com.github.simy4.xpath.XmlBuilderException;
 import org.dom4j.Attribute;
 import org.dom4j.Element;
-import org.dom4j.Namespace;
 
 import javax.xml.namespace.QName;
 import java.util.Collections;
@@ -16,7 +15,7 @@ public final class Dom4jAttribute extends AbstractDom4jNode<Attribute> {
 
     @Override
     public QName getName() {
-        final Namespace namespace = getNode().getNamespace();
+        final var namespace = getNode().getNamespace();
         return new QName(namespace.getURI(), getNode().getName(), namespace.getPrefix());
     }
 

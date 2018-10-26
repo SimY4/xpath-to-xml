@@ -8,7 +8,6 @@ import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
-import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewContext;
 
 import java.util.Iterator;
@@ -26,8 +25,8 @@ public class AxisStepExpr implements StepExpr {
 
     @Override
     public final <N extends Node> IterableNodeView<N> resolve(ViewContext<N> context) throws XmlBuilderException {
-        IterableNodeView<N> result = axisResolver.resolveAxis(context);
-        for (Expr predicate : predicates) {
+        var result = axisResolver.resolveAxis(context);
+        for (var predicate : predicates) {
             result = resolvePredicate(context, result, predicate);
         }
         return result;
@@ -36,15 +35,15 @@ public class AxisStepExpr implements StepExpr {
     private <N extends Node> IterableNodeView<N> resolvePredicate(final ViewContext<N> context,
                                                                   final IterableNodeView<N> filtered,
                                                                   final Expr predicate) throws XmlBuilderException {
-        final PredicateContext<N> predicateContext = new PredicateContext<>();
+        final var predicateContext = new PredicateContext<N>();
         IterableNodeView<N> result = new NodeSetView<>(() -> {
-            final Iterator<NodeView<N>> iterator = filtered.iterator();
+            final var iterator = filtered.iterator();
             return new FilteringIterator<>(iterator,
                     new PredicateResolver<>(context, predicateContext, iterator, predicate));
         });
         if (context.isGreedy() && !context.hasNext() && !result.toBoolean()) {
-            final NodeView<N> last = predicateContext.last;
-            final int position = predicateContext.position;
+            final var last = predicateContext.last;
+            final var position = predicateContext.position;
             final NodeView<N> newNode;
             final ViewContext<N> newContext;
             if (null != last && last.isNew()) {
@@ -54,7 +53,7 @@ public class AxisStepExpr implements StepExpr {
                 newNode = axisResolver.createAxisNode(context);
                 newContext = new ViewContext<>(context.getNavigator(), newNode, true, false, position + 1);
             }
-            final View<N> resolve = predicate.resolve(newContext);
+            final var resolve = predicate.resolve(newContext);
             if (!resolve.toBoolean()) {
                 throw new XmlBuilderException("Unable to satisfy expression predicate: " + predicate);
             }
@@ -65,8 +64,8 @@ public class AxisStepExpr implements StepExpr {
 
     @Override
     public String toString() {
-        final StringJoiner stringJoiner = new StringJoiner("", axisResolver.toString(), "");
-        for (Expr predicate : predicates) {
+        final var stringJoiner = new StringJoiner("", axisResolver.toString(), "");
+        for (var predicate : predicates) {
             stringJoiner.add(predicate.toString());
         }
         return stringJoiner.toString();
@@ -94,7 +93,7 @@ public class AxisStepExpr implements StepExpr {
                 predicateContext.last = view;
                 predicateContext.position = position;
             }
-            final ViewContext<T> context = new ViewContext<>(parentContext.getNavigator(), view, false,
+            final var context = new ViewContext<T>(parentContext.getNavigator(), view, false,
                     iterator.hasNext(), position++);
             return predicate.resolve(context).toBoolean();
         }

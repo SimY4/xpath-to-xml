@@ -2,7 +2,6 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
-import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;
@@ -53,7 +52,7 @@ class PathExprTest {
         when(stepExpr3.resolve(stepExpr3ContextCaptor.capture())).thenReturn(new NodeView<>(node("node4")));
 
         // when
-        IterableNodeView<TestNode> result = pathExpr.resolve(new ViewContext<>(navigator, parentNode, false));
+        var result = pathExpr.resolve(new ViewContext<>(navigator, parentNode, false));
 
         // then
         assertThat(result).extracting("node").containsExactly(node("node4"));
@@ -73,7 +72,7 @@ class PathExprTest {
         when(stepExpr2.resolve(stepExpr2ContextCaptor.capture())).thenReturn(NodeSetView.empty());
 
         // when
-        IterableNodeView<TestNode> result = pathExpr.resolve(new ViewContext<>(navigator, parentNode, false));
+        var result = pathExpr.resolve(new ViewContext<>(navigator, parentNode, false));
 
         // then
         assertThat(result).isEmpty();

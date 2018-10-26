@@ -10,7 +10,6 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.IllegalAddException;
 import nu.xom.Node;
-import nu.xom.ParentNode;
 import nu.xom.XMLException;
 
 import javax.xml.XMLConstants;
@@ -31,7 +30,7 @@ public final class XomNavigator implements Navigator<XomNode<?>> {
 
     @Override
     public XomNode<?> parentOf(XomNode<?> node) {
-        final ParentNode parent = node.getNode().getParent();
+        final var parent = node.getNode().getParent();
         return null == parent ? null
                 : parent instanceof Element ? new XomElement((Element) parent) : new XomDocument((Document) parent);
     }
@@ -48,7 +47,7 @@ public final class XomNavigator implements Navigator<XomNode<?>> {
 
     @Override
     public XomNode<?> createAttribute(XomNode<?> parent, QName attribute) throws XmlBuilderException {
-        final Attribute attr = new Attribute(attribute.getLocalPart(), "");
+        final var attr = new Attribute(attribute.getLocalPart(), "");
         if (!XMLConstants.NULL_NS_URI.equals(attribute.getNamespaceURI())) {
             attr.setNamespace(attr.getNamespacePrefix(), attr.getNamespaceURI());
         }
@@ -57,7 +56,7 @@ public final class XomNavigator implements Navigator<XomNode<?>> {
 
     @Override
     public XomNode<?> createElement(XomNode<?> parent, QName element) throws XmlBuilderException {
-        final Element elem = new Element(element.getLocalPart(), element.getNamespaceURI());
+        final var elem = new Element(element.getLocalPart(), element.getNamespaceURI());
         elem.setNamespacePrefix(element.getPrefix());
         return parent.appendElement(elem);
     }
@@ -73,17 +72,17 @@ public final class XomNavigator implements Navigator<XomNode<?>> {
 
     @Override
     public void prependCopy(XomNode<?> node) throws XmlBuilderException {
-        final Node wrappedNode = node.getNode();
+        final var wrappedNode = node.getNode();
         if (!(wrappedNode instanceof Element)) {
             throw new XmlBuilderException("Unable to copy non-element node " + node);
         }
-        final ParentNode parent = wrappedNode.getParent();
+        final var parent = wrappedNode.getParent();
         if (null == parent) {
             throw new XmlBuilderException("Unable to prepend - no parent found of " + node);
         }
         try {
-            final int prependIndex = parent.indexOf(wrappedNode);
-            final Node copiedNode = wrappedNode.copy();
+            final var prependIndex = parent.indexOf(wrappedNode);
+            final var copiedNode = wrappedNode.copy();
             parent.insertChild(copiedNode, prependIndex);
         } catch (IllegalAddException iae) {
             throw new XmlBuilderException("Unable to append an copied element to " + parent, iae);

@@ -49,13 +49,13 @@ public final class GsonByIndexNode extends AbstractGsonNode {
             return false;
         }
 
-        GsonByIndexNode gsonNodes = (GsonByIndexNode) o;
+        var gsonNodes = (GsonByIndexNode) o;
         return index == gsonNodes.index;
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
+        var result = super.hashCode();
         result = 31 * result + index;
         return result;
     }

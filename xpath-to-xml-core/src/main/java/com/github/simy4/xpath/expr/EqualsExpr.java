@@ -6,11 +6,8 @@ import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.AbstractViewVisitor;
 import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.IterableNodeView;
-import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewContext;
-
-import java.util.Iterator;
 
 public class EqualsExpr extends AbstractOperationExpr {
 
@@ -21,7 +18,7 @@ public class EqualsExpr extends AbstractOperationExpr {
     @Override
     public <N extends Node> View<N> resolve(ViewContext<N> context, View<N> left, View<N> right)
             throws XmlBuilderException {
-        boolean eq = 0 == left.compareTo(right);
+        var eq = 0 == left.compareTo(right);
         if (!eq && context.isGreedy() && !context.hasNext()) {
             eq = left.visit(new EqualsVisitor<>(context.getNavigator(), right));
         }
@@ -45,7 +42,7 @@ public class EqualsExpr extends AbstractOperationExpr {
 
         @Override
         public Boolean visit(IterableNodeView<N> nodeSet) throws XmlBuilderException {
-            final Iterator<NodeView<N>> iterator = nodeSet.iterator();
+            final var iterator = nodeSet.iterator();
             if (!iterator.hasNext()) {
                 throw new XmlBuilderException("Unable to satisfy not equals criteria for: " + right);
             }

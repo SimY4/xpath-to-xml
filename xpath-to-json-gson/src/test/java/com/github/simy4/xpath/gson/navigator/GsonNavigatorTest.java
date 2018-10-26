@@ -42,10 +42,10 @@ class GsonNavigatorTest {
 
     @Test
     void shouldReturnParentForArrayChild() {
-        JsonArray json = new JsonArray();
+        var json = new JsonArray();
         json.add("zero");
         GsonNode root = new GsonRootNode(json);
-        GsonNavigator navigator = new GsonNavigator(root);
+        var navigator = new GsonNavigator(root);
         GsonNode childNode = new GsonByIndexNode(json, 0, root);
 
         assertThat(navigator.parentOf(childNode)).isEqualTo(root);
@@ -53,12 +53,12 @@ class GsonNavigatorTest {
 
     @Test
     void shouldReturnParentForNestedArrayChild() {
-        JsonArray json = new JsonArray();
-        JsonArray child = new JsonArray();
+        var json = new JsonArray();
+        var child = new JsonArray();
         child.add("zero");
         json.add(child);
         GsonNode root = new GsonRootNode(json);
-        GsonNavigator navigator = new GsonNavigator(root);
+        var navigator = new GsonNavigator(root);
         GsonNode array1Node = new GsonByIndexNode(json, 0, root);
         GsonNode array2Node = new GsonByIndexNode(child, 0, array1Node);
 
@@ -74,9 +74,9 @@ class GsonNavigatorTest {
 
     @Test
     void shouldSetTextForArrayChild() {
-        JsonArray json = new JsonArray();
+        var json = new JsonArray();
         GsonNode root = new GsonRootNode(json);
-        GsonNavigator navigator = new GsonNavigator(root);
+        var navigator = new GsonNavigator(root);
 
         assertThatThrownBy(() -> navigator.setText(root, "test"))
                 .isInstanceOf(XmlBuilderException.class);
@@ -93,7 +93,7 @@ class GsonNavigatorTest {
 
     @Test
     void shouldCreateElementForElementParent() {
-        GsonNode child = navigator.createElement(root, new QName("child"));
+        var child = navigator.createElement(root, new QName("child"));
 
         assertThat(child).isEqualTo(new GsonByNameNode(json, "child", root));
         assertThat(json.get("child")).isEqualTo(new JsonObject());
@@ -101,17 +101,17 @@ class GsonNavigatorTest {
 
     @Test
     void shouldCreateElementForNestedObjectInArrayChild() {
-        JsonArray json = new JsonArray();
-        JsonObject child = new JsonObject();
+        var json = new JsonArray();
+        var child = new JsonObject();
         child.add("child", new JsonObject());
         json.add(child);
         GsonNode root = new GsonRootNode(json);
-        GsonNavigator navigator = new GsonNavigator(root);
+        var navigator = new GsonNavigator(root);
         GsonNode objectNode = new GsonByIndexNode(json, 0, root);
 
-        GsonNode newChild = navigator.createElement(objectNode, new QName("child"));
+        var newChild = navigator.createElement(objectNode, new QName("child"));
 
-        JsonObject expected = new JsonObject();
+        var expected = new JsonObject();
         expected.add("child", new JsonObject());
         assertThat(newChild)
                 .isNotSameAs(child)
@@ -121,13 +121,13 @@ class GsonNavigatorTest {
 
     @Test
     void shouldCreateElementForArrayParent() {
-        JsonArray json = new JsonArray();
+        var json = new JsonArray();
         GsonNode root = new GsonRootNode(json);
-        GsonNavigator navigator = new GsonNavigator(root);
+        var navigator = new GsonNavigator(root);
 
-        GsonNode child = navigator.createElement(root, new QName("child"));
+        var child = navigator.createElement(root, new QName("child"));
 
-        JsonObject expected = new JsonObject();
+        var expected = new JsonObject();
         expected.add("child", new JsonObject());
         assertThat(child).isEqualTo(new GsonByNameNode(expected, "child", new GsonByIndexNode(json, 0, root)));
         assertThat(json.get(0)).isEqualTo(expected);
@@ -144,7 +144,7 @@ class GsonNavigatorTest {
 
     @Test
     void shouldCreateAttributeForElementParent() {
-        GsonNode child = navigator.createAttribute(root, new QName("child"));
+        var child = navigator.createAttribute(root, new QName("child"));
 
         assertThat(child).isEqualTo(new GsonByNameNode(json, "child", root));
         assertThat(json.get("child")).isEqualTo(new JsonPrimitive(""));
@@ -152,17 +152,17 @@ class GsonNavigatorTest {
 
     @Test
     void shouldCreateAttributeForNestedObjectInArrayChild() {
-        JsonArray json = new JsonArray();
-        JsonObject child = new JsonObject();
+        var json = new JsonArray();
+        var child = new JsonObject();
         child.add("child", new JsonPrimitive(""));
         json.add(child);
         GsonNode root = new GsonRootNode(json);
-        GsonNavigator navigator = new GsonNavigator(root);
+        var navigator = new GsonNavigator(root);
         GsonNode objectNode = new GsonByIndexNode(json, 0, root);
 
-        GsonNode newChild = navigator.createAttribute(objectNode, new QName("child"));
+        var newChild = navigator.createAttribute(objectNode, new QName("child"));
 
-        JsonObject expected = new JsonObject();
+        var expected = new JsonObject();
         expected.add("child", new JsonPrimitive(""));
         assertThat(newChild)
                 .isNotSameAs(child)
@@ -172,13 +172,13 @@ class GsonNavigatorTest {
 
     @Test
     void shouldCreateAttributeForArrayParent() {
-        JsonArray json = new JsonArray();
+        var json = new JsonArray();
         GsonNode root = new GsonRootNode(json);
-        GsonNavigator navigator = new GsonNavigator(root);
+        var navigator = new GsonNavigator(root);
 
-        GsonNode child = navigator.createAttribute(root, new QName("child"));
+        var child = navigator.createAttribute(root, new QName("child"));
 
-        JsonObject expected = new JsonObject();
+        var expected = new JsonObject();
         expected.add("child", new JsonPrimitive(""));
         assertThat(child).isEqualTo(new GsonByNameNode(expected, "child", new GsonByIndexNode(json, 0, root)));
         assertThat(json.get(0)).isEqualTo(expected);

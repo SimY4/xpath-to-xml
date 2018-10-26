@@ -86,10 +86,10 @@ class EqualsExprTest {
         // given
         when(leftExpr.resolve(any())).thenReturn(left);
         when(rightExpr.resolve(any())).thenReturn(right);
-        ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, false);
+        var context = new ViewContext<TestNode>(navigator, parentNode, false);
 
         // when
-        View<TestNode> result = equalsExpr.resolve(context);
+        var result = equalsExpr.resolve(context);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(true));
@@ -102,10 +102,10 @@ class EqualsExprTest {
         // given
         when(leftExpr.resolve(any())).thenReturn(left);
         when(rightExpr.resolve(any())).thenReturn(right);
-        ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, false);
+        var context = new ViewContext<TestNode>(navigator, parentNode, false);
 
         // when
-        View<TestNode> result = equalsExpr.resolve(context);
+        var result = equalsExpr.resolve(context);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(false));
@@ -121,10 +121,10 @@ class EqualsExprTest {
         // given
         when(leftExpr.resolve(any())).thenReturn(left);
         when(rightExpr.resolve(any())).thenReturn(right);
-        ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, true);
+        var context = new ViewContext<TestNode>(navigator, parentNode, true);
 
         // when
-        View<TestNode> result = equalsExpr.resolve(context);
+        var result = equalsExpr.resolve(context);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(true));
@@ -139,7 +139,7 @@ class EqualsExprTest {
         // given
         when(leftExpr.resolve(any())).thenReturn(left);
         when(rightExpr.resolve(any())).thenReturn(right);
-        ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, true);
+        var context = new ViewContext<TestNode>(navigator, parentNode, true);
 
         // then
         assertThatThrownBy(() -> equalsExpr.resolve(context))

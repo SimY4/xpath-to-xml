@@ -19,7 +19,7 @@ class XomDocumentTest {
     @BeforeEach
     void setUp() {
         root.appendChild("text");
-        Document document = new Document(root);
+        var document = new Document(root);
         node = new XomDocument(document);
     }
 

@@ -3,7 +3,6 @@ package com.github.simy4.xpath.fixtures;
 import com.github.simy4.xpath.helpers.OrderedProperties;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.Scanner;
@@ -36,9 +35,9 @@ public final class FixtureAccessor {
      * @return ordered XPath to Value mappings
      */
     public Map<String, Object> getXmlProperties() {
-        try (InputStream xpathPropertiesStream = getClass().getResourceAsStream(
+        try (var xpathPropertiesStream = getClass().getResourceAsStream(
                 String.format(XML_PROPERTIES_PATH_FORMAT, fixtureName))) {
-            OrderedProperties xpathProperties = new OrderedProperties();
+            var xpathProperties = new OrderedProperties();
             xpathProperties.load(xpathPropertiesStream);
             return xpathProperties.toMap();
         } catch (IOException ioe) {
@@ -55,7 +54,7 @@ public final class FixtureAccessor {
     }
 
     private String getXml(String format) {
-        try (InputStream xmlStream = getClass().getResourceAsStream(String.format(format, fixtureName, fixtureType))) {
+        try (var xmlStream = getClass().getResourceAsStream(String.format(format, fixtureName, fixtureType))) {
             return new Scanner(xmlStream, "UTF-8").useDelimiter("\\A").next();
         } catch (IOException ioe) {
             throw new UncheckedIOException(ioe);

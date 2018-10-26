@@ -27,7 +27,7 @@ class GsonRootNodeTest {
 
     @Test
     void shouldReplaceRootNodeOnSet() {
-        JsonArray array = new JsonArray();
+        var array = new JsonArray();
         rootNode.set(array);
         assertThat(rootNode.get()).isSameAs(array);
     }

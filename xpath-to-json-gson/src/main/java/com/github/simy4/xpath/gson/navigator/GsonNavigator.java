@@ -37,7 +37,7 @@ public class GsonNavigator implements Navigator<GsonNode> {
     @Override
     public Iterable<? extends GsonNode> elementsOf(final GsonNode parent) {
         return () -> new FilteringIterator<>(parent.iterator(), node -> {
-            final JsonElement jsonElement = node.get();
+            final var jsonElement = node.get();
             return jsonElement.isJsonObject() || jsonElement.isJsonArray();
         });
     }
@@ -45,7 +45,7 @@ public class GsonNavigator implements Navigator<GsonNode> {
     @Override
     public Iterable<? extends GsonNode> attributesOf(final GsonNode parent) {
         return () -> new FilteringIterator<>(parent.iterator(), node -> {
-            final JsonElement jsonElement = node.get();
+            final var jsonElement = node.get();
             return jsonElement.isJsonNull() || jsonElement.isJsonPrimitive();
         });
     }
@@ -62,7 +62,7 @@ public class GsonNavigator implements Navigator<GsonNode> {
 
     @Override
     public void setText(GsonNode node, String text) throws XmlBuilderException {
-        final JsonElement jsonElement = node.get();
+        final var jsonElement = node.get();
         if (jsonElement.isJsonObject()) {
             jsonElement.getAsJsonObject().add("text", new JsonPrimitive(text));
         } else if (jsonElement.isJsonArray()) {
@@ -74,22 +74,22 @@ public class GsonNavigator implements Navigator<GsonNode> {
 
     @Override
     public void prependCopy(GsonNode node) throws XmlBuilderException {
-        final GsonNode parent = node.getParent();
+        final var parent = node.getParent();
         if (null == parent) {
             throw new XmlBuilderException("Unable to prependcopy to root node " + node.get());
         }
-        final JsonElement elementToCopy = node.get();
-        final JsonElement parentElement = parent.get();
+        final var elementToCopy = node.get();
+        final var parentElement = parent.get();
         final GsonNode elementNode;
         if (parentElement.isJsonObject()) {
-            final GsonNode parentParent = parent.getParent();
-            final String name = node.getName().getLocalPart();
-            final JsonObject jsonObject = new JsonObject();
+            final var parentParent = parent.getParent();
+            final var name = node.getName().getLocalPart();
+            final var jsonObject = new JsonObject();
             final GsonByIndexNode copyNode;
             if (parentParent != null) {
-                final JsonElement parentParentElement = parentParent.get();
+                final var parentParentElement = parentParent.get();
                 if (parentParentElement.isJsonArray()) {
-                    final JsonArray jsonArray = parentParentElement.getAsJsonArray();
+                    final var jsonArray = parentParentElement.getAsJsonArray();
                     copyNode = prependToArray(parentParent, parentElement, jsonArray);
                     parent.setParent(new GsonByIndexNode(jsonArray, copyNode.getIndex() + 1, parentParent));
                 } else {
@@ -102,8 +102,8 @@ public class GsonNavigator implements Navigator<GsonNode> {
             elementNode = new GsonByNameNode(jsonObject, name, copyNode);
             copyNode.set(jsonObject);
         } else if (parentElement.isJsonArray()) {
-            final JsonArray jsonArray = parentElement.getAsJsonArray();
-            final GsonByIndexNode copyNode = prependToArray(parent, elementToCopy, jsonArray);
+            final var jsonArray = parentElement.getAsJsonArray();
+            final var copyNode = prependToArray(parent, elementToCopy, jsonArray);
             node.setParent(new GsonByIndexNode(jsonArray, copyNode.getIndex() + 1, parent));
             elementNode = copyNode;
         } else {
@@ -118,16 +118,16 @@ public class GsonNavigator implements Navigator<GsonNode> {
     }
 
     private GsonNode appendElement(GsonNode parent, String name, JsonElement newElement) {
-        final JsonElement parentElement = parent.get();
+        final var parentElement = parent.get();
         final GsonNode elementNode;
         if (parentElement.isJsonObject()) {
-            final JsonObject parentObject = parentElement.getAsJsonObject();
+            final var parentObject = parentElement.getAsJsonObject();
             if (!parentObject.has(name)) {
                 elementNode = new GsonByNameNode(parentObject, name, parent);
             } else {
-                final GsonNode parentParent = parent.getParent();
+                final var parentParent = parent.getParent();
                 if (parentParent != null) {
-                    final JsonElement parentParentElement = parentParent.get();
+                    final var parentParentElement = parentParent.get();
                     if (parentParentElement.isJsonArray()) {
                         elementNode = appendToArray(parentParent, name, parentParentElement.getAsJsonArray());
                     } else {
@@ -147,32 +147,32 @@ public class GsonNavigator implements Navigator<GsonNode> {
     }
 
     private GsonNode appendToNewArray(GsonNode parent, String name, JsonObject parentObject) {
-        final JsonArray jsonArray = new JsonArray();
+        final var jsonArray = new JsonArray();
         jsonArray.add(parentObject);
-        final GsonNode elementNode = appendToArray(parent, name, jsonArray);
+        final var elementNode = appendToArray(parent, name, jsonArray);
         parent.set(jsonArray);
         return elementNode;
     }
 
     private GsonNode appendToArray(GsonNode parent, String name, JsonArray parentArray) {
-        final JsonObject jsonObject = new JsonObject();
+        final var jsonObject = new JsonObject();
         parentArray.add(jsonObject);
         final GsonNode parentObjectNode = new GsonByIndexNode(parentArray, parentArray.size() - 1, parent);
         return new GsonByNameNode(jsonObject, name, parentObjectNode);
     }
 
     private GsonByIndexNode prependToNewArray(GsonNode parent, JsonElement elementToCopy) {
-        final JsonArray jsonArray = new JsonArray();
+        final var jsonArray = new JsonArray();
         jsonArray.add(elementToCopy);
-        final GsonByIndexNode elementNode = prependToArray(parent, elementToCopy, jsonArray);
+        final var elementNode = prependToArray(parent, elementToCopy, jsonArray);
         parent.set(jsonArray);
         parent.setParent(new GsonByIndexNode(jsonArray, 1, parent.getParent()));
         return elementNode;
     }
 
     private GsonByIndexNode prependToArray(GsonNode parent, JsonElement elementToCopy, JsonArray parentArray) {
-        int i = parentArray.size() - 1;
-        JsonElement arrayElement = parentArray.get(i);
+        var i = parentArray.size() - 1;
+        var arrayElement = parentArray.get(i);
         parentArray.add(arrayElement);
         while (elementToCopy != arrayElement && i > 0) {
             arrayElement = parentArray.get(i - 1);

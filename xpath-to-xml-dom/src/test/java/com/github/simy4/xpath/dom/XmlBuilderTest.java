@@ -14,12 +14,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
@@ -27,8 +25,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,8 +36,8 @@ class XmlBuilderTest {
     private static final XPathFactory xpathFactory = XPathFactory.newInstance();
 
     private static Stream<Arguments> data() {
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilderFactory nsAwareDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
+        var documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        var nsAwareDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
         nsAwareDocumentBuilderFactory.setNamespaceAware(true);
         return Stream.of(
                 arguments(new FixtureAccessor("simple"), null, documentBuilderFactory),
@@ -63,16 +59,16 @@ class XmlBuilderTest {
     void shouldBuildDocumentFromSetOfXPaths(FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext,
                                             DocumentBuilderFactory documentBuilderFactory)
             throws XPathExpressionException, TransformerException, ParserConfigurationException {
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-        Document document = documentBuilder.newDocument();
+        var documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        var xmlProperties = fixtureAccessor.getXmlProperties();
+        var document = documentBuilder.newDocument();
         document.setXmlStandalone(true);
-        Document builtDocument = new XmlBuilder(namespaceContext)
+        var builtDocument = new XmlBuilder(namespaceContext)
                 .putAll(xmlProperties.keySet())
                 .build(document);
 
-        for (Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
-            XPath xpath = xpathFactory.newXPath();
+        for (var xpathToValuePair : xmlProperties.entrySet()) {
+            var xpath = xpathFactory.newXPath();
             if (null != namespaceContext) {
                 xpath.setNamespaceContext(namespaceContext);
             }
@@ -87,16 +83,16 @@ class XmlBuilderTest {
                                                         NamespaceContext namespaceContext,
                                                         DocumentBuilderFactory documentBuilderFactory)
             throws XPathExpressionException, TransformerException, ParserConfigurationException {
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-        Document document = documentBuilder.newDocument();
+        var documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        var xmlProperties = fixtureAccessor.getXmlProperties();
+        var document = documentBuilder.newDocument();
         document.setXmlStandalone(true);
-        Document builtDocument = new XmlBuilder(namespaceContext)
+        var builtDocument = new XmlBuilder(namespaceContext)
                 .putAll(xmlProperties)
                 .build(document);
 
-        for (Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
-            XPath xpath = xpathFactory.newXPath();
+        for (var xpathToValuePair : xmlProperties.entrySet()) {
+            var xpath = xpathFactory.newXPath();
             if (null != namespaceContext) {
                 xpath.setNamespaceContext(namespaceContext);
             }
@@ -113,11 +109,11 @@ class XmlBuilderTest {
                                                          DocumentBuilderFactory documentBuilderFactory)
             throws XPathExpressionException, TransformerException, IOException, SAXException,
             ParserConfigurationException {
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-        String xml = fixtureAccessor.getPutXml();
-        Document oldDocument = stringToXml(documentBuilder, xml);
-        Document builtDocument = new XmlBuilder(namespaceContext)
+        var documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        var xmlProperties = fixtureAccessor.getXmlProperties();
+        var xml = fixtureAccessor.getPutXml();
+        var oldDocument = stringToXml(documentBuilder, xml);
+        var builtDocument = new XmlBuilder(namespaceContext)
                 .putAll(xmlProperties)
                 .build(oldDocument);
 
@@ -131,11 +127,11 @@ class XmlBuilderTest {
                                                          DocumentBuilderFactory documentBuilderFactory)
             throws XPathExpressionException, TransformerException, IOException, SAXException,
             ParserConfigurationException {
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-        String xml = fixtureAccessor.getPutValueXml();
-        Document oldDocument = stringToXml(documentBuilder, xml);
-        Document builtDocument = new XmlBuilder(namespaceContext)
+        var documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        var xmlProperties = fixtureAccessor.getXmlProperties();
+        var xml = fixtureAccessor.getPutValueXml();
+        var oldDocument = stringToXml(documentBuilder, xml);
+        var builtDocument = new XmlBuilder(namespaceContext)
                 .putAll(xmlProperties)
                 .build(oldDocument);
 
@@ -154,16 +150,16 @@ class XmlBuilderTest {
                                           DocumentBuilderFactory documentBuilderFactory)
             throws XPathExpressionException, TransformerException, IOException, SAXException,
             ParserConfigurationException {
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-        String xml = fixtureAccessor.getPutValueXml();
-        Document oldDocument = stringToXml(documentBuilder, xml);
-        Document builtDocument = new XmlBuilder(namespaceContext)
+        var documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        var xmlProperties = fixtureAccessor.getXmlProperties();
+        var xml = fixtureAccessor.getPutValueXml();
+        var oldDocument = stringToXml(documentBuilder, xml);
+        var builtDocument = new XmlBuilder(namespaceContext)
                 .removeAll(xmlProperties.keySet())
                 .build(oldDocument);
 
-        for (Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
-            XPath xpath = xpathFactory.newXPath();
+        for (var xpathToValuePair : xmlProperties.entrySet()) {
+            var xpath = xpathFactory.newXPath();
             if (null != namespaceContext) {
                 xpath.setNamespaceContext(namespaceContext);
             }
@@ -173,19 +169,19 @@ class XmlBuilderTest {
     }
 
     private Document stringToXml(DocumentBuilder documentBuilder, String xml) throws IOException, SAXException {
-        Document document = documentBuilder.parse(new ByteArrayInputStream(xml.getBytes(Charset.forName("UTF-8"))));
+        var document = documentBuilder.parse(new ByteArrayInputStream(xml.getBytes(Charset.forName("UTF-8"))));
         document.setXmlStandalone(true);
         return document;
     }
 
     private String xmlToString(Document xml) throws TransformerException {
-        Transformer transformer = transformerFactory.newTransformer();
+        var transformer = transformerFactory.newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         transformer.setOutputProperty(OutputKeys.VERSION, "1.0");
         transformer.setOutputProperty(OutputKeys.ENCODING,"UTF-8");
         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION,"yes");
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-        StringWriter out = new StringWriter();
+        var out = new StringWriter();
         transformer.transform(new DOMSource(xml), new StreamResult(out));
         return out.toString().replaceAll("\n\\p{Space}*\n", "\n"); //JDK 9 fix
     }

@@ -85,10 +85,10 @@ class LessThanOrEqualsExprTest {
         // given
         when(leftExpr.resolve(any())).thenReturn(less);
         when(rightExpr.resolve(any())).thenReturn(greater);
-        ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, false);
+        var context = new ViewContext<TestNode>(navigator, parentNode, false);
 
         // when
-        View<TestNode> result = lessThanOrEqualsExpr.resolve(context);
+        var result = lessThanOrEqualsExpr.resolve(context);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(true));
@@ -101,10 +101,10 @@ class LessThanOrEqualsExprTest {
         // given
         when(leftExpr.resolve(any())).thenReturn(greater);
         when(rightExpr.resolve(any())).thenReturn(less);
-        ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, false);
+        var context = new ViewContext<TestNode>(navigator, parentNode, false);
 
         // when
-        View<TestNode> result = lessThanOrEqualsExpr.resolve(context);
+        var result = lessThanOrEqualsExpr.resolve(context);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(false));
@@ -117,10 +117,10 @@ class LessThanOrEqualsExprTest {
         // given
         when(leftExpr.resolve(any())).thenReturn(left);
         when(rightExpr.resolve(any())).thenReturn(right);
-        ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, false);
+        var context = new ViewContext<TestNode>(navigator, parentNode, false);
 
         // when
-        View<TestNode> result = lessThanOrEqualsExpr.resolve(context);
+        var result = lessThanOrEqualsExpr.resolve(context);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(true));
@@ -136,10 +136,10 @@ class LessThanOrEqualsExprTest {
         // given
         when(leftExpr.resolve(any())).thenReturn(greater);
         when(rightExpr.resolve(any())).thenReturn(less);
-        ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, true);
+        var context = new ViewContext<TestNode>(navigator, parentNode, true);
 
         // when
-        View<TestNode> result = lessThanOrEqualsExpr.resolve(context);
+        var result = lessThanOrEqualsExpr.resolve(context);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(true));
@@ -154,7 +154,7 @@ class LessThanOrEqualsExprTest {
         // given
         when(leftExpr.resolve(any())).thenReturn(greater);
         when(rightExpr.resolve(any())).thenReturn(less);
-        ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, true);
+        var context = new ViewContext<TestNode>(navigator, parentNode, true);
 
         // then
         assertThatThrownBy(() -> lessThanOrEqualsExpr.resolve(context))

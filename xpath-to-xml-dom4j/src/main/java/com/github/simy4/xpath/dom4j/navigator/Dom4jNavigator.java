@@ -27,7 +27,7 @@ public final class Dom4jNavigator implements Navigator<Dom4jNode<?>> {
 
     @Override
     public Dom4jNode<?> parentOf(Dom4jNode<?> node) {
-        final Element parent = node.getNode().getParent();
+        final var parent = node.getNode().getParent();
         return null == parent ? null : new Dom4jElement(parent);
     }
 
@@ -43,14 +43,14 @@ public final class Dom4jNavigator implements Navigator<Dom4jNode<?>> {
 
     @Override
     public Dom4jNode<?> createAttribute(Dom4jNode<?> parent, QName attribute) throws XmlBuilderException {
-        final org.dom4j.QName attributeName = DocumentHelper.createQName(attribute.getLocalPart(),
+        final var attributeName = DocumentHelper.createQName(attribute.getLocalPart(),
                 new Namespace(attribute.getPrefix(), attribute.getNamespaceURI()));
         return parent.createAttribute(attributeName);
     }
 
     @Override
     public Dom4jNode<?> createElement(Dom4jNode<?> parent, QName element) throws XmlBuilderException {
-        final org.dom4j.QName elementName = DocumentHelper.createQName(element.getLocalPart(),
+        final var elementName = DocumentHelper.createQName(element.getLocalPart(),
                 new Namespace(element.getPrefix(), element.getNamespaceURI()));
         return parent.createElement(elementName);
     }
@@ -66,23 +66,23 @@ public final class Dom4jNavigator implements Navigator<Dom4jNode<?>> {
 
     @Override
     public void prependCopy(Dom4jNode<?> node) throws XmlBuilderException {
-        final Node wrappedNode = node.getNode();
+        final var wrappedNode = node.getNode();
         if (Node.ELEMENT_NODE != wrappedNode.getNodeType()) {
             throw new XmlBuilderException("Unable to copy non-element node " + node);
         }
-        final Element parent = wrappedNode.getParent();
+        final var parent = wrappedNode.getParent();
         if (null == parent) {
             throw new XmlBuilderException("Unable to prepend - no parent found of " + node);
         }
-        final int prependIndex = parent.indexOf(wrappedNode);
-        final Element copiedNode = ((Element) wrappedNode).createCopy();
+        final var prependIndex = parent.indexOf(wrappedNode);
+        final var copiedNode = ((Element) wrappedNode).createCopy();
         parent.elements().add(prependIndex, copiedNode);
     }
 
     @Override
     public void remove(Dom4jNode<?> node) {
-        final Node wrappedNode = node.getNode();
-        final Element parent = wrappedNode.getParent();
+        final var wrappedNode = node.getNode();
+        final var parent = wrappedNode.getParent();
         if (parent != null) {
             parent.remove(wrappedNode);
         } else {

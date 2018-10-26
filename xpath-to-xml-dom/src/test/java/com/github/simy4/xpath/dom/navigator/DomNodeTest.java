@@ -10,7 +10,6 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -33,7 +32,7 @@ class DomNodeTest {
     @Test
     void shouldReturnNodeNameForNamespaceUnawareNode() {
         when(node.getNodeName()).thenReturn("node");
-        QName result = nodeView.getName();
+        var result = nodeView.getName();
         assertThat(result).extracting("namespaceURI", "localPart", "prefix")
                 .containsExactly(XMLConstants.NULL_NS_URI, "node", XMLConstants.DEFAULT_NS_PREFIX);
     }
@@ -43,7 +42,7 @@ class DomNodeTest {
         when(node.getNamespaceURI()).thenReturn("http://www.example.com/my");
         when(node.getLocalName()).thenReturn("node");
         when(node.getPrefix()).thenReturn("my");
-        QName result = nodeView.getName();
+        var result = nodeView.getName();
         assertThat(result).extracting("namespaceURI", "localPart", "prefix")
                 .containsExactly("http://www.example.com/my", "node", "my");
     }

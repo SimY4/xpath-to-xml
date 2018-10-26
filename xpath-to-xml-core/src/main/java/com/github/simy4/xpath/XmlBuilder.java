@@ -3,7 +3,6 @@ package com.github.simy4.xpath;
 import com.github.simy4.xpath.effects.PutEffect;
 import com.github.simy4.xpath.effects.PutValueEffect;
 import com.github.simy4.xpath.effects.RemoveEffect;
-import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.parser.XPathParser;
 import com.github.simy4.xpath.spi.Effect;
 import com.github.simy4.xpath.spi.NavigatorSpi;
@@ -15,7 +14,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.ServiceLoader;
 
 /**
@@ -94,8 +92,8 @@ public class XmlBuilder {
      */
     public XmlBuilder putAll(Iterable<String> xpaths) throws XPathExpressionException {
         final List<Effect> effects = new ArrayList<>(this.effects);
-        for (String xpath : xpaths) {
-            final Expr expr = parser.parse(xpath);
+        for (var xpath : xpaths) {
+            final var expr = parser.parse(xpath);
             effects.add(new PutEffect(expr));
         }
         return new XmlBuilder(parser, effects);
@@ -112,8 +110,8 @@ public class XmlBuilder {
      */
     public XmlBuilder putAll(Map<String, Object> xpathToValueMap) throws XPathExpressionException {
         final List<Effect> effects = new ArrayList<>(this.effects);
-        for (Entry<String, Object> xpathToValuePair : xpathToValueMap.entrySet()) {
-            final Expr expr = parser.parse(xpathToValuePair.getKey());
+        for (var xpathToValuePair : xpathToValueMap.entrySet()) {
+            final var expr = parser.parse(xpathToValuePair.getKey());
             effects.add(new PutValueEffect(expr, xpathToValuePair.getValue()));
         }
         return new XmlBuilder(parser, effects);
@@ -154,8 +152,8 @@ public class XmlBuilder {
      */
     public XmlBuilder removeAll(Iterable<String> xpaths) throws XPathExpressionException {
         final List<Effect> effects = new ArrayList<>(this.effects);
-        for (String xpath : xpaths) {
-            final Expr expr = parser.parse(xpath);
+        for (var xpath : xpaths) {
+            final var expr = parser.parse(xpath);
             effects.add(new RemoveEffect(expr));
         }
         return new XmlBuilder(parser, effects);
@@ -170,7 +168,7 @@ public class XmlBuilder {
      * @throws XmlBuilderException if XML model modification failed
      */
     public <T> T build(T xml) throws XmlBuilderException {
-        for (NavigatorSpi navigatorSpi : navigatorSpis) {
+        for (var navigatorSpi : navigatorSpis) {
             if (navigatorSpi.canHandle(xml)) {
                 return navigatorSpi.process(xml, effects);
             }

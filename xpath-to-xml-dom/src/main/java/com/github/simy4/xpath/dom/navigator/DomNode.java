@@ -18,7 +18,7 @@ public final class DomNode implements Node {
 
     @Override
     public QName getName() {
-        final String localPart = node.getLocalName();
+        final var localPart = node.getLocalName();
         if (null == localPart) {
             return new QName(node.getNodeName());
         } else {
@@ -40,7 +40,7 @@ public final class DomNode implements Node {
             return false;
         }
 
-        DomNode that = (DomNode) o;
+        var that = (DomNode) o;
 
         return node.equals(that.node);
     }

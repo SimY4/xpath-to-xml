@@ -69,7 +69,7 @@ public final class XomAttribute implements XomNode<Attribute> {
             return false;
         }
 
-        XomAttribute that = (XomAttribute) o;
+        var that = (XomAttribute) o;
 
         return attribute.equals(that.attribute);
     }

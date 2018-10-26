@@ -17,8 +17,8 @@ abstract class AbstractOperationExpr implements Expr {
 
     @Override
     public final <N extends Node> View<N> resolve(ViewContext<N> context) throws XmlBuilderException {
-        final View<N> leftView = leftExpr.resolve(context);
-        final View<N> rightView = rightExpr.resolve(context);
+        final var leftView = leftExpr.resolve(context);
+        final var rightView = rightExpr.resolve(context);
         return resolve(context, leftView, rightView);
     }
 

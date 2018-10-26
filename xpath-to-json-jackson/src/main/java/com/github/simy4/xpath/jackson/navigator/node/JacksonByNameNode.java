@@ -49,13 +49,13 @@ public final class JacksonByNameNode extends AbstractJacksonNode {
             return false;
         }
 
-        JacksonByNameNode jacksonNodes = (JacksonByNameNode) o;
+        var jacksonNodes = (JacksonByNameNode) o;
         return getParent().equals(jacksonNodes.getParent());
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
+        var result = super.hashCode();
         result = 31 * result + getParent().hashCode();
         return result;
     }

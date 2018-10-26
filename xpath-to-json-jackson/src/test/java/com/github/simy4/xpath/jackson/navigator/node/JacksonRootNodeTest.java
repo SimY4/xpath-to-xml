@@ -28,7 +28,7 @@ class JacksonRootNodeTest {
 
     @Test
     void shouldReplaceRootNodeOnSet() {
-        ArrayNode array = new ArrayNode(JsonNodeFactory.instance);
+        var array = new ArrayNode(JsonNodeFactory.instance);
         rootNode.set(array);
         assertThat(rootNode.get()).isSameAs(array);
     }

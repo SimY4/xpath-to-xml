@@ -76,7 +76,7 @@ class SubtractionExprTest {
         // given
         when(leftExpr.resolve(any())).thenReturn(left);
         when(rightExpr.resolve(any())).thenReturn(right);
-        ViewContext<TestNode> context = new ViewContext<>(navigator, new NodeView<>(node("node")), false);
+        var context = new ViewContext<TestNode>(navigator, new NodeView<>(node("node")), false);
 
         // when
         assertThat(subtractionExpr.resolve(context)).extracting("number").contains(0.0);
@@ -89,7 +89,7 @@ class SubtractionExprTest {
         // given
         when(leftExpr.resolve(any())).thenReturn(number);
         when(rightExpr.resolve(any())).thenReturn(nan);
-        ViewContext<TestNode> context = new ViewContext<>(navigator, new NodeView<>(node("node")), false);
+        var context = new ViewContext<TestNode>(navigator, new NodeView<>(node("node")), false);
 
         // when
         assertThat(subtractionExpr.resolve(context)).extracting("number").contains(Double.NaN);

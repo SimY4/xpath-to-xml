@@ -65,7 +65,7 @@ public final class XomDocument implements XomNode<Document> {
             return false;
         }
 
-        XomDocument that = (XomDocument) o;
+        var that = (XomDocument) o;
 
         return document.equals(that.document);
     }

@@ -27,7 +27,7 @@ public class GsonNavigatorSpi implements NavigatorSpi {
         }
         final GsonNode root = new GsonRootNode((JsonElement) json);
         final Navigator<GsonNode> navigator = new GsonNavigator(root);
-        for (Effect effect : effects) {
+        for (var effect : effects) {
             effect.perform(navigator, root);
         }
         return (T) root.get();

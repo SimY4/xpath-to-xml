@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test
 
 class ScalaXmlNodeTest {
   import Assertions._
+
   import scala.collection.JavaConverters._
 
   private val xml = <root attr="value"/>

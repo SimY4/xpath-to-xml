@@ -4,7 +4,6 @@ import com.github.simy4.xpath.util.TransformingIterator;
 import org.dom4j.Attribute;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.dom4j.Namespace;
 
 import javax.xml.namespace.QName;
 
@@ -16,7 +15,7 @@ public final class Dom4jElement extends AbstractDom4jNode<Element> {
 
     @Override
     public QName getName() {
-        final Namespace namespace = getNode().getNamespace();
+        final var namespace = getNode().getNamespace();
         return new QName(namespace.getURI(), getNode().getName(), namespace.getPrefix());
     }
 
@@ -32,7 +31,7 @@ public final class Dom4jElement extends AbstractDom4jNode<Element> {
 
     @Override
     public Dom4jNode<Attribute> createAttribute(org.dom4j.QName attribute) {
-        final Attribute attr = DocumentHelper.createAttribute(getNode(), attribute, "");
+        final var attr = DocumentHelper.createAttribute(getNode(), attribute, "");
         getNode().attributes().add(attr);
         return new Dom4jAttribute(attr);
     }

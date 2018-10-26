@@ -49,13 +49,13 @@ public final class GsonByNameNode extends AbstractGsonNode {
             return false;
         }
 
-        GsonByNameNode gsonNodes = (GsonByNameNode) o;
+        var gsonNodes = (GsonByNameNode) o;
         return getParent().equals(gsonNodes.getParent());
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
+        var result = super.hashCode();
         result = 31 * result + getParent().hashCode();
         return result;
     }

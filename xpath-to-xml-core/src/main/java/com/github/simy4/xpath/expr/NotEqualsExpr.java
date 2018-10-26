@@ -7,13 +7,10 @@ import com.github.simy4.xpath.view.AbstractViewVisitor;
 import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.LiteralView;
-import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewContext;
 import com.github.simy4.xpath.view.ViewVisitor;
-
-import java.util.Iterator;
 
 public class NotEqualsExpr extends AbstractOperationExpr {
 
@@ -24,7 +21,7 @@ public class NotEqualsExpr extends AbstractOperationExpr {
     @Override
     public <N extends Node> View<N> resolve(ViewContext<N> context, View<N> left, View<N> right)
             throws XmlBuilderException {
-        boolean ne = 0 != left.compareTo(right);
+        var ne = 0 != left.compareTo(right);
         if (!ne && context.isGreedy() && !context.hasNext()) {
             ne = left.visit(new NotEqualsVisitor<>(context.getNavigator(), right));
         }
@@ -48,8 +45,8 @@ public class NotEqualsExpr extends AbstractOperationExpr {
 
         @Override
         public Boolean visit(IterableNodeView<N> nodeSet) throws XmlBuilderException {
-            final Iterator<NodeView<N>> iterator = nodeSet.iterator();
-            final View<N> negatedRight = right.visit(new ViewNegator<>());
+            final var iterator = nodeSet.iterator();
+            final var negatedRight = right.visit(new ViewNegator<>());
             if (!iterator.hasNext() || right.toString().equals(negatedRight.toString())) {
                 throw new XmlBuilderException("Unable to satisfy not equals criteria for: " + right);
             }
@@ -75,7 +72,7 @@ public class NotEqualsExpr extends AbstractOperationExpr {
 
         @Override
         public View<N> visit(IterableNodeView<N> nodeSet) throws XmlBuilderException {
-            final Iterator<NodeView<N>> iterator = nodeSet.iterator();
+            final var iterator = nodeSet.iterator();
             if (!iterator.hasNext()) {
                 throw new XmlBuilderException("Unable to satisfy not equals criteria for: " + nodeSet);
             }

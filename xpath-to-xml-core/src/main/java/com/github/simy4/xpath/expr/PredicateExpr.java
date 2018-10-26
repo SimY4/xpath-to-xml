@@ -36,14 +36,14 @@ public class PredicateExpr implements Expr {
 
         @Override
         public View<T> visit(NumberView<T> numberView) throws XmlBuilderException {
-            final double number = numberView.toNumber();
+            final var number = numberView.toNumber();
             if (0 == Double.compare(number, context.getPosition())) {
                 context.getCurrent().mark();
                 return BooleanView.of(true);
             } else if (context.isGreedy() && !context.hasNext() && number > context.getPosition()
                     && context.getCurrent().isNew()) {
-                final T node = context.getCurrent().getNode();
-                long numberOfNodesToCreate = (long) number - context.getPosition();
+                final var node = context.getCurrent().getNode();
+                var numberOfNodesToCreate = (long) number - context.getPosition();
                 do {
                     context.getNavigator().prependCopy(node);
                 } while (--numberOfNodesToCreate > 0);

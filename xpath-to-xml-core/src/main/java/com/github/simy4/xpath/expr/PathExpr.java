@@ -24,10 +24,10 @@ public class PathExpr implements Expr {
     @Override
     public <N extends Node> IterableNodeView<N> resolve(final ViewContext<N> context) throws XmlBuilderException {
         IterableNodeView<N> children = context.getCurrent();
-        for (final StepExpr stepExpr : pathExpr) {
-            final IterableNodeView<N> currentChildren = children;
+        for (final var stepExpr : pathExpr) {
+            final var currentChildren = children;
             children = new NodeSetView<>(() -> {
-                final Iterator<NodeView<N>> iterator = currentChildren.iterator();
+                final var iterator = currentChildren.iterator();
                 return new TransformingAndFlatteningIterator<>(iterator,
                         new StepResolver<>(context, iterator, stepExpr));
             });
@@ -37,8 +37,8 @@ public class PathExpr implements Expr {
 
     @Override
     public String toString() {
-        final StringJoiner stringJoiner = new StringJoiner("/");
-        for (StepExpr stepExpr : pathExpr) {
+        final var stringJoiner = new StringJoiner("/");
+        for (var stepExpr : pathExpr) {
             stringJoiner.add(stepExpr.toString());
         }
         return stringJoiner.toString();
@@ -59,7 +59,7 @@ public class PathExpr implements Expr {
 
         @Override
         public Iterator<NodeView<T>> apply(NodeView<T> view) {
-            final ViewContext<T> context = new ViewContext<>(parentContext.getNavigator(), view,
+            final var context = new ViewContext<T>(parentContext.getNavigator(), view,
                     parentContext.isGreedy(), iterator.hasNext(), position++);
             return stepExpr.resolve(context).iterator();
         }

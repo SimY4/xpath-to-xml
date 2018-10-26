@@ -5,7 +5,6 @@ import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
 import com.github.simy4.xpath.util.TransformingIterator;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -31,13 +30,13 @@ abstract class AbstractGsonNode implements GsonNode {
 
     @Override
     public final String getText() {
-        final JsonElement jsonElement = get();
+        final var jsonElement = get();
         if (jsonElement.isJsonPrimitive()) {
             return jsonElement.getAsString();
         } else if (jsonElement.isJsonNull()) {
             return "null";
         } else if (jsonElement.isJsonObject()) {
-            final JsonElement text = jsonElement.getAsJsonObject().get("text");
+            final var text = jsonElement.getAsJsonObject().get("text");
             if (null != text) {
                 if (text.isJsonNull()) {
                     return "null";
@@ -64,7 +63,7 @@ abstract class AbstractGsonNode implements GsonNode {
             return false;
         }
 
-        AbstractGsonNode that = (AbstractGsonNode) o;
+        var that = (AbstractGsonNode) o;
         return get().equals(that.get());
     }
 
@@ -80,11 +79,11 @@ abstract class AbstractGsonNode implements GsonNode {
 
     private static Iterator<GsonNode> traverse(JsonElement jsonElement, GsonNode parent) {
         if (jsonElement.isJsonObject()) {
-            final JsonObject jsonObject = jsonElement.getAsJsonObject();
+            final var jsonObject = jsonElement.getAsJsonObject();
             return new TransformingIterator<>(jsonObject.keySet().iterator(), name ->
                     new GsonByNameNode(jsonObject, name, parent));
         } else if (jsonElement.isJsonArray()) {
-            final JsonArray jsonArray = jsonElement.getAsJsonArray();
+            final var jsonArray = jsonElement.getAsJsonArray();
             return new TransformingAndFlatteningIterator<>(jsonArray.iterator(),
                     new JsonArrayWrapper(jsonArray, parent));
         } else {

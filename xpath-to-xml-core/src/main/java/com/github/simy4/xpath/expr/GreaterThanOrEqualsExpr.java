@@ -15,7 +15,7 @@ public class GreaterThanOrEqualsExpr extends AbstractOperationExpr {
     @Override
     public <N extends Node> View<N> resolve(ViewContext<N> context, View<N> left, View<N> right)
             throws XmlBuilderException {
-        boolean ge = 0 <= Double.compare(left.toNumber(), right.toNumber());
+        var ge = 0 <= Double.compare(left.toNumber(), right.toNumber());
         if (!ge && context.isGreedy() && !context.hasNext()) {
             ge = left.visit(new EqualsExpr.EqualsVisitor<>(context.getNavigator(), right));
         }

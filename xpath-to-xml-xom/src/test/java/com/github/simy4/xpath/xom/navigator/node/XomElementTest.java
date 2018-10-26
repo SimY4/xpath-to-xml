@@ -5,8 +5,6 @@ import nu.xom.Element;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.namespace.QName;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 class XomElementTest {
@@ -21,7 +19,7 @@ class XomElementTest {
 
     @BeforeEach
     void setUp() {
-        Element element = new Element("elem", "http://www.example.com/my");
+        var element = new Element("elem", "http://www.example.com/my");
         element.setNamespacePrefix("my");
         element.addAttribute(attr1);
         element.addAttribute(attr2);
@@ -51,13 +49,13 @@ class XomElementTest {
 
     @Test
     void shouldThrowExceptionWhenAppendElement() {
-        Element elem = new Element("elem");
+        var elem = new Element("elem");
         assertThat(node.appendElement(elem)).isEqualTo(new XomElement(elem));
     }
 
     @Test
     void shouldReturnNodeNameWithNamespaceUri() {
-        QName result = node.getName();
+        var result = node.getName();
 
         assertThat(result).extracting("namespaceURI", "localPart", "prefix")
                 .containsExactly("http://www.example.com/my", "elem", "my");

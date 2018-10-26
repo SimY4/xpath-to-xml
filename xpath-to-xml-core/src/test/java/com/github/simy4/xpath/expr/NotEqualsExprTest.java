@@ -86,10 +86,10 @@ class NotEqualsExprTest {
         // given
         when(leftExpr.resolve(any())).thenReturn(left);
         when(rightExpr.resolve(any())).thenReturn(right);
-        ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, false);
+        var context = new ViewContext<TestNode>(navigator, parentNode, false);
 
         // when
-        View<TestNode> result = notEqualsExpr.resolve(context);
+        var result = notEqualsExpr.resolve(context);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(false));
@@ -102,10 +102,10 @@ class NotEqualsExprTest {
         // given
         when(leftExpr.resolve(any())).thenReturn(left);
         when(rightExpr.resolve(any())).thenReturn(right);
-        ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, false);
+        var context = new ViewContext<TestNode>(navigator, parentNode, false);
 
         // when
-        View<TestNode> result = notEqualsExpr.resolve(context);
+        var result = notEqualsExpr.resolve(context);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(true));
@@ -121,14 +121,14 @@ class NotEqualsExprTest {
         // given
         when(leftExpr.resolve(any())).thenReturn(left);
         when(rightExpr.resolve(any())).thenReturn(right);
-        ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, true);
+        var context = new ViewContext<TestNode>(navigator, parentNode, true);
 
         // when
-        View<TestNode> result = notEqualsExpr.resolve(context);
+        var result = notEqualsExpr.resolve(context);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(true));
-        ArgumentCaptor<String> textCaptor = ArgumentCaptor.forClass(String.class);
+        var textCaptor = ArgumentCaptor.forClass(String.class);
         verify(navigator).setText(any(TestNode.class), textCaptor.capture());
         assertThat(textCaptor.getValue()).isNotEqualTo(right.toString());
     }
@@ -141,7 +141,7 @@ class NotEqualsExprTest {
         // given
         when(leftExpr.resolve(any())).thenReturn(left);
         when(rightExpr.resolve(any())).thenReturn(right);
-        ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, true);
+        var context = new ViewContext<TestNode>(navigator, parentNode, true);
 
         // then
         assertThatThrownBy(() -> notEqualsExpr.resolve(context))

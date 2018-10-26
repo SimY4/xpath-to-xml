@@ -36,9 +36,9 @@ public final class FilteringIterator<T> implements Iterator<T> {
     }
 
     private T nextMatch() {
-        final T oldMatch = nextElement;
+        final var oldMatch = nextElement;
         while (iterator.hasNext()) {
-            final T next = iterator.next();
+            final var next = iterator.next();
             if (predicate.test(next)) {
                 hasNext = true;
                 nextElement = next;

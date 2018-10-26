@@ -50,10 +50,10 @@ class PredicateExprTest {
     @MethodSource("truthy")
     void shouldReturnTrueForTruthyPredicate(Expr truthy) {
         // given
-        ViewContext<TestNode> context = new ViewContext<>(navigator, new NodeView<>(node("node")), false);
+        var context = new ViewContext<TestNode>(navigator, new NodeView<>(node("node")), false);
 
         // when
-        boolean result = new PredicateExpr(truthy).resolve(context).toBoolean();
+        var result = new PredicateExpr(truthy).resolve(context).toBoolean();
 
         // then
         assertThat(result).isEqualTo(true);
@@ -64,10 +64,10 @@ class PredicateExprTest {
     @MethodSource("falsy")
     void shouldReturnFalseForNonGreedyFalsePredicate(Expr falsy) {
         // given
-        ViewContext<TestNode> context = new ViewContext<>(navigator, new NodeView<>(node("node")), false);
+        var context = new ViewContext<TestNode>(navigator, new NodeView<>(node("node")), false);
 
         // when
-        boolean result = new PredicateExpr(falsy).resolve(context).toBoolean();
+        var result = new PredicateExpr(falsy).resolve(context).toBoolean();
 
         // then
         assertThat(result).isEqualTo(false);
@@ -77,10 +77,10 @@ class PredicateExprTest {
     @DisplayName("When greedy context, falsy predicate and non new node should return false")
     void shouldReturnFalseOnGreedyFalseResolveAndNonNewNode() {
         // given
-        ViewContext<TestNode> context = new ViewContext<>(navigator, new NodeView<>(node("node")), true);
+        var context = new ViewContext<TestNode>(navigator, new NodeView<>(node("node")), true);
 
         // when
-        boolean result = new PredicateExpr(new NumberExpr(3.0)).resolve(context).toBoolean();
+        var result = new PredicateExpr(new NumberExpr(3.0)).resolve(context).toBoolean();
 
         // then
         assertThat(result).isEqualTo(false);
@@ -90,10 +90,10 @@ class PredicateExprTest {
     @DisplayName("When greedy context, falsy predicate and new node should prepend missing nodes and return true")
     void shouldPrependMissingNodesAndReturnTrueOnGreedyFalsePredicateAndNewNode() {
         // given
-        ViewContext<TestNode> context = new ViewContext<>(navigator, new NodeView<>(node("node"), true), true);
+        var context = new ViewContext<TestNode>(navigator, new NodeView<>(node("node"), true), true);
 
         // when
-        boolean result = new PredicateExpr(new NumberExpr(3.0)).resolve(context).toBoolean();
+        var result = new PredicateExpr(new NumberExpr(3.0)).resolve(context).toBoolean();
 
         // then
         assertThat(result).isEqualTo(true);
@@ -103,7 +103,7 @@ class PredicateExprTest {
     @Test
     void testToString() {
         // given
-        Expr predicate = mock(Expr.class);
+        var predicate = mock(Expr.class);
 
         // then
         assertThat(new PredicateExpr(predicate)).hasToString("[" + predicate + ']');

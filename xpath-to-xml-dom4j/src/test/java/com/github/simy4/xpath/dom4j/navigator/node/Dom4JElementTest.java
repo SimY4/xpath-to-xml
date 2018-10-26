@@ -12,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -66,7 +65,7 @@ class Dom4JElementTest {
         when(element.getName()).thenReturn("node");
         when(element.getNamespace()).thenReturn(Namespace.NO_NAMESPACE);
 
-        QName result = node.getName();
+        var result = node.getName();
 
         assertThat(result).extracting("namespaceURI", "localPart", "prefix")
                 .containsExactly(XMLConstants.NULL_NS_URI, "node", XMLConstants.DEFAULT_NS_PREFIX);
@@ -77,7 +76,7 @@ class Dom4JElementTest {
         when(element.getName()).thenReturn("node");
         when(element.getNamespace()).thenReturn(new Namespace("my", "http://www.example.com/my"));
 
-        QName result = node.getName();
+        var result = node.getName();
 
         assertThat(result).extracting("namespaceURI", "localPart", "prefix")
                 .containsExactly("http://www.example.com/my", "node", "my");

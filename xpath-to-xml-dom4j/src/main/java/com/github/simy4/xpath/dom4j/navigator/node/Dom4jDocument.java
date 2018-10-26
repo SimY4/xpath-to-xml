@@ -21,7 +21,7 @@ public final class Dom4jDocument extends AbstractDom4jNode<Document> {
 
     @Override
     public Iterable<Dom4jNode<Element>> elements() {
-        final Element root = getNode().getRootElement();
+        final var root = getNode().getRootElement();
         return null == root ? Collections.emptyList() : Collections.singletonList(new Dom4jElement(root));
     }
 

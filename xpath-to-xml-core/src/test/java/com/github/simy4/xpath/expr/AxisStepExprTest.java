@@ -5,7 +5,6 @@ import com.github.simy4.xpath.expr.axis.AxisResolver;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.BooleanView;
-import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;
@@ -68,7 +67,7 @@ class AxisStepExprTest {
         when(predicate2.resolve(any())).thenReturn(BooleanView.of(true));
 
         // when
-        IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<>(navigator, parentNode, false));
+        var result = stepExpr.resolve(new ViewContext<>(navigator, parentNode, false));
 
         // then
         assertThat(result).isNotEmpty();
@@ -88,7 +87,7 @@ class AxisStepExprTest {
         stepExpr = new AxisStepExpr(axisResolver, Collections.emptyList());
 
         // when
-        IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<>(navigator, parentNode, false));
+        var result = stepExpr.resolve(new ViewContext<>(navigator, parentNode, false));
 
         // then
         assertThat(result).isNotEmpty();
@@ -100,7 +99,7 @@ class AxisStepExprTest {
     @DisplayName("When traverse returns nothing should should short circuit resolve")
     void shouldShortCircuitWhenStepTraversalReturnsNothing() {
         // when
-        IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<>(navigator, parentNode, false));
+        var result = stepExpr.resolve(new ViewContext<>(navigator, parentNode, false));
 
         // then
         assertThat(result).isEmpty();
@@ -113,7 +112,7 @@ class AxisStepExprTest {
         when(axisResolver.resolveAxis(any())).thenReturn(new NodeSetView<>(singleton(new NodeView<>(node("node")))));
 
         // when
-        IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<>(navigator, parentNode, false));
+        var result = stepExpr.resolve(new ViewContext<>(navigator, parentNode, false));
 
         // then
         assertThat(result).isEmpty();
@@ -130,7 +129,7 @@ class AxisStepExprTest {
         when(predicate2.resolve(argThat(ViewContext::isGreedy))).thenReturn(BooleanView.of(true));
 
         // when
-        IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<>(navigator, parentNode, true));
+        var result = stepExpr.resolve(new ViewContext<>(navigator, parentNode, true));
 
         // then
         assertThat(result).isNotEmpty();

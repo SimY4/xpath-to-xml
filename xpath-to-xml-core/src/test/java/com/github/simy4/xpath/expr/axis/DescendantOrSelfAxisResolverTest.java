@@ -1,8 +1,6 @@
 package com.github.simy4.xpath.expr.axis;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.util.TestNode;
-import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.ViewContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -67,7 +65,7 @@ class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
         axisResolver = new DescendantOrSelfAxisResolver(new QName("*", "*"), true);
 
         // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
+        var result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
 
         // then
         assertThat(result).extracting("node").containsExactly(parentNode.getNode());
@@ -81,7 +79,7 @@ class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
         axisResolver = new DescendantOrSelfAxisResolver(new QName("*", "*"), false);
 
         // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
+        var result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
 
         // then
         assertThat(result).isEmpty();

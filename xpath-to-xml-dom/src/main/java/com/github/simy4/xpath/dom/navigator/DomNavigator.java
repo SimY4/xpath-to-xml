@@ -26,8 +26,8 @@ public final class DomNavigator implements Navigator<DomNode> {
 
     @Override
     public DomNode parentOf(DomNode node) {
-        final Node wrappedNode = node.getNode();
-        final Node parent = Node.ATTRIBUTE_NODE == wrappedNode.getNodeType() ? ((Attr) wrappedNode).getOwnerElement()
+        final var wrappedNode = node.getNode();
+        final var parent = Node.ATTRIBUTE_NODE == wrappedNode.getNodeType() ? ((Attr) wrappedNode).getOwnerElement()
                 : wrappedNode.getParentNode();
         return null == parent ? null : new DomNode(parent);
     }
@@ -44,14 +44,14 @@ public final class DomNavigator implements Navigator<DomNode> {
 
     @Override
     public DomNode createAttribute(DomNode parent, QName attribute) throws XmlBuilderException {
-        final Node parentNode = parent.getNode();
+        final var parentNode = parent.getNode();
         if (Node.ELEMENT_NODE != parentNode.getNodeType()) {
             throw new XmlBuilderException("Unable to append attribute to a non-element node " + parent);
         }
 
         try {
             Attr attr;
-            final Element parentElement = (Element) parentNode;
+            final var parentElement = (Element) parentNode;
             if (XMLConstants.NULL_NS_URI.equals(attribute.getNamespaceURI())) {
                 attr = document.createAttribute(attribute.getLocalPart());
             } else {
@@ -92,10 +92,10 @@ public final class DomNavigator implements Navigator<DomNode> {
 
     @Override
     public void prependCopy(DomNode node) throws XmlBuilderException {
-        final Node wrappedNode = node.getNode();
-        final Node copiedNode = wrappedNode.cloneNode(true);
+        final var wrappedNode = node.getNode();
+        final var copiedNode = wrappedNode.cloneNode(true);
         try {
-            final Node parent = wrappedNode.getParentNode();
+            final var parent = wrappedNode.getParentNode();
             if (null == parent) {
                 throw new XmlBuilderException("Unable to prepend - no parent found of " + node);
             }
@@ -108,17 +108,17 @@ public final class DomNavigator implements Navigator<DomNode> {
     @Override
     public void remove(DomNode node) {
         try {
-            final Node wrappedNode = node.getNode();
+            final var wrappedNode = node.getNode();
             if (wrappedNode.getNodeType() == Node.ATTRIBUTE_NODE) {
-                final Attr attr = (Attr) wrappedNode;
-                final Element parent = attr.getOwnerElement();
+                final var attr = (Attr) wrappedNode;
+                final var parent = attr.getOwnerElement();
                 if (null == parent) {
                     throw new XmlBuilderException("Unable to remove attribute " + node
                             + ". Node either root or in detached state");
                 }
                 parent.removeAttributeNode(attr);
             } else {
-                final Node parent = wrappedNode.getParentNode();
+                final var parent = wrappedNode.getParentNode();
                 if (null == parent) {
                     throw new XmlBuilderException("Unable to remove node " + node
                             + ". Node either root or in detached state");

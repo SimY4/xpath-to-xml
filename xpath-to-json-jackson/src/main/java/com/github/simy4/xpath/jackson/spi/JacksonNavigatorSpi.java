@@ -27,7 +27,7 @@ public class JacksonNavigatorSpi implements NavigatorSpi {
         }
         final JacksonNode root = new JacksonRootNode((JsonNode) json);
         final Navigator<JacksonNode> navigator = new JacksonNavigator(root);
-        for (Effect effect : effects) {
+        for (var effect : effects) {
             effect.perform(navigator, root);
         }
         return (T) root.get();
