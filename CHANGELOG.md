@@ -8,6 +8,13 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 
 ### Upcoming
 
+Bugfixes:
+
+- Gson, Jackson
+  - Fix parent resolution issue that may occur in some cases on prepend copy
+
+### 1.2.3
+
 Improvements:
 
 - XOM

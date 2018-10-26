@@ -13,7 +13,6 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.infra.Blackhole;
 
 import javax.xml.xpath.XPathExpressionException;
-import java.io.IOException;
 import java.util.Map;
 
 @BenchmarkMode(Mode.Throughput)
@@ -31,7 +30,7 @@ public class JacksonJsonBuilderBenchmark {
     }
 
     @Benchmark
-    public void shouldBuildDocumentFromSetOfXPaths(Blackhole blackhole) throws XPathExpressionException, IOException {
+    public void shouldBuildDocumentFromSetOfXPaths(Blackhole blackhole) throws XPathExpressionException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         blackhole.consume(new XmlBuilder()
                 .putAll(xmlProperties.keySet())

@@ -17,7 +17,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +54,7 @@ public class DomXmlBuilderBenchmark {
 
     @Benchmark
     public void shouldBuildDocumentFromSetOfXPaths(Blackhole blackhole)
-            throws XPathExpressionException, IOException {
+            throws XPathExpressionException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         Document document = documentBuilder.newDocument();
         document.setXmlStandalone(true);
