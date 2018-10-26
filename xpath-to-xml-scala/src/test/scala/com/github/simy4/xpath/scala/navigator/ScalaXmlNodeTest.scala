@@ -1,14 +1,23 @@
-package com.github.simy4.xpath.scala.navigator
+package com.github.simy4.xpath
+package scala.navigator
 
+import javax.xml.namespace.QName
+import navigator.Node
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
 class ScalaXmlNodeTest {
   import Assertions._
-  import scala.collection.JavaConverters._
+
+  import _root_.scala.collection.JavaConverters._
 
   private val xml = <root attr="value"/>
   private val root = new Root(xml)
+
+  @Test
+  def shouldReturnDocumentName(): Unit = {
+    assertThat(root.getName).isEqualTo(new QName(Node.DOCUMENT))
+  }
 
   @Test
   def shouldThrowWhenRootNameAccessed(): Unit = {

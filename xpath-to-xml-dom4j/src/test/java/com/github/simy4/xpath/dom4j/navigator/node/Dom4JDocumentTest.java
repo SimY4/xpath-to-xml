@@ -11,6 +11,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
+import javax.xml.namespace.QName;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -68,9 +70,8 @@ class Dom4JDocumentTest {
     }
 
     @Test
-    void shouldThrowExceptionOnGetName() {
-        assertThatThrownBy(() -> node.getName())
-                .isInstanceOf(UnsupportedOperationException.class);
+    void shouldReturnDocumentName() {
+        assertThat(node.getName()).isEqualTo(new QName(Dom4jNode.DOCUMENT));
     }
 
     @Test

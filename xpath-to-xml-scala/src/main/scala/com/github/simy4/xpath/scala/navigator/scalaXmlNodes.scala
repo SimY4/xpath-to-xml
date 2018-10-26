@@ -6,6 +6,12 @@ import navigator.{ Node => NavigatorNode }
 
 import _root_.scala.xml.{ Elem, MetaData, Text, Attribute => XmlAttribute }
 
+/**
+  * Scala XML node contract.
+  *
+  * @author Alex Simkin
+  * @since 2.0
+  */
 sealed trait ScalaXmlNode extends NavigatorNode {
   val parent: Parent
   def elements: Iterable[Element]
@@ -16,7 +22,7 @@ private[navigator] sealed trait Parent extends ScalaXmlNode {
 }
 
 final class Root(override var node: Elem) extends Parent {
-  override def getName: QName = throw new UnsupportedOperationException("getName")
+  override def getName: QName = new QName(NavigatorNode.DOCUMENT)
   override def getText: String = throw new UnsupportedOperationException("getText")
   override val parent: Parent = null
   override def elements: Iterable[Element] = Seq(new Element(node, 0, this))

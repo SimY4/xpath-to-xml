@@ -23,7 +23,7 @@ public final class XomDocument implements XomNode<Document> {
 
     @Override
     public QName getName() {
-        throw new UnsupportedOperationException("getName");
+        return new QName(DOCUMENT);
     }
 
     @Override

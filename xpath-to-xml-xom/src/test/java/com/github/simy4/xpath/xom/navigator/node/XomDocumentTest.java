@@ -7,6 +7,8 @@ import nu.xom.Element;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.namespace.QName;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -46,8 +48,8 @@ class XomDocumentTest {
     }
 
     @Test
-    void shouldThrowExceptionOnGetName() {
-        assertThatThrownBy(() -> node.getName()).isInstanceOf(UnsupportedOperationException.class);
+    void shouldReturnDocumentName() {
+        assertThat(node.getName()).isEqualTo(new QName(XomNode.DOCUMENT));
     }
 
     @Test

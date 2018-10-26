@@ -16,7 +16,7 @@ public final class Dom4jDocument extends AbstractDom4jNode<Document> {
 
     @Override
     public QName getName() {
-        throw new UnsupportedOperationException("getName");
+        return new QName(DOCUMENT);
     }
 
     @Override

@@ -6,6 +6,9 @@ import spi.{ Effect, NavigatorSpi }
 
 import _root_.scala.xml.Elem
 
+/**
+  * Scala XML model navigator extension SPI.
+  */
 class ScalaXmlNavigatorSpi extends NavigatorSpi {
   import _root_.scala.collection.JavaConverters._
 

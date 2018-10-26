@@ -9,7 +9,7 @@ import javax.json.JsonValue;
  * Javax JSON node contract.
  *
  * @author Alex Simkin
- * @since 1.3
+ * @since 2.0
  */
 public interface JavaxJsonNode extends Node, Iterable<JavaxJsonNode> {
 
