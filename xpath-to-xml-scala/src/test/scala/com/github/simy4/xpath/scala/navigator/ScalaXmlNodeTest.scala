@@ -20,11 +20,6 @@ class ScalaXmlNodeTest {
   }
 
   @Test
-  def shouldThrowWhenRootNameAccessed(): Unit = {
-    assertThatThrownBy(() => root.getName) isInstanceOf classOf[UnsupportedOperationException]
-  }
-
-  @Test
   def shouldThrowWhenRootTextAccessed(): Unit = {
     assertThatThrownBy(() => root.getText) isInstanceOf classOf[UnsupportedOperationException]
   }
