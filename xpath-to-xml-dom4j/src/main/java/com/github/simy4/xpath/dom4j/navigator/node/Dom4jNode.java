@@ -2,34 +2,38 @@ package com.github.simy4.xpath.dom4j.navigator.node;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
-import org.dom4j.Attribute;
-import org.dom4j.Element;
 import org.dom4j.QName;
 
 /**
  * DOM4J node contract.
  *
- * @param <N> DOM4J node type
  * @author Alex Simkin
  * @since 1.0
  */
-public interface Dom4jNode<N extends org.dom4j.Node> extends Node {
+public interface Dom4jNode extends Node {
 
-    N getNode();
+    org.dom4j.Node getNode();
+
+    /**
+     * Retrieves parent node of this node.
+     *
+     * @return parent node
+     */
+    Dom4jNode getParent();
 
     /**
      * Retrieves all child element nodes of this node.
      *
      * @return child element nodes
      */
-    Iterable<Dom4jNode<Element>> elements();
+    Iterable<? extends Dom4jNode> elements();
 
     /**
      * Retrieves all attributes of this node.
      *
      * @return attributes
      */
-    Iterable<Dom4jNode<Attribute>> attributes();
+    Iterable<? extends Dom4jNode> attributes();
 
     /**
      * Creates XML attribute node and appends to ths node.
@@ -38,7 +42,7 @@ public interface Dom4jNode<N extends org.dom4j.Node> extends Node {
      * @return new attribute node
      * @throws XmlBuilderException if failure occur during XML attribute creation
      */
-    Dom4jNode<Attribute> createAttribute(QName attribute) throws XmlBuilderException;
+    Dom4jNode createAttribute(QName attribute) throws XmlBuilderException;
 
     /**
      * Creates XML element node and appends to ths node.
@@ -47,6 +51,6 @@ public interface Dom4jNode<N extends org.dom4j.Node> extends Node {
      * @return new element node
      * @throws XmlBuilderException if failure occur during XML element creation
      */
-    Dom4jNode<Element> createElement(QName element) throws XmlBuilderException;
+    Dom4jNode createElement(QName element) throws XmlBuilderException;
 
 }

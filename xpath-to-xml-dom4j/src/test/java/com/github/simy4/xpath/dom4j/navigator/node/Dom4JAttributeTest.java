@@ -24,7 +24,7 @@ class Dom4JAttributeTest {
 
     @Mock private Attribute attribute;
 
-    private Dom4jNode<Attribute> node;
+    private Dom4jNode node;
 
     @BeforeEach
     void setUp() {

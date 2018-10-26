@@ -30,7 +30,7 @@ public class Dom4jNavigatorSpi implements NavigatorSpi {
             throw new IllegalArgumentException("XML model is not supported");
         }
         final Node xmlNode = (Node) xml;
-        final Dom4jNode<?> node;
+        final Dom4jNode node;
         switch (xmlNode.getNodeType()) {
             case Node.DOCUMENT_NODE:
                 node = new Dom4jDocument((Document) xmlNode);
@@ -44,7 +44,7 @@ public class Dom4jNavigatorSpi implements NavigatorSpi {
             default:
                 throw new IllegalArgumentException("XML node type is not supported");
         }
-        final Navigator<Dom4jNode<?>> navigator = new Dom4jNavigator(xmlNode);
+        final Navigator<Dom4jNode> navigator = new Dom4jNavigator(xmlNode);
         for (Effect effect : effects) {
             effect.perform(navigator, node);
         }

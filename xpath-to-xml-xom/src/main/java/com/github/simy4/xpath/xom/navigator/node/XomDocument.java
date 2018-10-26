@@ -8,17 +8,10 @@ import nu.xom.Element;
 import javax.xml.namespace.QName;
 import java.util.Collections;
 
-public final class XomDocument implements XomNode {
-
-    private final Document document;
+public final class XomDocument extends AbstractXomNode<Document> {
 
     public XomDocument(Document document) {
-        this.document = document;
-    }
-
-    @Override
-    public Document getNode() {
-        return document;
+        super(document);
     }
 
     @Override
@@ -28,12 +21,12 @@ public final class XomDocument implements XomNode {
 
     @Override
     public String getText() {
-        return document.getValue();
+        return getNode().getValue();
     }
 
     @Override
     public Iterable<? extends XomNode> elements() {
-        return Collections.singletonList(new XomElement(document.getRootElement()));
+        return Collections.singletonList(new XomElement(getNode().getRootElement()));
     }
 
     @Override
@@ -43,41 +36,17 @@ public final class XomDocument implements XomNode {
 
     @Override
     public XomNode appendAttribute(Attribute attribute) throws XmlBuilderException {
-        throw new XmlBuilderException("Unable to append attribute to a document node " + document);
+        throw new XmlBuilderException("Unable to append attribute to a document node " + getNode());
     }
 
     @Override
     public XomNode appendElement(Element element) throws XmlBuilderException {
-        throw new XmlBuilderException("Unable to append element. Document has root: " + document.getRootElement());
+        throw new XmlBuilderException("Unable to append element. Document has root: " + getNode().getRootElement());
     }
 
     @Override
     public void setText(String text) throws XmlBuilderException {
-        throw new XmlBuilderException("Unable to set value to a document node " + document);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        XomDocument that = (XomDocument) o;
-
-        return document.equals(that.document);
-    }
-
-    @Override
-    public int hashCode() {
-        return document.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return document.toString();
+        throw new XmlBuilderException("Unable to set value to a document node " + getNode());
     }
 
 }
