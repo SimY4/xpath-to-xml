@@ -12,6 +12,8 @@ Bugfixes:
 
 - Gson, Jackson
   - Fix parent resolution issue that may occur in some cases on prepend copy
+- Dom4J
+  - Correctly resolve parent for top level element.
 
 ### 1.2.3
 
