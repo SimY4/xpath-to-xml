@@ -8,7 +8,7 @@ import nu.xom.Element;
 import javax.xml.namespace.QName;
 import java.util.Collections;
 
-public final class XomDocument implements XomNode<Document> {
+public final class XomDocument implements XomNode {
 
     private final Document document;
 
@@ -32,22 +32,22 @@ public final class XomDocument implements XomNode<Document> {
     }
 
     @Override
-    public Iterable<XomNode<Element>> elements() {
-        return Collections.<XomNode<Element>>singletonList(new XomElement(document.getRootElement()));
+    public Iterable<? extends XomNode> elements() {
+        return Collections.singletonList(new XomElement(document.getRootElement()));
     }
 
     @Override
-    public Iterable<XomNode<Attribute>> attributes() {
+    public Iterable<? extends XomNode> attributes() {
         return Collections.emptyList();
     }
 
     @Override
-    public XomNode<Attribute> appendAttribute(Attribute attribute) throws XmlBuilderException {
+    public XomNode appendAttribute(Attribute attribute) throws XmlBuilderException {
         throw new XmlBuilderException("Unable to append attribute to a document node " + document);
     }
 
     @Override
-    public XomNode<Element> appendElement(Element element) throws XmlBuilderException {
+    public XomNode appendElement(Element element) throws XmlBuilderException {
         throw new XmlBuilderException("Unable to append element. Document has root: " + document.getRootElement());
     }
 

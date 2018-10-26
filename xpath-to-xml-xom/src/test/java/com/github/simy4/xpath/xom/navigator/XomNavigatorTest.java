@@ -31,7 +31,7 @@ class XomNavigatorTest {
     private final Element child2 = new Element("child2");
     private final Element child3 = new Element("child3");
 
-    private Navigator<XomNode<?>> navigator;
+    private Navigator<XomNode> navigator;
 
     @BeforeEach
     void setUp() {

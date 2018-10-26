@@ -8,27 +8,26 @@ import nu.xom.Element;
 /**
  * XOM node contract.
  *
- * @param <N> XOM node type
  * @author Alex Simkin
  * @since 1.0
  */
-public interface XomNode<N extends nu.xom.Node> extends Node {
+public interface XomNode extends Node {
 
-    N getNode();
+    nu.xom.Node getNode();
 
     /**
      * Retrieves all child element nodes of this node.
      *
      * @return child element nodes
      */
-    Iterable<XomNode<Element>> elements();
+    Iterable<? extends XomNode> elements();
 
     /**
      * Retrieves all attributes of this node.
      *
      * @return attributes
      */
-    Iterable<XomNode<Attribute>> attributes();
+    Iterable<? extends XomNode> attributes();
 
     /**
      * Creates XML attribute node and appends to ths node.
@@ -37,7 +36,7 @@ public interface XomNode<N extends nu.xom.Node> extends Node {
      * @return new attribute node
      * @throws XmlBuilderException if failure occur during XML attribute creation
      */
-    XomNode<Attribute> appendAttribute(Attribute attribute) throws XmlBuilderException;
+    XomNode appendAttribute(Attribute attribute) throws XmlBuilderException;
 
     /**
      * Creates XML element node and appends to ths node.
@@ -46,7 +45,7 @@ public interface XomNode<N extends nu.xom.Node> extends Node {
      * @return new element node
      * @throws XmlBuilderException if failure occur during XML element creation
      */
-    XomNode<Element> appendElement(Element element) throws XmlBuilderException;
+    XomNode appendElement(Element element) throws XmlBuilderException;
 
     /**
      * Sets the given text content to this node.

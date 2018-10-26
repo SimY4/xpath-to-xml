@@ -8,7 +8,7 @@ import nu.xom.IllegalDataException;
 import javax.xml.namespace.QName;
 import java.util.Collections;
 
-public final class XomAttribute implements XomNode<Attribute> {
+public final class XomAttribute implements XomNode {
 
     private final Attribute attribute;
 
@@ -32,22 +32,22 @@ public final class XomAttribute implements XomNode<Attribute> {
     }
 
     @Override
-    public Iterable<XomNode<Element>> elements() {
+    public Iterable<? extends XomNode> elements() {
         return Collections.emptyList();
     }
 
     @Override
-    public Iterable<XomNode<Attribute>> attributes() {
+    public Iterable<? extends XomNode> attributes() {
         return Collections.emptyList();
     }
 
     @Override
-    public XomNode<Attribute> appendAttribute(Attribute attribute) throws XmlBuilderException {
+    public XomNode appendAttribute(Attribute attribute) throws XmlBuilderException {
         throw new XmlBuilderException("Unable to append attribute to a non-element node " + this.attribute);
     }
 
     @Override
-    public XomNode<Element> appendElement(Element element) throws XmlBuilderException {
+    public XomNode appendElement(Element element) throws XmlBuilderException {
         throw new XmlBuilderException("Unable to append element to an attribute " + attribute);
     }
 
