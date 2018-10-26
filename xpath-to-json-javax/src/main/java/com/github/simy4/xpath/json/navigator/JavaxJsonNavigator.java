@@ -112,9 +112,10 @@ public class JavaxJsonNavigator implements Navigator<JavaxJsonNode> {
                     if (JsonValue.ValueType.ARRAY == parentParentValue.getValueType()) {
                         final JsonArray jsonArray = parentParentValue.asJsonArray();
                         copyNode = prependToArray(parentParent, parentValue, jsonArray);
-                        parent.setParent(new JavaxJsonByIndexNode(copyNode.getIndex() + 1, node.getParent()));
+                        node.setParent(new JavaxJsonByIndexNode(copyNode.getIndex() + 1, parentParent));
                     } else {
                         copyNode = prependToNewArray(parent, parentValue);
+                        node.setParent(new JavaxJsonByIndexNode(copyNode.getIndex() + 1, parent));
                     }
                 } else {
                     copyNode = prependToNewArray(parent, parentValue);
@@ -125,7 +126,7 @@ public class JavaxJsonNavigator implements Navigator<JavaxJsonNode> {
             case ARRAY:
                 final JsonArray jsonArray = parentValue.asJsonArray();
                 copyNode = prependToArray(parent, valueToCopy, jsonArray);
-                node.setParent(new JavaxJsonByIndexNode(copyNode.getIndex() + 1, node.getParent()));
+                node.setParent(new JavaxJsonByIndexNode(copyNode.getIndex() + 1, parent));
                 elementNode = copyNode;
                 break;
             default:
@@ -179,30 +180,36 @@ public class JavaxJsonNavigator implements Navigator<JavaxJsonNode> {
     }
 
     private JavaxJsonNode appendToArray(JavaxJsonNode parent, String name, JsonArray parentArray) {
-        final JsonArray jsonArray = Json.createArrayBuilder(parentArray)
-                .add(JsonValue.EMPTY_JSON_OBJECT)
-                .build();
-        parent.set(jsonArray);
-        final JavaxJsonNode parentObjectNode = new JavaxJsonByIndexNode(parentArray.size(), parent);
-        return new JavaxJsonByNameNode(name, parentObjectNode);
+        final int index = parentArray.size();
+        try {
+            parentArray.add(JsonValue.EMPTY_JSON_OBJECT);
+        } catch (UnsupportedOperationException uoe) {
+            parentArray = Json.createArrayBuilder(parentArray)
+                    .add(JsonValue.EMPTY_JSON_OBJECT)
+                    .build();
+        }
+        parent.set(parentArray);
+        return new JavaxJsonByNameNode(name, new JavaxJsonByIndexNode(index, parent));
     }
 
     private JavaxJsonByIndexNode prependToNewArray(JavaxJsonNode parent, JsonValue valueToCopy) {
         final JsonArray jsonArray = Json.createArrayBuilder()
                 .add(valueToCopy)
                 .build();
-        final JavaxJsonByIndexNode elementNode = prependToArray(parent, valueToCopy, jsonArray);
-        parent.setParent(new JavaxJsonByIndexNode(1, parent.getParent()));
-        return elementNode;
+        return prependToArray(parent, valueToCopy, jsonArray);
     }
 
     private JavaxJsonByIndexNode prependToArray(JavaxJsonNode parent, JsonValue valueToCopy, JsonArray parentArray) {
-        int i = parentArray.indexOf(valueToCopy);
-        final JsonArray jsonArray = Json.createArrayBuilder(parentArray)
-                .add(i, valueToCopy)
-                .build();
-        parent.set(jsonArray);
-        return new JavaxJsonByIndexNode(i, parent);
+        final int index = parentArray.indexOf(valueToCopy);
+        try {
+            parentArray.add(index, valueToCopy);
+        } catch (UnsupportedOperationException uoe) {
+            parentArray = Json.createArrayBuilder(parentArray)
+                    .add(index, valueToCopy)
+                    .build();
+        }
+        parent.set(parentArray);
+        return new JavaxJsonByIndexNode(index, parent);
     }
 
 }
