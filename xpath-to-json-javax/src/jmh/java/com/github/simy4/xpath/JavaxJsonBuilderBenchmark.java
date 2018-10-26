@@ -1,7 +1,6 @@
 package com.github.simy4.xpath;
 
 import com.github.simy4.xpath.fixtures.FixtureAccessor;
-import com.google.gson.JsonObject;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
@@ -11,12 +10,15 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.infra.Blackhole;
 
+import javax.json.spi.JsonProvider;
 import javax.xml.xpath.XPathExpressionException;
 import java.util.Map;
 
 @BenchmarkMode(Mode.Throughput)
 @State(Scope.Benchmark)
-public class GsonJsonBuilderBenchmark {
+public class JavaxJsonBuilderBenchmark {
+
+    private static final JsonProvider jsonProvider = JsonProvider.provider();
 
     @Param({ "attr", "simple", "special" })
     public String fixtureName;
@@ -33,7 +35,7 @@ public class GsonJsonBuilderBenchmark {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
         blackhole.consume(new XmlBuilder()
                 .putAll(xmlProperties.keySet())
-                .build(new JsonObject()));
+                .build(jsonProvider.createObjectBuilder().build()));
     }
 
 }

@@ -98,9 +98,10 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
                 if (parentParentNode.isArray()) {
                     final ArrayNode jsonArray = (ArrayNode) parentParentNode;
                     copyNode = prependToArray(parentParent, parentNode, jsonArray);
-                    parent.setParent(new JacksonByIndexNode(jsonArray, copyNode.getIndex() + 1, node.getParent()));
+                    parent.setParent(new JacksonByIndexNode(jsonArray, copyNode.getIndex() + 1, parentParent));
                 } else {
                     copyNode = prependToNewArray(parent, parentNode);
+                    node.setParent(new JacksonByIndexNode((ArrayNode) parent.get(), copyNode.getIndex() + 1, parent));
                 }
             } else {
                 copyNode = prependToNewArray(parent, parentNode);
@@ -110,7 +111,7 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
         } else if (parentNode.isArray()) {
             final ArrayNode jsonArray = (ArrayNode) parentNode;
             final JacksonByIndexNode copyNode = prependToArray(parent, nodeToCopy, jsonArray);
-            node.setParent(new JacksonByIndexNode(jsonArray, copyNode.getIndex() + 1, node.getParent()));
+            node.setParent(new JacksonByIndexNode(jsonArray, copyNode.getIndex() + 1, parent));
             elementNode = copyNode;
         } else {
             throw new XmlBuilderException("Unable to prepend copy to primitive node: " + parentNode);
