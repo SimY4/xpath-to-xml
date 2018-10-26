@@ -25,7 +25,7 @@ abstract class AbstractGsonNode implements GsonNode {
     }
 
     @Override
-    public void setParent(GsonNode parent) {
+    public final void setParent(GsonNode parent) {
         this.parent = parent;
     }
 
@@ -50,7 +50,7 @@ abstract class AbstractGsonNode implements GsonNode {
     }
 
     @Override
-    public Iterator<GsonNode> iterator() {
+    public final Iterator<GsonNode> iterator() {
         return traverse(get(), this);
     }
 

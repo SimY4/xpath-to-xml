@@ -91,9 +91,10 @@ public class GsonNavigator implements Navigator<GsonNode> {
                 if (parentParentElement.isJsonArray()) {
                     final JsonArray jsonArray = parentParentElement.getAsJsonArray();
                     copyNode = prependToArray(parentParent, parentElement, jsonArray);
-                    parent.setParent(new GsonByIndexNode(jsonArray, copyNode.getIndex() + 1, node.getParent()));
+                    parent.setParent(new GsonByIndexNode(jsonArray, copyNode.getIndex() + 1, parentParent));
                 } else {
                     copyNode = prependToNewArray(parent, parentElement);
+                    node.setParent(new GsonByIndexNode(parent.get().getAsJsonArray(), copyNode.getIndex() + 1, parent));
                 }
             } else {
                 copyNode = prependToNewArray(parent, parentElement);
@@ -103,7 +104,7 @@ public class GsonNavigator implements Navigator<GsonNode> {
         } else if (parentElement.isJsonArray()) {
             final JsonArray jsonArray = parentElement.getAsJsonArray();
             final GsonByIndexNode copyNode = prependToArray(parent, elementToCopy, jsonArray);
-            node.setParent(new GsonByIndexNode(jsonArray, copyNode.getIndex() + 1, node.getParent()));
+            node.setParent(new GsonByIndexNode(jsonArray, copyNode.getIndex() + 1, parent));
             elementNode = copyNode;
         } else {
             throw new XmlBuilderException("Unable to prepend copy to primitive node: " + parentElement);
@@ -121,7 +122,7 @@ public class GsonNavigator implements Navigator<GsonNode> {
         final GsonNode elementNode;
         if (parentElement.isJsonObject()) {
             final JsonObject parentObject = parentElement.getAsJsonObject();
-            if (null == parentObject.get(name)) {
+            if (!parentObject.has(name)) {
                 elementNode = new GsonByNameNode(parentObject, name, parent);
             } else {
                 final GsonNode parentParent = parent.getParent();
