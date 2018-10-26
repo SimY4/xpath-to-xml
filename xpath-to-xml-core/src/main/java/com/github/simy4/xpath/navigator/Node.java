@@ -11,6 +11,11 @@ import javax.xml.namespace.QName;
 public interface Node {
 
     /**
+     * Document node constant name.
+     */
+    String DOCUMENT = "#document";
+
+    /**
      * XML node name.
      *
      * @return node name.

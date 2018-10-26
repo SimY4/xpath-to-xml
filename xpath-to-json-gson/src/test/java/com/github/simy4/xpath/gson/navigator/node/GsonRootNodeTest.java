@@ -17,7 +17,7 @@ class GsonRootNodeTest {
 
     @Test
     void shouldReturnRootName() {
-        assertThat(rootNode.getName()).isEqualTo(new QName("_root_"));
+        assertThat(rootNode.getName()).isEqualTo(new QName(GsonNode.DOCUMENT));
     }
 
     @Test
