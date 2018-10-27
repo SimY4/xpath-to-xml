@@ -145,7 +145,7 @@ class XmlBuilderTest {
     }
 
     private String xmlToString(Document xml) throws IOException {
-        var lineSeparator = System.getProperty("line.separator");
+        var lineSeparator = System.lineSeparator();
         var format = OutputFormat.createCompactFormat();
         format.setIndentSize(4);
         format.setNewlines(true);

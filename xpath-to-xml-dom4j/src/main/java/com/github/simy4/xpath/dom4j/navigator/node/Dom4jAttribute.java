@@ -20,22 +20,28 @@ public final class Dom4jAttribute extends AbstractDom4jNode<Attribute> {
     }
 
     @Override
-    public Iterable<Dom4jNode<Element>> elements() {
+    public Dom4jNode getParent() {
+        final Element parent = getNode().getParent();
+        return null == parent ? null : new Dom4jElement(parent);
+    }
+
+    @Override
+    public Iterable<? extends Dom4jNode> elements() {
         return Collections.emptyList();
     }
 
     @Override
-    public Iterable<Dom4jNode<Attribute>> attributes() {
+    public Iterable<? extends Dom4jNode> attributes() {
         return Collections.emptyList();
     }
 
     @Override
-    public Dom4jNode<Attribute> createAttribute(org.dom4j.QName attribute) throws XmlBuilderException {
+    public Dom4jNode createAttribute(org.dom4j.QName attribute) throws XmlBuilderException {
         throw new XmlBuilderException("Unable to append attribute to a non-element node " + getNode());
     }
 
     @Override
-    public Dom4jNode<Element> createElement(org.dom4j.QName element) throws XmlBuilderException {
+    public Dom4jNode createElement(org.dom4j.QName element) throws XmlBuilderException {
         throw new XmlBuilderException("Unable to append element to an attribute " + getNode());
     }
 

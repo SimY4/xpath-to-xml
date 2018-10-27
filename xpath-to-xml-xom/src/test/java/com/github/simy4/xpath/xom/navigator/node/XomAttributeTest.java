@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class XomAttributeTest {
 
-    private XomNode<Attribute> node;
+    private XomNode node;
 
     @BeforeEach
     void setUp() {

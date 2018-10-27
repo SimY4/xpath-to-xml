@@ -18,7 +18,7 @@ class JacksonRootNodeTest {
 
     @Test
     void shouldReturnRootName() {
-        assertThat(rootNode.getName()).isEqualTo(new QName("_root_"));
+        assertThat(rootNode.getName()).isEqualTo(new QName(JacksonNode.DOCUMENT));
     }
 
     @Test

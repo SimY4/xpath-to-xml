@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class XomElementTest {
 
-    private XomNode<Element> node;
+    private XomNode node;
     private final Attribute attr1 = new Attribute("attr1", "text");
     private final Attribute attr2 = new Attribute("attr2", "text");
     private final Attribute attr3 = new Attribute("attr3", "text");
@@ -33,13 +33,17 @@ class XomElementTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void shouldReturnListOfAttributesWhenObtainAttributes() {
-        assertThat(node.attributes()).contains(new XomAttribute(attr1), new XomAttribute(attr2));
+        assertThat((Iterable<XomNode>) node.attributes())
+                .containsExactly(new XomAttribute(attr1), new XomAttribute(attr2), new XomAttribute(attr3));
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void shouldReturnListOfElementsWhenObtainElements() {
-        assertThat(node.elements()).contains(new XomElement(child1), new XomElement(child2));
+        assertThat((Iterable<XomNode>) node.elements())
+                .containsExactly(new XomElement(child1), new XomElement(child2), new XomElement(child3));
     }
 
     @Test
