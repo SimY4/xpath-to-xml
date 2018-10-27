@@ -11,6 +11,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
+import javax.xml.namespace.QName;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -23,7 +25,7 @@ class Dom4JDocumentTest {
     @Mock private Document document;
     @Mock private Element root;
 
-    private Dom4jNode<Document> node;
+    private Dom4jNode node;
 
     @BeforeEach
     void setUp() {
@@ -46,7 +48,7 @@ class Dom4JDocumentTest {
     @Test
     void shouldReturnSingleRootNodeWhenObtainElements() {
         when(document.getRootElement()).thenReturn(root);
-        assertThat(node.elements()).containsExactly(new Dom4jElement(root));
+        assertThat(node.elements()).asList().containsExactly(new Dom4jElement(root));
     }
 
     @Test
@@ -68,9 +70,8 @@ class Dom4JDocumentTest {
     }
 
     @Test
-    void shouldThrowExceptionOnGetName() {
-        assertThatThrownBy(() -> node.getName())
-                .isInstanceOf(UnsupportedOperationException.class);
+    void shouldReturnDocumentName() {
+        assertThat(node.getName()).isEqualTo(new QName(Dom4jNode.DOCUMENT));
     }
 
     @Test

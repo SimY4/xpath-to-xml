@@ -7,6 +7,8 @@ import nu.xom.Element;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.namespace.QName;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -14,7 +16,7 @@ class XomDocumentTest {
 
     private final Element root = new Element("root");
 
-    private XomNode<Document> node;
+    private XomNode node;
 
     @BeforeEach
     void setUp() {
@@ -30,7 +32,7 @@ class XomDocumentTest {
 
     @Test
     void shouldReturnSingleRootNodeWhenObtainElements() {
-        assertThat(node.elements()).containsExactly(new XomElement(root));
+        assertThat(node.elements()).asList().containsExactly(new XomElement(root));
     }
 
     @Test
@@ -46,8 +48,8 @@ class XomDocumentTest {
     }
 
     @Test
-    void shouldThrowExceptionOnGetName() {
-        assertThatThrownBy(() -> node.getName()).isInstanceOf(UnsupportedOperationException.class);
+    void shouldReturnDocumentName() {
+        assertThat(node.getName()).isEqualTo(new QName(XomNode.DOCUMENT));
     }
 
     @Test

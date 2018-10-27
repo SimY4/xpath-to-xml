@@ -103,13 +103,15 @@ class XmlBuilderTest {
     }
 
     private String jsonToString(JsonValue json) {
+        String lineSeparator = System.lineSeparator();
         StringWriter sw = new StringWriter();
         Json.createWriterFactory(Collections.singletonMap(JsonGenerator.PRETTY_PRINTING, true))
                 .createWriter(sw)
                 .write(json);
         return sw.toString().substring(1)
                 .replaceAll(" {4}", "  ")
-                .replaceAll("\\{\n\\p{Space}*}", "{}");
+                .replaceAll("\\{\n\\p{Space}*}", "{}")
+                .replaceAll("\n", lineSeparator);
     }
 
 }

@@ -41,8 +41,9 @@ class XmlBuilderTest {
   import implicits._
   import kantan.xpath.implicits._
 
-  private def xPathCompiler(implicit namespaceContext: NamespaceContext = null): XPathCompiler = Option(namespaceContext)
-    .fold(XPathCompiler.builtIn) { nc =>
+  private def xPathCompiler(implicit namespaceContext: NamespaceContext = null): XPathCompiler = namespaceContext match {
+    case null => XPathCompiler.builtIn
+    case nc   =>
       val xPathFactory = XPathFactory.newInstance
       XPathCompiler { xpathString =>
         CompileResult {
@@ -51,15 +52,16 @@ class XmlBuilderTest {
           xpath.compile(xpathString)
         }
       }
-    }
+  }
 
-  private def xmlParser(implicit namespaceContext: NamespaceContext = null): XmlParser = Option(namespaceContext)
-    .fold(XmlParser.builtIn) { _ =>
+  private def xmlParser(implicit namespaceContext: NamespaceContext = null): XmlParser = namespaceContext match {
+    case null => XmlParser.builtIn
+    case _    =>
       val factory: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
       factory.setNamespaceAware(true)
       factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false)
       XmlParser { source => ParseResult(factory.newDocumentBuilder().parse(source)) }
-    }
+  }
 
   @ParameterizedTest
   @ArgumentsSource(classOf[DataProvider])
@@ -189,7 +191,7 @@ class XmlBuilderTest {
   }
 
   private def xmlToString(xml: Node) = {
-    val lineSeparator = System.getProperty("line.separator")
+    val lineSeparator = System.lineSeparator()
     val printer = new PrettyPrinter(255, 4)
     val string = printer.format(xml).replaceAll(s">\n\\s*(\\w.+?)\n\\s*</", ">$1</") + "\n"
     string.replaceAll("\n", lineSeparator)

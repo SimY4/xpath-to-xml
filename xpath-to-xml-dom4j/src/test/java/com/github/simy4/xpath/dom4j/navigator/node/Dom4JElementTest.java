@@ -29,7 +29,7 @@ class Dom4JElementTest {
     @Mock private Attribute attr1;
     @Mock private Attribute attr2;
 
-    private Dom4jNode<Element> node;
+    private Dom4jNode node;
 
     @BeforeEach
     void setUp() {
@@ -42,13 +42,17 @@ class Dom4JElementTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void shouldReturnListOfAttributesWhenObtainAttributes() {
-        assertThat(node.attributes()).contains(new Dom4jAttribute(attr1), new Dom4jAttribute(attr2));
+        assertThat((Iterable<Dom4jNode>) node.attributes())
+                .containsExactly(new Dom4jAttribute(attr1), new Dom4jAttribute(attr2));
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void shouldReturnListOfElementsWhenObtainElements() {
-        assertThat(node.elements()).contains(new Dom4jElement(child1), new Dom4jElement(child2));
+        assertThat((Iterable<Dom4jNode>) node.elements())
+                .containsExactly(new Dom4jElement(child1), new Dom4jElement(child2));
     }
 
     @Test

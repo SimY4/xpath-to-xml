@@ -2,7 +2,7 @@ package com.github.simy4.xpath.dom4j.navigator.node;
 
 import org.dom4j.Node;
 
-abstract class AbstractDom4jNode<N extends Node> implements Dom4jNode<N> {
+abstract class AbstractDom4jNode<N extends Node> implements Dom4jNode {
 
     private final N node;
 

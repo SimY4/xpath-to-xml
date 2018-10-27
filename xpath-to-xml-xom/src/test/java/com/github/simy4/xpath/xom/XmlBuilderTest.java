@@ -153,7 +153,7 @@ class XmlBuilderTest {
     }
 
     private String xmlToString(Document xml) throws IOException {
-        String lineSeparator = System.getProperty("line.separator");
+        String lineSeparator = System.lineSeparator();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Serializer serializer = new Serializer(outputStream, "UTF-8");
         serializer.setIndent(4);

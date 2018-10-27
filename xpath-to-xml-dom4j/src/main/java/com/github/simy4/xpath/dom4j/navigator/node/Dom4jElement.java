@@ -21,25 +21,33 @@ public final class Dom4jElement extends AbstractDom4jNode<Element> {
     }
 
     @Override
-    public Iterable<Dom4jNode<Element>> elements() {
+    public Dom4jNode getParent() {
+        final Element node = getNode();
+        final Element parent = node.getParent();
+        return null == parent ? node.getDocument().getRootElement() == node ? new Dom4jDocument(node.getDocument())
+                : null : new Dom4jElement(parent);
+    }
+
+    @Override
+    public Iterable<? extends Dom4jNode> elements() {
         return () -> new TransformingIterator<>(getNode().elementIterator(), Dom4jElement::new);
     }
 
     @Override
-    public Iterable<Dom4jNode<Attribute>> attributes() {
+    public Iterable<? extends Dom4jNode> attributes() {
         return () -> new TransformingIterator<>(getNode().attributeIterator(), Dom4jAttribute::new);
     }
 
     @Override
-    public Dom4jNode<Attribute> createAttribute(org.dom4j.QName attribute) {
+    public Dom4jNode createAttribute(org.dom4j.QName attribute) {
         final Attribute attr = DocumentHelper.createAttribute(getNode(), attribute, "");
         getNode().attributes().add(attr);
         return new Dom4jAttribute(attr);
     }
 
     @Override
-    public Dom4jNode<Element> createElement(org.dom4j.QName element) {
-        return new Dom4jElement(this.getNode().addElement(element));
+    public Dom4jNode createElement(org.dom4j.QName element) {
+        return new Dom4jElement(getNode().addElement(element));
     }
 
 }

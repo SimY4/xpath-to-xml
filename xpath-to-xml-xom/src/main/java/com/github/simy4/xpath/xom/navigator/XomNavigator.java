@@ -16,7 +16,7 @@ import nu.xom.XMLException;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
-public final class XomNavigator implements Navigator<XomNode<?>> {
+public final class XomNavigator implements Navigator<XomNode> {
 
     private final Node xml;
 
@@ -25,29 +25,29 @@ public final class XomNavigator implements Navigator<XomNode<?>> {
     }
 
     @Override
-    public XomNode<?> root() {
+    public XomNode root() {
         return new XomDocument(xml.getDocument());
     }
 
     @Override
-    public XomNode<?> parentOf(XomNode<?> node) {
+    public XomNode parentOf(XomNode node) {
         final ParentNode parent = node.getNode().getParent();
         return null == parent ? null
                 : parent instanceof Element ? new XomElement((Element) parent) : new XomDocument((Document) parent);
     }
 
     @Override
-    public Iterable<? extends XomNode<?>> elementsOf(final XomNode<?> parent) {
+    public Iterable<? extends XomNode> elementsOf(final XomNode parent) {
         return parent.elements();
     }
 
     @Override
-    public Iterable<? extends XomNode<?>> attributesOf(final XomNode<?> parent) {
+    public Iterable<? extends XomNode> attributesOf(final XomNode parent) {
         return parent.attributes();
     }
 
     @Override
-    public XomNode<?> createAttribute(XomNode<?> parent, QName attribute) throws XmlBuilderException {
+    public XomNode createAttribute(XomNode parent, QName attribute) throws XmlBuilderException {
         final Attribute attr = new Attribute(attribute.getLocalPart(), "");
         if (!XMLConstants.NULL_NS_URI.equals(attribute.getNamespaceURI())) {
             attr.setNamespace(attr.getNamespacePrefix(), attr.getNamespaceURI());
@@ -56,14 +56,14 @@ public final class XomNavigator implements Navigator<XomNode<?>> {
     }
 
     @Override
-    public XomNode<?> createElement(XomNode<?> parent, QName element) throws XmlBuilderException {
+    public XomNode createElement(XomNode parent, QName element) throws XmlBuilderException {
         final Element elem = new Element(element.getLocalPart(), element.getNamespaceURI());
         elem.setNamespacePrefix(element.getPrefix());
         return parent.appendElement(elem);
     }
 
     @Override
-    public void setText(XomNode<?> node, String text) {
+    public void setText(XomNode node, String text) {
         try {
             node.setText(text);
         } catch (UnsupportedOperationException uoe) {
@@ -72,7 +72,7 @@ public final class XomNavigator implements Navigator<XomNode<?>> {
     }
 
     @Override
-    public void prependCopy(XomNode<?> node) throws XmlBuilderException {
+    public void prependCopy(XomNode node) throws XmlBuilderException {
         final Node wrappedNode = node.getNode();
         if (!(wrappedNode instanceof Element)) {
             throw new XmlBuilderException("Unable to copy non-element node " + node);
@@ -91,7 +91,7 @@ public final class XomNavigator implements Navigator<XomNode<?>> {
     }
 
     @Override
-    public void remove(XomNode<?> node) throws XmlBuilderException {
+    public void remove(XomNode node) throws XmlBuilderException {
         try {
             node.getNode().detach();
         } catch (XMLException xe) {
