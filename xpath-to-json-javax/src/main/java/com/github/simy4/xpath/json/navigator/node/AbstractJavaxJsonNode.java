@@ -83,7 +83,7 @@ abstract class AbstractJavaxJsonNode implements JavaxJsonNode {
                 return new TransformingAndFlatteningIterator<>(jsonValue.asJsonArray().iterator(),
                         new JsonArrayWrapper(parent));
             default:
-                return Collections.<JavaxJsonNode>emptyList().iterator();
+                return Collections.emptyIterator();
         }
     }
 
