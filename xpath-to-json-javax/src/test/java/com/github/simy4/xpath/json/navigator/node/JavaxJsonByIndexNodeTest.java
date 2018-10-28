@@ -26,7 +26,7 @@ class JavaxJsonByIndexNodeTest {
 
     @Test
     void shouldSetElementByIndexOnSet() {
-        byIndexNode.set(jsonProvider.createValue(4));
+        byIndexNode.set(jsonProvider, jsonProvider.createValue(4));
 
         assertThat(rootNode.get().asJsonArray()).containsExactly(
                 jsonProvider.createValue(1), jsonProvider.createValue(4), jsonProvider.createValue(3));
@@ -34,7 +34,7 @@ class JavaxJsonByIndexNodeTest {
 
     @Test
     void shouldRemoveElementByIndexOnRemove() {
-        byIndexNode.remove();
+        byIndexNode.remove(jsonProvider);
 
         assertThat(rootNode.get().asJsonArray())
                 .containsExactly(jsonProvider.createValue(1), jsonProvider.createValue(3));
