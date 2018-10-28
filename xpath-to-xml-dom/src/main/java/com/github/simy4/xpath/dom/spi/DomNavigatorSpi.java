@@ -3,7 +3,6 @@ package com.github.simy4.xpath.dom.spi;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.dom.navigator.DomNavigator;
 import com.github.simy4.xpath.dom.navigator.DomNode;
-import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.spi.Effect;
 import com.github.simy4.xpath.spi.NavigatorSpi;
 import org.w3c.dom.Node;
@@ -25,7 +24,7 @@ public class DomNavigatorSpi implements NavigatorSpi {
         }
         final var xmlNode = (Node) xml;
         final var node = new DomNode(xmlNode);
-        final Navigator<DomNode> navigator = new DomNavigator(xmlNode);
+        final var navigator = new DomNavigator(xmlNode);
         for (var effect : effects) {
             effect.perform(navigator, node);
         }

@@ -25,7 +25,7 @@ public class OrderedProperties extends Properties {
      * @return linked hash map of property values
      */
     public synchronized Map<String, Object> toMap() {
-        Map<String, Object> map = new LinkedHashMap<>(keys.size());
+        var map = new LinkedHashMap<String, Object>(keys.size());
         for (var orderedKey : keys) {
             map.put(String.valueOf(orderedKey), get(orderedKey));
         }

@@ -40,7 +40,7 @@ class GsonByIndexNodeTest {
 
     @Test
     void shouldTraverseArray() {
-        GsonNode parent = new GsonRootNode(jsonArray);
+        var parent = new GsonRootNode(jsonArray);
 
         assertThat(parent.iterator()).containsExactlyInAnyOrder(
                 new GsonByIndexNode(jsonArray, 0, parent),

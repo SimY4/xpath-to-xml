@@ -2,9 +2,7 @@ package com.github.simy4.xpath.json.spi;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.json.navigator.JavaxJsonNavigator;
-import com.github.simy4.xpath.json.navigator.node.JavaxJsonNode;
 import com.github.simy4.xpath.json.navigator.node.JavaxJsonRootNode;
-import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.spi.Effect;
 import com.github.simy4.xpath.spi.NavigatorSpi;
 
@@ -26,9 +24,9 @@ public class JavaxJsonNavigatorSpi implements NavigatorSpi {
         if (!canHandle(json)) {
             throw new IllegalArgumentException("JSON model is not supported");
         }
-        final JavaxJsonNode root = new JavaxJsonRootNode((JsonValue) json);
-        final Navigator<JavaxJsonNode> navigator = new JavaxJsonNavigator(root);
-        for (Effect effect : effects) {
+        final var root = new JavaxJsonRootNode((JsonValue) json);
+        final var navigator = new JavaxJsonNavigator(root);
+        for (var effect : effects) {
             effect.perform(navigator, root);
         }
         return (T) root.get();

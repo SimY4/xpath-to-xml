@@ -23,7 +23,6 @@ import org.mockito.quality.Strictness;
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -149,7 +148,7 @@ class Dom4jNavigatorTest {
 
     @Test
     void testPrependCopySuccess() {
-        List<Element> elements = new ArrayList<>();
+        var elements = new ArrayList<Element>();
         elements.add(xml);
         when(parent.elements()).thenReturn(elements);
 

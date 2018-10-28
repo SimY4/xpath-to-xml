@@ -2,7 +2,6 @@ package com.github.simy4.xpath.dom4j.navigator.node;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import org.dom4j.Document;
-import org.dom4j.Element;
 
 import javax.xml.namespace.QName;
 import java.util.Collections;

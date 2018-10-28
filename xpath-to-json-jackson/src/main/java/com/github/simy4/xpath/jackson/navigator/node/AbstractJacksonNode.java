@@ -98,8 +98,8 @@ abstract class AbstractJacksonNode implements JacksonNode {
 
         @Override
         public Iterator<JacksonNode> apply(JsonNode jsonNode) {
-            final JacksonNode arrayElemNode = new JacksonByIndexNode(parentArray, index++, parent);
-            return jsonNode.isValueNode() ? Collections.singleton(arrayElemNode).iterator()
+            final var arrayElemNode = new JacksonByIndexNode(parentArray, index++, parent);
+            return jsonNode.isValueNode() ? Collections.<JacksonNode>singleton(arrayElemNode).iterator()
                     : traverse(jsonNode, arrayElemNode);
         }
 

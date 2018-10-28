@@ -157,7 +157,7 @@ public class GsonNavigator implements Navigator<GsonNode> {
     private GsonNode appendToArray(GsonNode parent, String name, JsonArray parentArray) {
         final var jsonObject = new JsonObject();
         parentArray.add(jsonObject);
-        final GsonNode parentObjectNode = new GsonByIndexNode(parentArray, parentArray.size() - 1, parent);
+        final var parentObjectNode = new GsonByIndexNode(parentArray, parentArray.size() - 1, parent);
         return new GsonByNameNode(jsonObject, name, parentObjectNode);
     }
 

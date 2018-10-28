@@ -98,13 +98,13 @@ abstract class AbstractJavaxJsonNode implements JavaxJsonNode {
 
         @Override
         public Iterator<JavaxJsonNode> apply(JsonValue jsonValue) {
-            final JavaxJsonNode arrayElemNode = new JavaxJsonByIndexNode(index++, parent);
+            final var arrayElemNode = new JavaxJsonByIndexNode(index++, parent);
             switch (jsonValue.getValueType()) {
                 case OBJECT:
                 case ARRAY:
                     return traverse(jsonValue, arrayElemNode);
                 default:
-                    return Collections.singleton(arrayElemNode).iterator();
+                    return Collections.<JavaxJsonNode>singleton(arrayElemNode).iterator();
             }
         }
 

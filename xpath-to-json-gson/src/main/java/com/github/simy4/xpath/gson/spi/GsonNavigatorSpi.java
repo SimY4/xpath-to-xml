@@ -2,9 +2,7 @@ package com.github.simy4.xpath.gson.spi;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.gson.navigator.GsonNavigator;
-import com.github.simy4.xpath.gson.navigator.node.GsonNode;
 import com.github.simy4.xpath.gson.navigator.node.GsonRootNode;
-import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.spi.Effect;
 import com.github.simy4.xpath.spi.NavigatorSpi;
 import com.google.gson.JsonElement;
@@ -25,8 +23,8 @@ public class GsonNavigatorSpi implements NavigatorSpi {
         if (!canHandle(json)) {
             throw new IllegalArgumentException("JSON model is not supported");
         }
-        final GsonNode root = new GsonRootNode((JsonElement) json);
-        final Navigator<GsonNode> navigator = new GsonNavigator(root);
+        final var root = new GsonRootNode((JsonElement) json);
+        final var navigator = new GsonNavigator(root);
         for (var effect : effects) {
             effect.perform(navigator, root);
         }

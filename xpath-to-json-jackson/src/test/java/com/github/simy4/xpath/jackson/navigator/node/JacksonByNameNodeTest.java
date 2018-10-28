@@ -49,7 +49,7 @@ class JacksonByNameNodeTest {
 
     @Test
     void shouldTraverseObject() {
-        JacksonNode parent = new JacksonRootNode(jsonObject);
+        var parent = new JacksonRootNode(jsonObject);
 
         assertThat(parent.iterator()).containsExactlyInAnyOrder(
                 new JacksonByNameNode(jsonObject, "one", parent),

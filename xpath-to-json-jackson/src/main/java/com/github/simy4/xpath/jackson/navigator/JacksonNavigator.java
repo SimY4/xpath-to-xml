@@ -152,7 +152,7 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
     private JacksonNode appendToArray(JacksonNode parent, String name, ArrayNode parentArray) {
         final var jsonObject = new ObjectNode(JsonNodeFactory.instance);
         parentArray.add(jsonObject);
-        final JacksonNode parentObjectNode = new JacksonByIndexNode(parentArray, parentArray.size() - 1, parent);
+        final var parentObjectNode = new JacksonByIndexNode(parentArray, parentArray.size() - 1, parent);
         return new JacksonByNameNode(jsonObject, name, parentObjectNode);
     }
 

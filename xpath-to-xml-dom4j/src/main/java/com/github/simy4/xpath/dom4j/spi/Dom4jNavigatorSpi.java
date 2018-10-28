@@ -6,7 +6,6 @@ import com.github.simy4.xpath.dom4j.navigator.node.Dom4jAttribute;
 import com.github.simy4.xpath.dom4j.navigator.node.Dom4jDocument;
 import com.github.simy4.xpath.dom4j.navigator.node.Dom4jElement;
 import com.github.simy4.xpath.dom4j.navigator.node.Dom4jNode;
-import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.spi.Effect;
 import com.github.simy4.xpath.spi.NavigatorSpi;
 import org.dom4j.Attribute;

@@ -25,7 +25,7 @@ public class Dom4jXmlBuilderBenchmark {
     private static final Map<String, NamespaceContext> NAMESPACE_CONTEXT_MAP;
 
     static {
-        Map<String, NamespaceContext> namespaceContextMap = new HashMap<>();
+        var namespaceContextMap = new HashMap<String, NamespaceContext>();
         namespaceContextMap.put("null", null);
         namespaceContextMap.put("simple", new SimpleNamespaceContext());
         NAMESPACE_CONTEXT_MAP = Collections.unmodifiableMap(namespaceContextMap);
