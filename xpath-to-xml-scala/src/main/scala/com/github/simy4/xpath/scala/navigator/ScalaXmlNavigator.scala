@@ -26,8 +26,10 @@ class ScalaXmlNavigator(xml: Root) extends Navigator[ScalaXmlNode] {
       val node = e.node
       val children = node.child
       val idx = children.size
-      val newElem = Elem(Some(element.getPrefix).filter(_.nonEmpty).orNull, element.getLocalPart, Null, node.scope,
-        minimizeEmpty = true)
+      val newElem = element.getPrefix match {
+        case pre if pre.nonEmpty => Elem(pre, element.getLocalPart, Null, node.scope, minimizeEmpty = true)
+        case _                   => Elem(null, element.getLocalPart, Null, node.scope, minimizeEmpty = true)
+      }
       e.node = node.copy(child = children :+ newElem)
       new Element(newElem, idx, e)
     case _          =>
@@ -56,7 +58,7 @@ class ScalaXmlNavigator(xml: Root) extends Navigator[ScalaXmlNode] {
       val parentNode = e.parent.node
       e.parent.node = parentNode.copy(child = parentNode.child patch (idx, Seq(copy, toCopy), 1))
       e.index += 1
-    case _                                         =>
+    case _          =>
       throw new XmlBuilderException(s"Unable to prepend copy to $node")
   }
   override def remove(node: ScalaXmlNode): Unit = node match {
