@@ -32,26 +32,16 @@ public final class JavaxJsonByNameNode extends AbstractJavaxJsonNode {
 
     @Override
     public void set(JsonProvider jsonProvider,  JsonValue jsonValue) {
-        final JsonObject parentObject = getParentObject();
-        try {
-            parentObject.put(name, jsonValue);
-        } catch (UnsupportedOperationException uoe) {
-            getParent().set(jsonProvider, jsonProvider.createObjectBuilder(parentObject)
-                    .add(name, jsonValue)
-                    .build());
-        }
+        getParent().set(jsonProvider, jsonProvider.createObjectBuilder(getParentObject())
+                .add(name, jsonValue)
+                .build());
     }
 
     @Override
     public void remove(JsonProvider jsonProvider) {
-        final JsonObject parentObject = getParentObject();
-        try {
-            parentObject.remove(name);
-        } catch (UnsupportedOperationException uoe) {
-            getParent().set(jsonProvider, jsonProvider.createObjectBuilder(parentObject)
-                    .remove(name)
-                    .build());
-        }
+        getParent().set(jsonProvider, jsonProvider.createObjectBuilder(getParentObject())
+                .remove(name)
+                .build());
     }
 
     @Override

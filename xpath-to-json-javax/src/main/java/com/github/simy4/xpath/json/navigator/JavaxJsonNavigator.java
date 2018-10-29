@@ -69,29 +69,20 @@ public class JavaxJsonNavigator implements Navigator<JavaxJsonNode> {
     public void setText(JavaxJsonNode node, String text) throws XmlBuilderException {
         final JsonString jsonText = jsonProvider.createValue(text);
         JsonValue jsonValue = node.get();
-        boolean requireUpdate = false;
         switch (jsonValue.getValueType()) {
             case OBJECT:
                 final JsonObject jsonObject = jsonValue.asJsonObject();
-                try {
-                    jsonValue.asJsonObject().put("text", jsonText);
-                } catch (UnsupportedOperationException uoe) {
-                    jsonValue = jsonProvider.createObjectBuilder(jsonObject)
-                            .add("text", jsonProvider.createValue(text))
-                            .build();
-                    requireUpdate = true;
-                }
+                jsonValue = jsonProvider.createObjectBuilder(jsonObject)
+                        .add("text", jsonProvider.createValue(text))
+                        .build();
                 break;
             case ARRAY:
                 throw new XmlBuilderException("Unable to set text to JSON array: " + jsonValue);
             default:
                 jsonValue = jsonText;
-                requireUpdate = true;
                 break;
         }
-        if (requireUpdate) {
-            node.set(jsonProvider, jsonValue);
-        }
+        node.set(jsonProvider, jsonValue);
     }
 
     @Override
@@ -183,13 +174,9 @@ public class JavaxJsonNavigator implements Navigator<JavaxJsonNode> {
 
     private JavaxJsonNode appendToArray(JavaxJsonNode parent, String name, JsonArray parentArray) {
         final int index = parentArray.size();
-        try {
-            parentArray.add(JsonValue.EMPTY_JSON_OBJECT);
-        } catch (UnsupportedOperationException uoe) {
-            parentArray = jsonProvider.createArrayBuilder(parentArray)
-                    .add(JsonValue.EMPTY_JSON_OBJECT)
-                    .build();
-        }
+        parentArray = jsonProvider.createArrayBuilder(parentArray)
+                .add(JsonValue.EMPTY_JSON_OBJECT)
+                .build();
         parent.set(jsonProvider, parentArray);
         return new JavaxJsonByNameNode(name, new JavaxJsonByIndexNode(index, parent));
     }
@@ -203,13 +190,9 @@ public class JavaxJsonNavigator implements Navigator<JavaxJsonNode> {
 
     private JavaxJsonByIndexNode prependToArray(JavaxJsonNode parent, JsonValue valueToCopy, JsonArray parentArray) {
         final int index = parentArray.indexOf(valueToCopy);
-        try {
-            parentArray.add(index, valueToCopy);
-        } catch (UnsupportedOperationException uoe) {
-            parentArray = jsonProvider.createArrayBuilder(parentArray)
-                    .add(index, valueToCopy)
-                    .build();
-        }
+        parentArray = jsonProvider.createArrayBuilder(parentArray)
+                .add(index, valueToCopy)
+                .build();
         parent.set(jsonProvider, parentArray);
         return new JavaxJsonByIndexNode(index, parent);
     }
