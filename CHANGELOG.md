@@ -14,6 +14,8 @@ Bugfixes:
   - Fix parent resolution issue that may occur in some cases on prepend copy
 - Dom4J
   - Correctly resolve parent for top level element.
+- XOM
+  - Align can handle with what XOM SPI can actually handle.
 
 ### 1.2.3
 
