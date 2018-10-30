@@ -12,7 +12,7 @@ import com.github.simy4.xpath.xom.navigator.node.XomNode;
 import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
-import nu.xom.Node;
+import nu.xom.ParentNode;
 
 /**
  * XOM model navigator extension SPI.
@@ -21,7 +21,7 @@ public class XomNavigatorSpi implements NavigatorSpi {
 
     @Override
     public boolean canHandle(Object o) {
-        return o instanceof Node;
+        return o instanceof ParentNode || o instanceof Attribute;
     }
 
     @Override
