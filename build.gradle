@@ -74,10 +74,8 @@ configure(build) {
 }
 
 release {
-    failOnCommitNeeded = false
-
     git {
-        requireBranch = 'java6'
+        requireBranch = 'java6-1.x'
     }
 }
 
