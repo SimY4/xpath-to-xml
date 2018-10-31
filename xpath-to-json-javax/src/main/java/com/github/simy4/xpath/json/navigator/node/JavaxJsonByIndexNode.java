@@ -1,8 +1,8 @@
 package com.github.simy4.xpath.json.navigator.node;
 
-import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonValue;
+import javax.json.spi.JsonProvider;
 import javax.xml.namespace.QName;
 
 public final class JavaxJsonByIndexNode extends AbstractJavaxJsonNode {
@@ -31,27 +31,17 @@ public final class JavaxJsonByIndexNode extends AbstractJavaxJsonNode {
     }
 
     @Override
-    public void set(JsonValue jsonValue) {
-        final JsonArray parentArray = getParentArray();
-        try {
-            parentArray.set(index, jsonValue);
-        } catch (UnsupportedOperationException uoe) {
-            getParent().set(Json.createArrayBuilder(parentArray)
-                    .set(index, jsonValue)
-                    .build());
-        }
+    public void set(JsonProvider jsonProvider, JsonValue jsonValue) {
+        getParent().set(jsonProvider, jsonProvider.createArrayBuilder(getParentArray())
+                .set(index, jsonValue)
+                .build());
     }
 
     @Override
-    public void remove() {
-        final JsonArray parentArray = getParentArray();
-        try {
-            parentArray.remove(index);
-        } catch (UnsupportedOperationException uoe) {
-            getParent().set(Json.createArrayBuilder(parentArray)
-                    .remove(index)
-                    .build());
-        }
+    public void remove(JsonProvider jsonProvider) {
+        getParent().set(jsonProvider, jsonProvider.createArrayBuilder(getParentArray())
+                .remove(index)
+                .build());
     }
 
     @Override

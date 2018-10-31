@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.json.Json;
 import javax.json.JsonValue;
+import javax.json.spi.JsonProvider;
 import javax.xml.namespace.QName;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,10 +16,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class JavaxJsonNavigatorTest {
 
+    private static final JsonProvider jsonProvider = JsonProvider.provider();
+
     @Test
     void shouldReturnRoot() {
         var root = new JavaxJsonRootNode(JsonValue.EMPTY_JSON_OBJECT);
-        var navigator = new JavaxJsonNavigator(root);
+        var navigator = new JavaxJsonNavigator(jsonProvider, root);
 
         assertThat(navigator.root()).isEqualTo(root);
     }
@@ -26,7 +29,7 @@ class JavaxJsonNavigatorTest {
     @Test
     void shouldReturnNullParentForRoot() {
         var root = new JavaxJsonRootNode(JsonValue.EMPTY_JSON_OBJECT);
-        var navigator = new JavaxJsonNavigator(root);
+        var navigator = new JavaxJsonNavigator(jsonProvider, root);
 
         assertThat(navigator.parentOf(root)).isNull();
     }
@@ -37,7 +40,7 @@ class JavaxJsonNavigatorTest {
                 .add("child", Json.createValue("zero"))
                 .build();
         var root = new JavaxJsonRootNode(json);
-        var navigator = new JavaxJsonNavigator(root);
+        var navigator = new JavaxJsonNavigator(jsonProvider, root);
         var childNode = new JavaxJsonByNameNode("child", root);
 
         assertThat(navigator.parentOf(childNode)).isEqualTo(root);
@@ -49,7 +52,7 @@ class JavaxJsonNavigatorTest {
                 .add("zero")
                 .build();
         var root = new JavaxJsonRootNode(json);
-        var navigator = new JavaxJsonNavigator(root);
+        var navigator = new JavaxJsonNavigator(jsonProvider, root);
         var childNode = new JavaxJsonByIndexNode(0, root);
 
         assertThat(navigator.parentOf(childNode)).isEqualTo(root);
@@ -64,7 +67,7 @@ class JavaxJsonNavigatorTest {
                 .add(child)
                 .build();
         var root = new JavaxJsonRootNode(json);
-        var navigator = new JavaxJsonNavigator(root);
+        var navigator = new JavaxJsonNavigator(jsonProvider, root);
         var array1Node = new JavaxJsonByIndexNode(0, root);
         var array2Node = new JavaxJsonByIndexNode(0, array1Node);
 
@@ -75,7 +78,7 @@ class JavaxJsonNavigatorTest {
     void shouldSetTextForElementChild() {
         var json = JsonValue.EMPTY_JSON_OBJECT;
         var root = new JavaxJsonRootNode(json);
-        var navigator = new JavaxJsonNavigator(root);
+        var navigator = new JavaxJsonNavigator(jsonProvider, root);
 
         navigator.setText(root, "test");
 
@@ -86,7 +89,7 @@ class JavaxJsonNavigatorTest {
     void shouldSetTextForArrayChild() {
         var json = JsonValue.EMPTY_JSON_ARRAY;
         var root = new JavaxJsonRootNode(json);
-        var navigator = new JavaxJsonNavigator(root);
+        var navigator = new JavaxJsonNavigator(jsonProvider, root);
 
         assertThatThrownBy(() -> navigator.setText(root, "test"))
                 .isInstanceOf(XmlBuilderException.class);
@@ -98,7 +101,7 @@ class JavaxJsonNavigatorTest {
                 .add("child", Json.createValue("zero"))
                 .build();
         var root = new JavaxJsonRootNode(json);
-        var navigator = new JavaxJsonNavigator(root);
+        var navigator = new JavaxJsonNavigator(jsonProvider, root);
         var childNode = new JavaxJsonByNameNode("child", root);
 
         navigator.setText(childNode, "test");
@@ -110,7 +113,7 @@ class JavaxJsonNavigatorTest {
     void shouldCreateElementForElementParent() {
         var json = JsonValue.EMPTY_JSON_OBJECT;
         var root = new JavaxJsonRootNode(json);
-        var navigator = new JavaxJsonNavigator(root);
+        var navigator = new JavaxJsonNavigator(jsonProvider, root);
 
         var child = navigator.createElement(root, new QName("child"));
 
@@ -127,7 +130,7 @@ class JavaxJsonNavigatorTest {
                 .add(child)
                 .build();
         var root = new JavaxJsonRootNode(json);
-        var navigator = new JavaxJsonNavigator(root);
+        var navigator = new JavaxJsonNavigator(jsonProvider, root);
         var objectNode = new JavaxJsonByIndexNode(0, root);
 
         var newChild = navigator.createElement(objectNode, new QName("child"));
@@ -142,7 +145,7 @@ class JavaxJsonNavigatorTest {
     void shouldCreateElementForArrayParent() {
         var json = JsonValue.EMPTY_JSON_ARRAY;
         var root = new JavaxJsonRootNode(json);
-        var navigator = new JavaxJsonNavigator(root);
+        var navigator = new JavaxJsonNavigator(jsonProvider, root);
 
         var child = navigator.createElement(root, new QName("child"));
 
@@ -159,7 +162,7 @@ class JavaxJsonNavigatorTest {
                 .add("child", Json.createValue("zero"))
                 .build();
         var root = new JavaxJsonRootNode(json);
-        var navigator = new JavaxJsonNavigator(root);
+        var navigator = new JavaxJsonNavigator(jsonProvider, root);
         var childNode = new JavaxJsonByNameNode("child", root);
 
         assertThatThrownBy(() -> navigator.createElement(childNode, new QName("child")))
@@ -170,7 +173,7 @@ class JavaxJsonNavigatorTest {
     void shouldCreateAttributeForElementParent() {
         var json = JsonValue.EMPTY_JSON_OBJECT;
         var root = new JavaxJsonRootNode(json);
-        var navigator = new JavaxJsonNavigator(root);
+        var navigator = new JavaxJsonNavigator(jsonProvider, root);
 
         var child = navigator.createAttribute(root, new QName("child"));
 
@@ -187,7 +190,7 @@ class JavaxJsonNavigatorTest {
                 .add(child)
                 .build();
         var root = new JavaxJsonRootNode(json);
-        var navigator = new JavaxJsonNavigator(root);
+        var navigator = new JavaxJsonNavigator(jsonProvider, root);
         var objectNode = new JavaxJsonByIndexNode(0, root);
 
         var newChild = navigator.createAttribute(objectNode, new QName("child"));
@@ -202,7 +205,7 @@ class JavaxJsonNavigatorTest {
     void shouldCreateAttributeForArrayParent() {
         var json = JsonValue.EMPTY_JSON_ARRAY;
         var root = new JavaxJsonRootNode(json);
-        var navigator = new JavaxJsonNavigator(root);
+        var navigator = new JavaxJsonNavigator(jsonProvider, root);
 
         var child = navigator.createAttribute(root, new QName("child"));
 
@@ -219,7 +222,7 @@ class JavaxJsonNavigatorTest {
                 .add("child", Json.createValue("zero"))
                 .build();
         var root = new JavaxJsonRootNode(json);
-        var navigator = new JavaxJsonNavigator(root);
+        var navigator = new JavaxJsonNavigator(jsonProvider, root);
 
         var childNode = new JavaxJsonByNameNode("child", root);
 

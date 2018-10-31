@@ -36,16 +36,16 @@ final class Root(override var node: Elem) extends Parent {
 }
 
 private[navigator] final class Element(private var _node: Elem, var index: Int,
-                                      override val parent: Parent) extends Parent {
+                                       override val parent: Parent) extends Parent {
   override def getName: QName = node match {
     case prefixed if null != prefixed.prefix => new QName(prefixed.namespace, prefixed.label, prefixed.prefix)
     case simple                              => new QName(simple.label)
   }
   override def getText: String = node.child.collect { case Text(t) => t }.mkString
   override def elements: Iterable[Element] = for {
-    (n, i) <- _node.child.zipWithIndex if !n.isAtom
+    (n, i) <- _node.child.view.zipWithIndex if !n.isAtom
   } yield new Element(n.asInstanceOf[Elem], i, this)
-  override def attributes: Iterable[Attribute] = _node.attributes map (new Attribute(_, this))
+  override def attributes: Iterable[Attribute] = _node.attributes.view map (new Attribute(_, this))
   override def node: Elem = _node
   override def node_=(elem: Elem): Unit = {
     parent.node = parent match {
