@@ -9,11 +9,14 @@ import com.github.simy4.xpath.spi.Effect;
 import com.github.simy4.xpath.spi.NavigatorSpi;
 
 import javax.json.JsonValue;
+import javax.json.spi.JsonProvider;
 
 /**
  * Javax JSON model navigator extension SPI.
  */
 public class JavaxJsonNavigatorSpi implements NavigatorSpi {
+
+    private final JsonProvider jsonProvider = JsonProvider.provider();
 
     @Override
     public boolean canHandle(Object o) {
@@ -27,7 +30,7 @@ public class JavaxJsonNavigatorSpi implements NavigatorSpi {
             throw new IllegalArgumentException("JSON model is not supported");
         }
         final JavaxJsonNode root = new JavaxJsonRootNode((JsonValue) json);
-        final Navigator<JavaxJsonNode> navigator = new JavaxJsonNavigator(root);
+        final Navigator<JavaxJsonNode> navigator = new JavaxJsonNavigator(jsonProvider, root);
         for (Effect effect : effects) {
             effect.perform(navigator, root);
         }
