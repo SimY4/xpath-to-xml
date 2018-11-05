@@ -4,6 +4,7 @@ package scala.navigator
 import javax.xml.namespace.QName
 import navigator.Node
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable
 import org.junit.jupiter.api.Test
 
 class ScalaXmlNodeTest {
@@ -21,7 +22,9 @@ class ScalaXmlNodeTest {
 
   @Test
   def shouldThrowWhenRootTextAccessed(): Unit = {
-    assertThatThrownBy(() => root.getText) isInstanceOf classOf[UnsupportedOperationException]
+    assertThatThrownBy(new ThrowingCallable {
+      override def call(): Unit = root.getText
+    }) isInstanceOf classOf[UnsupportedOperationException]
   }
 
   @Test
