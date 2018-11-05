@@ -18,6 +18,7 @@ Improvements:
 - Core
   - [BREAKING] Effect interface moved into `com.github.simy4.xpath.spi` package for better modularisation story in Java9.
     All existing core extensions adopted this change
+  - [BREAKING] automatic module names were changed
     
 ## 1.x Series
 
