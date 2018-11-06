@@ -15,7 +15,7 @@ class ScalaXmlNavigator(xml: Root) extends Navigator[ScalaXmlNode] {
   override def attributesOf(parent: ScalaXmlNode): java.lang.Iterable[_ <: ScalaXmlNode] = parent.attributes.asJava
   override def createAttribute(parent: ScalaXmlNode, attribute: QName): ScalaXmlNode = parent match {
     case e: Element =>
-      val newAttr = XmlAttribute(Some(attribute.getPrefix).filter(_.nonEmpty), attribute.getLocalPart, Text(""), Null)
+      val newAttr = XmlAttribute(Some(attribute.getPrefix) filter (_.nonEmpty), attribute.getLocalPart, Text(""), Null)
       e.node = e.node % newAttr
       new Attribute(newAttr, e)
     case _          =>
@@ -40,12 +40,10 @@ class ScalaXmlNavigator(xml: Root) extends Navigator[ScalaXmlNode] {
       val elem = e.node
       e.node = elem.copy(child = elem.child.filterNot(_.isInstanceOf[Text]) :+ Text(text))
     case a: Attribute =>
-      val parentNode = a.parent.node
-      val newAttr = a.meta match {
-        case attr: XmlAttribute if attr.isPrefixed => XmlAttribute(Some(attr.pre), attr.key, Text(text), Null)
-        case attr                                  => XmlAttribute(None, attr.key, Text(text), Null)
-      }
-      a.parent.node = parentNode % newAttr
+      val attr = a.meta
+      val newAttr = XmlAttribute(Some(attr) collect {
+        case a: XmlAttribute if attr.isPrefixed => a.pre
+      }, attr.key, Text(text), Null)
       a.meta = newAttr
     case _            =>
       throw new XmlBuilderException(s"Unable to set text to $node")

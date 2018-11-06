@@ -70,18 +70,23 @@ private[navigator] final class Element(private var _node: Elem, var index: Int,
   override def toString: String = _node.toString
 }
 
-private[navigator] final class Attribute(var meta: MetaData, override val parent: Parent) extends ScalaXmlNode {
+private[navigator] final class Attribute(private var _meta: MetaData, override val parent: Parent) extends ScalaXmlNode {
   override def getName: QName = meta match {
     case a : XmlAttribute if a.isPrefixed => new QName(a.getNamespace(parent.node), a.key, a.pre)
-    case _                                => new QName(meta.key)
+    case _                                => new QName(_meta.key)
   }
-  override def getText: String = meta.value.text
+  override def getText: String = _meta.value.text
   override def elements: Iterable[Element] = Nil
   override def attributes: Iterable[Attribute] = Nil
   override def equals(obj: Any): Boolean = obj match {
-    case a: Attribute => meta == a.meta
+    case a: Attribute => _meta == a._meta
     case _            => false
   }
-  override def hashCode(): Int = meta.hashCode()
-  override def toString: String = meta.toString
+  override def hashCode(): Int = _meta.hashCode()
+  override def toString: String = _meta.toString
+  def meta: MetaData = _meta
+  def meta_=(meta: MetaData): Unit = {
+    parent.node = parent.node % meta
+    _meta = meta
+  }
 }
