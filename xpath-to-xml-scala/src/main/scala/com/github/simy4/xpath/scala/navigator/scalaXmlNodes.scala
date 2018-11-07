@@ -19,11 +19,11 @@ sealed trait ScalaXmlNode extends NavigatorNode {
 }
 private[navigator] sealed trait Parent extends ScalaXmlNode {
   var node: Elem
+  override def getText: String = node.child.collect { case Text(t) => t }.mkString
 }
 
 final class Root(override var node: Elem) extends Parent {
   override def getName: QName = new QName(NavigatorNode.DOCUMENT)
-  override def getText: String = node.text
   override val parent: Parent = null
   override def elements: Iterable[Element] = Seq(new Element(node, 0, this))
   override def attributes: Iterable[Attribute] = Nil
@@ -41,7 +41,6 @@ private[navigator] final class Element(private var _node: Elem, var index: Int,
     case prefixed if null != prefixed.prefix => new QName(prefixed.namespace, prefixed.label, prefixed.prefix)
     case simple                              => new QName(simple.label)
   }
-  override def getText: String = node.child.collect { case Text(t) => t }.mkString
   override def elements: Iterable[Element] = for {
     (n, i) <- _node.child.view.zipWithIndex if !n.isAtom
   } yield new Element(n.asInstanceOf[Elem], i, this)
