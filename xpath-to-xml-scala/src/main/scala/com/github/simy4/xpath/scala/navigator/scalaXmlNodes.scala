@@ -23,7 +23,7 @@ private[navigator] sealed trait Parent extends ScalaXmlNode {
 
 final class Root(override var node: Elem) extends Parent {
   override def getName: QName = new QName(NavigatorNode.DOCUMENT)
-  override def getText: String = throw new UnsupportedOperationException("getText")
+  override def getText: String = node.text
   override val parent: Parent = null
   override def elements: Iterable[Element] = Seq(new Element(node, 0, this))
   override def attributes: Iterable[Attribute] = Nil
