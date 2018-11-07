@@ -4,7 +4,6 @@ package scala.navigator
 import javax.xml.namespace.QName
 import navigator.Node
 import org.assertj.core.api.Assertions
-import org.assertj.core.api.ThrowableAssert.ThrowingCallable
 import org.junit.jupiter.api.Test
 
 class ScalaXmlNodeTest {
@@ -12,7 +11,7 @@ class ScalaXmlNodeTest {
 
   import _root_.scala.collection.JavaConverters._
 
-  private val xml = <root attr="value"/>
+  private val xml = <root attr="value">text</root>
   private val root = new Root(xml)
 
   @Test
@@ -21,10 +20,8 @@ class ScalaXmlNodeTest {
   }
 
   @Test
-  def shouldThrowWhenRootTextAccessed(): Unit = {
-    assertThatThrownBy(new ThrowingCallable {
-      override def call(): Unit = root.getText
-    }) isInstanceOf classOf[UnsupportedOperationException]
+  def shouldReturnRootElementTextRootTextAccessed(): Unit = {
+    assertThat(root.getText) isEqualTo "text"
   }
 
   @Test
