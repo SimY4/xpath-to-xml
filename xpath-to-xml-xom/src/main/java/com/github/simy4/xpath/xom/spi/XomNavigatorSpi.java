@@ -21,7 +21,8 @@ public class XomNavigatorSpi implements NavigatorSpi {
 
     @Override
     public boolean canHandle(Object o) {
-        return o instanceof ParentNode || o instanceof Attribute;
+        return (o instanceof ParentNode && null != ((ParentNode) o).getDocument())
+                || (o instanceof Attribute && null != ((Attribute) o).getDocument());
     }
 
     @Override

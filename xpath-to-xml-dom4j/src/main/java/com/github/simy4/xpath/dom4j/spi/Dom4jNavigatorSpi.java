@@ -28,7 +28,8 @@ public class Dom4jNavigatorSpi implements NavigatorSpi {
 
     @Override
     public boolean canHandle(Object o) {
-        return o instanceof Node && SUPPORTED_NODE_TYPES.contains(((Node) o).getNodeType());
+        return o instanceof Node && SUPPORTED_NODE_TYPES.contains(((Node) o).getNodeType())
+                && null != ((Node) o).getDocument();
     }
 
     @Override
