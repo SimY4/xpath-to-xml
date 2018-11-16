@@ -51,8 +51,8 @@ class XmlBuilderTest {
                 .putAll(xmlProperties.keySet())
                 .build(DocumentHelper.createDocument());
 
-        for (Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
-            XPath xpath = builtDocument.createXPath(xpathToValuePair.getKey());
+        for (String xpathString : xmlProperties.keySet()) {
+            XPath xpath = builtDocument.createXPath(xpathString);
             if (null != namespaceContext) {
                 xpath.setNamespaceContext(new SimpleNamespaceContextWrapper(namespaceContext));
             }
