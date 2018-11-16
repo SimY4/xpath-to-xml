@@ -13,14 +13,16 @@ class ScalaXmlNavigator(xml: Root) extends Navigator[ScalaXmlNode] {
   override def parentOf(node: ScalaXmlNode): ScalaXmlNode = node.parent
   override def elementsOf(parent: ScalaXmlNode): java.lang.Iterable[_ <: ScalaXmlNode] = parent.elements.asJava
   override def attributesOf(parent: ScalaXmlNode): java.lang.Iterable[_ <: ScalaXmlNode] = parent.attributes.asJava
+  @throws[XmlBuilderException]("If unable to create attribute for given node")
   override def createAttribute(parent: ScalaXmlNode, attribute: QName): ScalaXmlNode = parent match {
     case e: Element =>
-      val newAttr = XmlAttribute(Some(attribute.getPrefix).filter(_.nonEmpty), attribute.getLocalPart, Text(""), Null)
+      val newAttr = XmlAttribute(Some(attribute.getPrefix) filter (_.nonEmpty), attribute.getLocalPart, Text(""), Null)
       e.node = e.node % newAttr
       new Attribute(newAttr, e)
     case _          =>
       throw new XmlBuilderException(s"Unable to create attribute for $parent")
   }
+  @throws[XmlBuilderException]("If unable to create element for given node")
   override def createElement(parent: ScalaXmlNode, element: QName): ScalaXmlNode = parent match {
     case e: Element =>
       val node = e.node
@@ -35,21 +37,21 @@ class ScalaXmlNavigator(xml: Root) extends Navigator[ScalaXmlNode] {
     case _          =>
       throw new XmlBuilderException(s"Unable to create element for $parent")
   }
+  @throws[XmlBuilderException]("If unable to set text to given node")
   override def setText(node: ScalaXmlNode, text: String): Unit = node match {
     case e: Element   =>
       val elem = e.node
       e.node = elem.copy(child = elem.child.filterNot(_.isInstanceOf[Text]) :+ Text(text))
     case a: Attribute =>
-      val parentNode = a.parent.node
-      val newAttr = a.meta match {
-        case attr: XmlAttribute if attr.isPrefixed => XmlAttribute(Some(attr.pre), attr.key, Text(text), Null)
-        case attr                                  => XmlAttribute(None, attr.key, Text(text), Null)
-      }
-      a.parent.node = parentNode % newAttr
+      val attr = a.meta
+      val newAttr = XmlAttribute(Some(attr) collect {
+        case a: XmlAttribute if attr.isPrefixed => a.pre
+      }, attr.key, Text(text), Null)
       a.meta = newAttr
     case _            =>
       throw new XmlBuilderException(s"Unable to set text to $node")
   }
+  @throws[XmlBuilderException]("If unable to prepend copy to given node")
   override def prependCopy(node: ScalaXmlNode): Unit = node match {
     case e: Element =>
       val toCopy = e.node
@@ -61,6 +63,7 @@ class ScalaXmlNavigator(xml: Root) extends Navigator[ScalaXmlNode] {
     case _          =>
       throw new XmlBuilderException(s"Unable to prepend copy to $node")
   }
+  @throws[XmlBuilderException]("If unable to remove given node")
   override def remove(node: ScalaXmlNode): Unit = node match {
     case e: Element   =>
       val idx = e.index
@@ -76,6 +79,6 @@ class ScalaXmlNavigator(xml: Root) extends Navigator[ScalaXmlNode] {
       }
       a.parent.node = parentNode.copy(attributes = newAttr)
     case _            =>
-      throw new XmlBuilderException(s"Unable to delete node $node")
+      throw new XmlBuilderException(s"Unable to remove node $node")
   }
 }

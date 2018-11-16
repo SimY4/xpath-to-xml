@@ -11,7 +11,7 @@ class ScalaXmlNodeTest {
 
   import _root_.scala.collection.JavaConverters._
 
-  private val xml = <root attr="value"/>
+  private val xml = <root attr="value">text</root>
   private val root = new Root(xml)
 
   @Test
@@ -20,8 +20,8 @@ class ScalaXmlNodeTest {
   }
 
   @Test
-  def shouldThrowWhenRootTextAccessed(): Unit = {
-    assertThatThrownBy(() => root.getText) isInstanceOf classOf[UnsupportedOperationException]
+  def shouldReturnRootElementTextRootTextAccessed(): Unit = {
+    assertThat(root.getText) isEqualTo "text"
   }
 
   @Test
