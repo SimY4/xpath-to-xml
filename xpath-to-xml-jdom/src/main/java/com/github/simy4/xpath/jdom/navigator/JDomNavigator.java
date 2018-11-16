@@ -42,7 +42,7 @@ public final class JDomNavigator implements Navigator<JDomNode> {
     public JDomNode createAttribute(JDomNode parent, QName attribute) throws XmlBuilderException {
         final Attribute attr = new Attribute(attribute.getLocalPart(), "");
         if (!XMLConstants.NULL_NS_URI.equals(attribute.getNamespaceURI())) {
-            attr.setNamespace(Namespace.getNamespace(attr.getNamespacePrefix(), attr.getNamespaceURI()));
+            attr.setNamespace(Namespace.getNamespace(attribute.getPrefix(), attribute.getNamespaceURI()));
         }
         return parent.appendAttribute(attr);
     }
@@ -51,7 +51,7 @@ public final class JDomNavigator implements Navigator<JDomNode> {
     public JDomNode createElement(JDomNode parent, QName element) throws XmlBuilderException {
         final Element elem = new Element(element.getLocalPart());
         if (!XMLConstants.NULL_NS_URI.equals(element.getNamespaceURI())) {
-            elem.setNamespace(Namespace.getNamespace(elem.getNamespacePrefix(), elem.getNamespaceURI()));
+            elem.setNamespace(Namespace.getNamespace(element.getPrefix(), element.getNamespaceURI()));
         }
         return parent.appendElement(elem);
     }

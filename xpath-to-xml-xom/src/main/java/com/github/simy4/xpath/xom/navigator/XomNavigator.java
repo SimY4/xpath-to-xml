@@ -50,7 +50,7 @@ public final class XomNavigator implements Navigator<XomNode> {
     public XomNode createAttribute(XomNode parent, QName attribute) throws XmlBuilderException {
         final Attribute attr = new Attribute(attribute.getLocalPart(), "");
         if (!XMLConstants.NULL_NS_URI.equals(attribute.getNamespaceURI())) {
-            attr.setNamespace(attr.getNamespacePrefix(), attr.getNamespaceURI());
+            attr.setNamespace(attribute.getPrefix(), attribute.getNamespaceURI());
         }
         return parent.appendAttribute(attr);
     }

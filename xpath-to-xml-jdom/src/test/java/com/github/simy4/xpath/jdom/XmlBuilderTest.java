@@ -4,7 +4,9 @@ import com.github.simy4.xpath.XmlBuilder;
 import com.github.simy4.xpath.fixtures.FixtureAccessor;
 import com.github.simy4.xpath.helpers.SimpleNamespaceContext;
 import org.assertj.core.api.Condition;
+import org.jdom2.Attribute;
 import org.jdom2.Document;
+import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
 import org.jdom2.filter.Filters;
@@ -31,6 +33,7 @@ import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class XmlBuilderTest {
@@ -83,7 +86,11 @@ class XmlBuilderTest {
                     : toNamespaces(namespaceContext);
             XPathExpression<Object> xpathExpression = XPathFactory.instance()
                     .compile(xpathToValuePair.getKey(), Filters.fpassthrough(), null, namespaces);
-            assertThat(xpathExpression.evaluate(builtDocument)).containsExactly(xpathToValuePair.getValue());
+            assertThat(xpathExpression.evaluate(builtDocument)).extracting(input ->
+                    (Object) (input instanceof Element ? ((Element) input).getText()
+                            : input instanceof Attribute ? ((Attribute) input).getValue()
+                            : fail("Unexpected input: " + input)))
+                    .containsExactly(xpathToValuePair.getValue());
         }
         // although these cases are working fine the order of attribute is messed up
         assertThat(xmlToString(builtDocument)).is(new Condition<>(xml -> fixtureAccessor.toString().startsWith("attr")
@@ -161,7 +168,7 @@ class XmlBuilderTest {
         StringWriter result = new StringWriter();
         XMLOutputter outputter = new XMLOutputter(format);
         outputter.output(xml, result);
-        return result.toString();
+        return result.toString().replaceAll(" />", "/>");
     }
 
     private Namespace[] toNamespaces(NamespaceContext namespaceContext) {
