@@ -4,6 +4,7 @@ import com.github.simy4.xpath.XmlBuilder;
 import com.github.simy4.xpath.fixtures.FixtureAccessor;
 import com.github.simy4.xpath.helpers.SimpleNamespaceContext;
 import org.assertj.core.api.Condition;
+import org.assertj.core.api.iterable.Extractor;
 import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -86,10 +87,10 @@ class XmlBuilderTest {
                     : toNamespaces(namespaceContext);
             XPathExpression<Object> xpathExpression = XPathFactory.instance()
                     .compile(xpathToValuePair.getKey(), Filters.fpassthrough(), null, namespaces);
-            assertThat(xpathExpression.evaluate(builtDocument)).extracting(input ->
-                    (Object) (input instanceof Element ? ((Element) input).getText()
+            assertThat(xpathExpression.evaluate(builtDocument)).extracting((Extractor<Object, Object>) input ->
+                    input instanceof Element ? ((Element) input).getText()
                             : input instanceof Attribute ? ((Attribute) input).getValue()
-                            : fail("Unexpected input: " + input)))
+                            : fail("Unexpected input: " + input))
                     .containsExactly(xpathToValuePair.getValue());
         }
         // although these cases are working fine the order of attribute is messed up

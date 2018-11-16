@@ -29,7 +29,7 @@ public final class JDomElement extends AbstractJDomNode<Element> {
 
     @Override
     public String getText() {
-        return getNode().getValue();
+        return getNode().getText();
     }
 
     @Override
