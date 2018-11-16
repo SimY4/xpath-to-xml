@@ -55,11 +55,10 @@ class XmlBuilderTest {
                 .putAll(xmlProperties.keySet())
                 .build(newDocument);
 
-        for (var xpathToValuePair : xmlProperties.entrySet()) {
-            var nodes = null == namespaceContext
-                    ? builtDocument.query(xpathToValuePair.getKey())
-                    : builtDocument.query(xpathToValuePair.getKey(), toXpathContext(namespaceContext));
-            assertThat(nodes).isNotNull();
+        for (var xpath : xmlProperties.keySet()) {
+            var nodes = null == namespaceContext ? builtDocument.query(xpath)
+                    : builtDocument.query(xpath, toXpathContext(namespaceContext));
+            assertThat(nodes.size()).isGreaterThan(0);
         }
         // although these cases are working fine the order of attribute is messed up
         assertThat(xmlToString(builtDocument)).is(new Condition<>(xml -> fixtureAccessor.toString().startsWith("attr")
@@ -81,6 +80,7 @@ class XmlBuilderTest {
             var nodes = null == namespaceContext
                     ? builtDocument.query(xpathToValuePair.getKey())
                     : builtDocument.query(xpathToValuePair.getKey(), toXpathContext(namespaceContext));
+            assertThat(nodes.size()).isGreaterThan(0);
             assertThat(nodes.get(0).getValue()).isEqualTo(xpathToValuePair.getValue());
         }
         // although these cases are working fine the order of attribute is messed up

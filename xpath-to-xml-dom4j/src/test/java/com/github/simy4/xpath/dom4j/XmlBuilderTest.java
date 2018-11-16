@@ -48,8 +48,8 @@ class XmlBuilderTest {
                 .putAll(xmlProperties.keySet())
                 .build(DocumentHelper.createDocument());
 
-        for (var xpathToValuePair : xmlProperties.entrySet()) {
-            var xpath = builtDocument.createXPath(xpathToValuePair.getKey());
+        for (var xpathString : xmlProperties.keySet()) {
+            var xpath = builtDocument.createXPath(xpathString);
             if (null != namespaceContext) {
                 xpath.setNamespaceContext(new SimpleNamespaceContextWrapper(namespaceContext));
             }

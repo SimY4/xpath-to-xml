@@ -6,6 +6,22 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 
 ## 2.x Series
 
+### 2.1.0: JDOM model support
+
+Features:
+
+- Support for JDOM model
+
+Improvements:
+
+- Core
+  - Add runtime static method to check whether given model instance is supported.
+
+Bugfixes:
+
+- XOM
+  - Fix namespace resolution for attribute nodes.
+
 ### 2.0.0: Scala XML model support and javax.json model support
 
 Features:
@@ -18,6 +34,7 @@ Improvements:
 - Core
   - [BREAKING] Effect interface moved into `com.github.simy4.xpath.spi` package for better modularisation story in Java9.
     All existing core extensions adopted this change
+  - [BREAKING] automatic module names were changed
     
 ## 1.x Series
 

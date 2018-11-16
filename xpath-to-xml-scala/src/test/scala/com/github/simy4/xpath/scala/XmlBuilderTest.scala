@@ -1,6 +1,7 @@
 package com.github.simy4.xpath
 package scala
 
+import java.util.function.Predicate
 import java.util.stream.Stream
 
 import fixtures.FixtureAccessor
@@ -209,5 +210,9 @@ object XmlBuilderTest {
       }
       linkedHashMap
     }
+  }
+
+  private[scala] implicit def toPredicate[A](p: A => Boolean): Predicate[A] = new Predicate[A] {
+    override def test(a: A): Boolean = p(a)
   }
 }

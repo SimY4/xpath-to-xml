@@ -67,12 +67,12 @@ class XmlBuilderTest {
                 .putAll(xmlProperties.keySet())
                 .build(document);
 
-        for (var xpathToValuePair : xmlProperties.entrySet()) {
+        for (var xpathString : xmlProperties.keySet()) {
             var xpath = xpathFactory.newXPath();
             if (null != namespaceContext) {
                 xpath.setNamespaceContext(namespaceContext);
             }
-            assertThat(xpath.evaluate(xpathToValuePair.getKey(), builtDocument)).isNotNull();
+            assertThat(xpath.evaluate(xpathString, builtDocument)).isNotNull();
         }
         assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutXml());
     }

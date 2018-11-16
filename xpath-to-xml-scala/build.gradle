@@ -1,6 +1,7 @@
 ext {
     moduleName = 'com.github.simych.xpath.scala'
-    scalaVersions = '2.11.12, 2.12.6'
+    allScalaVersions = true
+    scalaVersions = '2.11.12, 2.12.7'
     defaultScalaVersions = '2.12.7'
 }
 

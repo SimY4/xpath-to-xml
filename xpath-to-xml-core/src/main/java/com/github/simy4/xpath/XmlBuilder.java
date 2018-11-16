@@ -27,6 +27,21 @@ public class XmlBuilder {
 
     private static final Iterable<NavigatorSpi> navigatorSpis = ServiceLoader.load(NavigatorSpi.class);
 
+    /**
+     * Checks whether {@link XmlBuilder} supports given XML model.
+     *
+     * @param xml XML to check
+     * @return {@code true} if it can handle given model or {@code false} otherwise
+     */
+    public static boolean canHandle(Object xml) {
+        for (NavigatorSpi navigatorSpi : navigatorSpis) {
+            if (navigatorSpi.canHandle(xml)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private final XPathParser parser;
     private final List<Effect> effects;
 
