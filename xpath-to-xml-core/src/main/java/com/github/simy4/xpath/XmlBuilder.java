@@ -10,8 +10,6 @@ import com.github.simy4.xpath.spi.NavigatorSpi;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPathExpressionException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -34,7 +32,7 @@ public class XmlBuilder {
      * @return {@code true} if it can handle given model or {@code false} otherwise
      */
     public static boolean canHandle(Object xml) {
-        for (NavigatorSpi navigatorSpi : navigatorSpis) {
+        for (var navigatorSpi : navigatorSpis) {
             if (navigatorSpi.canHandle(xml)) {
                 return true;
             }
@@ -50,7 +48,7 @@ public class XmlBuilder {
     }
 
     public XmlBuilder(NamespaceContext namespaceContext) {
-        this(new XPathParser(namespaceContext), Collections.emptyList());
+        this(new XPathParser(namespaceContext), List.of());
     }
 
     private XmlBuilder(XPathParser parser, List<Effect> effects) {
@@ -67,7 +65,7 @@ public class XmlBuilder {
      * @see #putAll(Iterable)
      */
     public XmlBuilder put(String xpath) throws XPathExpressionException {
-        return putAll(Collections.singletonList(xpath));
+        return putAll(List.of(xpath));
     }
 
     /**
@@ -81,7 +79,7 @@ public class XmlBuilder {
      * @see #putAll(Map)
      */
     public XmlBuilder put(String xpath, Object value) throws XPathExpressionException {
-        return putAll(Collections.singletonMap(xpath, value));
+        return putAll(Map.of(xpath, value));
     }
 
     /**
@@ -93,7 +91,7 @@ public class XmlBuilder {
      * @see #putAll(Iterable)
      */
     public XmlBuilder putAll(String... xpaths) throws XPathExpressionException {
-        return putAll(Arrays.asList(xpaths));
+        return putAll(List.of(xpaths));
     }
 
     /**
@@ -141,7 +139,7 @@ public class XmlBuilder {
      * @see #removeAll(Iterable)
      */
     public XmlBuilder remove(String xpath) throws XPathExpressionException {
-        return removeAll(Collections.singletonList(xpath));
+        return removeAll(List.of(xpath));
     }
 
     /**
@@ -153,7 +151,7 @@ public class XmlBuilder {
      * @see #removeAll(Iterable)
      */
     public XmlBuilder removeAll(String... xpaths) throws XPathExpressionException {
-        return removeAll(Arrays.asList(xpaths));
+        return removeAll(List.of(xpaths));
     }
 
     /**

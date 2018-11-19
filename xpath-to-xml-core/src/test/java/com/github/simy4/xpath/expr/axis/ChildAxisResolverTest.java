@@ -10,10 +10,10 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import javax.xml.namespace.QName;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.github.simy4.xpath.util.TestNode.node;
-import static java.util.Arrays.asList;
 import static java.util.stream.StreamSupport.stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -93,7 +93,7 @@ class ChildAxisResolverTest extends AbstractAxisResolverTest {
 
     @Override
     void setUpResolvableAxis() {
-        doReturn(asList(node("name"), node("another-name"))).when(navigator).elementsOf(parentNode.getNode());
+        doReturn(List.of(node("name"), node("another-name"))).when(navigator).elementsOf(parentNode.getNode());
     }
 
 }

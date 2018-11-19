@@ -14,8 +14,9 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import static com.github.simy4.xpath.util.TestNode.node;
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,7 +41,7 @@ class PathExprTest {
 
     @BeforeEach
     void setUp() {
-        pathExpr = new PathExpr(asList(stepExpr1, stepExpr2, stepExpr3));
+        pathExpr = new PathExpr(List.of(stepExpr1, stepExpr2, stepExpr3));
     }
 
     @Test

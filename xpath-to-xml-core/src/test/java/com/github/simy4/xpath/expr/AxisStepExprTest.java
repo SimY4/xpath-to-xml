@@ -20,9 +20,9 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import java.util.Collections;
+import java.util.List;
 
 import static com.github.simy4.xpath.util.TestNode.node;
-import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -55,7 +55,7 @@ class AxisStepExprTest {
         when(axisResolver.createAxisNode(any())).thenReturn(new NodeView<>(node("node"), true));
         when(predicate1.resolve(any())).thenReturn(BooleanView.of(false));
         when(predicate2.resolve(any())).thenReturn(BooleanView.of(false));
-        stepExpr = new AxisStepExpr(axisResolver, asList(predicate1, predicate2));
+        stepExpr = new AxisStepExpr(axisResolver, List.of(predicate1, predicate2));
     }
 
     @Test

@@ -13,8 +13,6 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -22,8 +20,8 @@ import java.util.Set;
  */
 public class Dom4jNavigatorSpi implements NavigatorSpi {
 
-    private static final Set<Short> SUPPORTED_NODE_TYPES = new HashSet<Short>(
-            Arrays.asList(Node.DOCUMENT_NODE, Node.ELEMENT_NODE, Node.ATTRIBUTE_NODE));
+    private static final Set<Short> SUPPORTED_NODE_TYPES = Set.of(
+            Node.DOCUMENT_NODE, Node.ELEMENT_NODE, Node.ATTRIBUTE_NODE);
 
     @Override
     public boolean canHandle(Object o) {

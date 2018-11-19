@@ -22,7 +22,7 @@ import org.mockito.quality.Strictness;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -60,8 +60,8 @@ class Dom4jNavigatorTest {
         when(xml.getNodeType()).thenReturn(org.dom4j.Node.ELEMENT_NODE);
         when(xml.getParent()).thenReturn(parent);
         when(xml.createCopy()).thenReturn(xml);
-        when(xml.elementIterator()).thenReturn(Arrays.asList(child1, child2, child3).iterator());
-        when(xml.attributeIterator()).thenReturn(Arrays.asList(attr1, attr2, attr3).iterator());
+        when(xml.elementIterator()).thenReturn(List.of(child1, child2, child3).iterator());
+        when(xml.attributeIterator()).thenReturn(List.of(attr1, attr2, attr3).iterator());
 
         navigator = new Dom4jNavigator(xml);
     }

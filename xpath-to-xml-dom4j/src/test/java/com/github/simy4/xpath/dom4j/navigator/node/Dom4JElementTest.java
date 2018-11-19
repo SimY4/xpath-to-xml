@@ -13,7 +13,8 @@ import org.mockito.quality.Strictness;
 
 import javax.xml.XMLConstants;
 
-import static java.util.Arrays.asList;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -33,8 +34,8 @@ class Dom4JElementTest {
     @BeforeEach
     void setUp() {
         when(element.getText()).thenReturn("text");
-        when(element.elementIterator()).thenReturn(asList(child1, child2).iterator());
-        when(element.attributeIterator()).thenReturn(asList(attr1, attr2).iterator());
+        when(element.elementIterator()).thenReturn(List.of(child1, child2).iterator());
+        when(element.attributeIterator()).thenReturn(List.of(attr1, attr2).iterator());
         when(element.addElement(any(org.dom4j.QName.class))).thenReturn(child1);
 
         node = new Dom4jElement(element);
