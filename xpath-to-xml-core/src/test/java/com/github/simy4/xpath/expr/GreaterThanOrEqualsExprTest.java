@@ -43,7 +43,7 @@ class GreaterThanOrEqualsExprTest {
                 new LiteralView<>("1.0"),
                 new NumberView<>(1.0),
                 new NodeView<>(node("1.0")),
-                new NodeSetView<>(() -> singletonList(new NodeView<>(node("1.0"))).iterator()),
+                new NodeSetView<>(singletonList(new NodeView<>(node("1.0")))),
                 BooleanView.of(true)
         );
     }
@@ -53,7 +53,7 @@ class GreaterThanOrEqualsExprTest {
                 new LiteralView<>("2.0"),
                 new NumberView<>(2.0),
                 new NodeView<>(node("2.0")),
-                new NodeSetView<>(() -> singletonList(new NodeView<>(node("2.0"))).iterator())
+                new NodeSetView<>(singletonList(new NodeView<>(node("2.0"))))
         );
     }
 
