@@ -93,7 +93,7 @@ class XmlBuilderTest {
     implicit val ns: NamespaceContext = namespaceContext
     implicit val parser: XmlParser = xmlParser
     val xmlProperties = fixtureAccessor.getXmlProperties.asScalaLinkedHashMap
-    val builtDocument = root putAll xmlProperties
+    val builtDocument = root putAllValues xmlProperties
     val builtDocumentString = xmlToString(builtDocument)
 
     xmlProperties foreach { case (xpath, value) =>
@@ -117,7 +117,7 @@ class XmlBuilderTest {
     val xmlProperties = fixtureAccessor.getXmlProperties.asScalaLinkedHashMap
     val xml = fixtureAccessor.getPutXml
     val oldDocument = XML.loadString(xml)
-    val builtDocument = oldDocument putAll xmlProperties
+    val builtDocument = oldDocument putAllValues xmlProperties
     val builtDocumentString = xmlToString(builtDocument)
 
     xmlProperties foreach { case (xpath, value) =>
@@ -141,7 +141,7 @@ class XmlBuilderTest {
     val xmlProperties = fixtureAccessor.getXmlProperties.asScalaLinkedHashMap
     val xml = fixtureAccessor.getPutValueXml
     val oldDocument = XML.loadString(xml)
-    var builtDocument = oldDocument putAll xmlProperties
+    var builtDocument = oldDocument putAllValues xmlProperties
     var builtDocumentString = xmlToString(builtDocument)
 
     xmlProperties foreach { case (xpath, value) =>
