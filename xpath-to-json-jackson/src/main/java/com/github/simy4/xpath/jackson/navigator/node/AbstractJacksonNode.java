@@ -9,6 +9,7 @@ import com.github.simy4.xpath.util.TransformingIterator;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Objects;
 
 abstract class AbstractJacksonNode implements JacksonNode {
 
@@ -68,8 +69,7 @@ abstract class AbstractJacksonNode implements JacksonNode {
 
     @Override
     public String toString() {
-        final JsonNode jsonNode = get();
-        return null == jsonNode ? "???" : jsonNode.toString();
+        return Objects.toString(get(), "???");
     }
 
     private static Iterator<JacksonNode> traverse(JsonNode jsonNode, JacksonNode parent) {
