@@ -1,5 +1,5 @@
 plugins {
-    id 'com.adtran.scala-multiversion-plugin' version '1.0.32' apply false
+    id 'com.adtran.scala-multiversion-plugin' version '1.0.33' apply false
     id 'me.champeau.gradle.jmh' version '0.4.7' apply false
     id 'net.ltgt.errorprone' version '0.6' apply false
     id 'net.researchgate.release' version '2.7.0'
@@ -8,12 +8,12 @@ plugins {
 
 ext {
     assertjVersion = '3.11.1'
-    checkstyleVersion = '8.13'
+    checkstyleVersion = '8.14'
     errorproneJavacVersion = '9+181-r4173-1'
     errorproneVersion = '2.3.2'
     jacocoVersion = '0.8.2'
     jUnitVersion = '5.3.1'
-    mockitoVersion = '2.23.0'
+    mockitoVersion = '2.23.4'
 
     def buildTimeAndDate = new Date()
     buildDate = buildTimeAndDate.format("yyyy-MM-dd")
