@@ -13,6 +13,7 @@ Convenient utility to build XML models by evaluating XPath expressions.
 
  - DOM
  - DOM4J
+ - JDOM
  - Scala XML
  - XOM
  
@@ -30,7 +31,7 @@ Include an artifact with necessary model extension into your project:
 <dependency>
     <groupId>com.github.simy4.xpath</groupId>
     <artifactId>xpath-to-xml-dom</artifactId>
-    <version>2.0.0</version>
+    <version>2.1.0</version>
 </dependency>
 ```
 
@@ -50,9 +51,15 @@ Now having a XML structure i.e.:
 and one of supported models:
 
 ```java
-DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-Document document = documentBuilder.parse(xmlSource);
+import javax.xml.parsers.*;
+
+class Example0 { public static void main(String... args) {
+    DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+    Document document = documentBuilder.parse(xmlSource);
+    
+    // ...
+}}
 ```
 
 you can:
@@ -60,32 +67,56 @@ you can:
 - alter existing paths
 
 ```java
-new XmlBuilder()
-        .put("/breakfast_menu/food[1]/price", "$7.95")
-        .build(document);
+import com.github.simy4.xpath.XmlBuilder;
+
+class Example1 { public static void main(String... args) {
+    // Example0 ...
+    
+    new XmlBuilder()
+            .put("/breakfast_menu/food[1]/price", "$7.95")
+            .build(document);
+}}
 ```
 
 - append new elements
 
 ```java
-new XmlBuilder()
-        .put("/breakfast_menu/food[name='Homestyle Breakfast'][price='$6.95'][description='Two eggs, bacon or sausage, toast, and our ever-popular hash browns']/calories", "950")
-        .build(document);
+import com.github.simy4.xpath.XmlBuilder;
+
+class Example2 { public static void main(String... args) {
+    // Example0 ...
+    
+    new XmlBuilder()
+            .put("/breakfast_menu/food[name='Homestyle Breakfast'][price='$6.95'][description='Two eggs, bacon or sausage, toast, and our ever-popular hash browns']/calories", "950")
+            .build(document);
+}}
 ```
 
 - remove paths
 
 ```java
-new XmlBuilder()
-        .remove("/breakfast_menu/food[name='Belgian Waffles']")
-        .build(document);
+import com.github.simy4.xpath.XmlBuilder;
+
+class Example3 { public static void main(String... args) {
+    // Example0 ...
+    
+    new XmlBuilder()
+            .remove("/breakfast_menu/food[name='Belgian Waffles']")
+            .build(document);
+}}
 ```
 
 - combine any of the above actions into a single modification action
 
 ```java
-new XmlBuilder()
-        .remove("/breakfast_menu/food[name='Homestyle Breakfast']")
-        .put("/breakfast_menu/food[name='Homestyle Breakfast'][price='$6.95'][description='Two eggs, bacon or sausage, toast, and our ever-popular hash browns']/calories", "950")
-        .build(document);
+import com.github.simy4.xpath.XmlBuilder;
+
+class Example4 { public static void main(String... args) {
+    // Example0 ...
+    
+    new XmlBuilder()
+            .remove("/breakfast_menu/food[name='Homestyle Breakfast']")
+            .put("/breakfast_menu/food[name='Homestyle Breakfast'][price='$6.95'][description='Two eggs, bacon or sausage, toast, and our ever-popular hash browns']/calories", "950")
+            .build(document);
+}}
 ```

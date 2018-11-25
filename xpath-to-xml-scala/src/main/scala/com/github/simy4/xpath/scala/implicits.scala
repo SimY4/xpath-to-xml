@@ -1,5 +1,5 @@
 package com.github.simy4.xpath.scala
 
-import impl.AllOps
+import syntax.AllSyntax
 
-object implicits extends AllOps
+object implicits extends AllSyntax

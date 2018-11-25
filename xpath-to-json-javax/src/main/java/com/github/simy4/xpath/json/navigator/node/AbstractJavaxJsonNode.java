@@ -8,6 +8,7 @@ import javax.json.JsonString;
 import javax.json.JsonValue;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Objects;
 
 abstract class AbstractJavaxJsonNode implements JavaxJsonNode {
 
@@ -70,8 +71,7 @@ abstract class AbstractJavaxJsonNode implements JavaxJsonNode {
 
     @Override
     public String toString() {
-        final JsonValue jsonValue = get();
-        return null == jsonValue ? "???" : jsonValue.toString();
+        return Objects.toString(get(), "???");
     }
 
     private static Iterator<JavaxJsonNode> traverse(JsonValue jsonValue, JavaxJsonNode parent) {

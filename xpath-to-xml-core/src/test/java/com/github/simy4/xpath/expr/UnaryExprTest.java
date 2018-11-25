@@ -37,7 +37,7 @@ class UnaryExprTest {
                 arguments(new LiteralView<>("2.0")),
                 arguments(new NumberView<>(2.0)),
                 arguments(new NodeView<>(node("2.0"))),
-                arguments(new NodeSetView<>(() -> singletonList(new NodeView<>(node("2.0"))).iterator()))
+                arguments(new NodeSetView<>(singletonList(new NodeView<>(node("2.0")))))
         );
     }
 

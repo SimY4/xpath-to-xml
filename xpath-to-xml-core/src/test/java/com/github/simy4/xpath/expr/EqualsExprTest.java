@@ -44,7 +44,7 @@ class EqualsExprTest {
                 new LiteralView<>("2.0"),
                 new NumberView<>(2.0),
                 new NodeView<>(node("2.0")),
-                new NodeSetView<>(() -> singletonList(new NodeView<>(node("2.0"))).iterator())
+                new NodeSetView<>(singletonList(new NodeView<>(node("2.0"))))
         );
     }
 
