@@ -16,9 +16,6 @@ dependencies {
     implementation 'org.scala-lang.modules:scala-xml_%%:[1.0, 2.0['
 
     testImplementation project(':xpath-to-xml-test')
-    testImplementation ('com.nrinaudo:kantan.xpath_%%:[0.4, 0.5[') {
-        exclude group: 'org.scala-lang', module: 'scala-compiler'
-    }
     testImplementation "org.junit.jupiter:junit-jupiter-api:$jUnitVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-params:$jUnitVersion"
     testImplementation "org.mockito:mockito-core:$mockitoVersion"

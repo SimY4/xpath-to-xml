@@ -1,19 +1,19 @@
 package com.github.simy4.xpath
 package scala
 
+import java.io.StringReader
 import java.util.function.Predicate
 import java.util.stream.Stream
 
 import fixtures.FixtureAccessor
 import helpers.SimpleNamespaceContext
 import javax.xml.namespace.NamespaceContext
-import javax.xml.parsers.DocumentBuilderFactory
-import javax.xml.xpath.XPathFactory
-import kantan.xpath.{ CompileResult, DecodeError, ParseResult, XPathCompiler, XmlParser }
+import javax.xml.xpath.{ XPathConstants, XPathExpression, XPathFactory }
 import org.assertj.core.api.{ Assertions, Condition }
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.{ Arguments, ArgumentsProvider, ArgumentsSource }
+import org.xml.sax.InputSource
 
 import _root_.scala.collection.{ Map, mutable }
 import _root_.scala.xml.{ Elem, NamespaceBinding, Node, Null, PrettyPrinter, TopScope, XML }
@@ -40,45 +40,19 @@ class XmlBuilderTest {
   import Assertions._
   import XmlBuilderTest._
   import implicits._
-  import kantan.xpath.implicits._
-
-  private def xPathCompiler(implicit namespaceContext: NamespaceContext = null): XPathCompiler = namespaceContext match {
-    case null => XPathCompiler.builtIn
-    case nc   =>
-      val xPathFactory = XPathFactory.newInstance
-      XPathCompiler { xpathString =>
-        CompileResult {
-          val xpath = xPathFactory.newXPath
-          xpath.setNamespaceContext(nc)
-          xpath.compile(xpathString)
-        }
-      }
-  }
-
-  private def xmlParser(implicit namespaceContext: NamespaceContext = null): XmlParser = namespaceContext match {
-    case null => XmlParser.builtIn
-    case _    =>
-      val factory: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
-      factory.setNamespaceAware(true)
-      factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false)
-      XmlParser { source => ParseResult(factory.newDocumentBuilder().parse(source)) }
-  }
 
   @ParameterizedTest
   @ArgumentsSource(classOf[DataProvider])
   def shouldBuildDocumentFromSetOfXPaths(fixtureAccessor: FixtureAccessor, namespaceContext: NamespaceContext,
                                          root: Elem): Unit = {
     implicit val ns: NamespaceContext = namespaceContext
-    implicit val parser: XmlParser = xmlParser
     val xmlProperties = fixtureAccessor.getXmlProperties.asScalaLinkedHashMap
     val builtDocument = root putAll xmlProperties.keys
     val builtDocumentString = xmlToString(builtDocument)
 
     xmlProperties.keys foreach { xpath =>
-      assertThat((for {
-        xp  <- xPathCompiler.compile(xpath).right
-        res <- builtDocumentString.evalXPath[kantan.xpath.Node](xp).right
-      } yield res).isRight).isTrue
+      val documentSource: InputSource = builtDocumentString
+      assertThat(xpath evaluate (documentSource, XPathConstants.NODE)).isNotNull
     }
     // although these cases are working fine the order of attribute is messed up
     assertThat(builtDocumentString) is new Condition({ xml: String =>
@@ -91,16 +65,14 @@ class XmlBuilderTest {
   def shouldBuildDocumentFromSetOfXPathsAndSetValues(fixtureAccessor: FixtureAccessor,
                                                      namespaceContext: NamespaceContext, root: Elem): Unit = {
     implicit val ns: NamespaceContext = namespaceContext
-    implicit val parser: XmlParser = xmlParser
     val xmlProperties = fixtureAccessor.getXmlProperties.asScalaLinkedHashMap
     val builtDocument = root putAllValues xmlProperties
     val builtDocumentString = xmlToString(builtDocument)
 
     xmlProperties foreach { case (xpath, value) =>
-      assertThat(for {
-        xp  <- xPathCompiler.compile(xpath).right
-        res <- builtDocumentString.evalXPath[String](xp).right
-      } yield res).as("Should evaluate XPath %s to %s", xpath, value) isEqualTo Right(value)
+      val documentSource: InputSource = builtDocumentString
+      assertThat(xpath evaluate (documentSource, XPathConstants.STRING))
+        .as("Should evaluate XPath %s to %s", xpath, value) isEqualTo value
     }
     // although these cases are working fine the order of attribute is messed up
     assertThat(xmlToString(builtDocument)) is new Condition({ xml: String =>
@@ -113,7 +85,6 @@ class XmlBuilderTest {
   def shouldModifyDocumentWhenXPathsAreNotTraversable(fixtureAccessor: FixtureAccessor,
                                                       namespaceContext: NamespaceContext, root: Elem): Unit = {
     implicit val ns: NamespaceContext = namespaceContext
-    implicit val parser: XmlParser = xmlParser
     val xmlProperties = fixtureAccessor.getXmlProperties.asScalaLinkedHashMap
     val xml = fixtureAccessor.getPutXml
     val oldDocument = XML.loadString(xml)
@@ -121,10 +92,9 @@ class XmlBuilderTest {
     val builtDocumentString = xmlToString(builtDocument)
 
     xmlProperties foreach { case (xpath, value) =>
-      assertThat(for {
-        xp  <- xPathCompiler.compile(xpath).right
-        res <- builtDocumentString.evalXPath[String](xp).right
-      } yield res).as("Should evaluate XPath %s to %s", xpath, value) isEqualTo Right(value)
+      val documentSource: InputSource = builtDocumentString
+      assertThat(xpath evaluate (documentSource, XPathConstants.STRING))
+        .as("Should evaluate XPath %s to %s", xpath, value) isEqualTo value
     }
     // although these cases are working fine the order of attribute is messed up
     assertThat(xmlToString(builtDocument)) is new Condition({ xml: String =>
@@ -137,7 +107,6 @@ class XmlBuilderTest {
   def shouldNotModifyDocumentWhenAllXPathsTraversable(fixtureAccessor: FixtureAccessor,
                                                       namespaceContext: NamespaceContext, root: Elem): Unit = {
     implicit val ns: NamespaceContext = namespaceContext
-    implicit val parser: XmlParser = xmlParser
     val xmlProperties = fixtureAccessor.getXmlProperties.asScalaLinkedHashMap
     val xml = fixtureAccessor.getPutValueXml
     val oldDocument = XML.loadString(xml)
@@ -145,10 +114,9 @@ class XmlBuilderTest {
     var builtDocumentString = xmlToString(builtDocument)
 
     xmlProperties foreach { case (xpath, value) =>
-      assertThat(for {
-        xp  <- xPathCompiler.compile(xpath).right
-        res <- builtDocumentString.evalXPath[String](xp).right
-      } yield res).as("Should evaluate XPath %s to %s", xpath, value) isEqualTo Right(value)
+      val documentSource: InputSource = builtDocumentString
+      assertThat(xpath evaluate (documentSource, XPathConstants.STRING))
+        .as("Should evaluate XPath %s to %s", xpath, value) isEqualTo value
     }
     // although these cases are working fine the order of attribute is messed up
     assertThat(xmlToString(builtDocument)) is new Condition({ xml: String =>
@@ -159,10 +127,9 @@ class XmlBuilderTest {
     builtDocumentString = xmlToString(builtDocument)
 
     xmlProperties foreach { case (xpath, value) =>
-      assertThat(for {
-        xp  <- xPathCompiler.compile(xpath).right
-        res <- builtDocumentString.evalXPath[String](xp).right
-      } yield res).as("Should evaluate XPath %s to %s", xpath, value) isEqualTo Right(value)
+      val documentSource: InputSource = builtDocumentString
+      assertThat(xpath evaluate (documentSource, XPathConstants.STRING))
+        .as("Should evaluate XPath %s to %s", xpath, value) isEqualTo value
     }
     // although these cases are working fine the order of attribute is messed up
     assertThat(xmlToString(builtDocument)) is new Condition({ xml: String =>
@@ -175,7 +142,6 @@ class XmlBuilderTest {
   def shouldRemovePathsFromExistingXml(fixtureAccessor: FixtureAccessor, namespaceContext: NamespaceContext,
                                        root: Elem): Unit = {
     implicit val ns: NamespaceContext = namespaceContext
-    implicit val parser: XmlParser = xmlParser
     val xmlProperties = fixtureAccessor.getXmlProperties.asScalaLinkedHashMap
     val xml = fixtureAccessor.getPutValueXml
     val oldDocument = XML.loadString(xml)
@@ -183,10 +149,9 @@ class XmlBuilderTest {
     val builtDocumentString = xmlToString(builtDocument)
 
     xmlProperties.keySet foreach { xpath =>
-      assertThat(for {
-        xp  <- xPathCompiler.compile(xpath).right
-        res <- builtDocumentString.evalXPath[kantan.xpath.Node](xp).right
-      } yield res).as("Should not evaluate XPath %s", xpath) isEqualTo Left(DecodeError.NotFound)
+      val documentSource: InputSource = builtDocumentString
+      assertThat(xpath evaluate (documentSource, XPathConstants.NODE))
+        .as("Should not evaluate XPath %s", xpath).isNull()
     }
     assertThat(builtDocumentString) isNotEqualTo fixtureAccessor.getPutValueXml
   }
@@ -211,6 +176,15 @@ object XmlBuilderTest {
       linkedHashMap
     }
   }
+
+  private[scala] implicit def toXPathExpression(xpathString: String)(implicit nc: NamespaceContext = null): XPathExpression = {
+    val xpath = XPathFactory.newInstance().newXPath()
+    Option(nc) foreach xpath.setNamespaceContext
+    xpath.compile(xpathString)
+  }
+
+  private[scala] implicit def toInputSource(xmlString: String): InputSource =
+    new InputSource(new StringReader(xmlString))
 
   private[scala] implicit def toPredicate[A](p: A => Boolean): Predicate[A] = new Predicate[A] {
     override def test(a: A): Boolean = p(a)
