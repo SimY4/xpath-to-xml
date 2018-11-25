@@ -18,7 +18,7 @@ jacocoTestCoverageVerification {
             element = 'CLASS'
             includes = ['com.github.simy4.xpath.*']
             excludes = [
-                    'com.github.simy4.xpath.scala.impl.XmlElemOps',
+                    'com.github.simy4.xpath.scala.syntax.*',
                     'com.github.simy4.xpath.view.AbstractViewVisitor',
                     'com.github.simy4.xpath.XmlBuilder'
             ]

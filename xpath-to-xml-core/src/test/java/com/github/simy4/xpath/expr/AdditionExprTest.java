@@ -37,7 +37,7 @@ class AdditionExprTest {
                 new LiteralView<>("3.0"),
                 new NumberView<>(3.0),
                 new NodeView<>(node("3.0")),
-                new NodeSetView<>(() -> singletonList(new NodeView<>(node("3.0"))).iterator())
+                new NodeSetView<>(singletonList(new NodeView<>(node("3.0"))))
         );
     }
 
