@@ -23,10 +23,10 @@ final class XmlElemOps(private val elem: Elem, private val namespaceContext: Nam
     .putAll(xpaths: _*)
     .build(elem)
   def putAll(xpaths: Iterable[String]): Elem =
-    (new XmlBuilder(namespaceContext) /: xpaths) { _.put(_) } build elem
+    xpaths.foldLeft(new XmlBuilder(namespaceContext)) { _ put _ } build elem
   def putAll(xpathToValueMap: Map[String, AnyRef]): Elem =
-    (new XmlBuilder(namespaceContext) /: xpathToValueMap) {
-      (builder, entry) => builder.put(entry._1, entry._2)
+    xpathToValueMap.foldLeft(new XmlBuilder(namespaceContext)) { (builder, entry) =>
+      builder.put(entry._1, entry._2)
     } build elem
   def remove(xpath: String): Elem = new XmlBuilder(namespaceContext)
     .remove(xpath)
@@ -35,5 +35,5 @@ final class XmlElemOps(private val elem: Elem, private val namespaceContext: Nam
     .removeAll(xpaths: _*)
     .build(elem)
   def removeAll(xpaths: Iterable[String]): Elem =
-    (new XmlBuilder(namespaceContext) /: xpaths) { _.remove(_) } build elem
+    xpaths.foldLeft(new XmlBuilder(namespaceContext)) { _ remove _ } build elem
 }
