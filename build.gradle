@@ -1,5 +1,5 @@
 plugins {
-    id 'com.adtran.scala-multiversion-plugin' version '1.0.33' apply false
+    id 'com.adtran.scala-multiversion-plugin' version '1.0.34' apply false
     id 'me.champeau.gradle.jmh' version '0.4.7' apply false
     id 'net.ltgt.errorprone' version '0.6' apply false
     id 'net.researchgate.release' version '2.7.0'
