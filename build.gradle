@@ -82,6 +82,6 @@ release {
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.10.2'
+wrapper {
+    gradleVersion = '5.0'
 }
