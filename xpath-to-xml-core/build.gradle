@@ -1,5 +1,7 @@
 ext.moduleName = 'com.github.simych.xpath.core'
 
+apply from: rootProject.file('gradle/check-mutationcoverage.gradle')
+
 dependencies {
     testImplementation project(':xpath-to-xml-test')
     testImplementation "org.junit.jupiter:junit-jupiter-api:$jUnitVersion"
