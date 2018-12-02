@@ -86,7 +86,7 @@ class NotEqualsExprTest {
         // given
         when(leftExpr.resolve(any())).thenReturn(left);
         when(rightExpr.resolve(any())).thenReturn(right);
-        var context = new ViewContext<TestNode>(navigator, parentNode, false);
+        var context = new ViewContext<>(navigator, parentNode, false);
 
         // when
         var result = notEqualsExpr.resolve(context);
@@ -102,7 +102,7 @@ class NotEqualsExprTest {
         // given
         when(leftExpr.resolve(any())).thenReturn(left);
         when(rightExpr.resolve(any())).thenReturn(right);
-        var context = new ViewContext<TestNode>(navigator, parentNode, false);
+        var context = new ViewContext<>(navigator, parentNode, false);
 
         // when
         var result = notEqualsExpr.resolve(context);
@@ -121,7 +121,7 @@ class NotEqualsExprTest {
         // given
         when(leftExpr.resolve(any())).thenReturn(left);
         when(rightExpr.resolve(any())).thenReturn(right);
-        var context = new ViewContext<TestNode>(navigator, parentNode, true);
+        var context = new ViewContext<>(navigator, parentNode, true);
 
         // when
         var result = notEqualsExpr.resolve(context);
@@ -141,7 +141,7 @@ class NotEqualsExprTest {
         // given
         when(leftExpr.resolve(any())).thenReturn(left);
         when(rightExpr.resolve(any())).thenReturn(right);
-        var context = new ViewContext<TestNode>(navigator, parentNode, true);
+        var context = new ViewContext<>(navigator, parentNode, true);
 
         // then
         assertThatThrownBy(() -> notEqualsExpr.resolve(context))

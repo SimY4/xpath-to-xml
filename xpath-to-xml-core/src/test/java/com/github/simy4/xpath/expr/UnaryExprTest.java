@@ -66,7 +66,7 @@ class UnaryExprTest {
     void shouldReturnNegatedNumberViewNode(View<Node> number) {
         // given
         when(valueExpr.resolve(any())).thenReturn(number);
-        var context = new ViewContext<TestNode>(navigator, new NodeView<>(node("node")), false);
+        var context = new ViewContext<>(navigator, new NodeView<>(node("node")), false);
 
         // when
         assertThat(unaryExpr.resolve(context)).extracting("number").contains(-number.toNumber());
@@ -78,7 +78,7 @@ class UnaryExprTest {
     void negationWithNanShouldBeNan(View<Node> nan) {
         // given
         when(valueExpr.resolve(any())).thenReturn(nan);
-        var context = new ViewContext<TestNode>(navigator, new NodeView<>(node("node")), false);
+        var context = new ViewContext<>(navigator, new NodeView<>(node("node")), false);
 
         // when
         assertThat(unaryExpr.resolve(context)).extracting("number").contains(Double.NaN);

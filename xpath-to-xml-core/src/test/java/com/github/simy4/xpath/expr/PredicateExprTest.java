@@ -50,7 +50,7 @@ class PredicateExprTest {
     @MethodSource("truthy")
     void shouldReturnTrueForTruthyPredicate(Expr truthy) {
         // given
-        var context = new ViewContext<TestNode>(navigator, new NodeView<>(node("node")), false);
+        var context = new ViewContext<>(navigator, new NodeView<>(node("node")), false);
 
         // when
         var result = new PredicateExpr(truthy).resolve(context).toBoolean();
@@ -64,7 +64,7 @@ class PredicateExprTest {
     @MethodSource("falsy")
     void shouldReturnFalseForNonGreedyFalsePredicate(Expr falsy) {
         // given
-        var context = new ViewContext<TestNode>(navigator, new NodeView<>(node("node")), false);
+        var context = new ViewContext<>(navigator, new NodeView<>(node("node")), false);
 
         // when
         var result = new PredicateExpr(falsy).resolve(context).toBoolean();
@@ -77,7 +77,7 @@ class PredicateExprTest {
     @DisplayName("When greedy context, falsy predicate and non new node should return false")
     void shouldReturnFalseOnGreedyFalseResolveAndNonNewNode() {
         // given
-        var context = new ViewContext<TestNode>(navigator, new NodeView<>(node("node")), true);
+        var context = new ViewContext<>(navigator, new NodeView<>(node("node")), true);
 
         // when
         var result = new PredicateExpr(new NumberExpr(3.0)).resolve(context).toBoolean();
@@ -90,7 +90,7 @@ class PredicateExprTest {
     @DisplayName("When greedy context, falsy predicate and new node should prepend missing nodes and return true")
     void shouldPrependMissingNodesAndReturnTrueOnGreedyFalsePredicateAndNewNode() {
         // given
-        var context = new ViewContext<TestNode>(navigator, new NodeView<>(node("node"), true), true);
+        var context = new ViewContext<>(navigator, new NodeView<>(node("node"), true), true);
 
         // when
         var result = new PredicateExpr(new NumberExpr(3.0)).resolve(context).toBoolean();

@@ -81,7 +81,7 @@ class GreaterThanExprTest {
         // given
         when(leftExpr.resolve(any())).thenReturn(greater);
         when(rightExpr.resolve(any())).thenReturn(less);
-        var context = new ViewContext<TestNode>(navigator, parentNode, false);
+        var context = new ViewContext<>(navigator, parentNode, false);
 
         // when
         var result = greaterThanExpr.resolve(context);
@@ -97,7 +97,7 @@ class GreaterThanExprTest {
         // given
         when(leftExpr.resolve(any())).thenReturn(less);
         when(rightExpr.resolve(any())).thenReturn(greater);
-        var context = new ViewContext<TestNode>(navigator, parentNode, false);
+        var context = new ViewContext<>(navigator, parentNode, false);
 
         // when
         var result = greaterThanExpr.resolve(context);
@@ -113,7 +113,7 @@ class GreaterThanExprTest {
         // given
         when(leftExpr.resolve(any())).thenReturn(left);
         when(rightExpr.resolve(any())).thenReturn(right);
-        var context = new ViewContext<TestNode>(navigator, parentNode, false);
+        var context = new ViewContext<>(navigator, parentNode, false);
 
         // when
         var result = greaterThanExpr.resolve(context);
@@ -129,7 +129,7 @@ class GreaterThanExprTest {
         // given
         when(leftExpr.resolve(any())).thenReturn(less);
         when(rightExpr.resolve(any())).thenReturn(greater);
-        var context = new ViewContext<TestNode>(navigator, parentNode, true);
+        var context = new ViewContext<>(navigator, parentNode, true);
 
         // when
         assertThatThrownBy(() -> greaterThanExpr.resolve(context))
