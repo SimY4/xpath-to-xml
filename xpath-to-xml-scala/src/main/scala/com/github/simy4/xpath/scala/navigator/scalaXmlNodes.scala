@@ -35,15 +35,15 @@ final class Root(override var node: Elem) extends Parent {
   override def toString: String = node.toString
 }
 
-private[navigator] final class Element(private var _node: Elem, var index: Int,
+private[navigator] final class Element(private[this] var _node: Elem, var index: Int,
                                        override val parent: Parent) extends Parent {
-  override def getName: QName = node match {
+  override def getName: QName = _node match {
     case prefixed if null != prefixed.prefix => new QName(prefixed.namespace, prefixed.label, prefixed.prefix)
     case simple                              => new QName(simple.label)
   }
   override def elements: Iterable[Element] = for {
-    (n, i) <- _node.child.view.zipWithIndex if !n.isAtom
-  } yield new Element(n.asInstanceOf[Elem], i, this)
+    (elem, i) <- _node.child.view.zipWithIndex collect { case (e: Elem, i) => e -> i }
+  } yield new Element(elem, i, this)
   override def attributes: Iterable[Attribute] = _node.attributes.view map (new Attribute(_, this))
   override def node: Elem = _node
   override def node_=(elem: Elem): Unit = {
@@ -56,7 +56,7 @@ private[navigator] final class Element(private var _node: Elem, var index: Int,
     _node = elem
   }
   override def equals(obj: Any): Boolean = obj match {
-    case e: Element => _node == e._node && index == e.index
+    case e: Element => _node == e.node && index == e.index
     case _          => false
   }
   override def hashCode(): Int = {
@@ -69,8 +69,8 @@ private[navigator] final class Element(private var _node: Elem, var index: Int,
   override def toString: String = _node.toString
 }
 
-private[navigator] final class Attribute(private var _meta: MetaData, override val parent: Parent) extends ScalaXmlNode {
-  override def getName: QName = meta match {
+private[navigator] final class Attribute(private[this] var _meta: MetaData, override val parent: Parent) extends ScalaXmlNode {
+  override def getName: QName = _meta match {
     case a : XmlAttribute if a.isPrefixed => new QName(a.getNamespace(parent.node), a.key, a.pre)
     case _                                => new QName(_meta.key)
   }
@@ -78,7 +78,7 @@ private[navigator] final class Attribute(private var _meta: MetaData, override v
   override def elements: Iterable[Element] = Nil
   override def attributes: Iterable[Attribute] = Nil
   override def equals(obj: Any): Boolean = obj match {
-    case a: Attribute => _meta == a._meta
+    case a: Attribute => _meta == a.meta
     case _            => false
   }
   override def hashCode(): Int = _meta.hashCode()
