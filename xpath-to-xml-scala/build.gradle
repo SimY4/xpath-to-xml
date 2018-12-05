@@ -72,7 +72,9 @@ tasks.withType(ScalaCompile) {
             '-Xlint:stars-align',                // Pattern sequence wildcard must align with sequence component.
             '-Xlint:type-parameter-shadow',      // A local type parameter shadows a type already in scope.
             '-Ywarn-dead-code',                  // Warn when dead code is identified.
-    ] + (!scalaVersion.startsWith('2.11') ? ['-opt:l:inline', '-opt-inline-from:**'] : [])
+            '-Ywarn-numeric-widen',              // Warn when numerics are widened.
+    ] + (!scalaVersion.startsWith('2.11') ? ['-opt:l:inline', '-opt-inline-from:**'] : []) +
+        (!scalaVersion.startsWith('2.13') ? ['-Yno-adapted-args'] : [])  // Do not adapt an argument list (either by inserting () or creating a tuple) to match the receiver.
 }
 
 compileTestScala {
