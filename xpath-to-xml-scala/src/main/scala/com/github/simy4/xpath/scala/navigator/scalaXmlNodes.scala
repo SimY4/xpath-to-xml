@@ -25,7 +25,7 @@ private[navigator] sealed trait Parent extends ScalaXmlNode {
 final class Root(override var node: Elem) extends Parent {
   override def getName: QName = new QName(NavigatorNode.DOCUMENT)
   override val parent: Parent = null
-  override def elements: Iterable[Element] = Seq(new Element(node, 0, this))
+  override def elements: Iterable[Element] = new Element(node, 0, this) :: Nil
   override def attributes: Iterable[Attribute] = Nil
   override def equals(obj: Any): Boolean = obj match {
     case r: Root => node == r.node
