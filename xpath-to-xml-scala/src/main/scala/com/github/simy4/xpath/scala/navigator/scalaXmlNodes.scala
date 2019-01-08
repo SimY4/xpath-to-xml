@@ -41,9 +41,8 @@ private[navigator] final class Element(private[this] var _node: Elem, var index:
     case prefixed if null != prefixed.prefix => new QName(prefixed.namespace, prefixed.label, prefixed.prefix)
     case simple                              => new QName(simple.label)
   }
-  override def elements: Iterable[Element] = for {
-    (elem, i) <- _node.child.view.zipWithIndex collect { case (e: Elem, i) => e -> i }
-  } yield new Element(elem, i, this)
+  override def elements: Iterable[Element] =
+    _node.child.view.zipWithIndex collect { case (e: Elem, i) => new Element(e, i, this) }
   override def attributes: Iterable[Attribute] = _node.attributes.view map (new Attribute(_, this))
   override def node: Elem = _node
   override def node_=(elem: Elem): Unit = {
@@ -60,13 +59,21 @@ private[navigator] final class Element(private[this] var _node: Elem, var index:
     case _          => false
   }
   override def hashCode(): Int = {
-    val prime = 31
     var result = 1
-    result = prime * result + _node.hashCode()
-    result = prime * result + index
+    result = 31 * result + _node.hashCode()
+    result = 31 * result + index
     result
   }
   override def toString: String = _node.toString
+}
+
+private[navigator] object Element {
+  def apply(elem: Elem, parent: Parent): Element = {
+    val node = parent.node
+    val children = node.child
+    parent.node = node.copy(child = children :+ elem)
+    new Element(elem, children.size, parent)
+  }
 }
 
 private[navigator] final class Attribute(private[this] var _meta: MetaData, override val parent: Parent) extends ScalaXmlNode {
@@ -87,5 +94,12 @@ private[navigator] final class Attribute(private[this] var _meta: MetaData, over
   def meta_=(meta: MetaData): Unit = {
     parent.node = parent.node % meta
     _meta = meta
+  }
+}
+
+private[navigator] object Attribute {
+  def apply(meta: MetaData, parent: Parent): Attribute = {
+    parent.node = parent.node % meta
+    new Attribute(meta, parent)
   }
 }
