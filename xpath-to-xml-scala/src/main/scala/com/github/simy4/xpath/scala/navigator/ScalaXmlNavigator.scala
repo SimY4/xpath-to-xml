@@ -6,34 +6,29 @@ import navigator.Navigator
 
 import _root_.scala.xml.{ Elem, Null, Text, Attribute => XmlAttribute }
 
-class ScalaXmlNavigator(xml: Root) extends Navigator[ScalaXmlNode] {
+class ScalaXmlNavigator(override val root: Root) extends Navigator[ScalaXmlNode] {
   import _root_.scala.collection.JavaConverters._
 
-  override val root: ScalaXmlNode = xml
   override def parentOf(node: ScalaXmlNode): ScalaXmlNode = node.parent
   override def elementsOf(parent: ScalaXmlNode): java.lang.Iterable[_ <: ScalaXmlNode] = parent.elements.asJava
   override def attributesOf(parent: ScalaXmlNode): java.lang.Iterable[_ <: ScalaXmlNode] = parent.attributes.asJava
   @throws[XmlBuilderException]("If unable to create attribute for given node")
   override def createAttribute(parent: ScalaXmlNode, attribute: QName): ScalaXmlNode = parent match {
     case e: Element =>
-      val newAttr = XmlAttribute(Some(attribute.getPrefix) filter (_.nonEmpty), attribute.getLocalPart, Text(""), Null)
-      e.node = e.node % newAttr
-      new Attribute(newAttr, e)
+      Attribute(XmlAttribute(attribute.getPrefix match {
+        case pre if pre.nonEmpty => Some(pre)
+        case _                   => None
+      }, attribute.getLocalPart, Text(""), Null), e)
     case _          =>
       throw new XmlBuilderException(s"Unable to create attribute for $parent")
   }
   @throws[XmlBuilderException]("If unable to create element for given node")
   override def createElement(parent: ScalaXmlNode, element: QName): ScalaXmlNode = parent match {
     case e: Element =>
-      val node = e.node
-      val children = node.child
-      val idx = children.size
-      val newElem = element.getPrefix match {
-        case pre if pre.nonEmpty => Elem(pre, element.getLocalPart, Null, node.scope, minimizeEmpty = true)
-        case _                   => Elem(null, element.getLocalPart, Null, node.scope, minimizeEmpty = true)
-      }
-      e.node = node.copy(child = children :+ newElem)
-      new Element(newElem, idx, e)
+      Element(Elem(element.getPrefix match {
+        case pre if pre.nonEmpty => pre
+        case _                   => null
+      }, element.getLocalPart, Null, e.node.scope, minimizeEmpty = true), e)
     case _          =>
       throw new XmlBuilderException(s"Unable to create element for $parent")
   }

@@ -50,9 +50,18 @@ Now having a XML structure i.e.:
 and one of supported models:
 
 ```java
-DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-Document document = documentBuilder.parse(xmlSource);
+import java.io.StringReader;
+import javax.xml.parsers.*;
+import org.xml.sax.InputSource;
+
+class Example0 { 
+    public static Document document(String xml) throws Exception {
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        InputSource inputSource = new InputSource(new StringReader(xml));
+        return documentBuilder.parse(inputSource);
+    }
+}
 ```
 
 you can:
@@ -60,32 +69,56 @@ you can:
 - alter existing paths
 
 ```java
-new XmlBuilder()
-        .put("/breakfast_menu/food[1]/price", "$7.95")
-        .build(document);
+import com.github.simy4.xpath.XmlBuilder;
+
+class Example1 extends Example0 { 
+    public static void main(String... args) throws Exception {
+        new XmlBuilder()
+                .put("/breakfast_menu/food[1]/price", "$7.95")
+                .build(document(xmlSource));
+    }
+}
 ```
 
 - append new elements
 
 ```java
-new XmlBuilder()
-        .put("/breakfast_menu/food[name='Homestyle Breakfast'][price='$6.95'][description='Two eggs, bacon or sausage, toast, and our ever-popular hash browns']/calories", "950")
-        .build(document);
+import com.github.simy4.xpath.XmlBuilder;
+
+class Example2 extends Example0 { 
+    public static void main(String... args) throws Exception {
+        new XmlBuilder()
+                .put("/breakfast_menu/food[name='Homestyle Breakfast'][price='$6.95'][description='Two eggs, bacon or sausage, toast, and our ever-popular hash browns']/calories", "950")
+                .build(document(xmlSource));
+    }
+}
 ```
 
 - remove paths
 
 ```java
-new XmlBuilder()
-        .remove("/breakfast_menu/food[name='Belgian Waffles']")
-        .build(document);
+import com.github.simy4.xpath.XmlBuilder;
+
+class Example3 extends Example0 { 
+    public static void main(String... args) throws Exception {
+        new XmlBuilder()
+                .remove("/breakfast_menu/food[name='Belgian Waffles']")
+                .build(document(xmlSource));
+    }
+}
 ```
 
 - combine any of the above actions into a single modification action
 
 ```java
-new XmlBuilder()
-        .remove("/breakfast_menu/food[name='Homestyle Breakfast']")
-        .put("/breakfast_menu/food[name='Homestyle Breakfast'][price='$6.95'][description='Two eggs, bacon or sausage, toast, and our ever-popular hash browns']/calories", "950")
-        .build(document);
+import com.github.simy4.xpath.XmlBuilder;
+
+class Example4 extends Example0 { 
+    public static void main(String... args) throws Exception {
+        new XmlBuilder()
+                .remove("/breakfast_menu/food[name='Homestyle Breakfast']")
+                .put("/breakfast_menu/food[name='Homestyle Breakfast'][price='$6.95'][description='Two eggs, bacon or sausage, toast, and our ever-popular hash browns']/calories", "950")
+                .build(document(xmlSource));
+    }
+}
 ```
