@@ -49,8 +49,8 @@ private[navigator] final class Element(private[this] var _node: Elem, var index:
     parent.node = parent match {
       case _: Root    => elem
       case _: Element =>
-        val newChildren = parent.node.child patch (index, Seq(elem), 1)
-        parent.node.copy(child = newChildren)
+        val parentNode = parent.node
+        parentNode.copy(child = parentNode.child updated (index, elem))
     }
     _node = elem
   }
