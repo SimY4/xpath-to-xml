@@ -1,5 +1,16 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    configurations.maybeCreate('pitest')
+    dependencies {
+        pitest 'org.pitest:pitest-junit5-plugin:0.8'
+    }
+}
+
 plugins {
-    id 'com.adtran.scala-multiversion-plugin' version '1.0.33' apply false
+    id 'com.adtran.scala-multiversion-plugin' version '1.0.34' apply false
+    id 'info.solidsoft.pitest' version '1.3.0' apply false
     id 'me.champeau.gradle.jmh' version '0.4.7' apply false
     id 'net.ltgt.errorprone' version '0.6' apply false
     id 'net.researchgate.release' version '2.7.0'
@@ -90,5 +101,5 @@ release {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.10.2'
+    gradleVersion = '4.10.3'
 }

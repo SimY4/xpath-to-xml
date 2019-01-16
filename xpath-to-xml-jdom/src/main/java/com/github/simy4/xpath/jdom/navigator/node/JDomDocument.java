@@ -56,7 +56,6 @@ public final class JDomDocument extends AbstractJDomNode<Document> {
         if (getNode().hasRootElement()) {
             throw new XmlBuilderException("Unable to append element " + element + " . Root element already exist");
         }
-        new Exception().printStackTrace();
         try {
             getNode().setRootElement(element);
             return new JDomElement(element);

@@ -2,7 +2,6 @@ package com.github.simy4.xpath
 package scala
 
 import java.io.StringReader
-import java.util.function.Predicate
 import java.util.stream.Stream
 
 import fixtures.FixtureAccessor
@@ -16,6 +15,7 @@ import org.junit.jupiter.params.provider.{ Arguments, ArgumentsProvider, Argumen
 import org.xml.sax.InputSource
 
 import _root_.scala.collection.{ Map, mutable }
+import _root_.scala.compat.java8.FunctionConverters
 import _root_.scala.xml.{ Elem, NamespaceBinding, Node, Null, PrettyPrinter, TopScope, XML }
 
 class DataProvider extends ArgumentsProvider {
@@ -41,6 +41,8 @@ class XmlBuilderTest {
   import XmlBuilderTest._
   import implicits._
 
+  import FunctionConverters._
+
   @ParameterizedTest
   @ArgumentsSource(classOf[DataProvider])
   def shouldBuildDocumentFromSetOfXPaths(fixtureAccessor: FixtureAccessor, namespaceContext: NamespaceContext,
@@ -55,7 +57,7 @@ class XmlBuilderTest {
       assertThat(xpath evaluate (documentSource, XPathConstants.NODE)).isNotNull
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(builtDocumentString) is new Condition({ xml: String =>
+    assertThat(builtDocumentString) is new Condition(asJavaPredicate { xml: String =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutXml
     }, "XML matches exactly")
   }
@@ -75,7 +77,7 @@ class XmlBuilderTest {
         .as("Should evaluate XPath %s to %s", xpath, value) isEqualTo value
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(xmlToString(builtDocument)) is new Condition({ xml: String =>
+    assertThat(xmlToString(builtDocument)) is new Condition(asJavaPredicate { xml: String =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
     }, "XML matches exactly")
   }
@@ -97,7 +99,7 @@ class XmlBuilderTest {
         .as("Should evaluate XPath %s to %s", xpath, value) isEqualTo value
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(xmlToString(builtDocument)) is new Condition({ xml: String =>
+    assertThat(xmlToString(builtDocument)) is new Condition(asJavaPredicate { xml: String =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
     }, "XML matches exactly")
   }
@@ -119,7 +121,7 @@ class XmlBuilderTest {
         .as("Should evaluate XPath %s to %s", xpath, value) isEqualTo value
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(xmlToString(builtDocument)) is new Condition({ xml: String =>
+    assertThat(xmlToString(builtDocument)) is new Condition(asJavaPredicate { xml: String =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
     }, "XML matches exactly")
 
@@ -132,7 +134,7 @@ class XmlBuilderTest {
         .as("Should evaluate XPath %s to %s", xpath, value) isEqualTo value
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(xmlToString(builtDocument)) is new Condition({ xml: String =>
+    assertThat(xmlToString(builtDocument)) is new Condition(asJavaPredicate { xml: String =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
     }, "XML matches exactly")
   }
@@ -180,13 +182,9 @@ object XmlBuilderTest {
   private[scala] implicit def toXPathExpression(xpathString: String)(implicit nc: NamespaceContext = null): XPathExpression = {
     val xpath = XPathFactory.newInstance().newXPath()
     Option(nc) foreach xpath.setNamespaceContext
-    xpath.compile(xpathString)
+    xpath compile xpathString
   }
 
   private[scala] implicit def toInputSource(xmlString: String): InputSource =
     new InputSource(new StringReader(xmlString))
-
-  private[scala] implicit def toPredicate[A](p: A => Boolean): Predicate[A] = new Predicate[A] {
-    override def test(a: A): Boolean = p(a)
-  }
 }
