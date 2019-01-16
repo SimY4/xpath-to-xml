@@ -1,8 +1,8 @@
 ext {
     moduleName = 'com.github.simych.xpath.scala'
     allScalaVersions = true
-    scalaVersions = '2.11.12, 2.12.7, 2.13.0-M5'
-    defaultScalaVersions = '2.12.7'
+    scalaVersions = '2.11.12, 2.12.8, 2.13.0-M5'
+    defaultScalaVersions = '2.12.8'
 }
 
 apply plugin: 'scala'
