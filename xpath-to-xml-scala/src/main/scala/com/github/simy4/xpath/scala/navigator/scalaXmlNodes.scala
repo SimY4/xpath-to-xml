@@ -46,11 +46,9 @@ private[navigator] final class Element(private[this] var _node: Elem, var index:
   override def attributes: Iterable[Attribute] = _node.attributes.view map (new Attribute(_, this))
   override def node: Elem = _node
   override def node_=(elem: Elem): Unit = {
-    parent.node = parent match {
-      case _: Root    => elem
-      case _: Element =>
-        val parentNode = parent.node
-        parentNode.copy(child = parentNode.child updated (index, elem))
+    val parentNode = parent.node
+    parent.node = if (parentNode eq _node) elem else {
+      parentNode.copy(child = parentNode.child updated (index, elem))
     }
     _node = elem
   }
