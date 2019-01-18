@@ -9,22 +9,14 @@ apply plugin: 'scala'
 apply plugin: 'com.adtran.scala-multiversion-plugin'
 apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 
-configurations {
-    scalaCompilerPlugin
-}
-
 dependencies {
     api project(':xpath-to-xml-core')
 
     implementation 'org.scala-lang:scala-library:%scala-version%'
     if (scalaVersion.startsWith('2.13')) {
         implementation 'org.scala-lang.modules:scala-xml_2.13.0-M5:[1.0, 2.0['
-
-        scalaCompilerPlugin 'com.olegpy:better-monadic-for_2.13.0-M5:[0.3,0.4['
     } else {
         implementation 'org.scala-lang.modules:scala-xml_%%:[1.0, 2.0['
-
-        scalaCompilerPlugin 'com.olegpy:better-monadic-for_%%:[0.3,0.4['
     }
 
     testImplementation project(':xpath-to-xml-test')
@@ -47,7 +39,6 @@ tasks.withType(ScalaCompile) {
         scalaCompileOptions.optimize = true
     }
     scalaCompileOptions.additionalParameters = [
-            '-Xplugin:' + configurations.scalaCompilerPlugin.asPath,
             '-deprecation',                      // Emit warning and location for usages of deprecated APIs.
             '-encoding', 'utf-8',                // Specify character encoding used by source files.
             '-explaintypes',                     // Explain type errors in more detail.
