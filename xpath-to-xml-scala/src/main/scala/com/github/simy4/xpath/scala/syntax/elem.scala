@@ -6,9 +6,7 @@ import javax.xml.namespace.NamespaceContext
 import _root_.scala.collection.{ Iterable, Map }
 import _root_.scala.xml.Elem
 
-object elem extends ToXmlElemOps
-
-trait ToXmlElemOps {
+trait ElemSyntax {
   implicit def toXmlElemOps(elem: Elem): XmlElemOps = new XmlElemOps(elem)
 }
 
