@@ -3,8 +3,10 @@ package com.github.simy4.xpath.effects;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.spi.Effect;
 import com.github.simy4.xpath.util.TestNode;
+import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,6 +53,18 @@ class RemoveEffectTest {
         verify(navigator).remove(node("node"));
         assertThat(contextCaptor.getValue()).extracting("navigator", "greedy", "hasNext", "position")
                 .containsExactly(navigator, false, false, 1);
+    }
+
+    @Test
+    @DisplayName("Should throw if resolved to a literal expr")
+    void shouldThrowWhenResolvedToALiteralExpr() {
+        // given
+        LiteralView<Node> literal = new LiteralView<>("literal");
+        when(expr.resolve(any())).thenReturn(literal);
+
+        // when
+        assertThatThrownBy(() -> removeEffect.perform(navigator, node("xml")))
+                .hasMessage("Failed to remove value into XML. Read-only view was resolved: " + literal);
     }
 
     @Test

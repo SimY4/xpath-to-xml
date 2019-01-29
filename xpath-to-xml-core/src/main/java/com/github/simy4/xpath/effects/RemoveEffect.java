@@ -43,8 +43,8 @@ public class RemoveEffect implements Effect {
         }
 
         @Override
-        protected Void returnDefault(View<N> ignored) {
-            return null;
+        protected Void returnDefault(View<N> view) throws XmlBuilderException {
+            throw new XmlBuilderException("Failed to remove value into XML. Read-only view was resolved: " + view);
         }
 
     }

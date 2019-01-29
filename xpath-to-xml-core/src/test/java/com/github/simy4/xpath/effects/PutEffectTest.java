@@ -5,6 +5,7 @@ import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.spi.Effect;
 import com.github.simy4.xpath.util.TestNode;
+import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.ViewContext;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,6 +43,21 @@ class PutEffectTest {
     @Test
     @DisplayName("Should greedily resolve expr")
     void shouldGreedilyResolveExpr() {
+        // when
+        putEffect.perform(navigator, node("xml"));
+
+        // then
+        verify(expr).resolve(contextCaptor.capture());
+        assertThat(contextCaptor.getValue()).extracting("navigator", "greedy", "hasNext", "position")
+                .containsExactly(navigator, true, false, 1);
+    }
+
+    @Test
+    @DisplayName("Should greedily resolve literal expr")
+    void shouldGreedilyResolveLiteralExpr() {
+        // given
+        when(expr.resolve(any())).thenReturn(new LiteralView<>("literal"));
+
         // when
         putEffect.perform(navigator, node("xml"));
 
