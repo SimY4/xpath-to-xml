@@ -38,6 +38,13 @@ sourcesJar {
     from sourceSets.main.allSource
 }
 
+if (!scalaVersion.startsWith('2.13')) {
+    javadocJar {
+        dependsOn scaladoc
+        from scaladoc
+    }
+}
+
 tasks.withType(ScalaCompile) {
     if (scalaVersion.startsWith('2.11')) {
         scalaCompileOptions.optimize = true
