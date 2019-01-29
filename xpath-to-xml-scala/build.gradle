@@ -1,8 +1,18 @@
 ext {
     moduleName = 'com.github.simych.xpath.scala'
     allScalaVersions = true
-    scalaVersions = '2.13.0-M5, 2.11.12, 2.12.8'
+    scalaVersions = ['2.13.0-M5'
+                     , '2.11.12'
+                     , '2.12.8'
+                    ].join(',')
     defaultScalaVersions = '2.12.8'
+    runOnceTasks = ['clean'
+                    , ':xpath-to-xml-core:animalsnifferMain'
+                    , ':xpath-to-xml-core:jacocoTestCoverageVerification'
+                    , ':xpath-to-xml-core:jacocoTestReport'
+                    , ':xpath-to-xml-core:pitest'
+                    , ':xpath-to-xml-core:publish'
+                    ].join(',')
 }
 
 apply plugin: 'scala'
