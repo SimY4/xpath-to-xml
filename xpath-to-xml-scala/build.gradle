@@ -34,6 +34,10 @@ dependencies {
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jUnitVersion"
 }
 
+sourcesJar {
+    from sourceSets.main.allSource
+}
+
 tasks.withType(ScalaCompile) {
     if (scalaVersion.startsWith('2.11')) {
         scalaCompileOptions.optimize = true
