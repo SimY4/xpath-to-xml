@@ -10,7 +10,6 @@ import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
-import com.github.simy4.xpath.view.ViewContext;
 import com.github.simy4.xpath.view.ViewVisitor;
 
 import java.util.Iterator;
@@ -22,11 +21,11 @@ public class NotEqualsExpr extends AbstractOperationExpr {
     }
 
     @Override
-    public <N extends Node> View<N> resolve(ViewContext<N> context, View<N> left, View<N> right)
+    public <N extends Node> View<N> resolve(Navigator<N> navigator, View<N> left, View<N> right, boolean greedy)
             throws XmlBuilderException {
         boolean ne = 0 != left.compareTo(right);
-        if (!ne && context.isGreedy() && !context.hasNext()) {
-            ne = left.visit(new NotEqualsVisitor<N>(context.getNavigator(), right));
+        if (!ne && greedy) {
+            ne = left.visit(new NotEqualsVisitor<N>(navigator, right));
         }
         return BooleanView.of(ne);
     }

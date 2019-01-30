@@ -4,10 +4,7 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.util.ReadOnlyIterator;
-import com.github.simy4.xpath.view.IterableNodeView;
-import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
-import com.github.simy4.xpath.view.ViewContext;
 
 import javax.xml.namespace.QName;
 import java.util.Iterator;
@@ -22,12 +19,13 @@ public class AncestorOrSelfAxisResolver extends AbstractAxisResolver {
     }
 
     @Override
-    <N extends Node> IterableNodeView<N> traverseAxis(ViewContext<N> context) {
-        return new NodeSetView<N>(new AncestorOrSelfIterable<N>(context, self), this);
+    <N extends Node> Iterable<? extends N> traverseAxis(Navigator<N> navigator, NodeView<N> parent) {
+        return new AncestorOrSelfIterable<N>(navigator, parent.getNode(), self);
     }
 
     @Override
-    public <N extends Node> NodeView<N> createAxisNode(ViewContext<N> context) throws XmlBuilderException {
+    public <N extends Node> NodeView<N> createAxisNode(Navigator<N> navigator, NodeView<N> parent, int position)
+            throws XmlBuilderException {
         if (self) {
             throw new XmlBuilderException("Ancestor-of-self axis cannot modify XML model");
         } else {
@@ -42,17 +40,19 @@ public class AncestorOrSelfAxisResolver extends AbstractAxisResolver {
 
     private static final class AncestorOrSelfIterable<T extends Node> implements Iterable<T> {
 
-        private final ViewContext<T> context;
+        private final Navigator<T> navigator;
+        private final T node;
         private final boolean self;
 
-        private AncestorOrSelfIterable(ViewContext<T> context, boolean self) {
-            this.context = context;
+        private AncestorOrSelfIterable(Navigator<T> navigator, T node, boolean self) {
+            this.navigator = navigator;
+            this.node = node;
             this.self = self;
         }
 
         @Override
         public Iterator<T> iterator() {
-            return new AncestorOrSelf<T>(context.getNavigator(), context.getCurrent().getNode(), self);
+            return new AncestorOrSelf<T>(navigator, node, self);
         }
 
     }

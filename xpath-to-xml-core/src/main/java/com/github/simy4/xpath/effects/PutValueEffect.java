@@ -9,7 +9,6 @@ import com.github.simy4.xpath.view.AbstractViewVisitor;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
-import com.github.simy4.xpath.view.ViewContext;
 
 public class PutValueEffect implements Effect {
 
@@ -23,9 +22,7 @@ public class PutValueEffect implements Effect {
 
     @Override
     public <N extends Node> void perform(Navigator<N> navigator, N xml) throws XmlBuilderException {
-        final ViewContext<N> context = new ViewContext<N>(navigator, new NodeView<N>(xml), true);
-        final View<N> view = expr.resolve(context);
-        view.visit(new PutValueVisitor<N>(navigator, value));
+        expr.resolve(navigator, new NodeView<N>(xml), true).visit(new PutValueVisitor<N>(navigator, value));
     }
 
     private static final class PutValueVisitor<N extends Node> extends AbstractViewVisitor<N, Void> {

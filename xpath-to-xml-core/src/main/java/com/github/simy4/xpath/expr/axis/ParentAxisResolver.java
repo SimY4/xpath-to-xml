@@ -1,13 +1,12 @@
 package com.github.simy4.xpath.expr.axis;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.view.IterableNodeView;
-import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
-import com.github.simy4.xpath.view.ViewContext;
 
 import javax.xml.namespace.QName;
+import java.util.Collections;
 
 public class ParentAxisResolver extends AbstractAxisResolver {
 
@@ -16,13 +15,14 @@ public class ParentAxisResolver extends AbstractAxisResolver {
     }
 
     @Override
-    <N extends Node> IterableNodeView<N> traverseAxis(ViewContext<N> context) {
-        final N parent = context.getNavigator().parentOf(context.getCurrent().getNode());
-        return null == parent || !test(parent) ? NodeSetView.<N>empty() : new NodeView<N>(parent);
+    <N extends Node> Iterable<N> traverseAxis(Navigator<N> navigator, NodeView<N> view) {
+        final N parent = navigator.parentOf(view.getNode());
+        return null == parent ? Collections.<N>emptyList() : Collections.singletonList(parent);
     }
 
     @Override
-    public <N extends Node> NodeView<N> createAxisNode(ViewContext<N> context) throws XmlBuilderException {
+    public <N extends Node> NodeView<N> createAxisNode(Navigator<N> navigator, NodeView<N> view, int position)
+            throws XmlBuilderException {
         throw new XmlBuilderException("Parent axis cannot modify XML model");
     }
 
