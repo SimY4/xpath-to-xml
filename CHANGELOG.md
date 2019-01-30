@@ -6,6 +6,26 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 
 ## 2.x Series
 
+### 2.1.0: JDOM model support
+
+Features:
+
+- Support for JDOM model
+
+Improvements:
+
+- Core
+  - Add runtime static method to check whether given model instance is supported.
+- scala XML
+  - Various performance improvements
+  - Added 2.13 for cross compilation
+  - Fixed JavaDoc and source code publishing
+
+Bugfixes:
+
+- XOM
+  - Fix namespace resolution for attribute nodes.
+
 ### 2.0.0: Scala XML model support and javax.json model support
 
 Features:
