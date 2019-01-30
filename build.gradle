@@ -78,7 +78,7 @@ release {
     failOnCommitNeeded = false
 
     git {
-        requireBranch = 'java6'
+        requireBranch = 'java6-scala-2.x'
     }
 }
 
