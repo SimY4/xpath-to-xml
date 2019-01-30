@@ -16,6 +16,10 @@ Improvements:
 
 - Core
   - Add runtime static method to check whether given model instance is supported.
+- scala XML
+  - Various performance improvements
+  - Added 2.13 for cross compilation
+  - Fixed JavaDoc and source code publishing
 
 Bugfixes:
 
