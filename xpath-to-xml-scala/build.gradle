@@ -7,6 +7,7 @@ ext {
                     ].join(',')
     defaultScalaVersions = '2.12.8'
     runOnceTasks = ['clean'
+                    , 'jmh'
                     , ':xpath-to-xml-core:animalsnifferMain'
                     , ':xpath-to-xml-core:jacocoTestCoverageVerification'
                     , ':xpath-to-xml-core:jacocoTestReport'
