@@ -24,7 +24,6 @@ import java.util.Collections;
 
 import static com.github.simy4.xpath.util.TestNode.node;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
@@ -63,7 +62,7 @@ class AxisStepExprTest {
     @DisplayName("When axis resolved in a list of child nodes should match nodes via predicates chain")
     void shouldMatchNodeViaPredicatesChainWhenAxisResolvedInListOfChildNodes() {
         // given
-        when(axisResolver.resolveAxis(any())).thenReturn(new NodeSetView<>(singleton(new NodeView<>(node("node")))));
+        when(axisResolver.resolveAxis(any())).thenReturn(new NodeView<>(node("node")));
         when(predicate1.resolve(any())).thenReturn(BooleanView.of(true));
         when(predicate2.resolve(any())).thenReturn(BooleanView.of(true));
 
@@ -84,7 +83,7 @@ class AxisStepExprTest {
     @DisplayName("When predicate list is empty should return nodes resolved by axis")
     void shouldReturnNodesResolvedByStepExprOnly() {
         // given
-        when(axisResolver.resolveAxis(any())).thenReturn(new NodeSetView<>(singleton(new NodeView<>(node("node")))));
+        when(axisResolver.resolveAxis(any())).thenReturn(new NodeView<>(node("node")));
         stepExpr = new AxisStepExpr(axisResolver, Collections.emptyList());
 
         // when
@@ -110,7 +109,7 @@ class AxisStepExprTest {
     @DisplayName("When predicate traverse returns nothing should should short circuit resolve")
     void shouldShortCircuitWhenPredicateTraversalReturnsNothing() {
         // given
-        when(axisResolver.resolveAxis(any())).thenReturn(new NodeSetView<>(singleton(new NodeView<>(node("node")))));
+        when(axisResolver.resolveAxis(any())).thenReturn(new NodeView<>(node("node")));
 
         // when
         IterableNodeView<TestNode> result = stepExpr.resolve(new ViewContext<>(navigator, parentNode, false));
@@ -124,8 +123,7 @@ class AxisStepExprTest {
     @DisplayName("When step expr is partially resolvable should create node and resolve predicates")
     void shouldCreateNodeAndResolvePredicatesWhenStepExprIsPartiallyResolvable() {
         // given
-        when(axisResolver.resolveAxis(argThat(ViewContext::isGreedy)))
-                .thenReturn(new NodeSetView<>(singleton(new NodeView<>(node("node")))));
+        when(axisResolver.resolveAxis(argThat(ViewContext::isGreedy))).thenReturn(new NodeView<>(node("node")));
         when(predicate1.resolve(argThat(ViewContext::isGreedy))).thenReturn(BooleanView.of(true));
         when(predicate2.resolve(argThat(ViewContext::isGreedy))).thenReturn(BooleanView.of(true));
 
@@ -150,8 +148,7 @@ class AxisStepExprTest {
     @DisplayName("When unable to satisfy expression conditions should throw")
     void shouldThrowWhenUnableToSatisfyExpressionsConditions() {
         // given
-        when(axisResolver.resolveAxis(argThat(ViewContext::isGreedy)))
-                .thenReturn(new NodeSetView<>(singleton(new NodeView<>(node("node")))));
+        when(axisResolver.resolveAxis(argThat(ViewContext::isGreedy))).thenReturn(new NodeView<>(node("node")));
 
         // when
         assertThatThrownBy(() -> stepExpr.resolve(new ViewContext<>(navigator, parentNode, true)))
