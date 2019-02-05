@@ -8,7 +8,6 @@ import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
-import com.github.simy4.xpath.view.View;
 
 public class AxisStepExpr implements StepExpr {
 
@@ -23,9 +22,10 @@ public class AxisStepExpr implements StepExpr {
     @Override
     public final <N extends Node> IterableNodeView<N> resolve(Navigator<N> navigator, NodeView<N> view, boolean greedy)
             throws XmlBuilderException {
-        IterableNodeView<N> result = axisResolver.resolveAxis(navigator, view, greedy);
+        final boolean newGreedy = !view.hasNext() && greedy;
+        IterableNodeView<N> result = axisResolver.resolveAxis(navigator, view, newGreedy);
         for (Expr predicate : predicates) {
-            result = result.flatMap(new PredicateResolver<N>(navigator, axisResolver, predicate, greedy));
+            result = result.flatMap(new PredicateResolver<N>(navigator, axisResolver, predicate, view, newGreedy));
         }
         return result;
     }
@@ -44,12 +44,15 @@ public class AxisStepExpr implements StepExpr {
         private final Navigator<T> navigator;
         private final AxisResolver axisResolver;
         private final Expr predicate;
+        private final NodeView<T> parent;
         private final boolean greedy;
 
-        private PredicateResolver(Navigator<T> navigator, AxisResolver axisResolver, Expr predicate, boolean greedy) {
+        private PredicateResolver(Navigator<T> navigator, AxisResolver axisResolver, Expr predicate, NodeView<T> parent,
+                                  boolean greedy) {
             this.navigator = navigator;
             this.axisResolver = axisResolver;
             this.predicate = predicate;
+            this.parent = parent;
             this.greedy = greedy;
         }
 
@@ -59,11 +62,14 @@ public class AxisStepExpr implements StepExpr {
             final boolean check = predicate.resolve(navigator, view, false).toBoolean();
             if (check) {
                 result = view;
+            } else if (view.isNew() && greedy) {
+                if (!predicate.resolve(navigator, view, true).toBoolean()) {
+                    throw new XmlBuilderException("Unable to satisfy expression predicate: " + predicate);
+                }
+                result = view;
             } else if (!view.hasNext() && greedy) {
-                final NodeView<T> newNode = view.isNew() ? view
-                        : axisResolver.createAxisNode(navigator, view, view.getPosition() + 1);
-                final View<T> resolve = predicate.resolve(navigator, newNode, true);
-                if (!resolve.toBoolean()) {
+                final NodeView<T> newNode = axisResolver.createAxisNode(navigator, parent, view.getPosition() + 1);
+                if (!predicate.resolve(navigator, newNode, true).toBoolean()) {
                     throw new XmlBuilderException("Unable to satisfy expression predicate: " + predicate);
                 }
                 result = newNode;

@@ -7,20 +7,17 @@ import com.github.simy4.xpath.spi.Effect;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeView;
-import com.github.simy4.xpath.view.ViewContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.github.simy4.xpath.util.TestNode.node;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,13 +26,12 @@ class PutEffectTest {
 
     @Mock private Navigator<TestNode> navigator;
     @Mock private Expr expr;
-    @Captor private ArgumentCaptor<ViewContext<TestNode>> contextCaptor;
 
     private Effect putEffect;
 
     @BeforeEach
     void setUp() {
-        when(expr.resolve(any())).thenReturn(new NodeView<>(node("node")));
+        when(expr.resolve(any(), any(), anyBoolean())).thenReturn(new NodeView<>(node("node")));
 
         putEffect = new PutEffect(expr);
     }
@@ -47,24 +43,20 @@ class PutEffectTest {
         putEffect.perform(navigator, node("xml"));
 
         // then
-        verify(expr).resolve(contextCaptor.capture());
-        assertThat(contextCaptor.getValue()).extracting("navigator", "greedy", "hasNext", "position")
-                .containsExactly(navigator, true, false, 1);
+        verify(expr).resolve(navigator, new NodeView<>(node("xml")), true);
     }
 
     @Test
     @DisplayName("Should greedily resolve literal expr")
     void shouldGreedilyResolveLiteralExpr() {
         // given
-        when(expr.resolve(any())).thenReturn(new LiteralView<>("literal"));
+        when(expr.resolve(any(), any(), anyBoolean())).thenReturn(new LiteralView<>("literal"));
 
         // when
         putEffect.perform(navigator, node("xml"));
 
         // then
-        verify(expr).resolve(contextCaptor.capture());
-        assertThat(contextCaptor.getValue()).extracting("navigator", "greedy", "hasNext", "position")
-                .containsExactly(navigator, true, false, 1);
+        verify(expr).resolve(navigator, new NodeView<>(node("xml")), true);
     }
 
     @Test
@@ -72,7 +64,7 @@ class PutEffectTest {
     void shouldPropagateOnException() {
         // given
         XmlBuilderException failure = new XmlBuilderException("Failure");
-        when(expr.resolve(any())).thenThrow(failure);
+        when(expr.resolve(any(), any(), anyBoolean())).thenThrow(failure);
 
         // then
         assertThatThrownBy(() -> putEffect.perform(navigator, node("xml"))).isSameAs(failure);

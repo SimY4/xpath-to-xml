@@ -5,7 +5,6 @@ import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeView;
-import com.github.simy4.xpath.view.ViewContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +20,7 @@ import static java.util.stream.StreamSupport.stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -43,7 +43,7 @@ class SelfAxisResolverTest {
     @DisplayName("When axis traversable should return traversed nodes")
     void shouldReturnTarversedNodesIfAxisIsTraversable() {
         // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, node, false));
+        IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, node, false);
 
         // then
         assertThat(result).containsExactly(node);
@@ -56,11 +56,11 @@ class SelfAxisResolverTest {
         axisResolver = spy(axisResolver);
 
         // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, node, true));
+        IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, node, true);
 
         // then
         assertThat(result).containsExactly(node);
-        verify(axisResolver, never()).createAxisNode(any());
+        verify(axisResolver, never()).createAxisNode(any(), any(), anyInt());
     }
 
     @Test
@@ -70,21 +70,7 @@ class SelfAxisResolverTest {
         axisResolver = new SelfAxisResolver(new QName("another-name"));
 
         // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, node, false));
-
-        // then
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    @DisplayName("When axis is not traversable and greedy context and has next should return empty")
-    void shouldReturnEmptyIfAxisIsNotTraversableGreedyAndHasNext() {
-        // given
-        axisResolver = new SelfAxisResolver(new QName("another-name"));
-
-        // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(
-                new ViewContext<>(navigator, node, true, true, 1));
+        IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, node, false);
 
         // then
         assertThat(result).isEmpty();
@@ -98,9 +84,9 @@ class SelfAxisResolverTest {
         axisResolver = new SelfAxisResolver(new QName("another-name"));
 
         // when
-        assertThatThrownBy(() -> stream(axisResolver.resolveAxis(
-                new ViewContext<>(navigator, node, true)).spliterator(), false)
-                .collect(Collectors.toList()))
+        assertThatThrownBy(() ->
+                stream(axisResolver.resolveAxis(navigator, node, true).spliterator(), false)
+                        .collect(Collectors.toList()))
                 .isInstanceOf(XmlBuilderException.class);
     }
 

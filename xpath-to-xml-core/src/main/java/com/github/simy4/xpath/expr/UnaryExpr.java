@@ -17,7 +17,7 @@ public class UnaryExpr implements Expr {
     @Override
     public <N extends Node> NumberView<N> resolve(Navigator<N> navigator, NodeView<N> view, boolean greedy)
             throws XmlBuilderException {
-        return new NumberView<N>(-valueExpr.resolve(navigator, view, greedy).toNumber());
+        return new NumberView<N>(-valueExpr.resolve(navigator, view, !view.hasNext() && greedy).toNumber());
     }
 
     @Override

@@ -21,9 +21,10 @@ public class PathExpr implements Expr {
     @Override
     public <N extends Node> IterableNodeView<N> resolve(Navigator<N> navigator, NodeView<N> view, boolean greedy)
             throws XmlBuilderException {
+        final boolean newGreedy = !view.hasNext() && greedy;
         IterableNodeView<N> children = view;
         for (final StepExpr stepExpr : pathExpr) {
-            children = children.flatMap(new StepResolver<N>(navigator, stepExpr, greedy));
+            children = children.flatMap(new StepResolver<N>(navigator, stepExpr, newGreedy));
         }
         return children;
     }
@@ -55,7 +56,7 @@ public class PathExpr implements Expr {
 
         @Override
         public IterableNodeView<T> apply(NodeView<T> view) {
-            return stepExpr.resolve(navigator, view, !view.hasNext() && greedy);
+            return stepExpr.resolve(navigator, view, greedy);
         }
 
     }

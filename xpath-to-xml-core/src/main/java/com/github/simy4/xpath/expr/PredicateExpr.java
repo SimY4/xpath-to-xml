@@ -18,7 +18,7 @@ public class PredicateExpr implements Expr {
     }
 
     @Override
-    public <N extends Node> View<N> resolve(Navigator<N> navigator, NodeView<N> view, boolean greedy)
+    public <N extends Node> BooleanView<N> resolve(Navigator<N> navigator, NodeView<N> view, boolean greedy)
             throws XmlBuilderException {
         return predicate.resolve(navigator, view, greedy).visit(new PredicateVisitor<N>(navigator, view, greedy));
     }
@@ -28,7 +28,7 @@ public class PredicateExpr implements Expr {
         return "[" + predicate + "]";
     }
 
-    private static final class PredicateVisitor<T extends Node> extends AbstractViewVisitor<T, View<T>> {
+    private static final class PredicateVisitor<T extends Node> extends AbstractViewVisitor<T, BooleanView<T>> {
 
         private final Navigator<T> navigator;
         private final NodeView<T> view;
@@ -41,12 +41,12 @@ public class PredicateExpr implements Expr {
         }
 
         @Override
-        public View<T> visit(NumberView<T> numberView) throws XmlBuilderException {
+        public BooleanView<T> visit(NumberView<T> numberView) throws XmlBuilderException {
             final double number = numberView.toNumber();
             if (0 == Double.compare(number, view.getPosition())) {
                 view.mark();
                 return BooleanView.of(true);
-            } else if (greedy && number > view.getPosition() && view.isNew()) {
+            } else if (greedy && number > view.getPosition()) {
                 final T node = view.getNode();
                 long numberOfNodesToCreate = (long) number - view.getPosition();
                 do {
@@ -59,8 +59,8 @@ public class PredicateExpr implements Expr {
         }
 
         @Override
-        protected View<T> returnDefault(View<T> view) throws XmlBuilderException {
-            return view;
+        protected BooleanView<T> returnDefault(View<T> view) throws XmlBuilderException {
+            return BooleanView.of(view.toBoolean());
         }
 
     }

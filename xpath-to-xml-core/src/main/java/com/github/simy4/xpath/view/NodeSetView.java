@@ -87,18 +87,18 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
         @Override
         public Iterator<NodeView<T>> iterator() {
-            final Iterator<? extends T> nodeIterator = new OneAndIterator<T>(cache.iterator(), new Iterable<T>() {
+            final Iterator<T> nodesIterator = new OneAndIterator<T>(cache.iterator(), new Iterable<T>() {
                 @Override
                 public Iterator<T> iterator() {
                     return new FilteringIterator<T>(nodeSet.iterator(), IterableNodeSet.this);
                 }
             });
-            return new TransformingIterator<T, NodeView<T>>(nodeIterator, new NodeWrapper<T>(nodeIterator));
+            return new TransformingIterator<T, NodeView<T>>(nodesIterator, new NodeWrapper<T>(nodesIterator));
         }
 
         @Override
-        public boolean test(T view) {
-            return cache.add(view) && filter.test(view);
+        public boolean test(T node) {
+            return filter.test(node) && cache.add(node);
         }
 
         private static final class NodeWrapper<T extends Node> implements Function<T, NodeView<T>> {
@@ -134,7 +134,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
         @Override
         public Iterator<NodeView<T>> iterator() {
-            final Iterator<NodeView<T>> nodeIterator = new OneAndIterator<NodeView<T>>(cache.iterator(),
+            final Iterator<NodeView<T>> nodesIterator = new OneAndIterator<NodeView<T>>(cache.iterator(),
                     new Iterable<NodeView<T>>() {
                         @Override
                         public Iterator<NodeView<T>> iterator() {
@@ -143,17 +143,17 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
                                             nodeSetView.iterator(), FlatMapNodeSet.this), FlatMapNodeSet.this);
                         }
                     });
-            return new TransformingIterator<NodeView<T>, NodeView<T>>(nodeIterator, new NodeWrapper<T>(nodeIterator));
-        }
-
-        @Override
-        public Iterator<NodeView<T>> apply(NodeView<T> node) {
-            return fmap.apply(node).iterator();
+            return new TransformingIterator<NodeView<T>, NodeView<T>>(nodesIterator, new NodeWrapper<T>(nodesIterator));
         }
 
         @Override
         public boolean test(NodeView<T> view) {
             return cache.add(view);
+        }
+
+        @Override
+        public Iterator<NodeView<T>> apply(NodeView<T> view) {
+            return fmap.apply(view).iterator();
         }
 
         private static final class NodeWrapper<T extends Node> implements Function<NodeView<T>, NodeView<T>> {
@@ -167,7 +167,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
             @Override
             public NodeView<T> apply(NodeView<T> view) {
-                return new NodeView<T>(view.getNode(), position++, iterator.hasNext());
+                return new NodeView<T>(view.getNode(), position++, iterator.hasNext(), view.isNew());
             }
 
         }

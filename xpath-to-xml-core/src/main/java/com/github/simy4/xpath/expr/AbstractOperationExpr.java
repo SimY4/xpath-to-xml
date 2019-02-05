@@ -19,9 +19,10 @@ abstract class AbstractOperationExpr implements Expr {
     @Override
     public final <N extends Node> View<N> resolve(Navigator<N> navigator, NodeView<N> view, boolean greedy)
             throws XmlBuilderException {
-        final View<N> leftView = leftExpr.resolve(navigator, view, greedy);
-        final View<N> rightView = rightExpr.resolve(navigator, view, greedy);
-        return resolve(navigator, leftView, rightView, !view.hasNext() && greedy);
+        final boolean newGreedy = !view.hasNext() && greedy;
+        final View<N> leftView = leftExpr.resolve(navigator, view, newGreedy);
+        final View<N> rightView = rightExpr.resolve(navigator, view, newGreedy);
+        return resolve(navigator, leftView, rightView, newGreedy);
     }
 
     abstract <N extends Node> View<N> resolve(Navigator<N> navigator, View<N> left, View<N> right, boolean greedy)

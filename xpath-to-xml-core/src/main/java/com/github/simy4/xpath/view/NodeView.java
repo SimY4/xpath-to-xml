@@ -26,7 +26,7 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
         this(node, position, hasNext, false);
     }
 
-    private NodeView(N node, int position, boolean hasNext, boolean isNew) {
+    NodeView(N node, int position, boolean hasNext, boolean isNew) {
         this.node = node;
         this.position = position;
         this.hasNext = hasNext;
@@ -64,12 +64,12 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
 
     @Override
     public IterableNodeView<N> flatMap(Function<? super NodeView<N>, ? extends IterableNodeView<N>> fmap) {
-        return fmap.apply(this);
+        return fmap.apply(new NodeView<N>(node, 1, false, isNew));
     }
 
     @Override
     public Iterator<NodeView<N>> iterator() {
-        return Collections.singleton(this).iterator();
+        return Collections.singleton(new NodeView<N>(node, 1, false, isNew)).iterator();
     }
 
     @Override

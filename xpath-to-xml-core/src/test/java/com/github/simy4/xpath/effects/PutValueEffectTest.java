@@ -8,20 +8,17 @@ import com.github.simy4.xpath.spi.Effect;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeView;
-import com.github.simy4.xpath.view.ViewContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.github.simy4.xpath.util.TestNode.node;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -32,13 +29,12 @@ class PutValueEffectTest {
 
     @Mock private Navigator<TestNode> navigator;
     @Mock private Expr expr;
-    @Captor private ArgumentCaptor<ViewContext<TestNode>> contextCaptor;
 
     private Effect putValueEffect;
 
     @BeforeEach
     void setUp() {
-        when(expr.resolve(any())).thenReturn(new NodeView<>(node("node")));
+        when(expr.resolve(any(), any(), anyBoolean())).thenReturn(new NodeView<>(node("node")));
 
         putValueEffect = new PutValueEffect(expr, "value");
     }
@@ -50,10 +46,8 @@ class PutValueEffectTest {
         putValueEffect.perform(navigator, node("xml"));
 
         // then
-        verify(expr).resolve(contextCaptor.capture());
+        verify(expr).resolve(navigator, new NodeView<>(node("xml")), true);
         verify(navigator).setText(node("node"), "value");
-        assertThat(contextCaptor.getValue()).extracting("navigator", "greedy", "hasNext", "position")
-                .containsExactly(navigator, true, false, 1);
     }
 
     @Test
@@ -61,7 +55,7 @@ class PutValueEffectTest {
     void shouldThrowWhenResolvedToALiteralExpr() {
         // given
         LiteralView<Node> literal = new LiteralView<>("literal");
-        when(expr.resolve(any())).thenReturn(literal);
+        when(expr.resolve(any(), any(), anyBoolean())).thenReturn(literal);
 
         // when
         assertThatThrownBy(() -> putValueEffect.perform(navigator, node("xml")))

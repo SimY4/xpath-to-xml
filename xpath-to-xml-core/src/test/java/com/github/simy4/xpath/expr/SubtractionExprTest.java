@@ -8,7 +8,6 @@ import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
-import com.github.simy4.xpath.view.ViewContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +26,7 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,7 +37,7 @@ class SubtractionExprTest {
                 new LiteralView<>("3.0"),
                 new NumberView<>(3.0),
                 new NodeView<>(node("3.0")),
-                new NodeSetView<>(singletonList(new NodeView<>(node("3.0"))))
+                NodeSetView.of(singletonList(node("3.0")), node -> true)
         );
     }
 
@@ -74,12 +74,12 @@ class SubtractionExprTest {
     @MethodSource("numberPairs")
     void shouldSubtractLeftViewToRightView(View<Node> left, View<Node> right) {
         // given
-        when(leftExpr.resolve(any())).thenReturn(left);
-        when(rightExpr.resolve(any())).thenReturn(right);
-        ViewContext<TestNode> context = new ViewContext<>(navigator, new NodeView<>(node("node")), false);
+        when(leftExpr.resolve(any(), any(), anyBoolean())).thenReturn(left);
+        when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(right);
 
         // when
-        assertThat(subtractionExpr.resolve(context)).extracting("number").contains(0.0);
+        assertThat(subtractionExpr.resolve(navigator, new NodeView<>(node("node")), false))
+                .extracting("number").contains(0.0);
     }
 
     @ParameterizedTest(name = "Given {0} and {1}")
@@ -87,12 +87,12 @@ class SubtractionExprTest {
     @MethodSource("numberAndNan")
     void subtractionWithNanShouldBeNan(View<Node> number, View<Node> nan) {
         // given
-        when(leftExpr.resolve(any())).thenReturn(number);
-        when(rightExpr.resolve(any())).thenReturn(nan);
-        ViewContext<TestNode> context = new ViewContext<>(navigator, new NodeView<>(node("node")), false);
+        when(leftExpr.resolve(any(), any(), anyBoolean())).thenReturn(number);
+        when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(nan);
 
         // when
-        assertThat(subtractionExpr.resolve(context)).extracting("number").contains(Double.NaN);
+        assertThat(subtractionExpr.resolve(navigator, new NodeView<>(node("node")), false))
+                .extracting("number").contains(Double.NaN);
     }
 
     @Test
