@@ -1,17 +1,17 @@
 ext {
     moduleName = 'com.github.simych.xpath.scala'
-    allScalaVersions = true
+    if (Boolean.getBoolean("CI")) {
+        allScalaVersions = true
+    }
     scalaVersions = ['2.13.0-M5'
                      , '2.11.12'
                      , '2.12.8'
                     ].join(',')
-    defaultScalaVersions = '2.12.8'
+    defaultScalaVersions = ['2.12.8'].join(',')
     runOnceTasks = ['clean'
                     , 'jmh'
-                    , ':xpath-to-xml-core:animalsnifferMain'
-                    , ':xpath-to-xml-core:jacocoTestCoverageVerification'
-                    , ':xpath-to-xml-core:jacocoTestReport'
-                    , ':xpath-to-xml-core:pitest'
+                    , ':xpath-to-xml-core:compileJava'
+                    , ':xpath-to-xml-core:check'
                     , ':xpath-to-xml-core:publish'
                     ].join(',')
 }
