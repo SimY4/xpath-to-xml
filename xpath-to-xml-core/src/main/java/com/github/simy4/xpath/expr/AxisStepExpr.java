@@ -49,7 +49,7 @@ public class AxisStepExpr implements StepExpr {
             final int position = predicateContext.position;
             final NodeView<N> newNode;
             final ViewContext<N> newContext;
-            if (null != last && last.isNew()) {
+            if (null != last && (last.isNew() || last.isMarked())) {
                 newNode = last;
                 newContext = new ViewContext<N>(context.getNavigator(), last, true, false, position);
             } else {

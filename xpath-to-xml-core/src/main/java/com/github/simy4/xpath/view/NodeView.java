@@ -9,7 +9,8 @@ import java.util.Iterator;
 public final class NodeView<N extends Node> implements IterableNodeView<N> {
 
     private final N node;
-    private boolean isNew;
+    private final boolean isNew;
+    private boolean marked;
 
     public NodeView(N node) {
         this(node, false);
@@ -72,8 +73,12 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
         return isNew;
     }
 
+    public boolean isMarked() {
+        return marked;
+    }
+
     public void mark() {
-        isNew = true;
+        marked = true;
     }
 
 }

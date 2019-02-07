@@ -87,8 +87,9 @@ class PredicateExprTest {
     }
 
     @Test
-    @DisplayName("When greedy context, falsy predicate and new node should prepend missing nodes and return true")
-    void shouldPrependMissingNodesAndReturnTrueOnGreedyFalsePredicateAndNewNode() {
+    @DisplayName("When greedy context, falsy predicate and new unmarked node should prepend missing nodes "
+            + "and return true")
+    void shouldPrependMissingNodesAndReturnTrueOnGreedyFalsePredicateAndNewUnmarkedNode() {
         // given
         ViewContext<TestNode> context = new ViewContext<>(navigator, new NodeView<>(node("node"), true), true);
 
@@ -98,6 +99,21 @@ class PredicateExprTest {
         // then
         assertThat(result).isEqualTo(true);
         verify(navigator, times(2)).prependCopy(node("node"));
+    }
+
+    @Test
+    @DisplayName("When greedy context, falsy predicate and new marked node should return false")
+    void shouldReturnFalseOnGreedyFalseResolveAndNewMarkedNode() {
+        // given
+        NodeView<TestNode> node = new NodeView<>(node("node"));
+        node.mark();
+        ViewContext<TestNode> context = new ViewContext<>(navigator, node, true);
+
+        // when
+        boolean result = new PredicateExpr(new NumberExpr(3.0)).resolve(context).toBoolean();
+
+        // then
+        assertThat(result).isEqualTo(false);
     }
 
     @Test

@@ -41,7 +41,7 @@ public class PredicateExpr implements Expr {
                 context.getCurrent().mark();
                 return BooleanView.of(true);
             } else if (context.isGreedy() && !context.hasNext() && number > context.getPosition()
-                    && context.getCurrent().isNew()) {
+                    && context.getCurrent().isNew() && !context.getCurrent().isMarked()) {
                 final T node = context.getCurrent().getNode();
                 long numberOfNodesToCreate = (long) number - context.getPosition();
                 do {
