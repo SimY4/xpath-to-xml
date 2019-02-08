@@ -60,13 +60,13 @@ class PathExprTest {
         IterableNodeView<TestNode> result = pathExpr.resolve(navigator, parentNode, false);
 
         // then
-        assertThat(result).containsExactly(new NodeView<>(node("node31")));
+        assertThat(result).extracting("node").containsExactly(node("node31"));
         assertThat(stepExpr1ViewCaptor.getAllValues()).extracting("hasNext", "position")
                 .containsExactly(tuple(false, 1));
         assertThat(stepExpr2ViewCaptor.getAllValues()).extracting("hasNext", "position")
                 .containsExactly(tuple(false, 1));
         assertThat(stepExpr3ViewCaptor.getAllValues()).extracting("hasNext", "position")
-                .containsExactly(tuple(true, 1), tuple(false, 2), tuple(true, 1), tuple(false, 2));
+                .containsExactly(tuple(true, 1), tuple(false, 2));
     }
 
     @Test

@@ -18,6 +18,8 @@ import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -43,7 +45,7 @@ class PutEffectTest {
         putEffect.perform(navigator, node("xml"));
 
         // then
-        verify(expr).resolve(navigator, new NodeView<>(node("xml")), true);
+        verify(expr).resolve(eq(navigator), refEq(new NodeView<>(node("xml"))), eq(true));
     }
 
     @Test
@@ -56,7 +58,7 @@ class PutEffectTest {
         putEffect.perform(navigator, node("xml"));
 
         // then
-        verify(expr).resolve(navigator, new NodeView<>(node("xml")), true);
+        verify(expr).resolve(eq(navigator), refEq(new NodeView<>(node("xml"))), eq(true));
     }
 
     @Test

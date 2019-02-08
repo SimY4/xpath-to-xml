@@ -74,16 +74,6 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
         return Collections.singleton(copy(1, false)).iterator();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return this == o || (o instanceof NodeView<?> && node.equals(((NodeView<?>) o).node));
-    }
-
-    @Override
-    public int hashCode() {
-        return node.hashCode();
-    }
-
     public N getNode() {
         return node;
     }

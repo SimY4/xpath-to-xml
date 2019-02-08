@@ -19,6 +19,8 @@ import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -45,7 +47,7 @@ class RemoveEffectTest {
         removeEffect.perform(navigator, node("xml"));
 
         // then
-        verify(expr).resolve(navigator, new NodeView<>(node("xml")), false);
+        verify(expr).resolve(eq(navigator), refEq(new NodeView<>(node("xml"))), eq(false));
         verify(navigator).remove(node("node"));
     }
 

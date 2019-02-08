@@ -7,7 +7,6 @@ import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.util.ReadOnlyIterator;
 import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
-import com.github.simy4.xpath.util.TransformingIterator;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -87,13 +86,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
         @Override
         public Iterator<NodeView<T>> iterator() {
-            final Iterator<T> nodesIterator = new OneAndIterator<T>(cache.iterator(), new Iterable<T>() {
-                @Override
-                public Iterator<T> iterator() {
-                    return new FilteringIterator<T>(nodeSet.iterator(), IterableNodeSet.this);
-                }
-            });
-            return new TransformingIterator<T, NodeView<T>>(nodesIterator, new NodeWrapper<T>(nodesIterator));
+            return new IteratorImpl();
         }
 
         @Override
@@ -101,18 +94,29 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
             return filter.test(node) && cache.add(node);
         }
 
-        private static final class NodeWrapper<T extends Node> implements Function<T, NodeView<T>> {
+        private final class IteratorImpl extends ReadOnlyIterator<NodeView<T>> {
 
-            private final Iterator<? extends T> iterator;
+            private Iterator<? extends T> current = cache.iterator();
+            private boolean swapped;
             private int position = 1;
 
-            private NodeWrapper(Iterator<? extends T> iterator) {
-                this.iterator = iterator;
+            @Override
+            public boolean hasNext() {
+                boolean hasNext = current.hasNext();
+                if (!hasNext && !swapped) {
+                    current = new FilteringIterator<T>(nodeSet.iterator(), IterableNodeSet.this);
+                    swapped = true;
+                    hasNext = current.hasNext();
+                }
+                return hasNext;
             }
 
             @Override
-            public NodeView<T> apply(T t) {
-                return new NodeView<T>(t, position++, iterator.hasNext());
+            public NodeView<T> next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException("No more elements");
+                }
+                return new NodeView<T>(current.next(), position++, hasNext());
             }
 
         }
@@ -122,7 +126,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
     private static final class FlatMapNodeSet<T extends Node> extends NodeSetView<T>
             implements Function<NodeView<T>, Iterator<NodeView<T>>>, Predicate<NodeView<T>> {
 
-        private final Set<NodeView<T>> cache = new LinkedHashSet<NodeView<T>>();
+        private final Set<T> cache = new LinkedHashSet<T>();
         private final NodeSetView<T> nodeSetView;
         private final Function<? super NodeView<T>, ? extends IterableNodeView<T>> fmap;
 
@@ -134,21 +138,12 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
         @Override
         public Iterator<NodeView<T>> iterator() {
-            final Iterator<NodeView<T>> nodesIterator = new OneAndIterator<NodeView<T>>(cache.iterator(),
-                    new Iterable<NodeView<T>>() {
-                        @Override
-                        public Iterator<NodeView<T>> iterator() {
-                            return new FilteringIterator<NodeView<T>>(
-                                    new TransformingAndFlatteningIterator<NodeView<T>, NodeView<T>>(
-                                            nodeSetView.iterator(), FlatMapNodeSet.this), FlatMapNodeSet.this);
-                        }
-                    });
-            return new TransformingIterator<NodeView<T>, NodeView<T>>(nodesIterator, new NodeWrapper<T>(nodesIterator));
+            return new IteratorImpl();
         }
 
         @Override
         public boolean test(NodeView<T> view) {
-            return cache.add(view);
+            return cache.add(view.getNode());
         }
 
         @Override
@@ -156,49 +151,35 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
             return fmap.apply(view).iterator();
         }
 
-        private static final class NodeWrapper<T extends Node> implements Function<NodeView<T>, NodeView<T>> {
+        private final class IteratorImpl extends ReadOnlyIterator<NodeView<T>> {
 
-            private final Iterator<NodeView<T>> iterator;
+            private Iterator<?> current = cache.iterator();
+            private boolean swapped;
             private int position = 1;
 
-            private NodeWrapper(Iterator<NodeView<T>> iterator) {
-                this.iterator = iterator;
+            @Override
+            public boolean hasNext() {
+                boolean hasNext = current.hasNext();
+                if (!hasNext && !swapped) {
+                    current = new FilteringIterator<NodeView<T>>(
+                            new TransformingAndFlatteningIterator<NodeView<T>, NodeView<T>>(nodeSetView.iterator(),
+                                    FlatMapNodeSet.this), FlatMapNodeSet.this);
+                    swapped = true;
+                    hasNext = current.hasNext();
+                }
+                return hasNext;
             }
 
             @Override
-            public NodeView<T> apply(NodeView<T> view) {
-                return view.copy(position++, iterator.hasNext());
+            @SuppressWarnings("unchecked")
+            public NodeView<T> next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException("No more elements");
+                }
+                return swapped ? ((NodeView<T>) current.next()).copy(position++, hasNext())
+                        : new NodeView<T>((T) current.next(), position++, hasNext());
             }
 
-        }
-
-    }
-
-    private static final class OneAndIterator<T> extends ReadOnlyIterator<T> {
-
-        private Iterator<T> current;
-        private Iterable<T> and;
-
-        private OneAndIterator(Iterator<T> one, Iterable<T> and) {
-            this.current = one;
-            this.and = and;
-        }
-
-        @Override
-        public boolean hasNext() {
-            if (!current.hasNext() && and != null) {
-                current = and.iterator();
-                and = null;
-            }
-            return current.hasNext();
-        }
-
-        @Override
-        public T next() {
-            if (!hasNext()) {
-                throw new NoSuchElementException("No more elements");
-            }
-            return current.next();
         }
 
     }

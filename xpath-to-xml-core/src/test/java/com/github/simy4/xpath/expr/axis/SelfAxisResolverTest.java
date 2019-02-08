@@ -46,7 +46,7 @@ class SelfAxisResolverTest {
         IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, node, false);
 
         // then
-        assertThat(result).containsExactly(node);
+        assertThat(result).extracting("node").containsExactly(node.getNode());
     }
 
     @Test
@@ -59,7 +59,7 @@ class SelfAxisResolverTest {
         IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, node, true);
 
         // then
-        assertThat(result).containsExactly(node);
+        assertThat(result).extracting("node").containsExactly(node.getNode());
         verify(axisResolver, never()).createAxisNode(any(), any(), anyInt());
     }
 
