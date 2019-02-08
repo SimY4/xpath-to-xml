@@ -1,8 +1,9 @@
 package com.github.simy4.xpath.expr;
 
+import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
+import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.NumberView;
-import com.github.simy4.xpath.view.ViewContext;
 
 public class NumberExpr implements Expr {
 
@@ -14,7 +15,7 @@ public class NumberExpr implements Expr {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <N extends Node> NumberView<N> resolve(ViewContext<N> context) {
+    public <N extends Node> NumberView<N> resolve(Navigator<N> navigator, NodeView<N> view, boolean greedy) {
         return (NumberView<N>) number;
     }
 

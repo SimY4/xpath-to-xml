@@ -11,7 +11,6 @@ import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
-import com.github.simy4.xpath.view.ViewContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -43,7 +43,7 @@ class GreaterThanOrEqualsExprTest {
                 new LiteralView<>("1.0"),
                 new NumberView<>(1.0),
                 new NodeView<>(node("1.0")),
-                new NodeSetView<>(singletonList(new NodeView<>(node("1.0")))),
+                NodeSetView.of(singletonList(node("1.0")), node -> true),
                 BooleanView.of(true)
         );
     }
@@ -53,7 +53,7 @@ class GreaterThanOrEqualsExprTest {
                 new LiteralView<>("2.0"),
                 new NumberView<>(2.0),
                 new NodeView<>(node("2.0")),
-                new NodeSetView<>(singletonList(new NodeView<>(node("2.0"))))
+                NodeSetView.of(singletonList(node("2.0")), node -> true)
         );
     }
 
@@ -83,12 +83,11 @@ class GreaterThanOrEqualsExprTest {
     @MethodSource("lessThan")
     void shouldResolveToTrueWhenLeftIsGreaterThanRight(View<Node> less, View<Node> greater) {
         // given
-        when(leftExpr.resolve(any())).thenReturn(greater);
-        when(rightExpr.resolve(any())).thenReturn(less);
-        var context = new ViewContext<>(navigator, parentNode, false);
+        when(leftExpr.resolve(any(), any(), anyBoolean())).thenReturn(greater);
+        when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(less);
 
         // when
-        var result = greaterThanOrEqualsExpr.resolve(context);
+        var result = greaterThanOrEqualsExpr.resolve(navigator, parentNode, false);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(true));
@@ -99,12 +98,11 @@ class GreaterThanOrEqualsExprTest {
     @MethodSource("lessThan")
     void shouldResolveToFalseWhenLeftIsLessThanRight(View<Node> less, View<Node> greater) {
         // given
-        when(leftExpr.resolve(any())).thenReturn(less);
-        when(rightExpr.resolve(any())).thenReturn(greater);
-        var context = new ViewContext<>(navigator, parentNode, false);
+        when(leftExpr.resolve(any(), any(), anyBoolean())).thenReturn(less);
+        when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(greater);
 
         // when
-        var result = greaterThanOrEqualsExpr.resolve(context);
+        var result = greaterThanOrEqualsExpr.resolve(navigator, parentNode, false);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(false));
@@ -115,12 +113,11 @@ class GreaterThanOrEqualsExprTest {
     @MethodSource("equals")
     void shouldResolveToTrueWhenLeftIsEqualToRight(View<Node> left, View<Node> right) {
         // given
-        when(leftExpr.resolve(any())).thenReturn(left);
-        when(rightExpr.resolve(any())).thenReturn(right);
-        var context = new ViewContext<>(navigator, parentNode, false);
+        when(leftExpr.resolve(any(), any(), anyBoolean())).thenReturn(left);
+        when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(right);
 
         // when
-        var result = greaterThanOrEqualsExpr.resolve(context);
+        var result = greaterThanOrEqualsExpr.resolve(navigator, parentNode, false);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(true));
@@ -134,12 +131,11 @@ class GreaterThanOrEqualsExprTest {
         assumeThat(((Iterable<?>) less)).isNotEmpty();
 
         // given
-        when(leftExpr.resolve(any())).thenReturn(less);
-        when(rightExpr.resolve(any())).thenReturn(greater);
-        var context = new ViewContext<>(navigator, parentNode, true);
+        when(leftExpr.resolve(any(), any(), anyBoolean())).thenReturn(less);
+        when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(greater);
 
         // when
-        var result = greaterThanOrEqualsExpr.resolve(context);
+        var result = greaterThanOrEqualsExpr.resolve(navigator, parentNode, true);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(true));
@@ -152,12 +148,11 @@ class GreaterThanOrEqualsExprTest {
     void shouldThrowWhenShouldCreate(View<Node> less, View<Node> greater) {
         assumeThat(less).isNotInstanceOf(IterableNodeView.class);
         // given
-        when(leftExpr.resolve(any())).thenReturn(less);
-        when(rightExpr.resolve(any())).thenReturn(greater);
-        var context = new ViewContext<>(navigator, parentNode, true);
+        when(leftExpr.resolve(any(), any(), anyBoolean())).thenReturn(less);
+        when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(greater);
 
         // then
-        assertThatThrownBy(() -> greaterThanOrEqualsExpr.resolve(context))
+        assertThatThrownBy(() -> greaterThanOrEqualsExpr.resolve(navigator, parentNode, true))
                 .isInstanceOf(XmlBuilderException.class);
     }
 

@@ -4,7 +4,6 @@ import com.github.simy4.xpath.expr.axis.SelfAxisResolver;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.NodeView;
-import com.github.simy4.xpath.view.ViewContext;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,11 +48,8 @@ class PredicateExprTest {
     @DisplayName("Should resolve to true")
     @MethodSource("truthy")
     void shouldReturnTrueForTruthyPredicate(Expr truthy) {
-        // given
-        var context = new ViewContext<>(navigator, new NodeView<>(node("node")), false);
-
         // when
-        var result = new PredicateExpr(truthy).resolve(context).toBoolean();
+        var result = new PredicateExpr(truthy).resolve(navigator, new NodeView<>(node("node")), false).toBoolean();
 
         // then
         assertThat(result).isEqualTo(true);
@@ -63,24 +59,8 @@ class PredicateExprTest {
     @DisplayName("Should resolve to false")
     @MethodSource("falsy")
     void shouldReturnFalseForNonGreedyFalsePredicate(Expr falsy) {
-        // given
-        var context = new ViewContext<>(navigator, new NodeView<>(node("node")), false);
-
         // when
-        var result = new PredicateExpr(falsy).resolve(context).toBoolean();
-
-        // then
-        assertThat(result).isEqualTo(false);
-    }
-
-    @Test
-    @DisplayName("When greedy context, falsy predicate and non new node should return false")
-    void shouldReturnFalseOnGreedyFalseResolveAndNonNewNode() {
-        // given
-        var context = new ViewContext<>(navigator, new NodeView<>(node("node")), true);
-
-        // when
-        var result = new PredicateExpr(new NumberExpr(3.0)).resolve(context).toBoolean();
+        var result = new PredicateExpr(falsy).resolve(navigator, new NodeView<>(node("node")), false).toBoolean();
 
         // then
         assertThat(result).isEqualTo(false);
@@ -89,11 +69,9 @@ class PredicateExprTest {
     @Test
     @DisplayName("When greedy context, falsy predicate and new node should prepend missing nodes and return true")
     void shouldPrependMissingNodesAndReturnTrueOnGreedyFalsePredicateAndNewNode() {
-        // given
-        var context = new ViewContext<>(navigator, new NodeView<>(node("node"), true), true);
-
         // when
-        var result = new PredicateExpr(new NumberExpr(3.0)).resolve(context).toBoolean();
+        var result = new PredicateExpr(new NumberExpr(3.0)).resolve(navigator, new NodeView<>(node("node"), 1),
+                true).toBoolean();
 
         // then
         assertThat(result).isEqualTo(true);

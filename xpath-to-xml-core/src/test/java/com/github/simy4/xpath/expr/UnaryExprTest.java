@@ -8,7 +8,6 @@ import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
-import com.github.simy4.xpath.view.ViewContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +26,7 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,7 +37,7 @@ class UnaryExprTest {
                 arguments(new LiteralView<>("2.0")),
                 arguments(new NumberView<>(2.0)),
                 arguments(new NodeView<>(node("2.0"))),
-                arguments(new NodeSetView<>(singletonList(new NodeView<>(node("2.0")))))
+                arguments(NodeSetView.of(singletonList(node("2.0")), node -> true))
         );
     }
 
@@ -65,11 +65,11 @@ class UnaryExprTest {
     @MethodSource("number")
     void shouldReturnNegatedNumberViewNode(View<Node> number) {
         // given
-        when(valueExpr.resolve(any())).thenReturn(number);
-        var context = new ViewContext<>(navigator, new NodeView<>(node("node")), false);
+        when(valueExpr.resolve(any(), any(), anyBoolean())).thenReturn(number);
 
         // when
-        assertThat(unaryExpr.resolve(context)).extracting("number").contains(-number.toNumber());
+        assertThat(unaryExpr.resolve(navigator, new NodeView<>(node("node")), false))
+                .extracting("number").contains(-number.toNumber());
     }
 
     @ParameterizedTest(name = "Given {0}")
@@ -77,11 +77,11 @@ class UnaryExprTest {
     @MethodSource("nan")
     void negationWithNanShouldBeNan(View<Node> nan) {
         // given
-        when(valueExpr.resolve(any())).thenReturn(nan);
-        var context = new ViewContext<>(navigator, new NodeView<>(node("node")), false);
+        when(valueExpr.resolve(any(), any(), anyBoolean())).thenReturn(nan);
 
         // when
-        assertThat(unaryExpr.resolve(context)).extracting("number").contains(Double.NaN);
+        assertThat(unaryExpr.resolve(navigator, new NodeView<>(node("node")), false))
+                .extracting("number").contains(Double.NaN);
     }
 
     @Test

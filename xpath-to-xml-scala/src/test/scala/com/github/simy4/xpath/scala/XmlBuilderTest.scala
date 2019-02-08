@@ -48,7 +48,7 @@ class XmlBuilderTest {
   def shouldBuildDocumentFromSetOfXPaths(fixtureAccessor: FixtureAccessor, namespaceContext: NamespaceContext,
                                          root: Elem): Unit = {
     implicit val ns: NamespaceContext = namespaceContext
-    val xmlProperties = fixtureAccessor.getXmlProperties.asScalaLinkedHashMap
+    val xmlProperties = fixtureAccessor.getXmlProperties.asScala
     val builtDocument = root putAll xmlProperties.keys
     val builtDocumentString = xmlToString(builtDocument)
 
@@ -67,7 +67,7 @@ class XmlBuilderTest {
   def shouldBuildDocumentFromSetOfXPathsAndSetValues(fixtureAccessor: FixtureAccessor,
                                                      namespaceContext: NamespaceContext, root: Elem): Unit = {
     implicit val ns: NamespaceContext = namespaceContext
-    val xmlProperties = fixtureAccessor.getXmlProperties.asScalaLinkedHashMap
+    val xmlProperties = fixtureAccessor.getXmlProperties.asScala
     val builtDocument = root putAllValues xmlProperties
     val builtDocumentString = xmlToString(builtDocument)
 
@@ -87,7 +87,7 @@ class XmlBuilderTest {
   def shouldModifyDocumentWhenXPathsAreNotTraversable(fixtureAccessor: FixtureAccessor,
                                                       namespaceContext: NamespaceContext, root: Elem): Unit = {
     implicit val ns: NamespaceContext = namespaceContext
-    val xmlProperties = fixtureAccessor.getXmlProperties.asScalaLinkedHashMap
+    val xmlProperties = fixtureAccessor.getXmlProperties.asScala
     val xml = fixtureAccessor.getPutXml
     val oldDocument = XML.loadString(xml)
     val builtDocument = oldDocument putAllValues xmlProperties
@@ -109,7 +109,7 @@ class XmlBuilderTest {
   def shouldNotModifyDocumentWhenAllXPathsTraversable(fixtureAccessor: FixtureAccessor,
                                                       namespaceContext: NamespaceContext, root: Elem): Unit = {
     implicit val ns: NamespaceContext = namespaceContext
-    val xmlProperties = fixtureAccessor.getXmlProperties.asScalaLinkedHashMap
+    val xmlProperties = fixtureAccessor.getXmlProperties.asScala
     val xml = fixtureAccessor.getPutValueXml
     val oldDocument = XML.loadString(xml)
     var builtDocument = oldDocument putAllValues xmlProperties
@@ -144,7 +144,7 @@ class XmlBuilderTest {
   def shouldRemovePathsFromExistingXml(fixtureAccessor: FixtureAccessor, namespaceContext: NamespaceContext,
                                        root: Elem): Unit = {
     implicit val ns: NamespaceContext = namespaceContext
-    val xmlProperties = fixtureAccessor.getXmlProperties.asScalaLinkedHashMap
+    val xmlProperties = fixtureAccessor.getXmlProperties.asScala
     val xml = fixtureAccessor.getPutValueXml
     val oldDocument = XML.loadString(xml)
     val builtDocument = oldDocument removeAll xmlProperties.keys
@@ -167,13 +167,13 @@ class XmlBuilderTest {
 }
 
 object XmlBuilderTest {
+  import FunctionConverters._
+
   private[scala] implicit class JUMapOps[K, V](private val map: java.util.Map[K, V]) extends AnyVal {
-    def asScalaLinkedHashMap: Map[K, V] = {
+    def asScala: Map[K, V] = {
       val linkedHashMap = new mutable.LinkedHashMap[K, V]
-      val iterator = map.entrySet.iterator
-      while (iterator.hasNext) {
-        val next = iterator.next
-        linkedHashMap += next.getKey -> next.getValue
+      map.entrySet forEach asJavaConsumer { entry: java.util.Map.Entry[K, V] =>
+        linkedHashMap += entry.getKey -> entry.getValue
       }
       linkedHashMap
     }

@@ -36,7 +36,7 @@ public class XomNavigatorSpi implements NavigatorSpi {
         } else {
             throw new IllegalArgumentException("XML model is not supported");
         }
-        final var navigator = new XomNavigator(node.getNode());
+        final var navigator = new XomNavigator(new XomDocument(node.getNode().getDocument()));
         for (var effect : effects) {
             effect.perform(navigator, node);
         }

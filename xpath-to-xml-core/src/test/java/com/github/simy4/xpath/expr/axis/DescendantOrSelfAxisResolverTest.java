@@ -1,7 +1,6 @@
 package com.github.simy4.xpath.expr.axis;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.view.ViewContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,7 +34,7 @@ class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
         axisResolver = new DescendantOrSelfAxisResolver(new QName("*", "*"), true);
 
         // when
-        var result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
+        var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
         // then
         assertThat(result).extracting("node").containsExactly(parentNode.getNode(), node("node11"),
@@ -50,7 +49,7 @@ class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
         axisResolver = new DescendantOrSelfAxisResolver(new QName("*", "*"), false);
 
         // when
-        var result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
+        var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
         // then
         assertThat(result).extracting("node").containsExactly(node("node11"),
@@ -65,7 +64,7 @@ class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
         axisResolver = new DescendantOrSelfAxisResolver(new QName("*", "*"), true);
 
         // when
-        var result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
+        var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
         // then
         assertThat(result).extracting("node").containsExactly(parentNode.getNode());
@@ -79,7 +78,7 @@ class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
         axisResolver = new DescendantOrSelfAxisResolver(new QName("*", "*"), false);
 
         // when
-        var result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
+        var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
         // then
         assertThat(result).isEmpty();
@@ -90,9 +89,9 @@ class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     @SuppressWarnings("ReturnValueIgnored")
     void shouldThrowOnCreateNode() {
         // when
-        assertThatThrownBy(() -> stream(axisResolver.resolveAxis(
-                new ViewContext<>(navigator, parentNode, true)).spliterator(), false)
-                .collect(Collectors.toList()))
+        assertThatThrownBy(() ->
+                stream(axisResolver.resolveAxis(navigator, parentNode, true).spliterator(), false)
+                        .collect(Collectors.toList()))
                 .isInstanceOf(XmlBuilderException.class);
     }
 

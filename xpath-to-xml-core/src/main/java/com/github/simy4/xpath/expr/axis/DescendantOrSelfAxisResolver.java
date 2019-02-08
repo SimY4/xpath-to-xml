@@ -5,10 +5,7 @@ import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
-import com.github.simy4.xpath.view.IterableNodeView;
-import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
-import com.github.simy4.xpath.view.ViewContext;
 
 import javax.xml.namespace.QName;
 import java.util.Iterator;
@@ -24,19 +21,19 @@ public class DescendantOrSelfAxisResolver extends AbstractAxisResolver {
     }
 
     @Override
-    <N extends Node> IterableNodeView<N> traverseAxis(ViewContext<N> context) {
-        return new NodeSetView<>(() -> {
-            final var descendantOrSelf = new DescendantOrSelf<>(context.getNavigator())
-                    .apply(context.getCurrent().getNode());
+    <N extends Node> Iterable<N> traverseAxis(Navigator<N> navigator, NodeView<N> view) {
+        return () -> {
+            final Iterator<N> descendantOrSelf = new DescendantOrSelf<>(navigator).apply(view.getNode());
             if (!self) {
                 descendantOrSelf.next();
             }
             return descendantOrSelf;
-        }, this);
+        };
     }
 
     @Override
-    public <N extends Node> NodeView<N> createAxisNode(ViewContext<N> context) throws XmlBuilderException {
+    public <N extends Node> NodeView<N> createAxisNode(Navigator<N> navigator, NodeView<N> view, int position)
+            throws XmlBuilderException {
         if (self) {
             throw new XmlBuilderException("Descendant-of-self axis cannot modify XML model");
         } else {

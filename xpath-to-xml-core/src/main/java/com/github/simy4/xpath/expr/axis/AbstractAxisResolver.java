@@ -1,10 +1,12 @@
 package com.github.simy4.xpath.expr.axis;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.view.IterableNodeView;
-import com.github.simy4.xpath.view.ViewContext;
+import com.github.simy4.xpath.view.NodeSetView;
+import com.github.simy4.xpath.view.NodeView;
 
 import javax.xml.namespace.QName;
 
@@ -17,15 +19,16 @@ abstract class AbstractAxisResolver implements AxisResolver, Predicate<Node> {
     }
 
     @Override
-    public final <N extends Node> IterableNodeView<N> resolveAxis(ViewContext<N> context) throws XmlBuilderException {
-        var result = traverseAxis(context);
-        if (context.isGreedy() && !context.hasNext() && !result.toBoolean()) {
-            result = createAxisNode(context);
+    public final <N extends Node> IterableNodeView<N> resolveAxis(Navigator<N> navigator, NodeView<N> parent,
+                                                                  boolean greedy) throws XmlBuilderException {
+        IterableNodeView<N> result = NodeSetView.of(traverseAxis(navigator, parent), this);
+        if (greedy && !result.toBoolean()) {
+            result = createAxisNode(navigator, parent, 1);
         }
         return result;
     }
 
-    abstract <N extends Node> IterableNodeView<N> traverseAxis(ViewContext<N> context);
+    abstract <N extends Node> Iterable<? extends N> traverseAxis(Navigator<N> navigator, NodeView<N> view);
 
     final boolean isWildcard() {
         return "*".equals(name.getNamespaceURI()) || "*".equals(name.getLocalPart());

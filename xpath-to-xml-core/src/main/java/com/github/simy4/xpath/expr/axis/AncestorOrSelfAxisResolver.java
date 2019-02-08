@@ -3,10 +3,7 @@ package com.github.simy4.xpath.expr.axis;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.view.IterableNodeView;
-import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
-import com.github.simy4.xpath.view.ViewContext;
 
 import javax.xml.namespace.QName;
 import java.util.Iterator;
@@ -21,13 +18,13 @@ public class AncestorOrSelfAxisResolver extends AbstractAxisResolver {
     }
 
     @Override
-    <N extends Node> IterableNodeView<N> traverseAxis(ViewContext<N> context) {
-        return new NodeSetView<>(() ->
-                new AncestorOrSelf<>(context.getNavigator(), context.getCurrent().getNode(), self), this);
+    <N extends Node> Iterable<? extends N> traverseAxis(Navigator<N> navigator, NodeView<N> parent) {
+        return () -> new AncestorOrSelf<>(navigator, parent.getNode(), self);
     }
 
     @Override
-    public <N extends Node> NodeView<N> createAxisNode(ViewContext<N> context) throws XmlBuilderException {
+    public <N extends Node> NodeView<N> createAxisNode(Navigator<N> navigator, NodeView<N> parent, int position)
+            throws XmlBuilderException {
         if (self) {
             throw new XmlBuilderException("Ancestor-of-self axis cannot modify XML model");
         } else {

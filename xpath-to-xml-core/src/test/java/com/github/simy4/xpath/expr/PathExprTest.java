@@ -4,7 +4,6 @@ import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
-import com.github.simy4.xpath.view.ViewContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +19,8 @@ import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -33,9 +34,9 @@ class PathExprTest {
     @Mock private StepExpr stepExpr1;
     @Mock private StepExpr stepExpr2;
     @Mock private StepExpr stepExpr3;
-    @Captor private ArgumentCaptor<ViewContext<TestNode>> stepExpr1ContextCaptor;
-    @Captor private ArgumentCaptor<ViewContext<TestNode>> stepExpr2ContextCaptor;
-    @Captor private ArgumentCaptor<ViewContext<TestNode>> stepExpr3ContextCaptor;
+    @Captor private ArgumentCaptor<NodeView<TestNode>> stepExpr1ViewCaptor;
+    @Captor private ArgumentCaptor<NodeView<TestNode>> stepExpr2ViewCaptor;
+    @Captor private ArgumentCaptor<NodeView<TestNode>> stepExpr3ViewCaptor;
 
     private PathExpr pathExpr;
 
@@ -48,36 +49,45 @@ class PathExprTest {
     @DisplayName("Should traverse steps one by one to get the resulting list")
     void shouldTraverseStepsOneByOneToGetTheResultingList() {
         // given
-        when(stepExpr1.resolve(stepExpr1ContextCaptor.capture())).thenReturn(new NodeView<>(node("node2")));
-        when(stepExpr2.resolve(stepExpr2ContextCaptor.capture())).thenReturn(new NodeView<>(node("node3")));
-        when(stepExpr3.resolve(stepExpr3ContextCaptor.capture())).thenReturn(new NodeView<>(node("node4")));
+        when(stepExpr1.resolve(eq(navigator), stepExpr1ViewCaptor.capture(), eq(false)))
+                .thenReturn(new NodeView<>(node("node1")));
+        when(stepExpr2.resolve(eq(navigator), stepExpr2ViewCaptor.capture(), eq(false)))
+                .thenReturn(NodeSetView.of(List.of(node("node21"), node("node22")), node -> true));
+        when(stepExpr3.resolve(eq(navigator), stepExpr3ViewCaptor.capture(), eq(false)))
+                .thenReturn(new NodeView<>(node("node31")));
 
         // when
-        var result = pathExpr.resolve(new ViewContext<>(navigator, parentNode, false));
+        var result = pathExpr.resolve(navigator, parentNode, false);
 
         // then
-        assertThat(result).extracting("node").containsExactly(node("node4"));
-        assertThat(stepExpr1ContextCaptor.getAllValues()).extracting("navigator", "greedy", "hasNext", "position")
-                .containsExactly(tuple(navigator, false, false, 1));
-        assertThat(stepExpr2ContextCaptor.getAllValues()).extracting("navigator", "greedy", "hasNext", "position")
-                .containsExactly(tuple(navigator, false, false, 1));
-        assertThat(stepExpr3ContextCaptor.getAllValues()).extracting("navigator", "greedy", "hasNext", "position")
-                .containsExactly(tuple(navigator, false, false, 1));
+        assertThat(result).extracting("node").containsExactly(node("node31"));
+        assertThat(stepExpr1ViewCaptor.getAllValues()).extracting("hasNext", "position")
+                .containsExactly(tuple(false, 1));
+        assertThat(stepExpr2ViewCaptor.getAllValues()).extracting("hasNext", "position")
+                .containsExactly(tuple(false, 1));
+        assertThat(stepExpr3ViewCaptor.getAllValues()).extracting("hasNext", "position")
+                .containsExactly(tuple(true, 1), tuple(false, 2));
     }
 
     @Test
     @DisplayName("When step traverse returns nothing should short circuit non greedy traversal")
     void shouldShortCircuitNonGreedyTraversalWhenStepTraversalReturnsNothing() {
         // given
-        when(stepExpr1.resolve(any())).thenReturn(new NodeView<>(node("node2")));
-        when(stepExpr2.resolve(stepExpr2ContextCaptor.capture())).thenReturn(NodeSetView.empty());
+        when(stepExpr1.resolve(eq(navigator), stepExpr1ViewCaptor.capture(), eq(false)))
+                .thenReturn(NodeSetView.of(List.of(node("node11"), node("node12")), node -> true));
+        when(stepExpr2.resolve(eq(navigator), stepExpr2ViewCaptor.capture(), eq(false)))
+                .thenReturn(NodeSetView.empty());
 
         // when
-        var result = pathExpr.resolve(new ViewContext<>(navigator, parentNode, false));
+        var result = pathExpr.resolve(navigator, parentNode, false);
 
         // then
         assertThat(result).isEmpty();
-        verify(stepExpr3, never()).resolve(any());
+        assertThat(stepExpr1ViewCaptor.getAllValues()).extracting("hasNext", "position")
+                .containsExactly(tuple(false, 1));
+        assertThat(stepExpr2ViewCaptor.getAllValues()).extracting("hasNext", "position")
+                .containsExactly(tuple(true, 1), tuple(false, 2));
+        verify(stepExpr3, never()).resolve(any(), any(), anyBoolean());
     }
 
     @Test

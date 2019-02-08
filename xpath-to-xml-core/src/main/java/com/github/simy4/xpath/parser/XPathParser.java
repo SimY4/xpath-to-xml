@@ -13,7 +13,6 @@ import com.github.simy4.xpath.expr.MultiplicationExpr;
 import com.github.simy4.xpath.expr.NotEqualsExpr;
 import com.github.simy4.xpath.expr.NumberExpr;
 import com.github.simy4.xpath.expr.PathExpr;
-import com.github.simy4.xpath.expr.PredicateExpr;
 import com.github.simy4.xpath.expr.Root;
 import com.github.simy4.xpath.expr.StepExpr;
 import com.github.simy4.xpath.expr.SubtractionExpr;
@@ -346,11 +345,11 @@ public class XPathParser {
         }
     }
 
-    private PredicateExpr Predicate(Context context) throws XPathExpressionException {
+    private Expr Predicate(Context context) throws XPathExpressionException {
         context.match(Type.LEFT_BRACKET);
         var predicate = Expr(context);
         context.match(Type.RIGHT_BRACKET);
-        return new PredicateExpr(predicate);
+        return predicate;
     }
 
     private static final class Context {

@@ -3,7 +3,6 @@ package com.github.simy4.xpath.expr.axis;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.NodeView;
-import com.github.simy4.xpath.view.ViewContext;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +14,7 @@ import javax.xml.namespace.QName;
 import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -36,7 +36,7 @@ abstract class AbstractAxisResolverTest {
         setUpResolvableAxis();
 
         // when
-        var result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
+        var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
         // then
         assertThat(result).extracting("node").containsExactly(node(name));
@@ -50,29 +50,18 @@ abstract class AbstractAxisResolverTest {
         axisResolver = spy(axisResolver);
 
         // when
-        var result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, true));
+        var result = axisResolver.resolveAxis(navigator, parentNode, true);
 
         // then
         assertThat(result).isNotEmpty();
-        assertThat(result).extracting("node").containsExactly(node(name));
-        verify(axisResolver, never()).createAxisNode(any());
+        verify(axisResolver, never()).createAxisNode(any(), any(), anyInt());
     }
 
     @Test
     @DisplayName("When axis is not traversable return empty")
     void shouldReturnEmptyIfAxisIsNotTraversable() {
         // when
-        var result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
-
-        // then
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    @DisplayName("When axis is not traversable and greedy context and has next should return empty")
-    void shouldReturnEmptyIfAxisIsNotTraversableGreedyAndHasNext() {
-        // when
-        var result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, true, true, 1));
+        var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
         // then
         assertThat(result).isEmpty();

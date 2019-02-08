@@ -43,17 +43,17 @@ class XomNavigatorTest {
         xml.addAttribute(attr2);
         xml.addAttribute(attr3);
 
-        navigator = new XomNavigator(xml);
+        navigator = new XomNavigator(new XomDocument(root));
     }
 
     @Test
     void testRootNode() {
-        assertThat(navigator.root()).hasFieldOrPropertyWithValue("node", root);
+        assertThat(navigator.root()).isEqualTo(new XomDocument(root));
     }
 
     @Test
     void testParentOfRegularNode() {
-        assertThat(navigator.parentOf(new XomElement(xml))).hasFieldOrPropertyWithValue("node", parent);
+        assertThat(navigator.parentOf(new XomElement(xml))).isEqualTo(new XomElement(parent));
     }
 
     @Test

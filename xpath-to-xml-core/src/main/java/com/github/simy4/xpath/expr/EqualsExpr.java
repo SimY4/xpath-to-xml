@@ -7,7 +7,6 @@ import com.github.simy4.xpath.view.AbstractViewVisitor;
 import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.View;
-import com.github.simy4.xpath.view.ViewContext;
 
 public class EqualsExpr extends AbstractOperationExpr {
 
@@ -16,11 +15,11 @@ public class EqualsExpr extends AbstractOperationExpr {
     }
 
     @Override
-    public <N extends Node> View<N> resolve(ViewContext<N> context, View<N> left, View<N> right)
+    public <N extends Node> View<N> resolve(Navigator<N> navigator, View<N> left, View<N> right, boolean greedy)
             throws XmlBuilderException {
-        var eq = 0 == left.compareTo(right);
-        if (!eq && context.isGreedy() && !context.hasNext()) {
-            eq = left.visit(new EqualsVisitor<>(context.getNavigator(), right));
+        boolean eq = 0 == left.compareTo(right);
+        if (!eq && greedy) {
+            eq = left.visit(new EqualsVisitor<>(navigator, right));
         }
         return BooleanView.of(eq);
     }

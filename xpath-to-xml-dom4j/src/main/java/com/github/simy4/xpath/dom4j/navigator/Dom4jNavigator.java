@@ -13,15 +13,15 @@ import javax.xml.namespace.QName;
 
 public final class Dom4jNavigator implements Navigator<Dom4jNode> {
 
-    private final Node xml;
+    private final Dom4jDocument xml;
 
-    public Dom4jNavigator(Node xml) {
+    public Dom4jNavigator(Dom4jDocument xml) {
         this.xml = xml;
     }
 
     @Override
     public Dom4jNode root() {
-        return new Dom4jDocument(xml.getDocument());
+        return xml;
     }
 
     @Override

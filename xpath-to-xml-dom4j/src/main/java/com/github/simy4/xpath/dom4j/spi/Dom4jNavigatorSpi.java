@@ -49,7 +49,7 @@ public class Dom4jNavigatorSpi implements NavigatorSpi {
             default:
                 throw new IllegalArgumentException("XML node type is not supported");
         }
-        final var navigator = new Dom4jNavigator(xmlNode);
+        final var navigator = new Dom4jNavigator(new Dom4jDocument(xmlNode.getDocument()));
         for (var effect : effects) {
             effect.perform(navigator, node);
         }

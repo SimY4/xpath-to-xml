@@ -1,8 +1,9 @@
 package com.github.simy4.xpath.expr;
 
+import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.LiteralView;
-import com.github.simy4.xpath.view.ViewContext;
+import com.github.simy4.xpath.view.NodeView;
 
 public class LiteralExpr implements Expr {
 
@@ -14,7 +15,7 @@ public class LiteralExpr implements Expr {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <N extends Node> LiteralView<N> resolve(ViewContext<N> context) {
+    public <N extends Node> LiteralView<N> resolve(Navigator<N> navigator, NodeView<N> view, boolean greedy) {
         return (LiteralView<N>) literal;
     }
 
