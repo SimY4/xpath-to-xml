@@ -1,11 +1,11 @@
 package com.github.simy4.xpath.jdom.navigator;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.jdom.navigator.node.JDomAttribute;
 import com.github.simy4.xpath.jdom.navigator.node.JDomDocument;
 import com.github.simy4.xpath.jdom.navigator.node.JDomElement;
 import com.github.simy4.xpath.jdom.navigator.node.JDomNode;
+import com.github.simy4.xpath.navigator.Navigator;
 import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.namespace.QName;
-
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;

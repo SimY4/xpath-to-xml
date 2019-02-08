@@ -18,15 +18,15 @@ import javax.xml.namespace.QName;
 
 public final class XomNavigator implements Navigator<XomNode> {
 
-    private final Node xml;
+    private final XomDocument xml;
 
-    public XomNavigator(Node xml) {
+    public XomNavigator(XomDocument xml) {
         this.xml = xml;
     }
 
     @Override
     public XomNode root() {
-        return new XomDocument(xml.getDocument());
+        return xml;
     }
 
     @Override

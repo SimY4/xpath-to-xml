@@ -1,12 +1,13 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.AbstractViewVisitor;
 import com.github.simy4.xpath.view.BooleanView;
+import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
-import com.github.simy4.xpath.view.ViewContext;
 
 public class PredicateExpr implements Expr {
 
@@ -17,8 +18,9 @@ public class PredicateExpr implements Expr {
     }
 
     @Override
-    public <N extends Node> View<N> resolve(ViewContext<N> context) throws XmlBuilderException {
-        return predicate.resolve(context).visit(new PredicateVisitor<>(context));
+    public <N extends Node> BooleanView<N> resolve(Navigator<N> navigator, NodeView<N> view, boolean greedy)
+            throws XmlBuilderException {
+        return predicate.resolve(navigator, view, greedy).visit(new PredicateVisitor<>(navigator, view, greedy));
     }
 
     @Override
@@ -26,26 +28,29 @@ public class PredicateExpr implements Expr {
         return "[" + predicate + "]";
     }
 
-    private static final class PredicateVisitor<T extends Node> extends AbstractViewVisitor<T, View<T>> {
+    private static final class PredicateVisitor<T extends Node> extends AbstractViewVisitor<T, BooleanView<T>> {
 
-        private final ViewContext<T> context;
+        private final Navigator<T> navigator;
+        private final NodeView<T> view;
+        private final boolean greedy;
 
-        private PredicateVisitor(ViewContext<T> context) {
-            this.context = context;
+        private PredicateVisitor(Navigator<T> navigator, NodeView<T> view, boolean greedy) {
+            this.navigator = navigator;
+            this.view = view;
+            this.greedy = greedy;
         }
 
         @Override
-        public View<T> visit(NumberView<T> numberView) throws XmlBuilderException {
+        public BooleanView<T> visit(NumberView<T> numberView) throws XmlBuilderException {
             final double number = numberView.toNumber();
-            if (0 == Double.compare(number, context.getPosition())) {
-                context.getCurrent().mark();
+            if (0 == Double.compare(number, view.getPosition())) {
+                view.mark();
                 return BooleanView.of(true);
-            } else if (context.isGreedy() && !context.hasNext() && number > context.getPosition()
-                    && context.getCurrent().isNew()) {
-                final T node = context.getCurrent().getNode();
-                long numberOfNodesToCreate = (long) number - context.getPosition();
+            } else if (greedy && number > view.getPosition()) {
+                final T node = view.getNode();
+                long numberOfNodesToCreate = (long) number - view.getPosition();
                 do {
-                    context.getNavigator().prependCopy(node);
+                    navigator.prependCopy(node);
                 } while (--numberOfNodesToCreate > 0);
                 return BooleanView.of(true);
             } else {
@@ -54,8 +59,8 @@ public class PredicateExpr implements Expr {
         }
 
         @Override
-        protected View<T> returnDefault(View<T> view) throws XmlBuilderException {
-            return view;
+        protected BooleanView<T> returnDefault(View<T> view) throws XmlBuilderException {
+            return BooleanView.of(view.toBoolean());
         }
 
     }

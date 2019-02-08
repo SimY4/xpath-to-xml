@@ -3,8 +3,9 @@ package com.github.simy4.xpath.view;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.util.FilteringIterator;
+import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.util.Predicate;
-import com.github.simy4.xpath.util.TransformingIterator;
+import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -12,31 +13,17 @@ import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
+public abstract class NodeSetView<N extends Node> implements IterableNodeView<N> {
 
-    private static final NodeSetView<?> EMPTY_NODE_SET = new NodeSetView<>(Collections.emptySet());
+    private static final NodeSetView<?> EMPTY_NODE_SET = new EmptyNodeSet<>();
 
     @SuppressWarnings("unchecked")
     public static <T extends Node> NodeSetView<T> empty() {
         return (NodeSetView<T>) EMPTY_NODE_SET;
     }
 
-    private final Set<NodeView<N>> cache = new LinkedHashSet<>();
-    private final Iterable<NodeView<N>> nodeSet;
-
-    /**
-     * Creates NodeSetView from given nodes and predicate.
-     *
-     * @param nodes     nodes to wap in a view
-     * @param predicate predicate to apply to nodes
-     */
-    public NodeSetView(final Iterable<? extends N> nodes, final Predicate<? super N> predicate) {
-        this(() -> new TransformingIterator<>(
-                new FilteringIterator<N>(nodes.iterator(), predicate), NodeView::new));
-    }
-
-    public NodeSetView(Iterable<NodeView<N>> nodeSet) {
-        this.nodeSet = nodeSet;
+    public static <T extends Node> NodeSetView<T> of(Iterable<? extends T> iterable, Predicate<? super T> filter) {
+        return new IterableNodeSet<>(iterable, filter);
     }
 
     @Override
@@ -72,35 +59,125 @@ public final class NodeSetView<N extends Node> implements IterableNodeView<N> {
     }
 
     @Override
-    public Iterator<NodeView<N>> iterator() {
-        return new NodeSetIterator();
+    public IterableNodeView<N> flatMap(Function<? super NodeView<N>, ? extends IterableNodeView<N>> fmap) {
+        return new FlatMapNodeSet<>(this, fmap);
     }
 
-    private final class NodeSetIterator implements Iterator<NodeView<N>>, Predicate<NodeView<N>> {
-
-        private Iterator<NodeView<N>> iterator = cache.iterator();
-        private boolean swapped;
+    private static final class EmptyNodeSet<T extends Node> extends NodeSetView<T> {
 
         @Override
-        public boolean hasNext() {
-            if (!iterator.hasNext() && !swapped) {
-                iterator = new FilteringIterator<>(nodeSet.iterator(), this);
-                swapped = true;
-            }
-            return iterator.hasNext();
+        public Iterator<NodeView<T>> iterator() {
+            return Collections.emptyIterator();
+        }
+
+    }
+
+    private static final class IterableNodeSet<T extends Node> extends NodeSetView<T> implements Predicate<T> {
+
+        private final Set<T> cache = new LinkedHashSet<>();
+        private final Iterable<? extends T> nodeSet;
+        private final Predicate<? super T> filter;
+
+        private IterableNodeSet(Iterable<? extends T> nodeSet, Predicate<? super T> filter) {
+            this.nodeSet = nodeSet;
+            this.filter = filter;
         }
 
         @Override
-        public NodeView<N> next() {
-            if (!hasNext()) {
-                throw new NoSuchElementException("No more elements");
-            }
-            return iterator.next();
+        public Iterator<NodeView<T>> iterator() {
+            return new IteratorImpl();
         }
 
         @Override
-        public boolean test(NodeView<N> nodeView) {
-            return cache.add(nodeView);
+        public boolean test(T node) {
+            return filter.test(node) && cache.add(node);
+        }
+
+        private final class IteratorImpl implements Iterator<NodeView<T>> {
+
+            private Iterator<? extends T> current = cache.iterator();
+            private boolean swapped;
+            private int position = 1;
+
+            @Override
+            public boolean hasNext() {
+                boolean hasNext = current.hasNext();
+                if (!hasNext && !swapped) {
+                    current = new FilteringIterator<T>(nodeSet.iterator(), IterableNodeSet.this);
+                    swapped = true;
+                    hasNext = current.hasNext();
+                }
+                return hasNext;
+            }
+
+            @Override
+            public NodeView<T> next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException("No more elements");
+                }
+                return new NodeView<>(current.next(), position++, hasNext());
+            }
+
+        }
+
+    }
+
+    private static final class FlatMapNodeSet<T extends Node> extends NodeSetView<T>
+            implements Function<NodeView<T>, Iterator<NodeView<T>>>, Predicate<NodeView<T>> {
+
+        private final Set<T> cache = new LinkedHashSet<>();
+        private final NodeSetView<T> nodeSetView;
+        private final Function<? super NodeView<T>, ? extends IterableNodeView<T>> fmap;
+
+        private FlatMapNodeSet(NodeSetView<T> nodeSetView,
+                               Function<? super NodeView<T>, ? extends IterableNodeView<T>> fmap) {
+            this.nodeSetView = nodeSetView;
+            this.fmap = fmap;
+        }
+
+        @Override
+        public Iterator<NodeView<T>> iterator() {
+            return new IteratorImpl();
+        }
+
+        @Override
+        public boolean test(NodeView<T> view) {
+            return cache.add(view.getNode());
+        }
+
+        @Override
+        public Iterator<NodeView<T>> apply(NodeView<T> view) {
+            return fmap.apply(view).iterator();
+        }
+
+        private final class IteratorImpl implements Iterator<NodeView<T>> {
+
+            private Iterator<?> current = cache.iterator();
+            private boolean swapped;
+            private int position = 1;
+
+            @Override
+            public boolean hasNext() {
+                boolean hasNext = current.hasNext();
+                if (!hasNext && !swapped) {
+                    current = new FilteringIterator<>(new TransformingAndFlatteningIterator<>(nodeSetView.iterator(),
+                            FlatMapNodeSet.this), FlatMapNodeSet.this);
+                    swapped = true;
+                    hasNext = current.hasNext();
+                }
+                return hasNext;
+            }
+
+            @Override
+            @SuppressWarnings("unchecked")
+            public NodeView<T> next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException("No more elements");
+                }
+                return swapped ? ((NodeView<T>) current.next()).copy(position++, hasNext())
+                        : new NodeView<>((T) current.next(), position++, hasNext());
+            }
+
         }
 
     }

@@ -3,7 +3,6 @@ package com.github.simy4.xpath.expr.axis;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.IterableNodeView;
-import com.github.simy4.xpath.view.ViewContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +31,7 @@ class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
         axisResolver = new AncestorOrSelfAxisResolver(new QName("*", "*"), true);
 
         // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
+        IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, false);
 
         // then
         assertThat(result).extracting("node").containsExactly(parentNode.getNode(),
@@ -47,7 +46,7 @@ class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
         axisResolver = new AncestorOrSelfAxisResolver(new QName("*", "*"), false);
 
         // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
+        IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, false);
 
         // then
         assertThat(result).extracting("node").containsExactly(
@@ -62,7 +61,7 @@ class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
         axisResolver = new AncestorOrSelfAxisResolver(new QName("*", "*"), true);
 
         // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
+        IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, false);
 
         // then
         assertThat(result).extracting("node").containsExactly(parentNode.getNode());
@@ -76,7 +75,7 @@ class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
         axisResolver = new AncestorOrSelfAxisResolver(new QName("*", "*"), false);
 
         // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, false));
+        IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, false);
 
         // then
         assertThat(result).isEmpty();
@@ -87,9 +86,9 @@ class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     @SuppressWarnings("ReturnValueIgnored")
     void shouldThrowOnCreateNode() {
         // when
-        assertThatThrownBy(() -> stream(axisResolver.resolveAxis(
-                new ViewContext<>(navigator, parentNode, true)).spliterator(), false)
-                .collect(Collectors.toList()))
+        assertThatThrownBy(() ->
+                stream(axisResolver.resolveAxis(navigator, parentNode, true).spliterator(), false)
+                        .collect(Collectors.toList()))
                 .isInstanceOf(XmlBuilderException.class);
     }
 

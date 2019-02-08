@@ -9,7 +9,6 @@ import com.github.simy4.xpath.view.AbstractViewVisitor;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
-import com.github.simy4.xpath.view.ViewContext;
 
 public class RemoveEffect implements Effect {
 
@@ -21,9 +20,7 @@ public class RemoveEffect implements Effect {
 
     @Override
     public <N extends Node> void perform(Navigator<N> navigator, N xml) throws XmlBuilderException {
-        final ViewContext<N> context = new ViewContext<>(navigator, new NodeView<>(xml), false);
-        final View<N> view = expr.resolve(context);
-        view.visit(new RemoveVisitor<>(navigator));
+        expr.resolve(navigator, new NodeView<>(xml), false).visit(new RemoveVisitor<>(navigator));
     }
 
     private static final class RemoveVisitor<N extends Node> extends AbstractViewVisitor<N, Void> {
@@ -43,8 +40,8 @@ public class RemoveEffect implements Effect {
         }
 
         @Override
-        protected Void returnDefault(View<N> ignored) {
-            return null;
+        protected Void returnDefault(View<N> view) throws XmlBuilderException {
+            throw new XmlBuilderException("Failed to remove value into XML. Read-only view was resolved: " + view);
         }
 
     }

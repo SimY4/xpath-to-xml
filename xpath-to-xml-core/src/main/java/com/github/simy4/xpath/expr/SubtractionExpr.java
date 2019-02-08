@@ -1,9 +1,9 @@
 package com.github.simy4.xpath.expr;
 
+import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
-import com.github.simy4.xpath.view.ViewContext;
 
 public class SubtractionExpr extends AbstractOperationExpr {
 
@@ -12,7 +12,7 @@ public class SubtractionExpr extends AbstractOperationExpr {
     }
 
     @Override
-    <N extends Node> View<N> resolve(ViewContext<N> context, View<N> left, View<N> right) {
+    <N extends Node> View<N> resolve(Navigator<N> navigator, View<N> left, View<N> right, boolean greedy) {
         return new NumberView<>(left.toNumber() - right.toNumber());
     }
 
