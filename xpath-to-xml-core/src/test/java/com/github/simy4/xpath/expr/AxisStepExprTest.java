@@ -124,8 +124,8 @@ class AxisStepExprTest {
     }
 
     @Test
-    @DisplayName("When step expr is partially resolvable should create node and resolve predicates")
-    void shouldCreateNodeAndResolvePredicatesWhenStepExprIsPartiallyResolvable() {
+    @DisplayName("When only axis is resolvable should create node and resolve predicates")
+    void shouldCreateNodeAndResolvePredicatesWhenOnlyAxisIsResolvable() {
         // given
         when(axisResolver.resolveAxis(any(), any(), eq(true))).thenReturn(new NodeView<>(node("node")));
         when(predicate1.resolve(any(), any(), eq(true))).thenReturn(BooleanView.of(true));
@@ -149,6 +149,32 @@ class AxisStepExprTest {
                 .containsExactly(
                         tuple(false, 1),
                         tuple(false, 1));
+    }
+
+    @Test
+    @DisplayName("When axis and predicates are partially resolvable should create new node and resolve predicates")
+    void shouldCreateNodeAndResolvePredicatesWhenAxisAndPredicatesArePartiallyResolvable() {
+        // given
+        when(axisResolver.resolveAxis(any(), any(), eq(true))).thenReturn(new NodeView<>(node("node")));
+        when(predicate1.resolve(any(), any(), anyBoolean())).thenReturn(BooleanView.of(true));
+        when(predicate2.resolve(any(), any(), eq(true))).thenReturn(BooleanView.of(true));
+
+        // when
+        IterableNodeView<TestNode> result = stepExpr.resolve(navigator, parentNode, true);
+
+        // then
+        assertThat(result).isNotEmpty();
+        InOrder inOrder = inOrder(predicate1, predicate2);
+        inOrder.verify(predicate1).resolve(eq(navigator), predicate1ViewCaptor.capture(), eq(false));
+        inOrder.verify(predicate2).resolve(eq(navigator), predicate2ViewCaptor.capture(), eq(false));
+        inOrder.verify(predicate2).resolve(eq(navigator), predicate2ViewCaptor.capture(), eq(true));
+        assertThat(predicate1ViewCaptor.getAllValues()).extracting("hasNext", "position")
+                .containsExactly(
+                        tuple(false, 1));
+        assertThat(predicate2ViewCaptor.getAllValues()).extracting("hasNext", "position")
+                .containsExactly(
+                        tuple(false, 1),
+                        tuple(false, 2));
     }
 
     @Test

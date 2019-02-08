@@ -14,7 +14,7 @@ import java.util.Collection;
 public class AxisStepExpr implements StepExpr {
 
     private final AxisResolver axisResolver;
-    private final Iterable<Expr> predicates;
+    private final Collection<Expr> predicates;
 
     public AxisStepExpr(AxisResolver axisResolver, Collection<Expr> predicates) {
         this.axisResolver = axisResolver;

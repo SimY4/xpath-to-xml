@@ -79,21 +79,6 @@ class PredicateExprTest {
     }
 
     @Test
-    @DisplayName("When greedy context, falsy predicate and new marked node should return false")
-    void shouldReturnFalseOnGreedyFalseResolveAndNewMarkedNode() {
-        // given
-        NodeView<TestNode> node = new NodeView<>(node("node"));
-        node.mark();
-        ViewContext<TestNode> context = new ViewContext<>(navigator, node, true);
-
-        // when
-        boolean result = new PredicateExpr(new NumberExpr(3.0)).resolve(context).toBoolean();
-
-        // then
-        assertThat(result).isEqualTo(false);
-    }
-
-    @Test
     void testToString() {
         // given
         Expr predicate = mock(Expr.class);
