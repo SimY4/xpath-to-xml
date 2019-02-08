@@ -12,25 +12,27 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
     private final N node;
     private final int position;
     private final boolean hasNext;
-    private boolean isNew;
+    private final boolean isNew;
+    private boolean marked;
 
     public NodeView(N node) {
         this(node, 1, false);
     }
 
     public NodeView(N node, int position) {
-        this(node, position, false, true);
+        this(node, position, false, true, false);
     }
 
     public NodeView(N node, int position, boolean hasNext) {
-        this(node, position, hasNext, false);
+        this(node, position, hasNext, false, false);
     }
 
-    NodeView(N node, int position, boolean hasNext, boolean isNew) {
+    private NodeView(N node, int position, boolean hasNext, boolean isNew, boolean marked) {
         this.node = node;
         this.position = position;
         this.hasNext = hasNext;
         this.isNew = isNew;
+        this.marked = marked;
     }
 
     @Override
@@ -64,12 +66,12 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
 
     @Override
     public IterableNodeView<N> flatMap(Function<? super NodeView<N>, ? extends IterableNodeView<N>> fmap) {
-        return fmap.apply(new NodeView<N>(node, 1, false, isNew));
+        return fmap.apply(copy(1, false));
     }
 
     @Override
     public Iterator<NodeView<N>> iterator() {
-        return Collections.singleton(new NodeView<N>(node, 1, false, isNew)).iterator();
+        return Collections.singleton(copy(1, false)).iterator();
     }
 
     @Override
@@ -98,8 +100,17 @@ public final class NodeView<N extends Node> implements IterableNodeView<N> {
         return isNew;
     }
 
+    public boolean isMarked() {
+        return marked;
+    }
+
     public void mark() {
-        isNew = true;
+        marked = true;
+    }
+
+    NodeView<N> copy(int position, boolean hasNext) {
+        return this.position == position && this.hasNext == hasNext ? this
+                : new NodeView<N>(node, position, hasNext, isNew, marked);
     }
 
 }

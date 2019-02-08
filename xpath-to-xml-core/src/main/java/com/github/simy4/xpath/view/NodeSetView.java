@@ -167,7 +167,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
             @Override
             public NodeView<T> apply(NodeView<T> view) {
-                return new NodeView<T>(view.getNode(), position++, iterator.hasNext(), view.isNew());
+                return view.copy(position++, iterator.hasNext());
             }
 
         }
