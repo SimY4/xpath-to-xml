@@ -8,20 +8,19 @@ import com.github.simy4.xpath.spi.Effect;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeView;
-import com.github.simy4.xpath.view.ViewContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.github.simy4.xpath.util.TestNode.node;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -31,13 +30,12 @@ class RemoveEffectTest {
 
     @Mock private Navigator<TestNode> navigator;
     @Mock private Expr expr;
-    @Captor private ArgumentCaptor<ViewContext<TestNode>> contextCaptor;
 
     private Effect removeEffect;
 
     @BeforeEach
     void setUp() {
-        when(expr.resolve(any())).thenReturn(new NodeView<>(node("node")));
+        when(expr.resolve(any(), any(), anyBoolean())).thenReturn(new NodeView<>(node("node")));
 
         removeEffect = new RemoveEffect(expr);
     }
@@ -49,10 +47,8 @@ class RemoveEffectTest {
         removeEffect.perform(navigator, node("xml"));
 
         // then
-        verify(expr).resolve(contextCaptor.capture());
+        verify(expr).resolve(eq(navigator), refEq(new NodeView<>(node("xml"))), eq(false));
         verify(navigator).remove(node("node"));
-        assertThat(contextCaptor.getValue()).extracting("navigator", "greedy", "hasNext", "position")
-                .containsExactly(navigator, false, false, 1);
     }
 
     @Test
@@ -60,7 +56,7 @@ class RemoveEffectTest {
     void shouldThrowWhenResolvedToALiteralExpr() {
         // given
         LiteralView<Node> literal = new LiteralView<>("literal");
-        when(expr.resolve(any())).thenReturn(literal);
+        when(expr.resolve(any(), any(), anyBoolean())).thenReturn(literal);
 
         // when
         assertThatThrownBy(() -> removeEffect.perform(navigator, node("xml")))

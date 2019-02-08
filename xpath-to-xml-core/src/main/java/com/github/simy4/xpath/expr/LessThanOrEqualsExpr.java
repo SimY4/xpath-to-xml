@@ -1,10 +1,10 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.View;
-import com.github.simy4.xpath.view.ViewContext;
 
 public class LessThanOrEqualsExpr extends AbstractOperationExpr {
 
@@ -13,11 +13,11 @@ public class LessThanOrEqualsExpr extends AbstractOperationExpr {
     }
 
     @Override
-    public <N extends Node> View<N> resolve(ViewContext<N> context, View<N> left, View<N> right)
+    public <N extends Node> View<N> resolve(Navigator<N> navigator, View<N> left, View<N> right, boolean greedy)
             throws XmlBuilderException {
         boolean le = 0 >= Double.compare(left.toNumber(), right.toNumber());
-        if (!le && context.isGreedy() && !context.hasNext()) {
-            le = left.visit(new EqualsExpr.EqualsVisitor<N>(context.getNavigator(), right));
+        if (!le && greedy) {
+            le = left.visit(new EqualsExpr.EqualsVisitor<N>(navigator, right));
         }
         return BooleanView.of(le);
     }

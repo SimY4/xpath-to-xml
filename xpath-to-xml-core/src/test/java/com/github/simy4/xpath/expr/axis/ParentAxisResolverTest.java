@@ -1,7 +1,6 @@
 package com.github.simy4.xpath.expr.axis;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.view.ViewContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,9 +25,9 @@ class ParentAxisResolverTest extends AbstractAxisResolverTest {
     @SuppressWarnings("ReturnValueIgnored")
     void shouldThrowOnCreateNode() {
         // when
-        assertThatThrownBy(() -> stream(axisResolver.resolveAxis(
-                new ViewContext<>(navigator, parentNode, true)).spliterator(), false)
-                .collect(Collectors.toList()))
+        assertThatThrownBy(() ->
+                stream(axisResolver.resolveAxis(navigator, parentNode, true).spliterator(), false)
+                        .collect(Collectors.toList()))
                 .isInstanceOf(XmlBuilderException.class);
     }
 

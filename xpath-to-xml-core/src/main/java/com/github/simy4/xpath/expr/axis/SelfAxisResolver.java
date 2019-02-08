@@ -1,13 +1,12 @@
 package com.github.simy4.xpath.expr.axis;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.view.IterableNodeView;
-import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
-import com.github.simy4.xpath.view.ViewContext;
 
 import javax.xml.namespace.QName;
+import java.util.Collections;
 
 public class SelfAxisResolver extends AbstractAxisResolver {
 
@@ -16,13 +15,13 @@ public class SelfAxisResolver extends AbstractAxisResolver {
     }
 
     @Override
-    <N extends Node> IterableNodeView<N> traverseAxis(ViewContext<N> context) {
-        final NodeView<N> self = context.getCurrent();
-        return test(self.getNode()) ? self : NodeSetView.<N>empty();
+    <N extends Node> Iterable<N> traverseAxis(Navigator<N> navigator, NodeView<N> view) {
+        return Collections.singletonList(view.getNode());
     }
 
     @Override
-    public <N extends Node> NodeView<N> createAxisNode(ViewContext<N> context) throws XmlBuilderException {
+    public <N extends Node> NodeView<N> createAxisNode(Navigator<N> navigator, NodeView<N> view, int position)
+            throws XmlBuilderException {
         throw new XmlBuilderException("Self axis cannot modify XML model");
     }
 
