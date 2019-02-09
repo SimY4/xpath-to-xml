@@ -3,7 +3,6 @@ package com.github.simy4.xpath.expr.axis;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.IterableNodeView;
-import com.github.simy4.xpath.view.ViewContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +37,7 @@ class AttributeAxisResolverTest extends AbstractAxisResolverTest {
     @DisplayName("Should create attribute")
     void shouldCreateAttribute() {
         // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(new ViewContext<>(navigator, parentNode, true));
+        IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, true);
 
         // then
         assertThat(result).extracting("node").containsExactly(node("name"));
@@ -53,9 +52,9 @@ class AttributeAxisResolverTest extends AbstractAxisResolverTest {
         axisResolver = new AttributeAxisResolver(new QName("*", "attr"));
 
         // when
-        assertThatThrownBy(() -> stream(axisResolver.resolveAxis(
-                new ViewContext<>(navigator, parentNode, true)).spliterator(), false)
-                .collect(Collectors.toList()))
+        assertThatThrownBy(() ->
+                stream(axisResolver.resolveAxis(navigator, parentNode, true).spliterator(), false)
+                        .collect(Collectors.toList()))
                 .isInstanceOf(XmlBuilderException.class);
     }
 
@@ -67,9 +66,9 @@ class AttributeAxisResolverTest extends AbstractAxisResolverTest {
         axisResolver = new AttributeAxisResolver(new QName("http://www.example.com/my", "*", "my"));
 
         // when
-        assertThatThrownBy(() -> stream(axisResolver.resolveAxis(
-                new ViewContext<>(navigator, parentNode, true)).spliterator(), false)
-                .collect(Collectors.toList()))
+        assertThatThrownBy(() ->
+                stream(axisResolver.resolveAxis(navigator, parentNode, true).spliterator(), false)
+                        .collect(Collectors.toList()))
                 .isInstanceOf(XmlBuilderException.class);
     }
 
@@ -81,9 +80,9 @@ class AttributeAxisResolverTest extends AbstractAxisResolverTest {
         when(navigator.createAttribute(any(TestNode.class), any(QName.class))).thenThrow(XmlBuilderException.class);
 
         // when
-        assertThatThrownBy(() -> stream(axisResolver.resolveAxis(
-                new ViewContext<>(navigator, parentNode, true)).spliterator(), false)
-                .collect(Collectors.toList()))
+        assertThatThrownBy(() ->
+                stream(axisResolver.resolveAxis(navigator, parentNode, true).spliterator(), false)
+                        .collect(Collectors.toList()))
                 .isInstanceOf(XmlBuilderException.class);
     }
 

@@ -25,7 +25,7 @@ private[navigator] sealed trait Parent extends ScalaXmlNode {
 final class Root(override var node: Elem) extends Parent {
   override def getName: QName = new QName(NavigatorNode.DOCUMENT)
   override val parent: Parent = null
-  override def elements: Iterable[Element] = Seq(new Element(node, 0, this))
+  override def elements: Iterable[Element] = new Element(node, 0, this) :: Nil
   override def attributes: Iterable[Attribute] = Nil
   override def equals(obj: Any): Boolean = obj match {
     case r: Root => node == r.node
@@ -35,42 +35,47 @@ final class Root(override var node: Elem) extends Parent {
   override def toString: String = node.toString
 }
 
-private[navigator] final class Element(private var _node: Elem, var index: Int,
+private[navigator] final class Element(private[this] var _node: Elem, var index: Int,
                                        override val parent: Parent) extends Parent {
-  override def getName: QName = node match {
+  override def getName: QName = _node match {
     case prefixed if null != prefixed.prefix => new QName(prefixed.namespace, prefixed.label, prefixed.prefix)
     case simple                              => new QName(simple.label)
   }
-  override def elements: Iterable[Element] = for {
-    (n, i) <- _node.child.view.zipWithIndex if !n.isAtom
-  } yield new Element(n.asInstanceOf[Elem], i, this)
+  override def elements: Iterable[Element] =
+    _node.child.view.zipWithIndex collect { case (e: Elem, i) => new Element(e, i, this) }
   override def attributes: Iterable[Attribute] = _node.attributes.view map (new Attribute(_, this))
   override def node: Elem = _node
   override def node_=(elem: Elem): Unit = {
-    parent.node = parent match {
-      case _: Root    => elem
-      case _: Element =>
-        val newChildren = parent.node.child patch (index, Seq(elem), 1)
-        parent.node.copy(child = newChildren)
+    val parentNode = parent.node
+    parent.node = if (parentNode eq _node) elem else {
+      parentNode.copy(child = parentNode.child updated (index, elem))
     }
     _node = elem
   }
   override def equals(obj: Any): Boolean = obj match {
-    case e: Element => _node == e._node && index == e.index
+    case e: Element => _node == e.node && index == e.index
     case _          => false
   }
   override def hashCode(): Int = {
-    val prime = 31
     var result = 1
-    result = prime * result + _node.hashCode()
-    result = prime * result + index
+    result = 31 * result + _node.hashCode()
+    result = 31 * result + index
     result
   }
   override def toString: String = _node.toString
 }
 
-private[navigator] final class Attribute(private var _meta: MetaData, override val parent: Parent) extends ScalaXmlNode {
-  override def getName: QName = meta match {
+private[navigator] object Element {
+  def apply(elem: Elem, parent: Parent): Element = {
+    val node = parent.node
+    val children = node.child
+    parent.node = node.copy(child = children :+ elem)
+    new Element(elem, children.size, parent)
+  }
+}
+
+private[navigator] final class Attribute(private[this] var _meta: MetaData, override val parent: Parent) extends ScalaXmlNode {
+  override def getName: QName = _meta match {
     case a : XmlAttribute if a.isPrefixed => new QName(a.getNamespace(parent.node), a.key, a.pre)
     case _                                => new QName(_meta.key)
   }
@@ -78,7 +83,7 @@ private[navigator] final class Attribute(private var _meta: MetaData, override v
   override def elements: Iterable[Element] = Nil
   override def attributes: Iterable[Attribute] = Nil
   override def equals(obj: Any): Boolean = obj match {
-    case a: Attribute => _meta == a._meta
+    case a: Attribute => _meta == a.meta
     case _            => false
   }
   override def hashCode(): Int = _meta.hashCode()
@@ -87,5 +92,12 @@ private[navigator] final class Attribute(private var _meta: MetaData, override v
   def meta_=(meta: MetaData): Unit = {
     parent.node = parent.node % meta
     _meta = meta
+  }
+}
+
+private[navigator] object Attribute {
+  def apply(meta: MetaData, parent: Parent): Attribute = {
+    parent.node = parent.node % meta
+    new Attribute(meta, parent)
   }
 }

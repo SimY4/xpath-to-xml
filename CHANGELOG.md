@@ -6,6 +6,14 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 
 ## 2.x Series
 
+### Upcomming
+
+Improvements:
+
+- Core
+  - Overall optimisations to make library performant for all extensions.
+  - Inconsistent use of index predicate (i.e. `node[2][3]`) now will raise an error.
+
 ### 2.1.0: JDOM model support
 
 Features:
@@ -16,6 +24,10 @@ Improvements:
 
 - Core
   - Add runtime static method to check whether given model instance is supported.
+- scala XML
+  - Various performance improvements
+  - Added 2.13 for cross compilation
+  - Fixed JavaDoc and source code publishing
 
 Bugfixes:
 

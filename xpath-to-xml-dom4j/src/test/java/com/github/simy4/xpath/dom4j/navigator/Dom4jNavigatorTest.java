@@ -64,17 +64,17 @@ class Dom4jNavigatorTest {
         when(xml.elementIterator()).thenReturn(Arrays.asList(child1, child2, child3).iterator());
         when(xml.attributeIterator()).thenReturn(Arrays.asList(attr1, attr2, attr3).iterator());
 
-        navigator = new Dom4jNavigator(xml);
+        navigator = new Dom4jNavigator(new Dom4jDocument(root));
     }
 
     @Test
     void testRootNode() {
-        assertThat(navigator.root()).hasFieldOrPropertyWithValue("node", root);
+        assertThat(navigator.root()).isEqualTo(new Dom4jDocument(root));
     }
 
     @Test
     void testParentOfRegularNode() {
-        assertThat(navigator.parentOf(new Dom4jElement(xml))).hasFieldOrPropertyWithValue("node", parent);
+        assertThat(navigator.parentOf(new Dom4jElement(xml))).isEqualTo(new Dom4jElement(parent));
     }
 
     @Test

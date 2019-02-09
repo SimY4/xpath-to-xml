@@ -3,12 +3,9 @@ package com.github.simy4.xpath.expr.axis;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
 import com.github.simy4.xpath.util.Function;
-import com.github.simy4.xpath.view.IterableNodeView;
-import com.github.simy4.xpath.view.NodeSetView;
+import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
 import com.github.simy4.xpath.view.NodeView;
-import com.github.simy4.xpath.view.ViewContext;
 
 import javax.xml.namespace.QName;
 import java.util.Collections;
@@ -24,12 +21,13 @@ public class DescendantOrSelfAxisResolver extends AbstractAxisResolver {
     }
 
     @Override
-    <N extends Node> IterableNodeView<N> traverseAxis(ViewContext<N> context) {
-        return new NodeSetView<N>(new DescendantOrSelfIterable<N>(context, self), this);
+    <N extends Node> Iterable<N> traverseAxis(Navigator<N> navigator, NodeView<N> view) {
+        return new DescendantOrSelfIterable<N>(navigator, view.getNode(), self);
     }
 
     @Override
-    public <N extends Node> NodeView<N> createAxisNode(ViewContext<N> context) throws XmlBuilderException {
+    public <N extends Node> NodeView<N> createAxisNode(Navigator<N> navigator, NodeView<N> view, int position)
+            throws XmlBuilderException {
         if (self) {
             throw new XmlBuilderException("Descendant-of-self axis cannot modify XML model");
         } else {
@@ -44,18 +42,19 @@ public class DescendantOrSelfAxisResolver extends AbstractAxisResolver {
 
     private static final class DescendantOrSelfIterable<T extends Node> implements Iterable<T> {
 
-        private final ViewContext<T> context;
+        private final Navigator<T> navigator;
+        private final T node;
         private final boolean self;
 
-        private DescendantOrSelfIterable(ViewContext<T> context, boolean self) {
-            this.context = context;
+        private DescendantOrSelfIterable(Navigator<T> navigator, T node, boolean self) {
+            this.navigator = navigator;
+            this.node = node;
             this.self = self;
         }
 
         @Override
         public Iterator<T> iterator() {
-            final Iterator<T> descendantOrSelf = new DescendantOrSelf<T>(context.getNavigator())
-                    .apply(context.getCurrent().getNode());
+            final Iterator<T> descendantOrSelf = new DescendantOrSelf<T>(navigator).apply(node);
             if (!self) {
                 descendantOrSelf.next();
             }

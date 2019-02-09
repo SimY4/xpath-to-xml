@@ -1,9 +1,10 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
+import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
-import com.github.simy4.xpath.view.ViewContext;
 
 abstract class AbstractOperationExpr implements Expr {
 
@@ -16,13 +17,15 @@ abstract class AbstractOperationExpr implements Expr {
     }
 
     @Override
-    public final <N extends Node> View<N> resolve(ViewContext<N> context) throws XmlBuilderException {
-        final View<N> leftView = leftExpr.resolve(context);
-        final View<N> rightView = rightExpr.resolve(context);
-        return resolve(context, leftView, rightView);
+    public final <N extends Node> View<N> resolve(Navigator<N> navigator, NodeView<N> view, boolean greedy)
+            throws XmlBuilderException {
+        final boolean newGreedy = !view.hasNext() && greedy;
+        final View<N> leftView = leftExpr.resolve(navigator, view, newGreedy);
+        final View<N> rightView = rightExpr.resolve(navigator, view, newGreedy);
+        return resolve(navigator, leftView, rightView, newGreedy);
     }
 
-    abstract <N extends Node> View<N> resolve(ViewContext<N> context, View<N> left, View<N> right)
+    abstract <N extends Node> View<N> resolve(Navigator<N> navigator, View<N> left, View<N> right, boolean greedy)
             throws XmlBuilderException;
 
     abstract String operator();

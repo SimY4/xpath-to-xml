@@ -11,7 +11,6 @@ import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
-import com.github.simy4.xpath.view.ViewContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,6 +31,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -44,7 +44,7 @@ class EqualsExprTest {
                 new LiteralView<>("2.0"),
                 new NumberView<>(2.0),
                 new NodeView<>(node("2.0")),
-                new NodeSetView<>(singletonList(new NodeView<>(node("2.0"))))
+                NodeSetView.of(singletonList(node("2.0")), node -> true)
         );
     }
 
@@ -84,12 +84,11 @@ class EqualsExprTest {
     @MethodSource("equalPairs")
     void shouldResolveEqualViewsToTrue(View<Node> left, View<Node> right) {
         // given
-        when(leftExpr.resolve(any())).thenReturn(left);
-        when(rightExpr.resolve(any())).thenReturn(right);
-        ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, false);
+        when(leftExpr.resolve(any(), any(), anyBoolean())).thenReturn(left);
+        when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(right);
 
         // when
-        View<TestNode> result = equalsExpr.resolve(context);
+        View<TestNode> result = equalsExpr.resolve(navigator, parentNode, false);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(true));
@@ -100,12 +99,11 @@ class EqualsExprTest {
     @MethodSource("notEqualPairs")
     void shouldResolveNonEqualViewsToFalse(View<Node> left, View<Node> right) {
         // given
-        when(leftExpr.resolve(any())).thenReturn(left);
-        when(rightExpr.resolve(any())).thenReturn(right);
-        ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, false);
+        when(leftExpr.resolve(any(), any(), anyBoolean())).thenReturn(left);
+        when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(right);
 
         // when
-        View<TestNode> result = equalsExpr.resolve(context);
+        View<TestNode> result = equalsExpr.resolve(navigator, parentNode, false);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(false));
@@ -119,12 +117,11 @@ class EqualsExprTest {
         assumeThat(((Iterable<?>) left)).isNotEmpty();
 
         // given
-        when(leftExpr.resolve(any())).thenReturn(left);
-        when(rightExpr.resolve(any())).thenReturn(right);
-        ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, true);
+        when(leftExpr.resolve(any(), any(), anyBoolean())).thenReturn(left);
+        when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(right);
 
         // when
-        View<TestNode> result = equalsExpr.resolve(context);
+        View<TestNode> result = equalsExpr.resolve(navigator, parentNode, true);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(true));
@@ -137,12 +134,11 @@ class EqualsExprTest {
     void shouldThrowWhenShouldCreate(View<Node> left, View<Node> right) {
         assumeThat(left).isNotInstanceOf(IterableNodeView.class);
         // given
-        when(leftExpr.resolve(any())).thenReturn(left);
-        when(rightExpr.resolve(any())).thenReturn(right);
-        ViewContext<TestNode> context = new ViewContext<>(navigator, parentNode, true);
+        when(leftExpr.resolve(any(), any(), anyBoolean())).thenReturn(left);
+        when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(right);
 
         // then
-        assertThatThrownBy(() -> equalsExpr.resolve(context))
+        assertThatThrownBy(() -> equalsExpr.resolve(navigator, parentNode, true))
                 .isInstanceOf(XmlBuilderException.class);
     }
 
