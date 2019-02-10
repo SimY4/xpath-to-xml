@@ -53,14 +53,11 @@ subprojects {
         source = sourceSets.main.allJava
         classpath = configurations.compileClasspath
 
-        options {
-            setMemberLevel JavadocMemberLevel.PUBLIC
-            setAuthor true
+        options.memberLevel = JavadocMemberLevel.PROTECTED
+        options.links = ["https://docs.oracle.com/javase/6/docs/api/"]
 
-            links "https://docs.oracle.com/javase/6/docs/api/"
-        }
         if(JavaVersion.current().isJava9Compatible()) {
-            options.addBooleanOption('html4', true)
+            options.addBooleanOption('html5', true)
         }
     }
 
