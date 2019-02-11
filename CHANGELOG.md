@@ -6,7 +6,14 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 
 ## 2.x Series
 
-### Upcomming
+### 2.1.2
+
+Bugfixes:
+
+- Core
+  - Partially resolvable axis nodes are now correctly created.
+
+### 2.1.1
 
 Improvements:
 

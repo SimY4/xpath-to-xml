@@ -167,10 +167,12 @@ class AxisStepExprTest {
         InOrder inOrder = inOrder(predicate1, predicate2);
         inOrder.verify(predicate1).resolve(eq(navigator), predicate1ViewCaptor.capture(), eq(false));
         inOrder.verify(predicate2).resolve(eq(navigator), predicate2ViewCaptor.capture(), eq(false));
+        inOrder.verify(predicate1).resolve(eq(navigator), predicate1ViewCaptor.capture(), eq(true));
         inOrder.verify(predicate2).resolve(eq(navigator), predicate2ViewCaptor.capture(), eq(true));
         assertThat(predicate1ViewCaptor.getAllValues()).extracting("hasNext", "position")
                 .containsExactly(
-                        tuple(false, 1));
+                        tuple(false, 1),
+                        tuple(false, 2));
         assertThat(predicate2ViewCaptor.getAllValues()).extracting("hasNext", "position")
                 .containsExactly(
                         tuple(false, 1),
