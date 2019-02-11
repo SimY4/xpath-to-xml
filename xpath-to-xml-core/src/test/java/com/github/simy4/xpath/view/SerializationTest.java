@@ -24,7 +24,8 @@ class SerializationTest {
         return Stream.of(
                 arguments(BooleanView.of(true)),
                 arguments(new LiteralView<>("literal")),
-                arguments(NodeSetView.of(singletonList(node("3.0")), node -> true)),
+                arguments(NodeSetView.empty()),
+                arguments(NodeSetView.of(singletonList(node("node")), n -> true)),
                 arguments(NodeSetView.of(singletonList(node("node")), n -> true)
                         .flatMap(node -> NodeSetView.of(asList(node("node1"), node("node2")), nn -> true))),
                 arguments(new NodeView<>(node("node"))),

@@ -8,6 +8,11 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 
 ### 2.1.2
 
+Improvements:
+
+- Core
+  - Expressions and views are now serializable
+
 Bugfixes:
 
 - Core

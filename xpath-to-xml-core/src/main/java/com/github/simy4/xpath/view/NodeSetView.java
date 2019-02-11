@@ -67,7 +67,9 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
         return new FlatMapNodeSet<N>(this, fmap);
     }
 
-    private static final class EmptyNodeSet<T extends Node> extends NodeSetView<T> {
+    private static final class EmptyNodeSet<T extends Node> extends NodeSetView<T> implements Serializable {
+
+        private static final long serialVersionUID = 1L;
 
         @Override
         public Iterator<NodeView<T>> iterator() {
