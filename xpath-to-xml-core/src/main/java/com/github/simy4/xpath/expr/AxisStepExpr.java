@@ -34,7 +34,7 @@ public class AxisStepExpr implements StepExpr {
             throws XmlBuilderException {
         IterableNodeView<N> result = axis;
         if (!predicates.isEmpty()) {
-            NodeSupplier<N> nodeSupplier = new AxisNodeSupplier<N>(axisResolver, view);
+            NodeSupplier<N> nodeSupplier = new AxisNodeSupplier<N>(navigator, axisResolver, view);
             for (Expr predicate : predicates) {
                 final PredicateExpr predicateExpr = new PredicateExpr(predicate);
                 final PredicateResolver<N> predicateResolver = new PredicateResolver<N>(navigator, nodeSupplier,
@@ -57,22 +57,24 @@ public class AxisStepExpr implements StepExpr {
 
     private interface NodeSupplier<T extends Node> {
 
-        NodeView<T> get(Navigator<T> navigator, int position) throws XmlBuilderException;
+        NodeView<T> apply(int position) throws XmlBuilderException;
 
     }
 
     private static final class AxisNodeSupplier<T extends Node> implements NodeSupplier<T> {
 
+        private final Navigator<T> navigator;
         private final AxisResolver axisResolver;
         private final NodeView<T> parent;
 
-        private AxisNodeSupplier(AxisResolver axisResolver, NodeView<T> parent) {
+        private AxisNodeSupplier(Navigator<T> navigator, AxisResolver axisResolver, NodeView<T> parent) {
+            this.navigator = navigator;
             this.axisResolver = axisResolver;
             this.parent = parent;
         }
 
         @Override
-        public NodeView<T> get(Navigator<T> navigator, int position) throws XmlBuilderException {
+        public NodeView<T> apply(int position) throws XmlBuilderException {
             return axisResolver.createAxisNode(navigator, parent, position);
         }
 
@@ -96,8 +98,8 @@ public class AxisStepExpr implements StepExpr {
         }
 
         @Override
-        public NodeView<T> get(Navigator<T> navigator, int position) throws XmlBuilderException {
-            final NodeView<T> newNode = parentNodeSupplier.get(navigator, position);
+        public NodeView<T> apply(int position) throws XmlBuilderException {
+            final NodeView<T> newNode = parentNodeSupplier.apply(position);
             if (!predicate.resolve(navigator, newNode, true).toBoolean()) {
                 throw new XmlBuilderException("Unable to satisfy expression predicate: " + predicate);
             }
@@ -116,7 +118,7 @@ public class AxisStepExpr implements StepExpr {
                 }
                 result = view;
             } else if (!view.hasNext() && !resolved && greedy) {
-                result = get(navigator, view.getPosition() + 1);
+                result = apply(view.getPosition() + 1);
             } else {
                 result = NodeSetView.empty();
             }
