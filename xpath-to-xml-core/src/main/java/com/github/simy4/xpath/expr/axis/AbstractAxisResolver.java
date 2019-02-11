@@ -12,9 +12,9 @@ import javax.xml.namespace.QName;
 
 abstract class AbstractAxisResolver implements AxisResolver, Predicate<Node> {
 
-    final QName name;
+    protected final QName name;
 
-    AbstractAxisResolver(QName name) {
+    protected AbstractAxisResolver(QName name) {
         this.name = name;
     }
 
@@ -28,9 +28,9 @@ abstract class AbstractAxisResolver implements AxisResolver, Predicate<Node> {
         return result;
     }
 
-    abstract <N extends Node> Iterable<? extends N> traverseAxis(Navigator<N> navigator, NodeView<N> view);
+    protected abstract <N extends Node> Iterable<? extends N> traverseAxis(Navigator<N> navigator, NodeView<N> view);
 
-    final boolean isWildcard() {
+    protected final boolean isWildcard() {
         return "*".equals(name.getNamespaceURI()) || "*".equals(name.getLocalPart());
     }
 

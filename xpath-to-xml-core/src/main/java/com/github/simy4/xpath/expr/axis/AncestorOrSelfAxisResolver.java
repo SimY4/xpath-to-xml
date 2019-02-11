@@ -7,9 +7,12 @@ import com.github.simy4.xpath.util.ReadOnlyIterator;
 import com.github.simy4.xpath.view.NodeView;
 
 import javax.xml.namespace.QName;
+import java.io.Serializable;
 import java.util.Iterator;
 
-public class AncestorOrSelfAxisResolver extends AbstractAxisResolver {
+public class AncestorOrSelfAxisResolver extends AbstractAxisResolver implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final boolean self;
 
@@ -19,7 +22,7 @@ public class AncestorOrSelfAxisResolver extends AbstractAxisResolver {
     }
 
     @Override
-    <N extends Node> Iterable<? extends N> traverseAxis(Navigator<N> navigator, NodeView<N> parent) {
+    protected <N extends Node> Iterable<? extends N> traverseAxis(Navigator<N> navigator, NodeView<N> parent) {
         return new AncestorOrSelfIterable<N>(navigator, parent.getNode(), self);
     }
 

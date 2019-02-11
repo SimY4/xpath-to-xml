@@ -6,15 +6,18 @@ import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.NodeView;
 
 import javax.xml.namespace.QName;
+import java.io.Serializable;
 
-public class ChildAxisResolver extends AbstractAxisResolver {
+public class ChildAxisResolver extends AbstractAxisResolver implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public ChildAxisResolver(QName name) {
         super(name);
     }
 
     @Override
-    <N extends Node> Iterable<? extends N> traverseAxis(Navigator<N> navigator, NodeView<N> parent) {
+    protected <N extends Node> Iterable<? extends N> traverseAxis(Navigator<N> navigator, NodeView<N> parent) {
         return navigator.elementsOf(parent.getNode());
     }
 

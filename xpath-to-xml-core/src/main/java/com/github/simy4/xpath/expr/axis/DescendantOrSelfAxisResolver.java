@@ -8,10 +8,13 @@ import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
 import com.github.simy4.xpath.view.NodeView;
 
 import javax.xml.namespace.QName;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 
-public class DescendantOrSelfAxisResolver extends AbstractAxisResolver {
+public class DescendantOrSelfAxisResolver extends AbstractAxisResolver implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final boolean self;
 
@@ -21,7 +24,7 @@ public class DescendantOrSelfAxisResolver extends AbstractAxisResolver {
     }
 
     @Override
-    <N extends Node> Iterable<N> traverseAxis(Navigator<N> navigator, NodeView<N> view) {
+    protected <N extends Node> Iterable<N> traverseAxis(Navigator<N> navigator, NodeView<N> view) {
         return new DescendantOrSelfIterable<N>(navigator, view.getNode(), self);
     }
 
