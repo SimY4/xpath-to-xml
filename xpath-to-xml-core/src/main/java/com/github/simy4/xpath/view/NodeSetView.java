@@ -8,6 +8,9 @@ import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.util.ReadOnlyIterator;
 import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -73,11 +76,14 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
     }
 
-    private static final class IterableNodeSet<T extends Node> extends NodeSetView<T> implements Predicate<T> {
+    private static final class IterableNodeSet<T extends Node> extends NodeSetView<T>
+            implements Predicate<T>, Serializable {
+
+        private static final long serialVersionUID = 1L;
 
         private final Set<T> cache = new LinkedHashSet<T>();
-        private final Iterable<? extends T> nodeSet;
-        private final Predicate<? super T> filter;
+        private final transient Iterable<? extends T> nodeSet;
+        private final transient Predicate<? super T> filter;
 
         private IterableNodeSet(Iterable<? extends T> nodeSet, Predicate<? super T> filter) {
             this.nodeSet = nodeSet;
@@ -94,6 +100,12 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
             return filter.test(node) && cache.add(node);
         }
 
+        @SuppressWarnings("StatementWithEmptyBody")
+        private void writeObject(ObjectOutputStream out) throws IOException {
+            for (NodeView<T> ignored : this) { } // eagerly consume this node set to populate cache
+            out.writeObject(cache);
+        }
+
         private final class IteratorImpl extends ReadOnlyIterator<NodeView<T>> {
 
             private Iterator<? extends T> current = cache.iterator();
@@ -103,7 +115,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
             @Override
             public boolean hasNext() {
                 boolean hasNext = current.hasNext();
-                if (!hasNext && !swapped) {
+                if (!hasNext && !swapped && null != nodeSet) {
                     current = new FilteringIterator<T>(nodeSet.iterator(), IterableNodeSet.this);
                     swapped = true;
                     hasNext = current.hasNext();
@@ -124,11 +136,13 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
     }
 
     private static final class FlatMapNodeSet<T extends Node> extends NodeSetView<T>
-            implements Function<NodeView<T>, Iterator<NodeView<T>>>, Predicate<NodeView<T>> {
+            implements Function<NodeView<T>, Iterator<NodeView<T>>>, Predicate<NodeView<T>>, Serializable {
+
+        private static final long serialVersionUID = 1L;
 
         private final Set<T> cache = new LinkedHashSet<T>();
-        private final NodeSetView<T> nodeSetView;
-        private final Function<? super NodeView<T>, ? extends IterableNodeView<T>> fmap;
+        private final transient NodeSetView<T> nodeSetView;
+        private final transient Function<? super NodeView<T>, ? extends IterableNodeView<T>> fmap;
 
         private FlatMapNodeSet(NodeSetView<T> nodeSetView,
                                Function<? super NodeView<T>, ? extends IterableNodeView<T>> fmap) {
@@ -149,6 +163,12 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
         @Override
         public Iterator<NodeView<T>> apply(NodeView<T> view) {
             return fmap.apply(view).iterator();
+        }
+
+        @SuppressWarnings("StatementWithEmptyBody")
+        private void writeObject(ObjectOutputStream out) throws IOException {
+            for (NodeView<T> ignored : this) { } // eagerly consume this node set to populate cache
+            out.writeObject(cache);
         }
 
         private final class IteratorImpl extends ReadOnlyIterator<NodeView<T>> {

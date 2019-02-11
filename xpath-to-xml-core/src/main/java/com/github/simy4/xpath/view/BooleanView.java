@@ -3,10 +3,14 @@ package com.github.simy4.xpath.view;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
 
-public final class BooleanView<N extends Node> implements View<N> {
+import java.io.Serializable;
+
+public final class BooleanView<N extends Node> implements View<N>, Serializable {
 
     private static final BooleanView<?> FALSE = new BooleanView<Node>(false);
     private static final BooleanView<?> TRUE = new BooleanView<Node>(true);
+
+    private static final long serialVersionUID = 1L;
 
     @SuppressWarnings("unchecked")
     public static <T extends Node> BooleanView<T> of(boolean bool) {
@@ -43,6 +47,10 @@ public final class BooleanView<N extends Node> implements View<N> {
     @Override
     public <T> T visit(ViewVisitor<N, T> visitor) throws XmlBuilderException {
         return visitor.visit(this);
+    }
+
+    private Object readResolve() {
+        return of(bool);
     }
 
 }
