@@ -3,7 +3,6 @@ package com.github.simy4.xpath.effects;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.Expr;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.spi.Effect;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.LiteralView;
@@ -55,7 +54,7 @@ class RemoveEffectTest {
     @DisplayName("Should throw if resolved to a literal expr")
     void shouldThrowWhenResolvedToALiteralExpr() {
         // given
-        LiteralView<Node> literal = new LiteralView<>("literal");
+        var literal = new LiteralView<>("literal");
         when(expr.resolve(any(), any(), anyBoolean())).thenReturn(literal);
 
         // when

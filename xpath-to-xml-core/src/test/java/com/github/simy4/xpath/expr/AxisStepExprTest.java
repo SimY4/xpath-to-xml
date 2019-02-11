@@ -14,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -135,7 +134,7 @@ class AxisStepExprTest {
 
         // then
         assertThat(result).isNotEmpty();
-        InOrder inOrder = inOrder(predicate1, predicate2);
+        var inOrder = inOrder(predicate1, predicate2);
         inOrder.verify(predicate1).resolve(eq(navigator), predicate1ViewCaptor.capture(), eq(false));
         inOrder.verify(predicate1).resolve(eq(navigator), predicate1ViewCaptor.capture(), eq(true));
         inOrder.verify(predicate2).resolve(eq(navigator), predicate2ViewCaptor.capture(), eq(false));
@@ -163,7 +162,7 @@ class AxisStepExprTest {
 
         // then
         assertThat(result).isNotEmpty();
-        InOrder inOrder = inOrder(predicate1, predicate2);
+        var inOrder = inOrder(predicate1, predicate2);
         inOrder.verify(predicate1).resolve(eq(navigator), predicate1ViewCaptor.capture(), eq(false));
         inOrder.verify(predicate2).resolve(eq(navigator), predicate2ViewCaptor.capture(), eq(false));
         inOrder.verify(predicate1).resolve(eq(navigator), predicate1ViewCaptor.capture(), eq(true));

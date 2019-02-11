@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.namespace.QName;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -123,7 +122,7 @@ class JDomNavigatorTest {
     @Test
     void testPrependCopySuccess() {
         navigator.prependCopy(new JDomElement(xml));
-        List<Element> childElements = parent.getChildren();
+        var childElements = parent.getChildren();
         assertThat(childElements).hasSize(2);
     }
 

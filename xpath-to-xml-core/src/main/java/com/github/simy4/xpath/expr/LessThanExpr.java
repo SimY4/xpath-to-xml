@@ -15,7 +15,7 @@ public class LessThanExpr extends AbstractOperationExpr {
     @Override
     public <N extends Node> View<N> resolve(Navigator<N> navigator, View<N> left, View<N> right, boolean greedy)
             throws XmlBuilderException {
-        final boolean lt = 0 > Double.compare(left.toNumber(), right.toNumber());
+        final var lt = 0 > Double.compare(left.toNumber(), right.toNumber());
         if (!lt && greedy) {
             throw new XmlBuilderException("Can not apply a 'less than' operator to: " + left + " and: " + right);
         }

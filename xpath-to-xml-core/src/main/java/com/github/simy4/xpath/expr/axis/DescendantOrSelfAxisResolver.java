@@ -23,7 +23,7 @@ public class DescendantOrSelfAxisResolver extends AbstractAxisResolver {
     @Override
     <N extends Node> Iterable<N> traverseAxis(Navigator<N> navigator, NodeView<N> view) {
         return () -> {
-            final Iterator<N> descendantOrSelf = new DescendantOrSelf<>(navigator).apply(view.getNode());
+            final var descendantOrSelf = new DescendantOrSelf<>(navigator).apply(view.getNode());
             if (!self) {
                 descendantOrSelf.next();
             }

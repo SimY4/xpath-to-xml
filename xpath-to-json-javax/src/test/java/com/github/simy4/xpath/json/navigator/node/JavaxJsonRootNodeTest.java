@@ -3,7 +3,6 @@ package com.github.simy4.xpath.json.navigator.node;
 import com.github.simy4.xpath.XmlBuilderException;
 import org.junit.jupiter.api.Test;
 
-import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 import javax.json.spi.JsonProvider;
@@ -31,7 +30,7 @@ class JavaxJsonRootNodeTest {
 
     @Test
     void shouldReplaceRootNodeOnSet() {
-        JsonArray array = JsonValue.EMPTY_JSON_ARRAY;
+        var array = JsonValue.EMPTY_JSON_ARRAY;
         rootNode.set(jsonProvider, array);
         assertThat(rootNode.get()).isSameAs(array);
     }

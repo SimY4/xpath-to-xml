@@ -6,8 +6,6 @@ import org.jdom2.Namespace;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.namespace.QName;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 class JDomElementTest {
@@ -22,7 +20,7 @@ class JDomElementTest {
 
     @BeforeEach
     void setUp() {
-        Element element = new Element("elem", "http://www.example.com/my");
+        var element = new Element("elem", "http://www.example.com/my");
         element.setNamespace(Namespace.getNamespace("my", "http://www.example.com/my"));
         element.setAttribute(attr1);
         element.setAttribute(attr2);
@@ -56,13 +54,13 @@ class JDomElementTest {
 
     @Test
     void shouldThrowExceptionWhenAppendElement() {
-        Element elem = new Element("elem");
+        var elem = new Element("elem");
         assertThat(node.appendElement(elem)).isEqualTo(new JDomElement(elem));
     }
 
     @Test
     void shouldReturnNodeNameWithNamespaceUri() {
-        QName result = node.getName();
+        var result = node.getName();
 
         assertThat(result).extracting("namespaceURI", "localPart", "prefix")
                 .containsExactly("http://www.example.com/my", "elem", "my");

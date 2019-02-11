@@ -26,20 +26,20 @@ public class AxisStepExpr implements StepExpr {
     @Override
     public final <N extends Node> IterableNodeView<N> resolve(Navigator<N> navigator, NodeView<N> view, boolean greedy)
             throws XmlBuilderException {
-        final boolean newGreedy = !view.hasNext() && greedy;
-        final IterableNodeView<N> result = axisResolver.resolveAxis(navigator, view, newGreedy);
+        final var newGreedy = !view.hasNext() && greedy;
+        final var result = axisResolver.resolveAxis(navigator, view, newGreedy);
         return resolvePredicates(navigator, view, result, newGreedy);
     }
 
     private <N extends Node> IterableNodeView<N> resolvePredicates(Navigator<N> navigator, NodeView<N> view,
                                                                    IterableNodeView<N> axis, boolean greedy)
             throws XmlBuilderException {
-        IterableNodeView<N> result = axis;
+        var result = axis;
         if (!predicates.isEmpty()) {
             IntFunction<NodeView<N>> nodeSupplier = position -> axisResolver.createAxisNode(navigator, view, position);
-            for (Expr predicate : predicates) {
-                final PredicateExpr predicateExpr = new PredicateExpr(predicate);
-                final PredicateResolver<N> predicateResolver = new PredicateResolver<>(navigator, nodeSupplier,
+            for (var predicate : predicates) {
+                final var predicateExpr = new PredicateExpr(predicate);
+                final var predicateResolver = new PredicateResolver<>(navigator, nodeSupplier,
                         predicateExpr, greedy);
                 result = result.flatMap(predicateResolver);
                 nodeSupplier = predicateResolver;
@@ -76,7 +76,7 @@ public class AxisStepExpr implements StepExpr {
 
         @Override
         public NodeView<T> apply(int position) throws XmlBuilderException {
-            final NodeView<T> newNode = parentNodeSupplier.apply(position);
+            final var newNode = parentNodeSupplier.apply(position);
             if (!predicate.resolve(navigator, newNode, true).toBoolean()) {
                 throw new XmlBuilderException("Unable to satisfy expression predicate: " + predicate);
             }

@@ -38,7 +38,7 @@ public class JDomNavigatorSpi implements NavigatorSpi {
             throw new IllegalArgumentException("XML model is not supported");
         }
         final Navigator<JDomNode> navigator = new JDomNavigator(node.getRoot());
-        for (Effect effect : effects) {
+        for (var effect : effects) {
             effect.perform(navigator, node);
         }
         return xml;

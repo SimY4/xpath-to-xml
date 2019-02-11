@@ -40,7 +40,7 @@ public final class JDomNavigator implements Navigator<JDomNode> {
 
     @Override
     public JDomNode createAttribute(JDomNode parent, QName attribute) throws XmlBuilderException {
-        final Attribute attr = new Attribute(attribute.getLocalPart(), "");
+        final var attr = new Attribute(attribute.getLocalPart(), "");
         if (!XMLConstants.NULL_NS_URI.equals(attribute.getNamespaceURI())) {
             attr.setNamespace(Namespace.getNamespace(attribute.getPrefix(), attribute.getNamespaceURI()));
         }
@@ -49,7 +49,7 @@ public final class JDomNavigator implements Navigator<JDomNode> {
 
     @Override
     public JDomNode createElement(JDomNode parent, QName element) throws XmlBuilderException {
-        final Element elem = new Element(element.getLocalPart());
+        final var elem = new Element(element.getLocalPart());
         if (!XMLConstants.NULL_NS_URI.equals(element.getNamespaceURI())) {
             elem.setNamespace(Namespace.getNamespace(element.getPrefix(), element.getNamespaceURI()));
         }

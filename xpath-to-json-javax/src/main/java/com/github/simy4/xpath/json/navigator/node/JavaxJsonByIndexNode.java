@@ -50,13 +50,13 @@ public final class JavaxJsonByIndexNode extends AbstractJavaxJsonNode {
             return false;
         }
 
-        JavaxJsonByIndexNode javaxJsonNodes = (JavaxJsonByIndexNode) o;
+        var javaxJsonNodes = (JavaxJsonByIndexNode) o;
         return index == javaxJsonNodes.index;
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
+        var result = super.hashCode();
         result = 31 * result + index;
         return result;
     }

@@ -31,7 +31,7 @@ public final class JDomAttribute extends AbstractJDomNode<Attribute> {
 
     @Override
     public JDomNode getParent() {
-        final Element parent = getNode().getParent();
+        final var parent = getNode().getParent();
         return null == parent ? null : new JDomElement(parent);
     }
 

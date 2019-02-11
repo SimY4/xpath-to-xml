@@ -20,8 +20,8 @@ public final class Dom4jElement extends AbstractDom4jNode<Element> {
 
     @Override
     public Dom4jNode getParent() {
-        final Element node = getNode();
-        final Element parent = node.getParent();
+        final var node = getNode();
+        final var parent = node.getParent();
         return null == parent ? node.getDocument().getRootElement() == node ? new Dom4jDocument(node.getDocument())
                 : null : new Dom4jElement(parent);
     }

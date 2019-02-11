@@ -14,7 +14,6 @@ import org.jdom2.filter.Filters;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -29,8 +28,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,15 +52,15 @@ class XmlBuilderTest {
     @MethodSource("data")
     void shouldBuildDocumentFromSetOfXPaths(FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext)
             throws XPathExpressionException, IOException {
-        Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-        Document builtDocument = new XmlBuilder(namespaceContext)
+        var xmlProperties = fixtureAccessor.getXmlProperties();
+        var builtDocument = new XmlBuilder(namespaceContext)
                 .putAll(xmlProperties.keySet())
                 .build(new Document());
 
-        for (String xpath : xmlProperties.keySet()) {
-            Namespace[] namespaces = null == namespaceContext ? new Namespace[0]
+        for (var xpath : xmlProperties.keySet()) {
+            var namespaces = null == namespaceContext ? new Namespace[0]
                     : toNamespaces(namespaceContext);
-            XPathExpression<Object> xpathExpression = XPathFactory.instance()
+            var xpathExpression = XPathFactory.instance()
                     .compile(xpath, Filters.fpassthrough(), null, namespaces);
             assertThat(xpathExpression.evaluate(builtDocument)).isNotEmpty();
         }
@@ -77,15 +74,15 @@ class XmlBuilderTest {
     void shouldBuildDocumentFromSetOfXPathsAndSetValues(FixtureAccessor fixtureAccessor,
                                                         NamespaceContext namespaceContext)
             throws XPathExpressionException, IOException {
-        Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-        Document builtDocument = new XmlBuilder(namespaceContext)
+        var xmlProperties = fixtureAccessor.getXmlProperties();
+        var builtDocument = new XmlBuilder(namespaceContext)
                 .putAll(xmlProperties)
                 .build(new Document());
 
-        for (Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
-            Namespace[] namespaces = null == namespaceContext ? new Namespace[0]
+        for (var xpathToValuePair : xmlProperties.entrySet()) {
+            var namespaces = null == namespaceContext ? new Namespace[0]
                     : toNamespaces(namespaceContext);
-            XPathExpression<Object> xpathExpression = XPathFactory.instance()
+            var xpathExpression = XPathFactory.instance()
                     .compile(xpathToValuePair.getKey(), Filters.fpassthrough(), null, namespaces);
             assertThat(xpathExpression.evaluate(builtDocument)).extracting((Extractor<Object, Object>) input ->
                     input instanceof Element ? ((Element) input).getText()
@@ -103,10 +100,10 @@ class XmlBuilderTest {
     void shouldModifyDocumentWhenXPathsAreNotTraversable(FixtureAccessor fixtureAccessor,
                                                          NamespaceContext namespaceContext)
             throws XPathExpressionException, JDOMException, IOException {
-        Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-        String xml = fixtureAccessor.getPutXml();
-        Document oldDocument = stringToXml(xml);
-        Document builtDocument = new XmlBuilder(namespaceContext)
+        var xmlProperties = fixtureAccessor.getXmlProperties();
+        var xml = fixtureAccessor.getPutXml();
+        var oldDocument = stringToXml(xml);
+        var builtDocument = new XmlBuilder(namespaceContext)
                 .putAll(xmlProperties)
                 .build(oldDocument);
 
@@ -118,10 +115,10 @@ class XmlBuilderTest {
     void shouldNotModifyDocumentWhenAllXPathsTraversable(FixtureAccessor fixtureAccessor,
                                                          NamespaceContext namespaceContext)
             throws XPathExpressionException, JDOMException, IOException {
-        Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-        String xml = fixtureAccessor.getPutValueXml();
-        Document oldDocument = stringToXml(xml);
-        Document builtDocument = new XmlBuilder(namespaceContext)
+        var xmlProperties = fixtureAccessor.getXmlProperties();
+        var xml = fixtureAccessor.getPutValueXml();
+        var oldDocument = stringToXml(xml);
+        var builtDocument = new XmlBuilder(namespaceContext)
                 .putAll(xmlProperties)
                 .build(oldDocument);
 
@@ -138,17 +135,17 @@ class XmlBuilderTest {
     @MethodSource("data")
     void shouldRemovePathsFromExistingXml(FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext)
             throws XPathExpressionException, JDOMException, IOException {
-        Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-        String xml = fixtureAccessor.getPutValueXml();
-        Document oldDocument = stringToXml(xml);
-        Document builtDocument = new XmlBuilder(namespaceContext)
+        var xmlProperties = fixtureAccessor.getXmlProperties();
+        var xml = fixtureAccessor.getPutValueXml();
+        var oldDocument = stringToXml(xml);
+        var builtDocument = new XmlBuilder(namespaceContext)
                 .removeAll(xmlProperties.keySet())
                 .build(oldDocument);
 
-        for (Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
-            Namespace[] namespaces = null == namespaceContext ? new Namespace[0]
+        for (var xpathToValuePair : xmlProperties.entrySet()) {
+            var namespaces = null == namespaceContext ? new Namespace[0]
                     : toNamespaces(namespaceContext);
-            XPathExpression<Object> xpathExpression = XPathFactory.instance()
+            var xpathExpression = XPathFactory.instance()
                     .compile(xpathToValuePair.getKey(), Filters.fpassthrough(), null, namespaces);
             assertThat(xpathExpression.evaluate(builtDocument)).isEmpty();
         }
@@ -156,18 +153,18 @@ class XmlBuilderTest {
     }
 
     private Document stringToXml(String xml) throws JDOMException, IOException {
-        SAXBuilder builder = new SAXBuilder();
+        var builder = new SAXBuilder();
         return builder.build(new ByteArrayInputStream(xml.getBytes(Charset.forName("UTF-8"))));
     }
 
     private String xmlToString(Document xml) throws IOException {
-        String lineSeparator = System.lineSeparator();
-        Format format = Format.getPrettyFormat();
+        var lineSeparator = System.lineSeparator();
+        var format = Format.getPrettyFormat();
         format.setIndent("    ");
         format.setLineSeparator(lineSeparator);
         format.setOmitDeclaration(true);
-        StringWriter result = new StringWriter();
-        XMLOutputter outputter = new XMLOutputter(format);
+        var result = new StringWriter();
+        var outputter = new XMLOutputter(format);
         outputter.output(xml, result);
         return result.toString().replaceAll(" />", "/>");
     }
@@ -176,7 +173,7 @@ class XmlBuilderTest {
         List<Namespace> namespaces = new ArrayList<>();
         Iterator<?> prefixes = namespaceContext.getPrefixes("http://www.example.com/my");
         while (prefixes.hasNext()) {
-            String prefix = (String) prefixes.next();
+            var prefix = (String) prefixes.next();
             namespaces.add(Namespace.getNamespace(prefix, namespaceContext.getNamespaceURI(prefix)));
         }
         return namespaces.toArray(new Namespace[0]);

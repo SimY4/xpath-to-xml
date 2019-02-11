@@ -101,7 +101,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
             @Override
             public boolean hasNext() {
-                boolean hasNext = current.hasNext();
+                var hasNext = current.hasNext();
                 if (!hasNext && !swapped) {
                     current = new FilteringIterator<T>(nodeSet.iterator(), IterableNodeSet.this);
                     swapped = true;
@@ -158,7 +158,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
             @Override
             public boolean hasNext() {
-                boolean hasNext = current.hasNext();
+                var hasNext = current.hasNext();
                 if (!hasNext && !swapped) {
                     current = new FilteringIterator<>(new TransformingAndFlatteningIterator<>(nodeSetView.iterator(),
                             FlatMapNodeSet.this), FlatMapNodeSet.this);

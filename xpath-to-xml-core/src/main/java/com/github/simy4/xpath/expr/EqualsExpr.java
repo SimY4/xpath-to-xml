@@ -17,7 +17,7 @@ public class EqualsExpr extends AbstractOperationExpr {
     @Override
     public <N extends Node> View<N> resolve(Navigator<N> navigator, View<N> left, View<N> right, boolean greedy)
             throws XmlBuilderException {
-        boolean eq = 0 == left.compareTo(right);
+        var eq = 0 == left.compareTo(right);
         if (!eq && greedy) {
             eq = left.visit(new EqualsVisitor<>(navigator, right));
         }

@@ -30,7 +30,7 @@ abstract class AbstractJavaxJsonNode implements JavaxJsonNode {
 
     @Override
     public final String getText() {
-        final JsonValue jsonValue = get();
+        final var jsonValue = get();
         switch (jsonValue.getValueType()) {
             case OBJECT:
                 return jsonValue.asJsonObject().getString("text", "null");
@@ -60,7 +60,7 @@ abstract class AbstractJavaxJsonNode implements JavaxJsonNode {
             return false;
         }
 
-        AbstractJavaxJsonNode that = (AbstractJavaxJsonNode) o;
+        var that = (AbstractJavaxJsonNode) o;
         return get().equals(that.get());
     }
 

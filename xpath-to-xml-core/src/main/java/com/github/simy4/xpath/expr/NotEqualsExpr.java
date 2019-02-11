@@ -20,7 +20,7 @@ public class NotEqualsExpr extends AbstractOperationExpr {
     @Override
     public <N extends Node> View<N> resolve(Navigator<N> navigator, View<N> left, View<N> right, boolean greedy)
             throws XmlBuilderException {
-        boolean ne = 0 != left.compareTo(right);
+        var ne = 0 != left.compareTo(right);
         if (!ne && greedy) {
             ne = left.visit(new NotEqualsVisitor<>(navigator, right));
         }

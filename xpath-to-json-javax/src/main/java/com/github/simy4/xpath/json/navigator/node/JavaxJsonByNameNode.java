@@ -50,13 +50,13 @@ public final class JavaxJsonByNameNode extends AbstractJavaxJsonNode {
             return false;
         }
 
-        JavaxJsonByNameNode javaxJsonNodes = (JavaxJsonByNameNode) o;
+        var javaxJsonNodes = (JavaxJsonByNameNode) o;
         return getParent().equals(javaxJsonNodes.getParent());
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
+        var result = super.hashCode();
         result = 31 * result + getParent().hashCode();
         return result;
     }

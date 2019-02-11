@@ -6,13 +6,11 @@ import org.jdom2.Attribute;
 import org.jdom2.Content;
 import org.jdom2.Element;
 import org.jdom2.IllegalAddException;
-import org.jdom2.Parent;
 import org.jdom2.Text;
 import org.jdom2.filter.Filter;
 import org.jdom2.filter.Filters;
 
 import javax.xml.namespace.QName;
-import java.util.List;
 
 public final class JDomElement extends AbstractJDomNode<Element> {
 
@@ -38,8 +36,8 @@ public final class JDomElement extends AbstractJDomNode<Element> {
     @Override
     @SuppressWarnings("ReferenceEquality")
     public JDomNode getParent() {
-        final Element node = getNode();
-        final Parent parent = node.getParent();
+        final var node = getNode();
+        final var parent = node.getParent();
         return null == parent ? node.getDocument().getRootElement() == node ? getRoot() : null
                 : new JDomElement((Element) parent);
     }
@@ -78,13 +76,13 @@ public final class JDomElement extends AbstractJDomNode<Element> {
 
     @Override
     public void prependCopy() throws XmlBuilderException {
-        final Element node = getNode();
-        final Parent parent = node.getParent();
+        final var node = getNode();
+        final var parent = node.getParent();
         if (null == parent) {
             throw new XmlBuilderException("Unable to prepend - no parent found of " + node);
         }
-        final int prependIndex = parent.indexOf(node);
-        final Element copy = node.clone();
+        final var prependIndex = parent.indexOf(node);
+        final var copy = node.clone();
         parent.addContent(prependIndex, copy);
     }
 
@@ -92,8 +90,8 @@ public final class JDomElement extends AbstractJDomNode<Element> {
     @SuppressWarnings("unchecked")
     public void setText(String text) throws XmlBuilderException {
         try {
-            final Filter<Content> filter = (Filter<Content>) Filters.text().negate();
-            final List<Content> content = getNode().getContent(filter);
+            final var filter = (Filter<Content>) Filters.text().negate();
+            final var content = getNode().getContent(filter);
             getNode().setContent(content);
             getNode().addContent(new Text(text));
         } catch (IllegalAddException iae) {

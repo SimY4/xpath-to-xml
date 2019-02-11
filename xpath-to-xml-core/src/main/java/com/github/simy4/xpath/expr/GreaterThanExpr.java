@@ -15,7 +15,7 @@ public class GreaterThanExpr extends AbstractOperationExpr {
     @Override
     public <N extends Node> View<N> resolve(Navigator<N> navigator, View<N> left, View<N> right, boolean greedy)
             throws XmlBuilderException {
-        final boolean gt = 0 < Double.compare(left.toNumber(), right.toNumber());
+        final var gt = 0 < Double.compare(left.toNumber(), right.toNumber());
         if (!gt && greedy) {
             throw new XmlBuilderException("Can not apply a 'greater than' operator to: " + left + " and: " + right);
         }

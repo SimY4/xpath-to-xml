@@ -21,7 +21,7 @@ class JDomDocumentTest {
     @BeforeEach
     void setUp() {
         root.addContent("text");
-        Document document = new Document(root);
+        var document = new Document(root);
         node = new JDomDocument(document);
     }
 
