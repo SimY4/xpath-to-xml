@@ -12,6 +12,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.xml.namespace.QName;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -66,6 +72,19 @@ abstract class AbstractAxisResolverTest {
 
         // then
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Should serialize and deserialize axis")
+    void shouldSerializeAndDeserializeAxis() throws IOException, ClassNotFoundException {
+        // when
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        new ObjectOutputStream(out).writeObject(axisResolver);
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+        AxisResolver deserializedView = (AxisResolver) new ObjectInputStream(in).readObject();
+
+        // then
+        assertThat(deserializedView).isEqualToComparingFieldByFieldRecursively(axisResolver);
     }
 
     abstract void setUpResolvableAxis();

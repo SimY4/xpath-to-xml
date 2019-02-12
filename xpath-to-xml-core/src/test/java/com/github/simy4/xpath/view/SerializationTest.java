@@ -44,6 +44,7 @@ class SerializationTest {
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
         View<?> deserializedView = (View<?>) new ObjectInputStream(in).readObject();
 
+        // then
         assertThat(deserializedView).isEqualToIgnoringGivenFields(view, "nodeSet", "filter", "nodeSetView", "fmap");
     }
 

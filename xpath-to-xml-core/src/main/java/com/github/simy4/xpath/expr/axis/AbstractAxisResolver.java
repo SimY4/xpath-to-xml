@@ -9,8 +9,11 @@ import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 
 import javax.xml.namespace.QName;
+import java.io.Serializable;
 
-abstract class AbstractAxisResolver implements AxisResolver, Predicate<Node> {
+abstract class AbstractAxisResolver implements AxisResolver, Predicate<Node>, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     protected final QName name;
 
