@@ -15,35 +15,31 @@ class ScalaXmlNodeTest {
   private val root = new Root(xml)
 
   @Test
-  def shouldReturnDocumentName(): Unit = {
+  def shouldReturnDocumentName(): Unit =
     assertThat(root.getName).isEqualTo(new QName(Node.DOCUMENT))
-  }
 
   @Test
-  def shouldReturnRootElementTextRootTextAccessed(): Unit = {
-    assertThat(root.getText) isEqualTo "text"
-  }
+  def shouldReturnRootElementTextRootTextAccessed(): Unit =
+    assertThat(root.getText).isEqualTo("text")
 
   @Test
-  def shouldReturnRootElementWhenRootElementsAccessed(): Unit = {
-    assertThat(root.elements.asJava) containsExactly new Element(xml, 0, root)
-  }
+  def shouldReturnRootElementWhenRootElementsAccessed(): Unit =
+    assertThat(root.elements.asJava.asInstanceOf[java.lang.Iterable[AnyRef]]) containsExactly
+      new Element(xml, 0, root)
 
   @Test
-  def shouldReturnNilWhenRootAttributesAccessed(): Unit = {
+  def shouldReturnNilWhenRootAttributesAccessed(): Unit =
     assertThat(root.attributes.asJava).isEmpty()
-  }
 
   @Test
-  def shouldReturnNullWhenRootParentAccessed(): Unit = {
+  def shouldReturnNullWhenRootParentAccessed(): Unit =
     assertThat(root.parent).isNull()
-  }
 
   @Test
   def shouldReturnParentWhenElementParentAccessed(): Unit = {
     val element = root.elements.head
 
-    assertThat(element.parent) isEqualTo root
+    assertThat(element.parent).isEqualTo(root)
   }
 
   @Test
@@ -51,7 +47,7 @@ class ScalaXmlNodeTest {
     val parent = root.elements.head
     val attribute = parent.attributes.head
 
-    assertThat(attribute.parent) isEqualTo parent
+    assertThat(attribute.parent).isEqualTo(parent)
   }
 
   @Test
