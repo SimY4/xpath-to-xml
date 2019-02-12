@@ -4,6 +4,7 @@ import com.github.simy4.xpath.helpers.OrderedProperties;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -36,19 +37,12 @@ public final class FixtureAccessor {
      */
     public Map<String, Object> getXmlProperties() {
         final String resource = String.format(XML_PROPERTIES_PATH_FORMAT, fixtureName);
-        final InputStream xpathPropertiesStream = getClass().getResourceAsStream(resource);
-        try {
-            try {
-                OrderedProperties xpathProperties = new OrderedProperties();
-                xpathProperties.load(xpathPropertiesStream);
-                return xpathProperties.toMap();
-            } finally {
-                if (xpathPropertiesStream != null) {
-                    xpathPropertiesStream.close();
-                }
-            }
+        try (InputStream xpathPropertiesStream = getClass().getResourceAsStream(resource)) {
+            OrderedProperties xpathProperties = new OrderedProperties();
+            xpathProperties.load(xpathPropertiesStream);
+            return xpathProperties.toMap();
         } catch (IOException ioe) {
-            throw new IllegalStateException("Unable to fetch XML properties " + resource, ioe);
+            throw new UncheckedIOException("Unable to fetch XML properties " + resource, ioe);
         }
     }
 
@@ -62,17 +56,10 @@ public final class FixtureAccessor {
 
     private String getXml(String format) {
         final String resource = String.format(format, fixtureName, fixtureType);
-        final InputStream xmlStream = getClass().getResourceAsStream(resource);
-        try {
-            try {
-                return new Scanner(xmlStream, "UTF-8").useDelimiter("\\A").next();
-            } finally {
-                if (xmlStream != null) {
-                    xmlStream.close();
-                }
-            }
+        try (InputStream xmlStream = getClass().getResourceAsStream(resource)) {
+            return new Scanner(xmlStream, "UTF-8").useDelimiter("\\A").next();
         } catch (IOException ioe) {
-            throw new IllegalStateException("Unable to fetch XML document " + resource, ioe);
+            throw new UncheckedIOException("Unable to fetch XML document " + resource, ioe);
         }
     }
 
