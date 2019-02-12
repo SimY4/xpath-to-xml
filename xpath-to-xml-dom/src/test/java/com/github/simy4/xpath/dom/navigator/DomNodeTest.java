@@ -8,9 +8,18 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.w3c.dom.Document;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -51,6 +60,23 @@ class DomNodeTest {
     @Test
     void shouldReturnNodeTextContent() {
         assertThat(nodeView.getText()).isEqualTo("text");
+    }
+
+    @Test
+    void shouldSerializeAndDeserialize() throws IOException, ClassNotFoundException, ParserConfigurationException {
+        // given
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
+        nodeView = new DomNode(document);
+
+        // when
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        new ObjectOutputStream(out).writeObject(nodeView);
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+        Node deserialized = (Node) new ObjectInputStream(in).readObject();
+
+        // then
+        assertThat(deserialized).hasToString(document.toString());
     }
 
 }
