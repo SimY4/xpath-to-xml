@@ -14,8 +14,8 @@ import _root_.scala.xml.{ Elem, MetaData, Text, Attribute => XmlAttribute }
   */
 sealed trait ScalaXmlNode extends NavigatorNode {
   val parent: Parent
-  def elements: Iterable[Element]
-  def attributes: Iterable[Attribute]
+  def elements: Iterable[_ <: ScalaXmlNode]
+  def attributes: Iterable[_ <: ScalaXmlNode]
 }
 private[navigator] sealed trait Parent extends ScalaXmlNode {
   var node: Elem
@@ -25,8 +25,8 @@ private[navigator] sealed trait Parent extends ScalaXmlNode {
 final class Root(override var node: Elem) extends Parent {
   override def getName: QName = new QName(NavigatorNode.DOCUMENT)
   override val parent: Parent = null
-  override def elements: Iterable[Element] = new Element(node, 0, this) :: Nil
-  override def attributes: Iterable[Attribute] = Nil
+  override def elements: Iterable[_ <: ScalaXmlNode] = new Element(node, 0, this) :: Nil
+  override def attributes: Iterable[_ <: ScalaXmlNode] = Nil
   override def equals(obj: Any): Boolean = obj match {
     case r: Root => node == r.node
     case _       => false
