@@ -6,7 +6,11 @@ import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.View;
 
-public class LessThanExpr extends AbstractOperationExpr {
+import java.io.Serializable;
+
+public class LessThanExpr extends AbstractOperationExpr implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public LessThanExpr(Expr leftExpr, Expr rightExpr) {
         super(leftExpr, rightExpr);
@@ -23,7 +27,7 @@ public class LessThanExpr extends AbstractOperationExpr {
     }
 
     @Override
-    String operator() {
+    protected String operator() {
         return "<";
     }
 

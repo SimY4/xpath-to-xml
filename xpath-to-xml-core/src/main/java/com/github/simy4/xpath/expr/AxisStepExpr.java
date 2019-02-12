@@ -9,9 +9,12 @@ import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 
+import java.io.Serializable;
 import java.util.Collection;
 
-public class AxisStepExpr implements StepExpr {
+public class AxisStepExpr implements StepExpr, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final AxisResolver axisResolver;
     private final Collection<Expr> predicates;

@@ -9,7 +9,11 @@ import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
 
-public class PredicateExpr implements Expr {
+import java.io.Serializable;
+
+public class PredicateExpr implements Expr, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final Expr predicate;
 

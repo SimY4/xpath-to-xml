@@ -7,10 +7,13 @@ import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeView;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 
-public class PathExpr implements Expr {
+public class PathExpr implements Expr, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final List<StepExpr> pathExpr;
 

@@ -12,9 +12,12 @@ import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewVisitor;
 
+import java.io.Serializable;
 import java.util.Iterator;
 
-public class NotEqualsExpr extends AbstractOperationExpr {
+public class NotEqualsExpr extends AbstractOperationExpr implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public NotEqualsExpr(Expr leftExpr, Expr rightExpr) {
         super(leftExpr, rightExpr);
@@ -31,7 +34,7 @@ public class NotEqualsExpr extends AbstractOperationExpr {
     }
 
     @Override
-    String operator() {
+    protected String operator() {
         return "!=";
     }
 

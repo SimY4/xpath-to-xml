@@ -11,7 +11,7 @@ abstract class AbstractOperationExpr implements Expr {
     private final Expr leftExpr;
     private final Expr rightExpr;
 
-    AbstractOperationExpr(Expr leftExpr, Expr rightExpr) {
+    protected AbstractOperationExpr(Expr leftExpr, Expr rightExpr) {
         this.leftExpr = leftExpr;
         this.rightExpr = rightExpr;
     }
@@ -25,10 +25,10 @@ abstract class AbstractOperationExpr implements Expr {
         return resolve(navigator, leftView, rightView, newGreedy);
     }
 
-    abstract <N extends Node> View<N> resolve(Navigator<N> navigator, View<N> left, View<N> right, boolean greedy)
-            throws XmlBuilderException;
+    protected abstract <N extends Node> View<N> resolve(Navigator<N> navigator, View<N> left, View<N> right,
+                                                        boolean greedy) throws XmlBuilderException;
 
-    abstract String operator();
+    protected abstract String operator();
 
     @Override
     public final String toString() {

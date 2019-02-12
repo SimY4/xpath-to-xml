@@ -5,7 +5,11 @@ import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.NumberView;
 
-public class NumberExpr implements Expr {
+import java.io.Serializable;
+
+public class NumberExpr implements Expr, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final NumberView<?> number;
 
