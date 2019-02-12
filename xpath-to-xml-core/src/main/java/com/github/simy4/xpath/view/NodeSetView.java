@@ -182,7 +182,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
             @Override
             public boolean hasNext() {
                 boolean hasNext = current.hasNext();
-                if (!hasNext && !swapped) {
+                if (!hasNext && !swapped && null != nodeSetView) {
                     current = new FilteringIterator<NodeView<T>>(
                             new TransformingAndFlatteningIterator<NodeView<T>, NodeView<T>>(nodeSetView.iterator(),
                                     FlatMapNodeSet.this), FlatMapNodeSet.this);
