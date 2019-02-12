@@ -6,9 +6,8 @@ import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.NodeView;
 
 import javax.xml.namespace.QName;
-import java.io.Serializable;
 
-public class ChildAxisResolver extends AbstractAxisResolver implements Serializable {
+public class ChildAxisResolver extends AbstractAxisResolver {
 
     private static final long serialVersionUID = 1L;
 

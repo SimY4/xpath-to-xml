@@ -12,10 +12,9 @@ import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewVisitor;
 
-import java.io.Serializable;
 import java.util.Iterator;
 
-public class NotEqualsExpr extends AbstractOperationExpr implements Serializable {
+public class NotEqualsExpr extends AbstractOperationExpr {
 
     private static final long serialVersionUID = 1L;
 

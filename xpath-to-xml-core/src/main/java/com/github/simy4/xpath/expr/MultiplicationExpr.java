@@ -5,9 +5,7 @@ import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
 
-import java.io.Serializable;
-
-public class MultiplicationExpr extends AbstractOperationExpr implements Serializable {
+public class MultiplicationExpr extends AbstractOperationExpr {
 
     private static final long serialVersionUID = 1L;
 

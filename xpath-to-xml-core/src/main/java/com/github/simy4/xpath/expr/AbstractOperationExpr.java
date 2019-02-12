@@ -6,7 +6,11 @@ import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
 
-abstract class AbstractOperationExpr implements Expr {
+import java.io.Serializable;
+
+abstract class AbstractOperationExpr implements Expr, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final Expr leftExpr;
     private final Expr rightExpr;

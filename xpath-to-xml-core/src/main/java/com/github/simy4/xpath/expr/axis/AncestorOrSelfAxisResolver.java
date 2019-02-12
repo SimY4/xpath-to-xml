@@ -7,10 +7,9 @@ import com.github.simy4.xpath.util.ReadOnlyIterator;
 import com.github.simy4.xpath.view.NodeView;
 
 import javax.xml.namespace.QName;
-import java.io.Serializable;
 import java.util.Iterator;
 
-public class AncestorOrSelfAxisResolver extends AbstractAxisResolver implements Serializable {
+public class AncestorOrSelfAxisResolver extends AbstractAxisResolver {
 
     private static final long serialVersionUID = 1L;
 

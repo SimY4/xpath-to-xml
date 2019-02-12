@@ -9,10 +9,9 @@ import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
 
-import java.io.Serializable;
 import java.util.Iterator;
 
-public class EqualsExpr extends AbstractOperationExpr implements Serializable {
+public class EqualsExpr extends AbstractOperationExpr {
 
     private static final long serialVersionUID = 1L;
 

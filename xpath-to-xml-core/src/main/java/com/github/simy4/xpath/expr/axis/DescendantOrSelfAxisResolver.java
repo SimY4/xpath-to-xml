@@ -8,11 +8,10 @@ import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
 import com.github.simy4.xpath.view.NodeView;
 
 import javax.xml.namespace.QName;
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 
-public class DescendantOrSelfAxisResolver extends AbstractAxisResolver implements Serializable {
+public class DescendantOrSelfAxisResolver extends AbstractAxisResolver {
 
     private static final long serialVersionUID = 1L;
 

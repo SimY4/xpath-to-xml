@@ -17,8 +17,9 @@ import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-public abstract class NodeSetView<N extends Node> implements IterableNodeView<N> {
+public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>, Serializable {
 
+    private static final long serialVersionUID = 1L;
     private static final NodeSetView<?> EMPTY_NODE_SET = new EmptyNodeSet<Node>();
 
     @SuppressWarnings("unchecked")
@@ -67,7 +68,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
         return new FlatMapNodeSet<N>(this, fmap);
     }
 
-    private static final class EmptyNodeSet<T extends Node> extends NodeSetView<T> implements Serializable {
+    private static final class EmptyNodeSet<T extends Node> extends NodeSetView<T> {
 
         private static final long serialVersionUID = 1L;
 
@@ -78,8 +79,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
     }
 
-    private static final class IterableNodeSet<T extends Node> extends NodeSetView<T>
-            implements Predicate<T>, Serializable {
+    private static final class IterableNodeSet<T extends Node> extends NodeSetView<T> implements Predicate<T> {
 
         private static final long serialVersionUID = 1L;
 
@@ -138,7 +138,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
     }
 
     private static final class FlatMapNodeSet<T extends Node> extends NodeSetView<T>
-            implements Function<NodeView<T>, Iterator<NodeView<T>>>, Predicate<NodeView<T>>, Serializable {
+            implements Function<NodeView<T>, Iterator<NodeView<T>>>, Predicate<NodeView<T>> {
 
         private static final long serialVersionUID = 1L;
 

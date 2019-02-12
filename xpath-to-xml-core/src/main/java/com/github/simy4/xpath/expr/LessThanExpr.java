@@ -6,9 +6,7 @@ import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.View;
 
-import java.io.Serializable;
-
-public class LessThanExpr extends AbstractOperationExpr implements Serializable {
+public class LessThanExpr extends AbstractOperationExpr {
 
     private static final long serialVersionUID = 1L;
 
