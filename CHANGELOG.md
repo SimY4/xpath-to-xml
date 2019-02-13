@@ -6,12 +6,13 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 
 ## 2.x Series
 
-### 2.1.2
+### 2.1.2: Serialization support
 
 Improvements:
 
 - Core
-  - Expressions and views are now serializable
+  - XmlBuilder instances are now serializable
+  - Expressions and views are serializable as long as particular XML model underneath is serializable
 
 Bugfixes:
 
