@@ -1,15 +1,12 @@
 package com.github.simy4.xpath.view;
 
+import com.github.simy4.xpath.helpers.SerializationHelper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.stream.Stream;
 
 import static com.github.simy4.xpath.util.TestNode.node;
@@ -39,10 +36,7 @@ class SerializationTest {
     @MethodSource("views")
     void shouldSerializeAndDeserializeView(View<?> view) throws IOException, ClassNotFoundException {
         // when
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        new ObjectOutputStream(out).writeObject(view);
-        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-        View<?> deserializedView = (View<?>) new ObjectInputStream(in).readObject();
+        View<?> deserializedView = SerializationHelper.serializeAndDeserializeBack(view);
 
         // then
         assertThat(deserializedView).isEqualToIgnoringGivenFields(view, "nodeSet", "filter", "nodeSetView", "fmap");
