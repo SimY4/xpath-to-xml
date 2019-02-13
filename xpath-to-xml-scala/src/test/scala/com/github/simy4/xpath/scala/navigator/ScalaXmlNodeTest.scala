@@ -1,6 +1,7 @@
 package com.github.simy4.xpath
 package scala.navigator
 
+import helpers.SerializationHelper
 import javax.xml.namespace.QName
 import navigator.Node
 import org.assertj.core.api.Assertions
@@ -43,11 +44,25 @@ class ScalaXmlNodeTest {
   }
 
   @Test
+  def shouldSerializeAndDeserializeRoot(): Unit = {
+    val deserializedNode = SerializationHelper.serializeAndDeserializeBack(root)
+
+    assertThat(deserializedNode).isEqualTo(root)
+  }
+
+  @Test
   def shouldReturnParentWhenAttributeParentAccessed(): Unit = {
     val parent = root.elements.head
     val attribute = parent.attributes.head
 
     assertThat(attribute.parent).isEqualTo(parent)
+  }
+
+  @Test
+  def shouldSerializeAndDeserializeElement(): Unit = {
+    val deserializedNode = SerializationHelper.serializeAndDeserializeBack(root.elements.head)
+
+    assertThat(deserializedNode).isEqualTo(root.elements.head)
   }
 
   @Test
@@ -62,6 +77,13 @@ class ScalaXmlNodeTest {
     val attribute = root.elements.head.attributes.head
 
     assertThat(attribute.attributes.asJava).isEmpty()
+  }
+
+  @Test
+  def shouldSerializeAndDeserializeAttribute(): Unit = {
+    val deserializedNode = SerializationHelper.serializeAndDeserializeBack(root.elements.head.attributes.head)
+
+    assertThat(deserializedNode).isEqualTo(root.elements.head.attributes.head)
   }
 
 }

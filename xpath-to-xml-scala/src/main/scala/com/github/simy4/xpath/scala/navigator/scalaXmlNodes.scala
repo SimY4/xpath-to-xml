@@ -17,11 +17,13 @@ sealed trait ScalaXmlNode extends NavigatorNode {
   def elements: Iterable[_ <: ScalaXmlNode]
   def attributes: Iterable[_ <: ScalaXmlNode]
 }
-sealed private[navigator] trait Parent extends ScalaXmlNode {
+@SerialVersionUID(1L)
+sealed abstract private[navigator] class Parent extends ScalaXmlNode with Serializable {
   var node: Elem
   override def getText: String = node.child.collect { case Text(t) => t }.mkString
 }
 
+@SerialVersionUID(1L)
 final class Root(override var node: Elem) extends Parent {
   override def getName: QName = new QName(NavigatorNode.DOCUMENT)
   override val parent: Parent = null
@@ -35,6 +37,7 @@ final class Root(override var node: Elem) extends Parent {
   override def toString: String = node.toString
 }
 
+@SerialVersionUID(1L)
 final private[navigator] class Element(private[this] var _node: Elem, var index: Int, override val parent: Parent)
     extends Parent {
   override def getName: QName = _node match {
@@ -76,8 +79,10 @@ private[navigator] object Element {
   }
 }
 
+@SerialVersionUID(1L)
 final private[navigator] class Attribute(private[this] var _meta: MetaData, override val parent: Parent)
-    extends ScalaXmlNode {
+    extends ScalaXmlNode
+    with Serializable {
   override def getName: QName = _meta match {
     case a: XmlAttribute if a.isPrefixed => new QName(a.getNamespace(parent.node), a.key, a.pre)
     case _                               => new QName(_meta.key)
