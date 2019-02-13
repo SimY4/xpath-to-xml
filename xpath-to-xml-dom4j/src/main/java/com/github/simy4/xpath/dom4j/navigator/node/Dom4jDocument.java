@@ -9,6 +9,8 @@ import java.util.Collections;
 
 public final class Dom4jDocument extends AbstractDom4jNode<Document> {
 
+    private static final long serialVersionUID = 1L;
+
     public Dom4jDocument(Document document) {
         super(document);
     }

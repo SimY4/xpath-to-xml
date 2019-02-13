@@ -10,6 +10,8 @@ import java.util.Collections;
 
 public final class Dom4jAttribute extends AbstractDom4jNode<Attribute> {
 
+    private static final long serialVersionUID = 1L;
+
     public Dom4jAttribute(Attribute attribute) {
         super(attribute);
     }

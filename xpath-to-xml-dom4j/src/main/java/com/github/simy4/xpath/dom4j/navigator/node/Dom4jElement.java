@@ -12,6 +12,8 @@ import java.util.Iterator;
 
 public final class Dom4jElement extends AbstractDom4jNode<Element> {
 
+    private static final long serialVersionUID = 1L;
+
     public Dom4jElement(Element element) {
         super(element);
     }

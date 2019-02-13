@@ -68,7 +68,7 @@ class JDomAttributeTest {
         Node deserializedNode = SerializationHelper.serializeAndDeserializeBack(node);
 
         // then
-        assertThat(deserializedNode).isEqualToIgnoringGivenFields(node, "node");
+        assertThat(deserializedNode).extracting("name").containsExactly(node.getName());
     }
 
 }
