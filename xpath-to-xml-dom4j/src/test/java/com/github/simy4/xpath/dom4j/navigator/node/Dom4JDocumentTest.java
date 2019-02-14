@@ -1,37 +1,30 @@
 package com.github.simy4.xpath.dom4j.navigator.node;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.helpers.SerializationHelper;
+import com.github.simy4.xpath.navigator.Node;
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import javax.xml.namespace.QName;
 
+import java.io.IOException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 class Dom4JDocumentTest {
 
-    @Mock private Document document;
-    @Mock private Element root;
+    private Element root = DocumentHelper.createElement(new org.dom4j.QName("elem"));
+    private Document document = DocumentHelper.createDocument(root);
 
     private Dom4jNode node;
 
     @BeforeEach
     void setUp() {
-        when(document.getText()).thenReturn("text");
-        when(document.addElement(any(org.dom4j.QName.class))).thenReturn(root);
-
         node = new Dom4jDocument(document);
     }
 
@@ -42,12 +35,14 @@ class Dom4JDocumentTest {
 
     @Test
     void shouldReturnEmptyListWhenObtainElementsFromEmptyDocument() {
+        document = DocumentHelper.createDocument();
+        node = new Dom4jDocument(document);
+
         assertThat(node.elements()).isEmpty();
     }
 
     @Test
     void shouldReturnSingleRootNodeWhenObtainElements() {
-        when(document.getRootElement()).thenReturn(root);
         assertThat(node.elements()).asList().containsExactly(new Dom4jElement(root));
     }
 
@@ -59,12 +54,16 @@ class Dom4JDocumentTest {
 
     @Test
     void shouldSetRootNodeWhenCreateElement() {
-        assertThat(node.createElement(new org.dom4j.QName("elem"))).isEqualTo(new Dom4jElement(root));
+        document = DocumentHelper.createDocument();
+        node = new Dom4jDocument(document);
+
+        Dom4jNode newRoot = node.createElement(new org.dom4j.QName("elem"));
+
+        assertThat(newRoot).extracting("name").containsExactly(new QName("elem"));
     }
 
     @Test
     void shouldThrowExceptionWhenRootElementAlreadyExist() {
-        when(document.getRootElement()).thenReturn(root);
         assertThatThrownBy(() -> node.createElement(new org.dom4j.QName("elem")))
                 .isInstanceOf(XmlBuilderException.class);
     }
@@ -76,7 +75,16 @@ class Dom4JDocumentTest {
 
     @Test
     void shouldReturnNodeTextContent() {
-        assertThat(node.getText()).isEqualTo("text");
+        assertThat(node.getText()).isEmpty();
+    }
+
+    @Test
+    void shouldSerializeAndDeserialize() throws IOException, ClassNotFoundException {
+        // when
+        Node deserializedNode = SerializationHelper.serializeAndDeserializeBack(node);
+
+        // then
+        assertThat(deserializedNode).extracting("name").containsExactly(node.getName());
     }
 
 }
