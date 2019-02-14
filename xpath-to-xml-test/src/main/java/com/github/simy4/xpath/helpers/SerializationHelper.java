@@ -6,8 +6,19 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+/**
+ * Serialization and deserialization tester.
+ *
+ * @author Alex Simkin
+ */
 public final class SerializationHelper {
 
+    /**
+     * Serializes and deserializes given object back.
+     *
+     * @param t object to serialize and deserialize
+     * @return deserialized copy
+     */
     @SuppressWarnings("unchecked")
     public static <T> T serializeAndDeserializeBack(T t) throws IOException, ClassNotFoundException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
