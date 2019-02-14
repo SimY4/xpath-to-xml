@@ -1,42 +1,38 @@
 package com.github.simy4.xpath.dom4j.navigator.node;
 
+import com.github.simy4.xpath.helpers.SerializationHelper;
+import com.github.simy4.xpath.navigator.Node;
 import org.dom4j.Attribute;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
-import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import java.io.IOException;
 
-@ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
+import static org.assertj.core.api.Assertions.assertThat;
+
 class Dom4JElementTest {
 
-    @Mock private Element element;
-    @Mock private Element child1;
-    @Mock private Element child2;
-    @Mock private Attribute attr1;
-    @Mock private Attribute attr2;
+    private Element element = DocumentHelper.createElement(new org.dom4j.QName("node"));
+    private Element child1 = DocumentHelper.createElement(new org.dom4j.QName("child1"));
+    private Element child2 = DocumentHelper.createElement(new org.dom4j.QName("child2"));
+    private Attribute attr1 = DocumentHelper.createAttribute(element, new org.dom4j.QName("attr1"), "");
+    private Attribute attr2 = DocumentHelper.createAttribute(element, new org.dom4j.QName("attr2"), "");
 
     private Dom4jNode node;
 
     @BeforeEach
     void setUp() {
-        when(element.getText()).thenReturn("text");
-        when(element.elementIterator()).thenReturn(asList(child1, child2).iterator());
-        when(element.attributeIterator()).thenReturn(asList(attr1, attr2).iterator());
-        when(element.addElement(any(org.dom4j.QName.class))).thenReturn(child1);
+        element.add(child1);
+        element.add(child2);
+        element.add(attr1);
+        element.add(attr2);
+        element.setText("text");
 
         node = new Dom4jElement(element);
     }
@@ -61,15 +57,13 @@ class Dom4JElementTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenCreateElement() {
-        assertThat(node.createElement(new org.dom4j.QName("elem"))).isEqualTo(new Dom4jElement(child1));
+    void shouldAppendNewElementWhenCreateElement() {
+        Dom4jNode elem = node.createElement(new org.dom4j.QName("elem"));
+        assertThat(elem).extracting("name").containsExactly(new QName("elem"));
     }
 
     @Test
     void shouldReturnNodeNameForNamespaceUnawareElement() {
-        when(element.getName()).thenReturn("node");
-        when(element.getNamespace()).thenReturn(Namespace.NO_NAMESPACE);
-
         QName result = node.getName();
 
         assertThat(result).extracting("namespaceURI", "localPart", "prefix")
@@ -78,8 +72,9 @@ class Dom4JElementTest {
 
     @Test
     void shouldReturnNodeNameForNamespaceAwareElement() {
-        when(element.getName()).thenReturn("node");
-        when(element.getNamespace()).thenReturn(new Namespace("my", "http://www.example.com/my"));
+        element = DocumentHelper.createElement(new org.dom4j.QName("node",
+                new Namespace("my", "http://www.example.com/my")));
+        node = new Dom4jElement(element);
 
         QName result = node.getName();
 
@@ -90,6 +85,15 @@ class Dom4JElementTest {
     @Test
     void shouldReturnNodeTextContent() {
         assertThat(node.getText()).isEqualTo("text");
+    }
+
+    @Test
+    void shouldSerializeAndDeserialize() throws IOException, ClassNotFoundException {
+        // when
+        Node deserializedNode = SerializationHelper.serializeAndDeserializeBack(node);
+
+        // then
+        assertThat(deserializedNode).extracting("name").containsExactly(node.getName());
     }
 
 }

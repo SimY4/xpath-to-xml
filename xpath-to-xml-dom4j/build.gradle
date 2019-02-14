@@ -10,7 +10,5 @@ dependencies {
     testImplementation project(':xpath-to-xml-test')
     testImplementation 'jaxen:jaxen:[1.0,2.0['
     testImplementation "org.junit.jupiter:junit-jupiter:$jUnitVersion"
-    testImplementation "org.mockito:mockito-core:$mockitoVersion"
-    testImplementation "org.mockito:mockito-junit-jupiter:$mockitoVersion"
     testImplementation "org.assertj:assertj-core:$assertjVersion"
 }

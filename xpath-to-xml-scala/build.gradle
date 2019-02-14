@@ -38,8 +38,6 @@ dependencies {
         testImplementation 'org.scala-lang.modules:scala-java8-compat_%%:[0.9,1.0['
     }
     testImplementation "org.junit.jupiter:junit-jupiter:$jUnitVersion"
-    testImplementation "org.mockito:mockito-core:$mockitoVersion"
-    testImplementation "org.mockito:mockito-junit-jupiter:$mockitoVersion"
     testImplementation "org.assertj:assertj-core:$assertjVersion"
 }
 
