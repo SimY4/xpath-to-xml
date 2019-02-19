@@ -12,7 +12,6 @@ import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -32,7 +31,7 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class GreaterThanExprTest {
+class GreaterThanExprTest extends AbstractOperationExprTest {
 
     private static Stream<View<?>> lesser() {
         return Stream.of(
@@ -64,14 +63,10 @@ class GreaterThanExprTest {
     private static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));
 
     @Mock private Navigator<TestNode> navigator;
-    @Mock private Expr leftExpr;
-    @Mock private Expr rightExpr;
-
-    private Expr greaterThanExpr;
 
     @BeforeEach
     void setUp() {
-        greaterThanExpr = new GreaterThanExpr(leftExpr, rightExpr);
+        operationExpr = new GreaterThanExpr(leftExpr, rightExpr);
     }
 
     @ParameterizedTest(name = "Given views {1} greater than {0}")
@@ -83,7 +78,7 @@ class GreaterThanExprTest {
         when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(less);
 
         // when
-        View<TestNode> result = greaterThanExpr.resolve(navigator, parentNode, false);
+        View<TestNode> result = operationExpr.resolve(navigator, parentNode, false);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(true));
@@ -98,7 +93,7 @@ class GreaterThanExprTest {
         when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(greater);
 
         // when
-        View<TestNode> result = greaterThanExpr.resolve(navigator, parentNode, false);
+        View<TestNode> result = operationExpr.resolve(navigator, parentNode, false);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(false));
@@ -113,7 +108,7 @@ class GreaterThanExprTest {
         when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(right);
 
         // when
-        View<TestNode> result = greaterThanExpr.resolve(navigator, parentNode, false);
+        View<TestNode> result = operationExpr.resolve(navigator, parentNode, false);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(false));
@@ -128,13 +123,8 @@ class GreaterThanExprTest {
         when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(greater);
 
         // when
-        assertThatThrownBy(() -> greaterThanExpr.resolve(navigator, parentNode, true))
+        assertThatThrownBy(() -> operationExpr.resolve(navigator, parentNode, true))
                 .isInstanceOf(XmlBuilderException.class);
-    }
-
-    @Test
-    void testToString() {
-        assertThat(greaterThanExpr).hasToString(leftExpr.toString() + ">" + rightExpr.toString());
     }
 
 }

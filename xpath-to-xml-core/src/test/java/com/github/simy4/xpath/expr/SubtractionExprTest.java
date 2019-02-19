@@ -10,7 +10,6 @@ import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -30,7 +29,7 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class SubtractionExprTest {
+class SubtractionExprTest extends AbstractOperationExprTest {
 
     private static Stream<View<?>> three() {
         return Stream.of(
@@ -59,14 +58,10 @@ class SubtractionExprTest {
     }
 
     @Mock private Navigator<TestNode> navigator;
-    @Mock private Expr leftExpr;
-    @Mock private Expr rightExpr;
-
-    private Expr subtractionExpr;
 
     @BeforeEach
     void setUp() {
-        subtractionExpr = new SubtractionExpr(leftExpr, rightExpr);
+        operationExpr = new SubtractionExpr(leftExpr, rightExpr);
     }
 
     @ParameterizedTest(name = "Given {0} and {1}")
@@ -78,7 +73,7 @@ class SubtractionExprTest {
         when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(right);
 
         // when
-        assertThat(subtractionExpr.resolve(navigator, new NodeView<>(node("node")), false))
+        assertThat(operationExpr.resolve(navigator, new NodeView<>(node("node")), false))
                 .extracting("number").contains(0.0);
     }
 
@@ -91,13 +86,8 @@ class SubtractionExprTest {
         when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(nan);
 
         // when
-        assertThat(subtractionExpr.resolve(navigator, new NodeView<>(node("node")), false))
+        assertThat(operationExpr.resolve(navigator, new NodeView<>(node("node")), false))
                 .extracting("number").contains(Double.NaN);
-    }
-
-    @Test
-    void testToString() {
-        assertThat(subtractionExpr).hasToString(leftExpr.toString() + "-" + rightExpr.toString());
     }
 
 }
