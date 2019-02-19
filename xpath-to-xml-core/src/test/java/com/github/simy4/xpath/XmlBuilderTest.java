@@ -34,7 +34,7 @@ class XmlBuilderTest {
 
     @Test
     @DisplayName("Should serialize it and deserialize it back")
-    void shouldSerializeAndDeserializeView() throws IOException, ClassNotFoundException, XPathExpressionException {
+    void shouldSerializeAndDeserializeBuilder() throws IOException, ClassNotFoundException, XPathExpressionException {
         // given
         XmlBuilder builder = new XmlBuilder(new SimpleNamespaceContext())
                 .put("test")
