@@ -17,7 +17,10 @@ public final class SerializationHelper {
      * Serializes and deserializes given object back.
      *
      * @param t object to serialize and deserialize
+     * @param <T> serialized type
      * @return deserialized copy
+     * @throws ClassNotFoundException if serialized object cannon be found
+     * @throws IOException if any exception thrown by the underlying OutputStream
      */
     @SuppressWarnings("unchecked")
     public static <T> T serializeAndDeserializeBack(T t) throws IOException, ClassNotFoundException {
