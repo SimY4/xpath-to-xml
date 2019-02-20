@@ -26,7 +26,7 @@ class ScalaXmlNodeTest {
 
   @Test
   def shouldReturnRootElementWhenRootElementsAccessed(): Unit = {
-    assertThat(root.elements.asJava) containsExactly new Element(xml, 0, root)
+    assertThat(root.elements.asJava.asInstanceOf[java.lang.Iterable[AnyRef]]) containsExactly new Element(xml, 0, root)
   }
 
   @Test
