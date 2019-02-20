@@ -18,8 +18,8 @@ sealed trait ScalaXmlNode extends NavigatorNode {
   def attributes: Iterable[_ <: ScalaXmlNode]
 }
 @SerialVersionUID(1L)
-sealed abstract private[navigator] class Parent extends ScalaXmlNode with Serializable {
-  var node: Elem
+sealed abstract class Parent extends ScalaXmlNode with Serializable {
+  private[navigator] var node: Elem
   override def getText: String = node.child.collect { case Text(t) => t }.mkString
 }
 
@@ -38,7 +38,7 @@ final class Root(override var node: Elem) extends Parent {
 }
 
 @SerialVersionUID(1L)
-final private[navigator] class Element(private[this] var _node: Elem, var index: Int, override val parent: Parent)
+final class Element private[navigator](private[this] var _node: Elem, var index: Int, override val parent: Parent)
     extends Parent {
   override def getName: QName = _node match {
     case prefixed if null != prefixed.prefix => new QName(prefixed.namespace, prefixed.label, prefixed.prefix)
@@ -47,14 +47,12 @@ final private[navigator] class Element(private[this] var _node: Elem, var index:
   override def elements: Iterable[Element] =
     _node.child.view.zipWithIndex.collect { case (e: Elem, i) => new Element(e, i, this) }
   override def attributes: Iterable[Attribute] = _node.attributes.view.map(new Attribute(_, this))
-  override def node: Elem = _node
-  override def node_=(elem: Elem): Unit = {
+  override private[navigator] def node: Elem = _node
+  override private[navigator] def node_=(elem: Elem): Unit = {
     val parentNode = parent.node
     parent.node =
       if (parentNode eq _node) elem
-      else {
-        parentNode.copy(child = parentNode.child.updated(index, elem))
-      }
+      else parentNode.copy(child = parentNode.child.updated(index, elem))
     _node = elem
   }
   override def equals(obj: Any): Boolean = obj match {
@@ -70,7 +68,7 @@ final private[navigator] class Element(private[this] var _node: Elem, var index:
   override def toString: String = _node.toString
 }
 
-private[navigator] object Element {
+object Element {
   def apply(elem: Elem, parent: Parent): Element = {
     val node = parent.node
     val children = node.child
@@ -80,7 +78,7 @@ private[navigator] object Element {
 }
 
 @SerialVersionUID(1L)
-final private[navigator] class Attribute(private[this] var _meta: MetaData, override val parent: Parent)
+final class Attribute private[navigator](private[this] var _meta: MetaData, override val parent: Parent)
     extends ScalaXmlNode
     with Serializable {
   override def getName: QName = _meta match {
@@ -96,14 +94,14 @@ final private[navigator] class Attribute(private[this] var _meta: MetaData, over
   }
   override def hashCode(): Int = _meta.hashCode()
   override def toString: String = _meta.toString
-  def meta: MetaData = _meta
-  def meta_=(meta: MetaData): Unit = {
+  private[navigator] def meta: MetaData = _meta
+  private[navigator] def meta_=(meta: MetaData): Unit = {
     parent.node = parent.node % meta
     _meta = meta
   }
 }
 
-private[navigator] object Attribute {
+object Attribute {
   def apply(meta: MetaData, parent: Parent): Attribute = {
     parent.node = parent.node % meta
     new Attribute(meta, parent)
