@@ -3,8 +3,11 @@ package com.github.simy4.xpath.dom.navigator;
 import com.github.simy4.xpath.navigator.Node;
 
 import javax.xml.namespace.QName;
+import java.io.Serializable;
 
-public final class DomNode implements Node {
+public final class DomNode implements Node, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final org.w3c.dom.Node node;
 

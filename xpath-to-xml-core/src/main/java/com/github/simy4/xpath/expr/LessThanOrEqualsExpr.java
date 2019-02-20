@@ -8,6 +8,8 @@ import com.github.simy4.xpath.view.View;
 
 public class LessThanOrEqualsExpr extends AbstractOperationExpr {
 
+    private static final long serialVersionUID = 1L;
+
     public LessThanOrEqualsExpr(Expr leftExpr, Expr rightExpr) {
         super(leftExpr, rightExpr);
     }
@@ -23,7 +25,7 @@ public class LessThanOrEqualsExpr extends AbstractOperationExpr {
     }
 
     @Override
-    String operator() {
+    protected String operator() {
         return "<=";
     }
 

@@ -3,8 +3,11 @@ package com.github.simy4.xpath.util;
 import com.github.simy4.xpath.navigator.Node;
 
 import javax.xml.namespace.QName;
+import java.io.Serializable;
 
-public final class TestNode implements Node {
+public final class TestNode implements Node, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final QName value;
 

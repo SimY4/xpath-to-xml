@@ -7,17 +7,19 @@ import com.github.simy4.xpath.view.View;
 
 public class MultiplicationExpr extends AbstractOperationExpr {
 
+    private static final long serialVersionUID = 1L;
+
     public MultiplicationExpr(Expr leftExpr, Expr rightExpr) {
         super(leftExpr, rightExpr);
     }
 
     @Override
-    <N extends Node> View<N> resolve(Navigator<N> navigator, View<N> left, View<N> right, boolean greedy) {
+    protected <N extends Node> View<N> resolve(Navigator<N> navigator, View<N> left, View<N> right, boolean greedy) {
         return new NumberView<>(left.toNumber() * right.toNumber());
     }
 
     @Override
-    String operator() {
+    protected String operator() {
         return "*";
     }
 

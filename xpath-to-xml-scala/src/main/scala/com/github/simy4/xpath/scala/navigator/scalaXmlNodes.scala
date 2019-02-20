@@ -2,31 +2,33 @@ package com.github.simy4.xpath
 package scala.navigator
 
 import javax.xml.namespace.QName
-import navigator.{ Node => NavigatorNode }
+import navigator.{Node => NavigatorNode}
 
-import _root_.scala.xml.{ Elem, MetaData, Text, Attribute => XmlAttribute }
+import _root_.scala.xml.{Elem, MetaData, Text, Attribute => XmlAttribute}
 
 /**
-  * Scala XML node contract.
-  *
-  * @author Alex Simkin
-  * @since 2.0
-  */
+ * Scala XML node contract.
+ *
+ * @author Alex Simkin
+ * @since 2.0
+ */
 sealed trait ScalaXmlNode extends NavigatorNode {
   val parent: Parent
-  def elements: Iterable[Element]
-  def attributes: Iterable[Attribute]
+  def elements: Iterable[_ <: ScalaXmlNode]
+  def attributes: Iterable[_ <: ScalaXmlNode]
 }
-private[navigator] sealed trait Parent extends ScalaXmlNode {
+@SerialVersionUID(1L)
+sealed abstract private[navigator] class Parent extends ScalaXmlNode with Serializable {
   var node: Elem
   override def getText: String = node.child.collect { case Text(t) => t }.mkString
 }
 
+@SerialVersionUID(1L)
 final class Root(override var node: Elem) extends Parent {
   override def getName: QName = new QName(NavigatorNode.DOCUMENT)
   override val parent: Parent = null
-  override def elements: Iterable[Element] = new Element(node, 0, this) :: Nil
-  override def attributes: Iterable[Attribute] = Nil
+  override def elements: Iterable[_ <: ScalaXmlNode] = new Element(node, 0, this) :: Nil
+  override def attributes: Iterable[_ <: ScalaXmlNode] = Nil
   override def equals(obj: Any): Boolean = obj match {
     case r: Root => node == r.node
     case _       => false
@@ -35,21 +37,24 @@ final class Root(override var node: Elem) extends Parent {
   override def toString: String = node.toString
 }
 
-private[navigator] final class Element(private[this] var _node: Elem, var index: Int,
-                                       override val parent: Parent) extends Parent {
+@SerialVersionUID(1L)
+final private[navigator] class Element(private[this] var _node: Elem, var index: Int, override val parent: Parent)
+    extends Parent {
   override def getName: QName = _node match {
     case prefixed if null != prefixed.prefix => new QName(prefixed.namespace, prefixed.label, prefixed.prefix)
     case simple                              => new QName(simple.label)
   }
   override def elements: Iterable[Element] =
-    _node.child.view.zipWithIndex collect { case (e: Elem, i) => new Element(e, i, this) }
-  override def attributes: Iterable[Attribute] = _node.attributes.view map (new Attribute(_, this))
+    _node.child.view.zipWithIndex.collect { case (e: Elem, i) => new Element(e, i, this) }
+  override def attributes: Iterable[Attribute] = _node.attributes.view.map(new Attribute(_, this))
   override def node: Elem = _node
   override def node_=(elem: Elem): Unit = {
     val parentNode = parent.node
-    parent.node = if (parentNode eq _node) elem else {
-      parentNode.copy(child = parentNode.child updated (index, elem))
-    }
+    parent.node =
+      if (parentNode eq _node) elem
+      else {
+        parentNode.copy(child = parentNode.child.updated(index, elem))
+      }
     _node = elem
   }
   override def equals(obj: Any): Boolean = obj match {
@@ -74,10 +79,13 @@ private[navigator] object Element {
   }
 }
 
-private[navigator] final class Attribute(private[this] var _meta: MetaData, override val parent: Parent) extends ScalaXmlNode {
+@SerialVersionUID(1L)
+final private[navigator] class Attribute(private[this] var _meta: MetaData, override val parent: Parent)
+    extends ScalaXmlNode
+    with Serializable {
   override def getName: QName = _meta match {
-    case a : XmlAttribute if a.isPrefixed => new QName(a.getNamespace(parent.node), a.key, a.pre)
-    case _                                => new QName(_meta.key)
+    case a: XmlAttribute if a.isPrefixed => new QName(a.getNamespace(parent.node), a.key, a.pre)
+    case _                               => new QName(_meta.key)
   }
   override def getText: String = _meta.value.text
   override def elements: Iterable[Element] = Nil

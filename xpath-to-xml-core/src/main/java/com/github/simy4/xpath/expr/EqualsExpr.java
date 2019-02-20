@@ -13,6 +13,8 @@ import java.util.Iterator;
 
 public class EqualsExpr extends AbstractOperationExpr {
 
+    private static final long serialVersionUID = 1L;
+
     public EqualsExpr(Expr leftExpr, Expr rightExpr) {
         super(leftExpr, rightExpr);
     }
@@ -28,11 +30,11 @@ public class EqualsExpr extends AbstractOperationExpr {
     }
 
     @Override
-    String operator() {
+    protected String operator() {
         return "=";
     }
 
-    static final class EqualsVisitor<N extends Node> extends AbstractViewVisitor<N, Boolean> {
+    protected static final class EqualsVisitor<N extends Node> extends AbstractViewVisitor<N, Boolean> {
 
         private final Navigator<N> navigator;
         private final View<N> right;

@@ -9,12 +9,14 @@ import javax.xml.namespace.QName;
 
 public class ChildAxisResolver extends AbstractAxisResolver {
 
+    private static final long serialVersionUID = 1L;
+
     public ChildAxisResolver(QName name) {
         super(name);
     }
 
     @Override
-    <N extends Node> Iterable<? extends N> traverseAxis(Navigator<N> navigator, NodeView<N> parent) {
+    protected <N extends Node> Iterable<? extends N> traverseAxis(Navigator<N> navigator, NodeView<N> parent) {
         return navigator.elementsOf(parent.getNode());
     }
 

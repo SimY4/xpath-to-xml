@@ -2,11 +2,15 @@ package com.github.simy4.xpath.dom4j.navigator.node;
 
 import org.dom4j.Node;
 
-abstract class AbstractDom4jNode<N extends Node> implements Dom4jNode {
+import java.io.Serializable;
+
+abstract class AbstractDom4jNode<N extends Node> implements Dom4jNode, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final N node;
 
-    AbstractDom4jNode(N node) {
+    protected AbstractDom4jNode(N node) {
         this.node = node;
     }
 

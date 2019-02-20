@@ -11,7 +11,11 @@ import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
 import com.github.simy4.xpath.view.ViewVisitor;
 
-public class PutEffect implements Effect {
+import java.io.Serializable;
+
+public class PutEffect implements Effect, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private static final ViewVisitor<? extends Node, Void> eagerVisitor = new EagerVisitor<>();
 

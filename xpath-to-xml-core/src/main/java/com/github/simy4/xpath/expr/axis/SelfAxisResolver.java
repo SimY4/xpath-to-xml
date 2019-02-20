@@ -10,12 +10,14 @@ import java.util.Collections;
 
 public class SelfAxisResolver extends AbstractAxisResolver {
 
+    private static final long serialVersionUID = 1L;
+
     public SelfAxisResolver(QName name) {
         super(name);
     }
 
     @Override
-    <N extends Node> Iterable<N> traverseAxis(Navigator<N> navigator, NodeView<N> view) {
+    protected <N extends Node> Iterable<N> traverseAxis(Navigator<N> navigator, NodeView<N> view) {
         return Collections.singletonList(view.getNode());
     }
 

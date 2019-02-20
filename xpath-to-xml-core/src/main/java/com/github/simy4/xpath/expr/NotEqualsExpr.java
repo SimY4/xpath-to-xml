@@ -16,6 +16,8 @@ import java.util.Iterator;
 
 public class NotEqualsExpr extends AbstractOperationExpr {
 
+    private static final long serialVersionUID = 1L;
+
     public NotEqualsExpr(Expr leftExpr, Expr rightExpr) {
         super(leftExpr, rightExpr);
     }
@@ -31,7 +33,7 @@ public class NotEqualsExpr extends AbstractOperationExpr {
     }
 
     @Override
-    String operator() {
+    protected String operator() {
         return "!=";
     }
 

@@ -1,5 +1,6 @@
 package com.github.simy4.xpath.expr.axis;
 
+import com.github.simy4.xpath.helpers.SerializationHelper;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.IterableNodeView;
@@ -11,6 +12,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.xml.namespace.QName;
+
+import java.io.IOException;
 
 import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -66,6 +69,16 @@ abstract class AbstractAxisResolverTest {
 
         // then
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Should serialize and deserialize axis")
+    void shouldSerializeAndDeserializeAxis() throws IOException, ClassNotFoundException {
+        // when
+        AxisResolver deserializedAxis = SerializationHelper.serializeAndDeserializeBack(axisResolver);
+
+        // then
+        assertThat(deserializedAxis).isEqualToComparingFieldByFieldRecursively(axisResolver);
     }
 
     abstract void setUpResolvableAxis();

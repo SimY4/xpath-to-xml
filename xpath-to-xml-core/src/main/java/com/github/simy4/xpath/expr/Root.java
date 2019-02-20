@@ -4,7 +4,11 @@ import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.NodeView;
 
-public class Root implements StepExpr {
+import java.io.Serializable;
+
+public class Root implements StepExpr, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Override
     public <N extends Node> NodeView<N> resolve(Navigator<N> navigator, NodeView<N> view, boolean greedy) {

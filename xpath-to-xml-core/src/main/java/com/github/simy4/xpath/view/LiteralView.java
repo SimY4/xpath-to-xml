@@ -3,7 +3,11 @@ package com.github.simy4.xpath.view;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
 
-public final class LiteralView<N extends Node> implements View<N> {
+import java.io.Serializable;
+
+public final class LiteralView<N extends Node> implements View<N>, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final String literal;
 

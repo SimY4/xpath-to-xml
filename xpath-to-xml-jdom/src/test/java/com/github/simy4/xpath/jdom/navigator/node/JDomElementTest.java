@@ -1,5 +1,7 @@
 package com.github.simy4.xpath.jdom.navigator.node;
 
+import com.github.simy4.xpath.helpers.SerializationHelper;
+import com.github.simy4.xpath.navigator.Node;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
@@ -7,6 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.namespace.QName;
+
+import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -71,6 +75,15 @@ class JDomElementTest {
     @Test
     void shouldReturnNodeTextContent() {
         assertThat(node.getText()).isEqualTo("text");
+    }
+
+    @Test
+    void shouldSerializeAndDeserialize() throws IOException, ClassNotFoundException {
+        // when
+        Node deserializedNode = SerializationHelper.serializeAndDeserializeBack(node);
+
+        // then
+        assertThat(deserializedNode).extracting("name").containsExactly(node.getName());
     }
 
 }

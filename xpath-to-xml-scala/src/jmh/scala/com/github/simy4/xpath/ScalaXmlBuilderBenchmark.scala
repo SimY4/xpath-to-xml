@@ -3,7 +3,7 @@ package com.github.simy4.xpath
 import fixtures.FixtureAccessor
 import helpers.SimpleNamespaceContext
 import javax.xml.namespace.NamespaceContext
-import org.openjdk.jmh.annotations.{ Benchmark, BenchmarkMode, Mode, Param, Scope, Setup, State }
+import org.openjdk.jmh.annotations.{Benchmark, BenchmarkMode, Mode, Param, Scope, Setup, State}
 import org.openjdk.jmh.infra.Blackhole
 
 import _root_.scala.xml.Elem
@@ -32,9 +32,11 @@ class ScalaXmlBuilderBenchmark {
   @Benchmark
   def shouldBuildDocumentFromSetOfXPaths(blackhole: Blackhole): Unit = {
     val xmlProperties = fixtureAccessor.getXmlProperties
-    blackhole.consume(new XmlBuilder(namespaceContext)
-      .putAll(xmlProperties.keySet())
-      .build(root))
+    blackhole.consume(
+      new XmlBuilder(namespaceContext)
+        .putAll(xmlProperties.keySet())
+        .build(root)
+    )
   }
 }
 

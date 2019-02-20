@@ -2,10 +2,13 @@ package com.github.simy4.xpath.helpers;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 
-public final class SimpleNamespaceContext implements NamespaceContext {
+public final class SimpleNamespaceContext implements NamespaceContext, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Override
     public String getNamespaceURI(String prefix) {
