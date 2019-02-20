@@ -10,6 +10,8 @@ import java.util.Iterator;
 
 public class AncestorOrSelfAxisResolver extends AbstractAxisResolver {
 
+    private static final long serialVersionUID = 1L;
+
     private final boolean self;
 
     public AncestorOrSelfAxisResolver(QName name, boolean self) {
@@ -18,7 +20,7 @@ public class AncestorOrSelfAxisResolver extends AbstractAxisResolver {
     }
 
     @Override
-    <N extends Node> Iterable<? extends N> traverseAxis(Navigator<N> navigator, NodeView<N> parent) {
+    protected <N extends Node> Iterable<? extends N> traverseAxis(Navigator<N> navigator, NodeView<N> parent) {
         return () -> new AncestorOrSelf<>(navigator, parent.getNode(), self);
     }
 

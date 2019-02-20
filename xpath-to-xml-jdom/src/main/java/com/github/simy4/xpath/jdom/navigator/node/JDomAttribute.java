@@ -10,6 +10,8 @@ import java.util.Collections;
 
 public final class JDomAttribute extends AbstractJDomNode<Attribute> {
 
+    private static final long serialVersionUID = 1L;
+
     public JDomAttribute(Attribute attribute) {
         super(attribute);
     }

@@ -5,7 +5,11 @@ import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.LiteralView;
 import com.github.simy4.xpath.view.NodeView;
 
-public class LiteralExpr implements Expr {
+import java.io.Serializable;
+
+public class LiteralExpr implements Expr, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final LiteralView<?> literal;
 

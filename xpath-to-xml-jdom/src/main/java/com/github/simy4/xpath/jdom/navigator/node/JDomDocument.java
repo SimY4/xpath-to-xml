@@ -11,6 +11,8 @@ import java.util.Collections;
 
 public final class JDomDocument extends AbstractJDomNode<Document> {
 
+    private static final long serialVersionUID = 1L;
+
     public JDomDocument(Document document) {
         super(document);
     }

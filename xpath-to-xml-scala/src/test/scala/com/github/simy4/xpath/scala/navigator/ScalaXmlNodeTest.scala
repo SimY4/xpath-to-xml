@@ -1,6 +1,7 @@
 package com.github.simy4.xpath
 package scala.navigator
 
+import helpers.SerializationHelper
 import javax.xml.namespace.QName
 import navigator.Node
 import org.assertj.core.api.Assertions
@@ -15,35 +16,38 @@ class ScalaXmlNodeTest {
   private val root = new Root(xml)
 
   @Test
-  def shouldReturnDocumentName(): Unit = {
+  def shouldReturnDocumentName(): Unit =
     assertThat(root.getName).isEqualTo(new QName(Node.DOCUMENT))
-  }
 
   @Test
-  def shouldReturnRootElementTextRootTextAccessed(): Unit = {
-    assertThat(root.getText) isEqualTo "text"
-  }
+  def shouldReturnRootElementTextRootTextAccessed(): Unit =
+    assertThat(root.getText).isEqualTo("text")
 
   @Test
-  def shouldReturnRootElementWhenRootElementsAccessed(): Unit = {
-    assertThat(root.elements.asJava) containsExactly new Element(xml, 0, root)
-  }
+  def shouldReturnRootElementWhenRootElementsAccessed(): Unit =
+    assertThat(root.elements.asJava.asInstanceOf[java.lang.Iterable[AnyRef]]) containsExactly
+      new Element(xml, 0, root)
 
   @Test
-  def shouldReturnNilWhenRootAttributesAccessed(): Unit = {
+  def shouldReturnNilWhenRootAttributesAccessed(): Unit =
     assertThat(root.attributes.asJava).isEmpty()
-  }
 
   @Test
-  def shouldReturnNullWhenRootParentAccessed(): Unit = {
+  def shouldReturnNullWhenRootParentAccessed(): Unit =
     assertThat(root.parent).isNull()
-  }
 
   @Test
   def shouldReturnParentWhenElementParentAccessed(): Unit = {
     val element = root.elements.head
 
-    assertThat(element.parent) isEqualTo root
+    assertThat(element.parent).isEqualTo(root)
+  }
+
+  @Test
+  def shouldSerializeAndDeserializeRoot(): Unit = {
+    val deserializedNode = SerializationHelper.serializeAndDeserializeBack(root)
+
+    assertThat(deserializedNode).isEqualTo(root)
   }
 
   @Test
@@ -51,7 +55,14 @@ class ScalaXmlNodeTest {
     val parent = root.elements.head
     val attribute = parent.attributes.head
 
-    assertThat(attribute.parent) isEqualTo parent
+    assertThat(attribute.parent).isEqualTo(parent)
+  }
+
+  @Test
+  def shouldSerializeAndDeserializeElement(): Unit = {
+    val deserializedNode = SerializationHelper.serializeAndDeserializeBack(root.elements.head)
+
+    assertThat(deserializedNode).isEqualTo(root.elements.head)
   }
 
   @Test
@@ -66,6 +77,13 @@ class ScalaXmlNodeTest {
     val attribute = root.elements.head.attributes.head
 
     assertThat(attribute.attributes.asJava).isEmpty()
+  }
+
+  @Test
+  def shouldSerializeAndDeserializeAttribute(): Unit = {
+    val deserializedNode = SerializationHelper.serializeAndDeserializeBack(root.elements.head.attributes.head)
+
+    assertThat(deserializedNode).isEqualTo(root.elements.head.attributes.head)
   }
 
 }

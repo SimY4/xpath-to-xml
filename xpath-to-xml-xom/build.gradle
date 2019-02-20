@@ -8,9 +8,6 @@ dependencies {
     implementation 'com.io7m.xom:xom:[1.0,2.0['
 
     testImplementation project(':xpath-to-xml-test')
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$jUnitVersion"
-    testImplementation "org.junit.jupiter:junit-jupiter-params:$jUnitVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter:$jUnitVersion"
     testImplementation "org.assertj:assertj-core:$assertjVersion"
-
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jUnitVersion"
 }

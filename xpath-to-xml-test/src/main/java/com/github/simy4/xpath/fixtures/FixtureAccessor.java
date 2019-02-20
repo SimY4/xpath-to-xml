@@ -35,13 +35,13 @@ public final class FixtureAccessor {
      * @return ordered XPath to Value mappings
      */
     public Map<String, Object> getXmlProperties() {
-        try (var xpathPropertiesStream = getClass().getResourceAsStream(
-                String.format(XML_PROPERTIES_PATH_FORMAT, fixtureName))) {
+        final var resource = String.format(XML_PROPERTIES_PATH_FORMAT, fixtureName);
+        try (var xpathPropertiesStream = getClass().getResourceAsStream(resource)) {
             var xpathProperties = new OrderedProperties();
             xpathProperties.load(xpathPropertiesStream);
             return xpathProperties.toMap();
         } catch (IOException ioe) {
-            throw new UncheckedIOException(ioe);
+            throw new UncheckedIOException("Unable to fetch XML properties " + resource, ioe);
         }
     }
 
@@ -54,10 +54,11 @@ public final class FixtureAccessor {
     }
 
     private String getXml(String format) {
-        try (var xmlStream = getClass().getResourceAsStream(String.format(format, fixtureName, fixtureType))) {
+        final var resource = String.format(format, fixtureName, fixtureType);
+        try (var xmlStream = getClass().getResourceAsStream(resource)) {
             return new Scanner(xmlStream, "UTF-8").useDelimiter("\\A").next();
         } catch (IOException ioe) {
-            throw new UncheckedIOException(ioe);
+            throw new UncheckedIOException("Unable to fetch XML document " + resource, ioe);
         }
     }
 

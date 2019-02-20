@@ -10,58 +10,41 @@ import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.dom4j.Namespace;
-import org.dom4j.Node;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 class Dom4jNavigatorTest {
 
-    @Mock private Document root;
-    @Mock private Element parent;
-    @Mock private Element xml;
-    @Mock private Attribute attr;
+    private Element parent = DocumentHelper.createElement(new org.dom4j.QName("parent"));
+    private Document root = DocumentHelper.createDocument(parent);
+    private Element xml = DocumentHelper.createElement(new org.dom4j.QName("xml"));
+    private Attribute attr = DocumentHelper.createAttribute(xml, "attr", "");
 
-    @Mock private Element child1;
-    @Mock private Element child2;
-    @Mock private Element child3;
+    private Element child1 = DocumentHelper.createElement(new org.dom4j.QName("child1"));
+    private Element child2 = DocumentHelper.createElement(new org.dom4j.QName("child2"));
+    private Element child3 = DocumentHelper.createElement(new org.dom4j.QName("child3"));
 
-    @Mock private Attribute attr1;
-    @Mock private Attribute attr2;
-    @Mock private Attribute attr3;
+    private Attribute attr1 = DocumentHelper.createAttribute(xml, "attr1", "");
+    private Attribute attr2 = DocumentHelper.createAttribute(xml, "attr2", "");
+    private Attribute attr3 = DocumentHelper.createAttribute(xml, "attr3", "");
 
 
     private Navigator<Dom4jNode> navigator;
 
     @BeforeEach
     void setUp() {
-        when(root.getNodeType()).thenReturn(Node.DOCUMENT_NODE);
-        when(root.getRootElement()).thenReturn(parent);
-
-        when(xml.getDocument()).thenReturn(root);
-        when(xml.getNodeType()).thenReturn(org.dom4j.Node.ELEMENT_NODE);
-        when(xml.getParent()).thenReturn(parent);
-        when(xml.createCopy()).thenReturn(xml);
-        when(xml.elementIterator()).thenReturn(List.of(child1, child2, child3).iterator());
-        when(xml.attributeIterator()).thenReturn(List.of(attr1, attr2, attr3).iterator());
+        parent.add(xml);
+        xml.add(child1);
+        xml.add(child2);
+        xml.add(child3);
+        xml.add(attr1);
+        xml.add(attr2);
+        xml.add(attr3);
 
         navigator = new Dom4jNavigator(new Dom4jDocument(root));
     }
@@ -130,14 +113,15 @@ class Dom4jNavigatorTest {
 
     @Test
     void testCreateElementSuccess() {
-        assertThat(navigator.createElement(new Dom4jElement(xml), new QName("elem"))).isNotNull();
-        verify(xml).addElement(new org.dom4j.QName("elem"));
+        Dom4jNode elem = navigator.createElement(new Dom4jElement(xml), new QName("elem"));
+        assertThat(elem).extracting("name").containsExactly(new QName("elem"));
     }
 
     @Test
     void testCreateNsElementSuccess() {
-        assertThat(navigator.createElement(new Dom4jElement(xml), new QName("http://example.com/my", "elem", "my"))).isNotNull();
-        verify(xml).addElement(new org.dom4j.QName("elem", new Namespace("my", "http://example.com/my")));
+        Dom4jNode elem = navigator.createElement(new Dom4jElement(xml), new QName("http://example.com/my", "elem", "my"));
+        assertThat(elem).extracting("name").containsExactly(
+                new QName("http://example.com/my", "elem", "my"));
     }
 
     @Test
@@ -148,13 +132,8 @@ class Dom4jNavigatorTest {
 
     @Test
     void testPrependCopySuccess() {
-        var elements = new ArrayList<Element>();
-        elements.add(xml);
-        when(parent.elements()).thenReturn(elements);
-
         navigator.prependCopy(new Dom4jElement(xml));
-        verify(xml).createCopy();
-        assertThat(elements).containsExactly(xml, xml);
+        assertThat(parent.elements()).extracting("name").containsExactly(xml.getName(), xml.getName());
     }
 
     @Test
@@ -172,20 +151,19 @@ class Dom4jNavigatorTest {
     @Test
     void testSetTextSuccess() {
         navigator.setText(new Dom4jElement(xml), "text");
-        verify(xml).setText("text");
+        assertThat(xml.getText()).isEqualTo("text");
     }
 
     @Test
     void testSetTextFailure() {
-        doThrow(UnsupportedOperationException.class).when(xml).setText(anyString());
-        assertThatThrownBy(() -> navigator.setText(new Dom4jElement(xml), "text"))
+        assertThatThrownBy(() -> navigator.setText(new Dom4jDocument(root), "text"))
                 .isInstanceOf(XmlBuilderException.class);
     }
 
     @Test
     void testRemoveSuccess() {
         navigator.remove(new Dom4jElement(xml));
-        verify(parent).remove((Node) xml);
+        assertThat(parent.elements()).doesNotContain(xml);
     }
 
     @Test

@@ -10,7 +10,11 @@ import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
 
-public class PutValueEffect implements Effect {
+import java.io.Serializable;
+
+public class PutValueEffect implements Effect, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final Expr expr;
     private final String value;

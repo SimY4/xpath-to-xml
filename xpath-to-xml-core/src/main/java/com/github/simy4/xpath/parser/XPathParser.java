@@ -30,6 +30,7 @@ import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.xpath.XPathExpressionException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,9 +43,10 @@ import static java.util.Map.entry;
  * @author Alex Simkin
  * @since 1.0
  */
-@SuppressWarnings("MethodName")
-public class XPathParser {
+@SuppressWarnings({"MethodName", "SwitchStatementWithTooFewBranches"})
+public class XPathParser implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private static final QName ANY = new QName("*", "*");
 
     private final NamespaceContext namespaceContext;

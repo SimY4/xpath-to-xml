@@ -13,7 +13,6 @@ import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -37,7 +36,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class NotEqualsExprTest {
+class NotEqualsExprTest extends AbstractOperationExprTest {
 
     private static Stream<View<?>> equals() {
         return Stream.of(
@@ -69,14 +68,10 @@ class NotEqualsExprTest {
     private static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));
 
     @Mock private Navigator<TestNode> navigator;
-    @Mock private Expr leftExpr;
-    @Mock private Expr rightExpr;
-
-    private Expr notEqualsExpr;
 
     @BeforeEach
     void setUp() {
-        notEqualsExpr = new NotEqualsExpr(leftExpr, rightExpr);
+        operationExpr = new NotEqualsExpr(leftExpr, rightExpr);
     }
 
     @ParameterizedTest(name = "Given equal views, {0} and {1}")
@@ -88,7 +83,7 @@ class NotEqualsExprTest {
         when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(right);
 
         // when
-        var result = notEqualsExpr.resolve(navigator, parentNode, false);
+        var result = operationExpr.resolve(navigator, parentNode, false);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(false));
@@ -103,7 +98,7 @@ class NotEqualsExprTest {
         when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(right);
 
         // when
-        var result = notEqualsExpr.resolve(navigator, parentNode, false);
+        var result = operationExpr.resolve(navigator, parentNode, false);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(true));
@@ -121,7 +116,7 @@ class NotEqualsExprTest {
         when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(right);
 
         // when
-        var result = notEqualsExpr.resolve(navigator, parentNode, true);
+        var result = operationExpr.resolve(navigator, parentNode, true);
 
         // then
         assertThat(result).isEqualTo(BooleanView.of(true));
@@ -140,13 +135,8 @@ class NotEqualsExprTest {
         when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(right);
 
         // then
-        assertThatThrownBy(() -> notEqualsExpr.resolve(navigator, parentNode, true))
+        assertThatThrownBy(() -> operationExpr.resolve(navigator, parentNode, true))
                 .isInstanceOf(XmlBuilderException.class);
-    }
-
-    @Test
-    void testToString() {
-        assertThat(notEqualsExpr).hasToString(leftExpr.toString() + "!=" + rightExpr.toString());
     }
 
 }

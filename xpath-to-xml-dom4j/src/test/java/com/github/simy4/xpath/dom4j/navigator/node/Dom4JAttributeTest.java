@@ -1,34 +1,30 @@
 package com.github.simy4.xpath.dom4j.navigator.node;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.helpers.SerializationHelper;
 import org.dom4j.Attribute;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Namespace;
+import org.dom4j.QName;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import javax.xml.XMLConstants;
 
+import java.io.IOException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 class Dom4JAttributeTest {
 
-    @Mock private Attribute attribute;
+    private Attribute attribute = DocumentHelper.createAttribute(
+            DocumentHelper.createElement(new QName("parent")), new QName("node"), "text");
 
     private Dom4jNode node;
 
     @BeforeEach
     void setUp() {
-        when(attribute.getText()).thenReturn("text");
-
         node = new Dom4jAttribute(attribute);
     }
 
@@ -44,21 +40,18 @@ class Dom4JAttributeTest {
 
     @Test
     void shouldThrowExceptionWhenCreateAttribute() {
-        assertThatThrownBy(() -> node.createAttribute(new org.dom4j.QName("attr")))
+        assertThatThrownBy(() -> node.createAttribute(new QName("attr")))
                 .isInstanceOf(XmlBuilderException.class);
     }
 
     @Test
     void shouldThrowExceptionWhenCreateElement() {
-        assertThatThrownBy(() -> node.createElement(new org.dom4j.QName("elem")))
+        assertThatThrownBy(() -> node.createElement(new QName("elem")))
                 .isInstanceOf(XmlBuilderException.class);
     }
 
     @Test
     void shouldReturnNodeNameForNamespaceUnawareAttribute() {
-        when(attribute.getName()).thenReturn("node");
-        when(attribute.getNamespace()).thenReturn(Namespace.NO_NAMESPACE);
-
         var result = node.getName();
 
         assertThat(result).extracting("namespaceURI", "localPart", "prefix")
@@ -67,8 +60,10 @@ class Dom4JAttributeTest {
 
     @Test
     void shouldReturnNodeNameForNamespaceAwareAttribute() {
-        when(attribute.getName()).thenReturn("node");
-        when(attribute.getNamespace()).thenReturn(new Namespace("my", "http://www.example.com/my"));
+        attribute = DocumentHelper.createAttribute(
+                DocumentHelper.createElement(new QName("parent")), new QName("node",
+                        new Namespace("my", "http://www.example.com/my")), "text");
+        node = new Dom4jAttribute(attribute);
 
         var result = node.getName();
 
@@ -79,6 +74,15 @@ class Dom4JAttributeTest {
     @Test
     void shouldReturnNodeTextContent() {
         assertThat(node.getText()).isEqualTo("text");
+    }
+
+    @Test
+    void shouldSerializeAndDeserialize() throws IOException, ClassNotFoundException {
+        // when
+        var deserializedNode = SerializationHelper.serializeAndDeserializeBack(node);
+
+        // then
+        assertThat(deserializedNode).extracting("name").containsExactly(node.getName());
     }
 
 }

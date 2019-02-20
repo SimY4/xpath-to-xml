@@ -1,10 +1,14 @@
 package com.github.simy4.xpath.jdom.navigator.node;
 
-abstract class AbstractJDomNode<N> implements JDomNode {
+import java.io.Serializable;
+
+abstract class AbstractJDomNode<N extends Serializable> implements JDomNode, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final N node;
 
-    AbstractJDomNode(N node) {
+    protected AbstractJDomNode(N node) {
         this.node = node;
     }
 

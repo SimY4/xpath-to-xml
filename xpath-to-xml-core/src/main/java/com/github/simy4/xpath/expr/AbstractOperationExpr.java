@@ -6,12 +6,16 @@ import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.NodeView;
 import com.github.simy4.xpath.view.View;
 
-abstract class AbstractOperationExpr implements Expr {
+import java.io.Serializable;
+
+abstract class AbstractOperationExpr implements Expr, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final Expr leftExpr;
     private final Expr rightExpr;
 
-    AbstractOperationExpr(Expr leftExpr, Expr rightExpr) {
+    protected AbstractOperationExpr(Expr leftExpr, Expr rightExpr) {
         this.leftExpr = leftExpr;
         this.rightExpr = rightExpr;
     }
@@ -25,10 +29,10 @@ abstract class AbstractOperationExpr implements Expr {
         return resolve(navigator, leftView, rightView, newGreedy);
     }
 
-    abstract <N extends Node> View<N> resolve(Navigator<N> navigator, View<N> left, View<N> right, boolean greedy)
-            throws XmlBuilderException;
+    protected abstract <N extends Node> View<N> resolve(Navigator<N> navigator, View<N> left, View<N> right,
+                                                        boolean greedy) throws XmlBuilderException;
 
-    abstract String operator();
+    protected abstract String operator();
 
     @Override
     public final String toString() {

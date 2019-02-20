@@ -9,6 +9,7 @@ import com.github.simy4.xpath.spi.NavigatorSpi;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPathExpressionException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,9 +21,9 @@ import java.util.ServiceLoader;
  * @author Alex Simkin
  * @since 1.0
  */
-@SuppressWarnings({"WeakerAccess", "unused"})
-public class XmlBuilder {
+public class XmlBuilder implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private static final Iterable<NavigatorSpi> navigatorSpis = ServiceLoader.load(NavigatorSpi.class);
 
     /**

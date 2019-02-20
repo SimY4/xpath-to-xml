@@ -10,7 +10,6 @@ import com.github.simy4.xpath.view.NumberView;
 import com.github.simy4.xpath.view.View;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -30,7 +29,7 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class AdditionExprTest {
+class AdditionExprTest extends AbstractOperationExprTest {
 
     private static Stream<View<?>> three() {
         return Stream.of(
@@ -58,14 +57,10 @@ class AdditionExprTest {
     }
 
     @Mock private Navigator<TestNode> navigator;
-    @Mock private Expr leftExpr;
-    @Mock private Expr rightExpr;
-
-    private Expr additionExpr;
 
     @BeforeEach
     void setUp() {
-        additionExpr = new AdditionExpr(leftExpr, rightExpr);
+        operationExpr = new AdditionExpr(leftExpr, rightExpr);
     }
 
     @ParameterizedTest(name = "Given {0} and {1}")
@@ -77,7 +72,7 @@ class AdditionExprTest {
         when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(right);
 
         // when
-        assertThat(additionExpr.resolve(navigator, new NodeView<>(node("node")), false))
+        assertThat(operationExpr.resolve(navigator, new NodeView<>(node("node")), false))
                 .extracting("number").contains(6.0);
     }
 
@@ -90,13 +85,8 @@ class AdditionExprTest {
         when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(nan);
 
         // when
-        assertThat(additionExpr.resolve(navigator, new NodeView<>(node("node")), false))
+        assertThat(operationExpr.resolve(navigator, new NodeView<>(node("node")), false))
                 .extracting("number").contains(Double.NaN);
-    }
-
-    @Test
-    void testToString() {
-        assertThat(additionExpr).hasToString(leftExpr.toString() + "+" + rightExpr.toString());
     }
 
 }

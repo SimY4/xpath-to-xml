@@ -9,12 +9,15 @@ import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 
 import javax.xml.namespace.QName;
+import java.io.Serializable;
 
-abstract class AbstractAxisResolver implements AxisResolver, Predicate<Node> {
+abstract class AbstractAxisResolver implements AxisResolver, Predicate<Node>, Serializable {
 
-    final QName name;
+    private static final long serialVersionUID = 1L;
 
-    AbstractAxisResolver(QName name) {
+    protected final QName name;
+
+    protected AbstractAxisResolver(QName name) {
         this.name = name;
     }
 
@@ -28,9 +31,9 @@ abstract class AbstractAxisResolver implements AxisResolver, Predicate<Node> {
         return result;
     }
 
-    abstract <N extends Node> Iterable<? extends N> traverseAxis(Navigator<N> navigator, NodeView<N> view);
+    protected abstract <N extends Node> Iterable<? extends N> traverseAxis(Navigator<N> navigator, NodeView<N> view);
 
-    final boolean isWildcard() {
+    protected final boolean isWildcard() {
         return "*".equals(name.getNamespaceURI()) || "*".equals(name.getLocalPart());
     }
 

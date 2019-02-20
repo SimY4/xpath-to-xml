@@ -14,6 +14,8 @@ import javax.xml.namespace.QName;
 
 public final class JDomElement extends AbstractJDomNode<Element> {
 
+    private static final long serialVersionUID = 1L;
+
     public JDomElement(Element element) {
         super(element);
     }

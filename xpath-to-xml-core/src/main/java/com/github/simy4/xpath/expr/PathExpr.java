@@ -6,10 +6,13 @@ import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeView;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.StringJoiner;
 
-public class PathExpr implements Expr {
+public class PathExpr implements Expr, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final List<StepExpr> pathExpr;
 

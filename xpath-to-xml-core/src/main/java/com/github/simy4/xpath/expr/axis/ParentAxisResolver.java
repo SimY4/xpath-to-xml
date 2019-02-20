@@ -10,12 +10,14 @@ import java.util.Collections;
 
 public class ParentAxisResolver extends AbstractAxisResolver {
 
+    private static final long serialVersionUID = 1L;
+
     public ParentAxisResolver(QName name) {
         super(name);
     }
 
     @Override
-    <N extends Node> Iterable<N> traverseAxis(Navigator<N> navigator, NodeView<N> view) {
+    protected <N extends Node> Iterable<N> traverseAxis(Navigator<N> navigator, NodeView<N> view) {
         final var parent = navigator.parentOf(view.getNode());
         return null == parent ? Collections.emptyList() : Collections.singletonList(parent);
     }
