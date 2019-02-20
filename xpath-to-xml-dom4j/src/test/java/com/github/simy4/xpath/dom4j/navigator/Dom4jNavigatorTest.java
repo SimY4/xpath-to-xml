@@ -113,13 +113,13 @@ class Dom4jNavigatorTest {
 
     @Test
     void testCreateElementSuccess() {
-        Dom4jNode elem = navigator.createElement(new Dom4jElement(xml), new QName("elem"));
+        var elem = navigator.createElement(new Dom4jElement(xml), new QName("elem"));
         assertThat(elem).extracting("name").containsExactly(new QName("elem"));
     }
 
     @Test
     void testCreateNsElementSuccess() {
-        Dom4jNode elem = navigator.createElement(new Dom4jElement(xml), new QName("http://example.com/my", "elem", "my"));
+        var elem = navigator.createElement(new Dom4jElement(xml), new QName("http://example.com/my", "elem", "my"));
         assertThat(elem).extracting("name").containsExactly(
                 new QName("http://example.com/my", "elem", "my"));
     }

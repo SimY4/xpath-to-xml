@@ -103,7 +103,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
         @SuppressWarnings("StatementWithEmptyBody")
         private void writeObject(ObjectOutputStream out) throws IOException {
-            for (NodeView<T> ignored : this) { } // eagerly consume this node set to populate cache
+            for (var ignored : this) { } // eagerly consume this node set to populate cache
             out.writeObject(cache);
         }
 
@@ -115,7 +115,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
             @Override
             public boolean hasNext() {
-                boolean hasNext = current.hasNext();
+                var hasNext = current.hasNext();
                 if (!hasNext && !swapped && null != nodeSet) {
                     current = new FilteringIterator<T>(nodeSet.iterator(), IterableNodeSet.this);
                     swapped = true;
@@ -168,7 +168,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
         @SuppressWarnings("StatementWithEmptyBody")
         private void writeObject(ObjectOutputStream out) throws IOException {
-            for (NodeView<T> ignored : this) { } // eagerly consume this node set to populate cache
+            for (var ignored : this) { } // eagerly consume this node set to populate cache
             out.writeObject(cache);
         }
 
@@ -180,7 +180,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
             @Override
             public boolean hasNext() {
-                boolean hasNext = current.hasNext();
+                var hasNext = current.hasNext();
                 if (!hasNext && !swapped && null != nodeSetView) {
                     current = new FilteringIterator<>(new TransformingAndFlatteningIterator<>(nodeSetView.iterator(),
                             FlatMapNodeSet.this), FlatMapNodeSet.this);

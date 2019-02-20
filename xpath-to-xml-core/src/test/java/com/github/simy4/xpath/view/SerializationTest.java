@@ -36,7 +36,7 @@ class SerializationTest {
     @MethodSource("views")
     void shouldSerializeAndDeserializeView(View<?> view) throws IOException, ClassNotFoundException {
         // when
-        View<?> deserializedView = SerializationHelper.serializeAndDeserializeBack(view);
+        var deserializedView = SerializationHelper.serializeAndDeserializeBack(view);
 
         // then
         assertThat(deserializedView).isEqualToIgnoringGivenFields(view, "nodeSet", "filter", "nodeSetView", "fmap");

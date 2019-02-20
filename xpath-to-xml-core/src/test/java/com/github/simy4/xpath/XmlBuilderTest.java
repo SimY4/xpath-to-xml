@@ -36,7 +36,7 @@ class XmlBuilderTest {
     @DisplayName("Should serialize it and deserialize it back")
     void shouldSerializeAndDeserializeBuilder() throws IOException, ClassNotFoundException, XPathExpressionException {
         // given
-        XmlBuilder builder = new XmlBuilder(new SimpleNamespaceContext())
+        var builder = new XmlBuilder(new SimpleNamespaceContext())
                 .put("test")
                 .putAll("test", "test", "test")
                 .putAll(asList("test", "test", "test"))
@@ -47,7 +47,7 @@ class XmlBuilderTest {
                 .removeAll(asList("test", "test", "test"));
 
         // when
-        XmlBuilder deserializedBuild = SerializationHelper.serializeAndDeserializeBack(builder);
+        var deserializedBuild = SerializationHelper.serializeAndDeserializeBack(builder);
 
         // then
         assertThat(deserializedBuild).extracting("effects").flatExtracting(o -> ((Collection<?>) o))

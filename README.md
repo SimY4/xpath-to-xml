@@ -57,9 +57,9 @@ import org.xml.sax.InputSource;
 
 class Example0 { 
     public static Document document(String xml) throws Exception {
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        InputSource inputSource = new InputSource(new StringReader(xml));
+        var documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        var documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        var inputSource = new InputSource(new StringReader(xml));
         return documentBuilder.parse(inputSource);
     }
 }

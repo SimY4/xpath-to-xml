@@ -74,7 +74,7 @@ abstract class AbstractAxisResolverTest {
     @DisplayName("Should serialize and deserialize axis")
     void shouldSerializeAndDeserializeAxis() throws IOException, ClassNotFoundException {
         // when
-        AxisResolver deserializedAxis = SerializationHelper.serializeAndDeserializeBack(axisResolver);
+        var deserializedAxis = SerializationHelper.serializeAndDeserializeBack(axisResolver);
 
         // then
         assertThat(deserializedAxis).isEqualToComparingFieldByFieldRecursively(axisResolver);
