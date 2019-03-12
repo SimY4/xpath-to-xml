@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class MultiplicationExprTest extends AbstractOperationExprTest {
 
-    private static Stream<View<?>> three() {
+    static Stream<View<?>> three() {
         return Stream.of(
                 new LiteralView<>("3.0"),
                 new NumberView<>(3.0),
@@ -40,11 +40,11 @@ class MultiplicationExprTest extends AbstractOperationExprTest {
         );
     }
 
-    private static Stream<Arguments> numberPairs() {
+    static Stream<Arguments> numberPairs() {
         return three().flatMap(n1 -> three().map(n2 -> arguments(n1, n2)));
     }
 
-    private static Stream<View<?>> nan() {
+    static Stream<View<?>> nan() {
         return Stream.of(
                 new LiteralView<TestNode>("literal"),
                 new NumberView<TestNode>(Double.NaN),
@@ -53,7 +53,7 @@ class MultiplicationExprTest extends AbstractOperationExprTest {
         );
     }
 
-    private static Stream<Arguments> numberAndNan() {
+    static Stream<Arguments> numberAndNan() {
         return three().flatMap(n -> nan().map(nan -> arguments(n, nan)));
     }
 

@@ -27,7 +27,7 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class PredicateExprTest {
 
-    private static Stream<Arguments> truthy() {
+    static Stream<Arguments> truthy() {
         return Stream.of(
                 arguments(new LiteralExpr("2.0")),
                 arguments(new EqualsExpr(new NumberExpr(1.0), new NumberExpr(1.0))),
@@ -35,7 +35,7 @@ class PredicateExprTest {
         );
     }
 
-    private static Stream<Arguments> falsy() {
+    static Stream<Arguments> falsy() {
         return Stream.of(
                 arguments(new LiteralExpr("")),
                 arguments(new NotEqualsExpr(new NumberExpr(1.0), new NumberExpr(1.0)))

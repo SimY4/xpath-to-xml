@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class LessThanExprTest extends AbstractOperationExprTest {
 
-    private static Stream<View<?>> lesser() {
+    static Stream<View<?>> lesser() {
         return Stream.of(
                 new LiteralView<>("1.0"),
                 new NumberView<>(1.0),
@@ -43,7 +43,7 @@ class LessThanExprTest extends AbstractOperationExprTest {
         );
     }
 
-    private static Stream<View<?>> greater() {
+    static Stream<View<?>> greater() {
         return Stream.of(
                 new LiteralView<>("2.0"),
                 new NumberView<>(2.0),
@@ -52,11 +52,11 @@ class LessThanExprTest extends AbstractOperationExprTest {
         );
     }
 
-    private static Stream<Arguments> lessThan() {
+    static Stream<Arguments> lessThan() {
         return lesser().flatMap(l -> greater().map(g -> arguments(l, g)));
     }
 
-    private static Stream<Arguments> equals() {
+    static Stream<Arguments> equals() {
         return lesser().flatMap(l1 -> lesser().map(l2 -> arguments(l1, l2)));
     }
 
