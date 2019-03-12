@@ -32,7 +32,7 @@ public class PutEffect implements Effect {
     private static final class EagerVisitor<N extends Node> extends AbstractViewVisitor<N, Void> {
 
         @Override
-        @SuppressWarnings("StatementWithEmptyBody")
+        @SuppressWarnings({"StatementWithEmptyBody", "UnusedVariable"})
         public Void visit(IterableNodeView<N> nodeSet) throws XmlBuilderException {
             for (NodeView<N> ignored : nodeSet) { } // eagerly consume resolved iterable
             return null;

@@ -39,7 +39,7 @@ class XmlBuilderTest {
     private static final TransformerFactory transformerFactory = TransformerFactory.newInstance();
     private static final XPathFactory xpathFactory = XPathFactory.newInstance();
 
-    private static Stream<Arguments> data() {
+    static Stream<Arguments> data() {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilderFactory nsAwareDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
         nsAwareDocumentBuilderFactory.setNamespaceAware(true);

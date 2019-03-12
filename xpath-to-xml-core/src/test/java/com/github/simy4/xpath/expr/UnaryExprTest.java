@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class UnaryExprTest {
 
-    private static Stream<Arguments> number() {
+    static Stream<Arguments> number() {
         return Stream.of(
                 arguments(new LiteralView<>("2.0")),
                 arguments(new NumberView<>(2.0)),
@@ -41,7 +41,7 @@ class UnaryExprTest {
         );
     }
 
-    private static Stream<Arguments> nan() {
+    static Stream<Arguments> nan() {
         return Stream.of(
                 arguments(new LiteralView<>("literal")),
                 arguments(new NumberView<>(Double.NaN)),

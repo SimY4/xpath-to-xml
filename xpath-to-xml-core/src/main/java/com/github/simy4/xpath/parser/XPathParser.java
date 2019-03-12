@@ -335,6 +335,7 @@ public class XPathParser {
         }
     }
 
+    @SuppressWarnings("MixedMutabilityReturnType")
     private List<Expr> PredicateList(Context context) throws XPathExpressionException {
         if (Type.LEFT_BRACKET == context.tokenAt(1).getType()) {
             final List<Expr> predicateList = new ArrayList<Expr>();

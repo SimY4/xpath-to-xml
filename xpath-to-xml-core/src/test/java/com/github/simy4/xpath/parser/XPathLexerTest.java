@@ -17,7 +17,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class XPathLexerTest {
 
-    private static Stream<Arguments> data() {
+    static Stream<Arguments> data() {
         // Examples from https://msdn.microsoft.com/en-us/library/ms256086(v=vs.110).aspx
         return Stream.of(
                 arguments("./author", asList(token(Type.DOT, "."), token(Type.SLASH, "/"),

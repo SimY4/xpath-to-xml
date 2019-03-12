@@ -32,7 +32,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class XmlBuilderTest {
 
-    private static Stream<Arguments> data() {
+    static Stream<Arguments> data() {
         Element nsAwareRoot = new Element("breakfast_menu", "http://www.example.com/my");
         nsAwareRoot.setNamespacePrefix("my");
         return Stream.of(
