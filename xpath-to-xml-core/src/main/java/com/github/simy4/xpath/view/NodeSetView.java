@@ -108,11 +108,10 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
             out.writeObject(cache);
         }
 
-        private final class IteratorImpl extends ReadOnlyIterator<NodeView<T>> {
+        private final class IteratorImpl extends PositionAwareIterator<NodeView<T>> {
 
             private Iterator<? extends T> current = cache.iterator();
             private boolean swapped;
-            private int position = 1;
 
             @Override
             public boolean hasNext() {
@@ -126,11 +125,8 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
             }
 
             @Override
-            public NodeView<T> next() {
-                if (!hasNext()) {
-                    throw new NoSuchElementException("No more elements");
-                }
-                return new NodeView<T>(current.next(), position++, hasNext());
+            public NodeView<T> next(int position) {
+                return new NodeView<T>(current.next(), position, hasNext());
             }
 
         }
@@ -173,11 +169,10 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
             out.writeObject(cache);
         }
 
-        private final class IteratorImpl extends ReadOnlyIterator<NodeView<T>> {
+        private final class IteratorImpl extends PositionAwareIterator<NodeView<T>> {
 
             private Iterator<?> current = cache.iterator();
             private boolean swapped;
-            private int position = 1;
 
             @Override
             public boolean hasNext() {
@@ -194,15 +189,28 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
             @Override
             @SuppressWarnings("unchecked")
-            public NodeView<T> next() {
-                if (!hasNext()) {
-                    throw new NoSuchElementException("No more elements");
-                }
-                return swapped ? ((NodeView<T>) current.next()).copy(position++, hasNext())
-                        : new NodeView<T>((T) current.next(), position++, hasNext());
+            public NodeView<T> next(int position) {
+                return swapped ? ((NodeView<T>) current.next()).copy(position, hasNext())
+                        : new NodeView<T>((T) current.next(), position, hasNext());
             }
 
         }
+
+    }
+
+    private abstract static class PositionAwareIterator<T> extends ReadOnlyIterator<T> {
+
+        private int position = 1;
+
+        @Override
+        public final T next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException("No more elements");
+            }
+            return next(position++);
+        }
+
+        protected abstract T next(int position);
 
     }
 
