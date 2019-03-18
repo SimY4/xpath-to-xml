@@ -1,7 +1,6 @@
 package com.github.simy4.xpath.jdom.navigator.node;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.util.TransformingIterator;
 import org.jdom2.Attribute;
 import org.jdom2.Content;
 import org.jdom2.Element;
@@ -48,14 +47,16 @@ public final class JDomElement extends AbstractJDomNode<Element> {
 
     @Override
     public Iterable<? extends JDomNode> elements() {
-        return (Iterable<JDomElement>) () -> new TransformingIterator<>(getNode().getChildren().iterator(),
-                JDomElement::new);
+        return (Iterable<JDomElement>) () -> getNode().getChildren().stream()
+                .map(JDomElement::new)
+                .iterator();
     }
 
     @Override
     public Iterable<? extends JDomNode> attributes() {
-        return (Iterable<JDomAttribute>) () -> new TransformingIterator<>(getNode().getAttributes().iterator(),
-                JDomAttribute::new);
+        return (Iterable<JDomAttribute>) () -> getNode().getAttributes().stream()
+                .map(JDomAttribute::new)
+                .iterator();
     }
 
     @Override
