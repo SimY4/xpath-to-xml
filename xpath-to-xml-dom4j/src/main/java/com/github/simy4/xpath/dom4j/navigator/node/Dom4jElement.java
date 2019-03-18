@@ -1,6 +1,5 @@
 package com.github.simy4.xpath.dom4j.navigator.node;
 
-import com.github.simy4.xpath.util.TransformingIterator;
 import org.dom4j.Attribute;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -32,12 +31,16 @@ public final class Dom4jElement extends AbstractDom4jNode<Element> {
 
     @Override
     public Iterable<? extends Dom4jNode> elements() {
-        return () -> new TransformingIterator<>(getNode().elementIterator(), Dom4jElement::new);
+        return (Iterable<Dom4jElement>) () -> getNode().elements().stream()
+                .map(Dom4jElement::new)
+                .iterator();
     }
 
     @Override
     public Iterable<? extends Dom4jNode> attributes() {
-        return () -> new TransformingIterator<>(getNode().attributeIterator(), Dom4jAttribute::new);
+        return (Iterable<Dom4jAttribute>) () -> getNode().attributes().stream()
+                .map(Dom4jAttribute::new)
+                .iterator();
     }
 
     @Override
