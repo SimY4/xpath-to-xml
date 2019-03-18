@@ -9,8 +9,7 @@ import nu.xom.Node;
 import nu.xom.Text;
 
 import javax.xml.namespace.QName;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.stream.IntStream;
 
 public final class XomElement extends AbstractXomNode<Element> {
 
@@ -30,12 +29,18 @@ public final class XomElement extends AbstractXomNode<Element> {
 
     @Override
     public Iterable<? extends XomNode> elements() {
-        return (Iterable<XomElement>) () -> new XomElementsIterator(getNode().getChildElements());
+        final Elements childElements = getNode().getChildElements();
+        return (Iterable<XomElement>) () -> IntStream.range(0, childElements.size())
+                .mapToObj(i -> new XomElement(childElements.get(i)))
+                .iterator();
     }
 
     @Override
     public Iterable<? extends XomNode> attributes() {
-        return (Iterable<XomAttribute>) () -> new XomAttributesIterator(getNode());
+        final Element node = getNode();
+        return (Iterable<XomAttribute>) () -> IntStream.range(0, node.getAttributeCount())
+                .mapToObj(i -> new XomAttribute(node.getAttribute(i)))
+                .iterator();
     }
 
     @Override
@@ -72,54 +77,6 @@ public final class XomElement extends AbstractXomNode<Element> {
         } catch (IllegalAddException iae) {
             throw new XmlBuilderException("Unable to set value to " + getNode(), iae);
         }
-    }
-
-    private static final class XomAttributesIterator implements Iterator<XomAttribute> {
-
-        private final Element element;
-        private int cursor;
-
-        XomAttributesIterator(Element element) {
-            this.element = element;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return cursor < element.getAttributeCount();
-        }
-
-        @Override
-        public XomAttribute next() {
-            if (!hasNext()) {
-                throw new NoSuchElementException("No more elements");
-            }
-            return new XomAttribute(element.getAttribute(cursor++));
-        }
-
-    }
-
-    private static final class XomElementsIterator implements Iterator<XomElement> {
-
-        private final Elements elements;
-        private int cursor;
-
-        XomElementsIterator(Elements elements) {
-            this.elements = elements;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return cursor < elements.size();
-        }
-
-        @Override
-        public XomElement next() {
-            if (!hasNext()) {
-                throw new NoSuchElementException("No more elements");
-            }
-            return new XomElement(elements.get(cursor++));
-        }
-
     }
 
 }
