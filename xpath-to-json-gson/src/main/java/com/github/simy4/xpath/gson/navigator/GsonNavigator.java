@@ -5,7 +5,6 @@ import com.github.simy4.xpath.gson.navigator.node.GsonByIndexNode;
 import com.github.simy4.xpath.gson.navigator.node.GsonByNameNode;
 import com.github.simy4.xpath.gson.navigator.node.GsonNode;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.util.FilteringIterator;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -36,18 +35,21 @@ public class GsonNavigator implements Navigator<GsonNode> {
 
     @Override
     public Iterable<? extends GsonNode> elementsOf(final GsonNode parent) {
-        return () -> new FilteringIterator<>(parent.iterator(), node -> {
-            final JsonElement jsonElement = node.get();
-            return jsonElement.isJsonObject() || jsonElement.isJsonArray();
-        });
+        return () -> parent.stream()
+                .filter(node -> {
+                    final JsonElement jsonElement = node.get();
+                    return jsonElement.isJsonObject() || jsonElement.isJsonArray();
+                })
+                .iterator();
     }
 
     @Override
     public Iterable<? extends GsonNode> attributesOf(final GsonNode parent) {
-        return () -> new FilteringIterator<>(parent.iterator(), node -> {
-            final JsonElement jsonElement = node.get();
-            return jsonElement.isJsonNull() || jsonElement.isJsonPrimitive();
-        });
+        return () -> parent.stream()
+                .filter(node -> {
+                    final JsonElement jsonElement = node.get();
+                    return jsonElement.isJsonNull() || jsonElement.isJsonPrimitive();
+                }).iterator();
     }
 
     @Override

@@ -1,15 +1,13 @@
 package com.github.simy4.xpath.gson.navigator.node;
 
-import com.github.simy4.xpath.util.Function;
-import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
-import com.github.simy4.xpath.util.TransformingIterator;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 abstract class AbstractGsonNode implements GsonNode {
 
@@ -50,7 +48,7 @@ abstract class AbstractGsonNode implements GsonNode {
     }
 
     @Override
-    public final Iterator<GsonNode> iterator() {
+    public final Stream<GsonNode> stream() {
         return traverse(get(), this);
     }
 
@@ -78,21 +76,21 @@ abstract class AbstractGsonNode implements GsonNode {
         return Objects.toString(get(), "???");
     }
 
-    private static Iterator<GsonNode> traverse(JsonElement jsonElement, GsonNode parent) {
+    private static Stream<GsonNode> traverse(JsonElement jsonElement, GsonNode parent) {
         if (jsonElement.isJsonObject()) {
             final JsonObject jsonObject = jsonElement.getAsJsonObject();
-            return new TransformingIterator<>(jsonObject.keySet().iterator(), name ->
-                    new GsonByNameNode(jsonObject, name, parent));
+            return jsonObject.keySet().stream()
+                    .map(name -> new GsonByNameNode(jsonObject, name, parent));
         } else if (jsonElement.isJsonArray()) {
             final JsonArray jsonArray = jsonElement.getAsJsonArray();
-            return new TransformingAndFlatteningIterator<>(jsonArray.iterator(),
-                    new JsonArrayWrapper(jsonArray, parent));
+            return StreamSupport.stream(jsonArray.spliterator(), false)
+                    .flatMap(new JsonArrayWrapper(jsonArray, parent));
         } else {
-            return Collections.emptyIterator();
+            return Stream.empty();
         }
     }
 
-    private static final class JsonArrayWrapper implements Function<JsonElement, Iterator<GsonNode>> {
+    private static final class JsonArrayWrapper implements Function<JsonElement, Stream<GsonNode>> {
 
         private final JsonArray parentArray;
         private final GsonNode parent;
@@ -104,10 +102,10 @@ abstract class AbstractGsonNode implements GsonNode {
         }
 
         @Override
-        public Iterator<GsonNode> apply(JsonElement jsonElement) {
+        public Stream<GsonNode> apply(JsonElement jsonElement) {
             final GsonNode arrayElemNode = new GsonByIndexNode(parentArray, index++, parent);
             return jsonElement.isJsonPrimitive() || jsonElement.isJsonNull()
-                    ? Collections.singleton(arrayElemNode).iterator() : traverse(jsonElement, arrayElemNode);
+                    ? Stream.of(arrayElemNode) : traverse(jsonElement, arrayElemNode);
         }
 
     }
