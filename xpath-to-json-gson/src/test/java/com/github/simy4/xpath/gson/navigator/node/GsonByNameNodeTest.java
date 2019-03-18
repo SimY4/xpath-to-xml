@@ -50,7 +50,7 @@ class GsonByNameNodeTest {
     void shouldTraverseObject() {
         GsonNode parent = new GsonRootNode(jsonObject);
 
-        assertThat(parent.iterator()).containsExactlyInAnyOrder(
+        assertThat(parent).containsExactlyInAnyOrder(
                 new GsonByNameNode(jsonObject, "one", parent),
                 new GsonByNameNode(jsonObject, "two", parent),
                 new GsonByNameNode(jsonObject, "three", parent)

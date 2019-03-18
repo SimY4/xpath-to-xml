@@ -101,17 +101,16 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
             return filter.test(node) && cache.add(node);
         }
 
-        @SuppressWarnings("StatementWithEmptyBody")
+        @SuppressWarnings({"StatementWithEmptyBody", "UnusedVariable"})
         private void writeObject(ObjectOutputStream out) throws IOException {
             for (NodeView<T> ignored : this) { } // eagerly consume this node set to populate cache
             out.writeObject(cache);
         }
 
-        private final class IteratorImpl implements Iterator<NodeView<T>> {
+        private final class IteratorImpl extends PositionAwareIterator<NodeView<T>> {
 
             private Iterator<? extends T> current = cache.iterator();
             private boolean swapped;
-            private int position = 1;
 
             @Override
             public boolean hasNext() {
@@ -125,11 +124,8 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
             }
 
             @Override
-            public NodeView<T> next() {
-                if (!hasNext()) {
-                    throw new NoSuchElementException("No more elements");
-                }
-                return new NodeView<>(current.next(), position++, hasNext());
+            public NodeView<T> next(int position) {
+                return new NodeView<>(current.next(), position, hasNext());
             }
 
         }
@@ -166,17 +162,16 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
             return fmap.apply(view).iterator();
         }
 
-        @SuppressWarnings("StatementWithEmptyBody")
+        @SuppressWarnings({"StatementWithEmptyBody", "UnusedVariable"})
         private void writeObject(ObjectOutputStream out) throws IOException {
             for (NodeView<T> ignored : this) { } // eagerly consume this node set to populate cache
             out.writeObject(cache);
         }
 
-        private final class IteratorImpl implements Iterator<NodeView<T>> {
+        private final class IteratorImpl extends PositionAwareIterator<NodeView<T>> {
 
             private Iterator<?> current = cache.iterator();
             private boolean swapped;
-            private int position = 1;
 
             @Override
             public boolean hasNext() {
@@ -192,15 +187,28 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
             @Override
             @SuppressWarnings("unchecked")
-            public NodeView<T> next() {
-                if (!hasNext()) {
-                    throw new NoSuchElementException("No more elements");
-                }
-                return swapped ? ((NodeView<T>) current.next()).copy(position++, hasNext())
-                        : new NodeView<>((T) current.next(), position++, hasNext());
+            public NodeView<T> next(int position) {
+                return swapped ? ((NodeView<T>) current.next()).copy(position, hasNext())
+                        : new NodeView<>((T) current.next(), position, hasNext());
             }
 
         }
+
+    }
+
+    private abstract static class PositionAwareIterator<T> implements Iterator<T> {
+
+        private int position = 1;
+
+        @Override
+        public final T next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException("No more elements");
+            }
+            return next(position++);
+        }
+
+        protected abstract T next(int position);
 
     }
 

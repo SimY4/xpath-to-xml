@@ -4,7 +4,6 @@ import com.github.simy4.xpath.XmlBuilder;
 import com.github.simy4.xpath.fixtures.FixtureAccessor;
 import com.github.simy4.xpath.helpers.SimpleNamespaceContext;
 import org.assertj.core.api.Condition;
-import org.assertj.core.api.iterable.Extractor;
 import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -31,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,7 +39,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class XmlBuilderTest {
 
-    private static Stream<Arguments> data() {
+    static Stream<Arguments> data() {
         return Stream.of(
                 arguments(new FixtureAccessor("simple"), null),
                 arguments(new FixtureAccessor("simple"), new SimpleNamespaceContext()),
@@ -87,7 +87,7 @@ class XmlBuilderTest {
                     : toNamespaces(namespaceContext);
             XPathExpression<Object> xpathExpression = XPathFactory.instance()
                     .compile(xpathToValuePair.getKey(), Filters.fpassthrough(), null, namespaces);
-            assertThat(xpathExpression.evaluate(builtDocument)).extracting((Extractor<Object, Object>) input ->
+            assertThat(xpathExpression.evaluate(builtDocument)).extracting((Function<Object, Object>) input ->
                     input instanceof Element ? ((Element) input).getText()
                             : input instanceof Attribute ? ((Attribute) input).getValue()
                             : fail("Unexpected input: " + input))

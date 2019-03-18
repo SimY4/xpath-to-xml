@@ -40,14 +40,14 @@ class XPathParserTest {
 
     private static final QName ANY = new QName("*", "*");
 
-    private static Stream<NamespaceContext> namespaceContexts() {
+    static Stream<NamespaceContext> namespaceContexts() {
         return Stream.of(
                 null,
                 new SimpleNamespaceContext()
         );
     }
 
-    private static Stream<Arguments> positiveSimple() {
+    static Stream<Arguments> positiveSimple() {
         return namespaceContexts().flatMap(namespaceContext -> Stream.of(
                 arguments("./author", pathExpr(
                         stepExpr(new SelfAxisResolver(ANY)),
@@ -197,7 +197,7 @@ class XPathParserTest {
         ));
     }
 
-    private static Stream<Arguments> positivePrefixedNoContext() {
+    static Stream<Arguments> positivePrefixedNoContext() {
         return Stream.of(
                 arguments("my:book", pathExpr(stepExpr(new ChildAxisResolver(new QName("book"))))),
                 arguments("my:*", pathExpr(stepExpr(new ChildAxisResolver(new QName("*"))))),
@@ -205,7 +205,7 @@ class XPathParserTest {
         );
     }
 
-    private static Stream<Arguments> positivePrefixedWithContext() {
+    static Stream<Arguments> positivePrefixedWithContext() {
         return Stream.of(
                 arguments("my:book", pathExpr(stepExpr(new ChildAxisResolver(
                         new QName("http://www.example.com/my", "book", "my"))))),
@@ -216,7 +216,7 @@ class XPathParserTest {
         );
     }
 
-    private static Stream<Arguments> negative() {
+    static Stream<Arguments> negative() {
         return namespaceContexts().flatMap(namespaceContext -> Stream.of(
                 arguments("", namespaceContext),
                 arguments("...", namespaceContext),
