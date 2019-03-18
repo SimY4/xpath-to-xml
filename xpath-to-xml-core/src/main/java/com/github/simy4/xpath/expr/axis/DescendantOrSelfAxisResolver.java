@@ -3,13 +3,13 @@ package com.github.simy4.xpath.expr.axis;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
 import com.github.simy4.xpath.view.NodeView;
 
 import javax.xml.namespace.QName;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.function.Function;
 
 public class DescendantOrSelfAxisResolver extends AbstractAxisResolver {
 

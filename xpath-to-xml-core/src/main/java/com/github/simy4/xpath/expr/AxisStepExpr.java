@@ -4,7 +4,6 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.axis.AxisResolver;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
@@ -12,6 +11,7 @@ import com.github.simy4.xpath.view.NodeView;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.StringJoiner;
+import java.util.function.Function;
 import java.util.function.IntFunction;
 
 public class AxisStepExpr implements StepExpr, Serializable {

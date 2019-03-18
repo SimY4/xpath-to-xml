@@ -3,13 +3,13 @@ package com.github.simy4.xpath.expr.axis;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 
 import javax.xml.namespace.QName;
 import java.io.Serializable;
+import java.util.function.Predicate;
 
 abstract class AbstractAxisResolver implements AxisResolver, Predicate<Node>, Serializable {
 

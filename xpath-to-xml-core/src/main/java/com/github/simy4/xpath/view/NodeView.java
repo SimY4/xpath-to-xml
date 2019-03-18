@@ -2,11 +2,11 @@ package com.github.simy4.xpath.view;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.util.Function;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.function.Function;
 
 public final class NodeView<N extends Node> implements IterableNodeView<N>, Serializable {
 
