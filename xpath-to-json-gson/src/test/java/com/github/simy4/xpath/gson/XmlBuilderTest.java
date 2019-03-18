@@ -20,7 +20,7 @@ class XmlBuilderTest {
 
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    private static Stream<Arguments> data() {
+    static Stream<Arguments> data() {
         return Stream.of(
                 arguments(new FixtureAccessor("attr", "json")),
                 arguments(new FixtureAccessor("simple", "json")),

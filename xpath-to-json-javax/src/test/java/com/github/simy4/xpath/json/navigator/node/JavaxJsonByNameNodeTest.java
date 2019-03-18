@@ -50,7 +50,7 @@ class JavaxJsonByNameNodeTest {
     void shouldTraverseObject() {
         var parent = new JavaxJsonRootNode(jsonObject);
 
-        assertThat(parent.iterator()).containsExactlyInAnyOrder(
+        assertThat(parent).containsExactlyInAnyOrder(
                 new JavaxJsonByNameNode("one", parent),
                 new JavaxJsonByNameNode("two", parent),
                 new JavaxJsonByNameNode("three", parent)

@@ -10,7 +10,6 @@ import com.github.simy4.xpath.jackson.navigator.node.JacksonByIndexNode;
 import com.github.simy4.xpath.jackson.navigator.node.JacksonByNameNode;
 import com.github.simy4.xpath.jackson.navigator.node.JacksonNode;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.util.FilteringIterator;
 
 import javax.xml.namespace.QName;
 
@@ -37,12 +36,12 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
 
     @Override
     public Iterable<? extends JacksonNode> elementsOf(final JacksonNode parent) {
-        return () -> new FilteringIterator<>(parent.iterator(), node -> !node.get().isValueNode());
+        return () -> parent.stream().filter(node -> !node.get().isValueNode()).iterator();
     }
 
     @Override
     public Iterable<? extends JacksonNode> attributesOf(final JacksonNode parent) {
-        return () -> new FilteringIterator<>(parent.iterator(), node -> node.get().isValueNode());
+        return () ->  parent.stream().filter(node -> node.get().isValueNode()).iterator();
     }
 
     @Override

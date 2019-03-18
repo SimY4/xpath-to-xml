@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class EqualsExprTest extends AbstractOperationExprTest {
 
-    private static Stream<View<?>> equals() {
+    static Stream<View<?>> equals() {
         return Stream.of(
                 new LiteralView<>("2.0"),
                 new NumberView<>(2.0),
@@ -47,11 +47,11 @@ class EqualsExprTest extends AbstractOperationExprTest {
         );
     }
 
-    private static Stream<Arguments> equalPairs() {
+    static Stream<Arguments> equalPairs() {
         return equals().flatMap(l -> equals().map(r -> arguments(l, r)));
     }
 
-    private static Stream<View<?>> nonEquals() {
+    static Stream<View<?>> nonEquals() {
         return Stream.of(
                 new LiteralView<>("literal"),
                 new NumberView<>(10.0),
@@ -61,7 +61,7 @@ class EqualsExprTest extends AbstractOperationExprTest {
         );
     }
 
-    private static Stream<Arguments> notEqualPairs() {
+    static Stream<Arguments> notEqualPairs() {
         return equals().flatMap(l -> nonEquals().map(r -> arguments(l, r)));
     }
 

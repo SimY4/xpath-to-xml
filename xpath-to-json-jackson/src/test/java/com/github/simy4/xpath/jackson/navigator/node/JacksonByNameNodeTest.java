@@ -30,7 +30,7 @@ class JacksonByNameNodeTest {
     void shouldSetElementByIndexOnSet() {
         byNameNode.set(new IntNode(4));
 
-        assertThat(jsonObject.fields()).containsExactly(
+        assertThat(jsonObject.fields()).toIterable().containsExactly(
                 entry("one", new IntNode(1)),
                 entry("two", new IntNode(4)),
                 entry("three", new IntNode(3))
@@ -41,7 +41,7 @@ class JacksonByNameNodeTest {
     void shouldRemoveElementByIndexOnRemove() {
         byNameNode.remove();
 
-        assertThat(jsonObject.fields()).containsExactly(
+        assertThat(jsonObject.fields()).toIterable().containsExactly(
                 entry("one", new IntNode(1)),
                 entry("three", new IntNode(3))
         );
@@ -51,7 +51,7 @@ class JacksonByNameNodeTest {
     void shouldTraverseObject() {
         var parent = new JacksonRootNode(jsonObject);
 
-        assertThat(parent.iterator()).containsExactlyInAnyOrder(
+        assertThat(parent).containsExactlyInAnyOrder(
                 new JacksonByNameNode(jsonObject, "one", parent),
                 new JacksonByNameNode(jsonObject, "two", parent),
                 new JacksonByNameNode(jsonObject, "three", parent)

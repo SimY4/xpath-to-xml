@@ -43,7 +43,7 @@ class JacksonByIndexNodeTest {
     void shouldTraverseArray() {
         var parent = new JacksonRootNode(jsonArray);
 
-        assertThat(parent.iterator()).containsExactlyInAnyOrder(
+        assertThat(parent).containsExactlyInAnyOrder(
                 new JacksonByIndexNode(jsonArray, 0, parent),
                 new JacksonByIndexNode(jsonArray, 1, parent),
                 new JacksonByIndexNode(jsonArray, 2, parent)

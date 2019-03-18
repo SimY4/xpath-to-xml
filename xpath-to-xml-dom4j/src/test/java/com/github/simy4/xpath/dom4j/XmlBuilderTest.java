@@ -27,7 +27,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class XmlBuilderTest {
 
-    private static Stream<Arguments> data() {
+    static Stream<Arguments> data() {
         return Stream.of(
                 arguments(new FixtureAccessor("simple"), null),
                 arguments(new FixtureAccessor("simple"), new SimpleNamespaceContext()),

@@ -14,7 +14,7 @@ class TransformingIteratorTest {
 
     @Test
     void shouldApplyTransformationForAllElements() {
-        assertThat(iterator).containsExactly("1", "2", "3");
+        assertThat(iterator).toIterable().containsExactly("1", "2", "3");
     }
 
 }

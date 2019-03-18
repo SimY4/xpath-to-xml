@@ -24,7 +24,7 @@ class XmlBuilderTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private static Stream<Arguments> data() {
+    static Stream<Arguments> data() {
         return Stream.of(
                 arguments(new FixtureAccessor("attr", "json")),
                 arguments(new FixtureAccessor("simple", "json")),

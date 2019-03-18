@@ -5,7 +5,6 @@ import com.github.simy4.xpath.json.navigator.node.JavaxJsonByIndexNode;
 import com.github.simy4.xpath.json.navigator.node.JavaxJsonByNameNode;
 import com.github.simy4.xpath.json.navigator.node.JavaxJsonNode;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.util.FilteringIterator;
 
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -38,20 +37,20 @@ public class JavaxJsonNavigator implements Navigator<JavaxJsonNode> {
 
     @Override
     public Iterable<? extends JavaxJsonNode> elementsOf(final JavaxJsonNode parent) {
-        return () -> new FilteringIterator<>(parent.iterator(), node -> {
+        return () -> parent.stream().filter(node -> {
             var jsonValue = node.get();
             return JsonValue.ValueType.OBJECT == jsonValue.getValueType()
                     || JsonValue.ValueType.ARRAY == jsonValue.getValueType();
-        });
+        }).iterator();
     }
 
     @Override
     public Iterable<? extends JavaxJsonNode> attributesOf(final JavaxJsonNode parent) {
-        return () -> new FilteringIterator<>(parent.iterator(), node -> {
+        return () -> parent.stream().filter(node -> {
             var jsonValue = node.get();
             return JsonValue.ValueType.OBJECT != jsonValue.getValueType()
                     && JsonValue.ValueType.ARRAY != jsonValue.getValueType();
-        });
+        }).iterator();
     }
 
     @Override

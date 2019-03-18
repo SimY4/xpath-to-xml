@@ -334,6 +334,7 @@ public class XPathParser implements Serializable {
         }
     }
 
+    @SuppressWarnings("MixedMutabilityReturnType")
     private List<Expr> PredicateList(Context context) throws XPathExpressionException {
         if (Type.LEFT_BRACKET == context.tokenAt(1).getType()) {
             final var predicateList = new ArrayList<Expr>();

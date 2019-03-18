@@ -1,14 +1,10 @@
 package com.github.simy4.xpath.json.navigator.node;
 
-import com.github.simy4.xpath.util.Function;
-import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
-import com.github.simy4.xpath.util.TransformingIterator;
-
 import javax.json.JsonString;
 import javax.json.JsonValue;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 abstract class AbstractJavaxJsonNode implements JavaxJsonNode {
 
@@ -46,7 +42,7 @@ abstract class AbstractJavaxJsonNode implements JavaxJsonNode {
     }
 
     @Override
-    public final Iterator<JavaxJsonNode> iterator() {
+    public final Stream<JavaxJsonNode> stream() {
         return traverse(get(), this);
     }
 
@@ -74,20 +70,18 @@ abstract class AbstractJavaxJsonNode implements JavaxJsonNode {
         return Objects.toString(get(), "???");
     }
 
-    private static Iterator<JavaxJsonNode> traverse(JsonValue jsonValue, JavaxJsonNode parent) {
+    private static Stream<JavaxJsonNode> traverse(JsonValue jsonValue, JavaxJsonNode parent) {
         switch (jsonValue.getValueType()) {
             case OBJECT:
-                return new TransformingIterator<>(jsonValue.asJsonObject().keySet().iterator(), name ->
-                        new JavaxJsonByNameNode(name, parent));
+                return jsonValue.asJsonObject().keySet().stream().map(name -> new JavaxJsonByNameNode(name, parent));
             case ARRAY:
-                return new TransformingAndFlatteningIterator<>(jsonValue.asJsonArray().iterator(),
-                        new JsonArrayWrapper(parent));
+                return jsonValue.asJsonArray().stream().flatMap(new JsonArrayWrapper(parent));
             default:
-                return Collections.emptyIterator();
+                return Stream.of();
         }
     }
 
-    private static final class JsonArrayWrapper implements Function<JsonValue, Iterator<JavaxJsonNode>> {
+    private static final class JsonArrayWrapper implements Function<JsonValue, Stream<JavaxJsonNode>> {
 
         private final JavaxJsonNode parent;
         private int index;
@@ -97,14 +91,14 @@ abstract class AbstractJavaxJsonNode implements JavaxJsonNode {
         }
 
         @Override
-        public Iterator<JavaxJsonNode> apply(JsonValue jsonValue) {
+        public Stream<JavaxJsonNode> apply(JsonValue jsonValue) {
             final var arrayElemNode = new JavaxJsonByIndexNode(index++, parent);
             switch (jsonValue.getValueType()) {
                 case OBJECT:
                 case ARRAY:
                     return traverse(jsonValue, arrayElemNode);
                 default:
-                    return Collections.<JavaxJsonNode>singleton(arrayElemNode).iterator();
+                    return Stream.of(arrayElemNode);
             }
         }
 

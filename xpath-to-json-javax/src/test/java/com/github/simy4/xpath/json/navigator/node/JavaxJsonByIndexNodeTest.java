@@ -44,7 +44,7 @@ class JavaxJsonByIndexNodeTest {
     void shouldTraverseArray() {
         var parent = new JavaxJsonRootNode(jsonArray);
 
-        assertThat(parent.iterator()).containsExactlyInAnyOrder(
+        assertThat(parent).containsExactlyInAnyOrder(
                 new JavaxJsonByIndexNode(0, parent),
                 new JavaxJsonByIndexNode(1, parent),
                 new JavaxJsonByIndexNode(2, parent)

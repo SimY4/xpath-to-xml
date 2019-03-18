@@ -17,7 +17,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class SerializationTest {
 
-    private static Stream<Arguments> views() {
+    static Stream<Arguments> views() {
         return Stream.of(
                 arguments(BooleanView.of(true)),
                 arguments(new LiteralView<>("literal")),

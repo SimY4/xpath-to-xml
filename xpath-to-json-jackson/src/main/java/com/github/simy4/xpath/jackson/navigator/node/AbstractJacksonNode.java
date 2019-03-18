@@ -3,13 +3,12 @@ package com.github.simy4.xpath.jackson.navigator.node;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.simy4.xpath.util.Function;
-import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
-import com.github.simy4.xpath.util.TransformingIterator;
 
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.Objects;
+import java.util.Spliterators;
+import java.util.function.Function;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 abstract class AbstractJacksonNode implements JacksonNode {
 
@@ -44,7 +43,7 @@ abstract class AbstractJacksonNode implements JacksonNode {
     }
 
     @Override
-    public final Iterator<JacksonNode> iterator() {
+    public final Stream<JacksonNode> stream() {
         return traverse(get(), this);
     }
 
@@ -72,20 +71,20 @@ abstract class AbstractJacksonNode implements JacksonNode {
         return Objects.toString(get(), "???");
     }
 
-    private static Iterator<JacksonNode> traverse(JsonNode jsonNode, JacksonNode parent) {
+    private static Stream<JacksonNode> traverse(JsonNode jsonNode, JacksonNode parent) {
         if (jsonNode.isObject()) {
             final var objectNode = (ObjectNode) jsonNode;
-            return new TransformingIterator<>(jsonNode.fieldNames(), name ->
-                    new JacksonByNameNode(objectNode, name, parent));
+            return StreamSupport.stream(Spliterators.spliteratorUnknownSize(jsonNode.fieldNames(), 0), false)
+                    .map(name -> new JacksonByNameNode(objectNode, name, parent));
         } else if (jsonNode.isArray()) {
-            return new TransformingAndFlatteningIterator<>(jsonNode.elements(),
-                    new JsonArrayWrapper((ArrayNode) jsonNode, parent));
+            return StreamSupport.stream(Spliterators.spliteratorUnknownSize(jsonNode.elements(), 0), false)
+                    .flatMap(new JsonArrayWrapper((ArrayNode) jsonNode, parent));
         } else {
-            return Collections.emptyIterator();
+            return Stream.empty();
         }
     }
 
-    private static final class JsonArrayWrapper implements Function<JsonNode, Iterator<JacksonNode>> {
+    private static final class JsonArrayWrapper implements Function<JsonNode, Stream<JacksonNode>> {
 
         private final ArrayNode parentArray;
         private final JacksonNode parent;
@@ -97,9 +96,9 @@ abstract class AbstractJacksonNode implements JacksonNode {
         }
 
         @Override
-        public Iterator<JacksonNode> apply(JsonNode jsonNode) {
+        public Stream<JacksonNode> apply(JsonNode jsonNode) {
             final var arrayElemNode = new JacksonByIndexNode(parentArray, index++, parent);
-            return jsonNode.isValueNode() ? Collections.<JacksonNode>singleton(arrayElemNode).iterator()
+            return jsonNode.isValueNode() ? Stream.of(arrayElemNode)
                     : traverse(jsonNode, arrayElemNode);
         }
 

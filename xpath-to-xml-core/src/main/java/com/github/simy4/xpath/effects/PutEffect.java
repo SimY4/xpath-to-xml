@@ -34,7 +34,7 @@ public class PutEffect implements Effect, Serializable {
     private static final class EagerVisitor<N extends Node> extends AbstractViewVisitor<N, Void> {
 
         @Override
-        @SuppressWarnings("StatementWithEmptyBody")
+        @SuppressWarnings({"StatementWithEmptyBody", "UnusedVariable"})
         public Void visit(IterableNodeView<N> nodeSet) {
             for (var ignored : nodeSet) { } // eagerly consume resolved iterable
             return null;
