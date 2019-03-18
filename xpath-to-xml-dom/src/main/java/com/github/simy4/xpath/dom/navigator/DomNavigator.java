@@ -10,7 +10,10 @@ import org.w3c.dom.Node;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
+import java.util.Collections;
+import java.util.Objects;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public final class DomNavigator implements Navigator<DomNode> {
 
@@ -34,8 +37,13 @@ public final class DomNavigator implements Navigator<DomNode> {
     }
 
     @Override
-    public Iterable<DomNode> elementsOf(final DomNode parent) {
-        return new DomElementsIterable(parent.getNode());
+    public Iterable<DomNode> elementsOf(DomNode parent) {
+        final var firstChild = parent.getNode().getFirstChild();
+        return null == firstChild ? Collections.emptyList() : () -> Stream.iterate(firstChild, Node::getNextSibling)
+                .takeWhile(Objects::nonNull)
+                .filter(node -> Node.ELEMENT_NODE == node.getNodeType())
+                .map(DomNode::new)
+                .iterator();
     }
 
     @Override
