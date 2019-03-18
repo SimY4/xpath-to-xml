@@ -109,7 +109,8 @@ public class XmlBuilder implements Serializable {
      * @see #putAll(String...)
      */
     public XmlBuilder putAll(Iterable<String> xpaths) throws XPathExpressionException {
-        final List<Effect> effects = new ArrayList<Effect>(this.effects);
+        final List<Effect> effects = new ArrayList<Effect>(this.effects.size() + 1);
+        effects.addAll(this.effects);
         for (String xpath : xpaths) {
             final Expr expr = parser.parse(xpath);
             effects.add(new PutEffect(expr));
@@ -127,7 +128,8 @@ public class XmlBuilder implements Serializable {
      * @see #put(String, Object)
      */
     public XmlBuilder putAll(Map<String, Object> xpathToValueMap) throws XPathExpressionException {
-        final List<Effect> effects = new ArrayList<Effect>(this.effects);
+        final List<Effect> effects = new ArrayList<Effect>(this.effects.size() + xpathToValueMap.size());
+        effects.addAll(this.effects);
         for (Entry<String, Object> xpathToValuePair : xpathToValueMap.entrySet()) {
             final Expr expr = parser.parse(xpathToValuePair.getKey());
             effects.add(new PutValueEffect(expr, xpathToValuePair.getValue()));
@@ -169,7 +171,8 @@ public class XmlBuilder implements Serializable {
      * @see #removeAll(String...)
      */
     public XmlBuilder removeAll(Iterable<String> xpaths) throws XPathExpressionException {
-        final List<Effect> effects = new ArrayList<Effect>(this.effects);
+        final List<Effect> effects = new ArrayList<Effect>(this.effects.size() + 1);
+        effects.addAll(this.effects);
         for (String xpath : xpaths) {
             final Expr expr = parser.parse(xpath);
             effects.add(new RemoveEffect(expr));
