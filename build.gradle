@@ -21,7 +21,6 @@ plugins {
 ext {
     assertjVersion = '3.12.1'
     checkstyleVersion = '8.18'
-    errorproneJavacVersion = '9+181-r4173-1'
     errorproneVersion = '2.3.3'
     jacocoVersion = '0.8.3'
     jUnitVersion = '5.4.0'
@@ -37,7 +36,7 @@ subprojects {
     // apply from: rootProject.file('gradle/animal-sniffer.gradle')
     apply from: rootProject.file('gradle/check-checkstyle.gradle')
     apply from: rootProject.file('gradle/check-codecoverage.gradle')
-    apply from: rootProject.file('gradle/check-errorprone.gradle')
+    // apply from: rootProject.file('gradle/check-errorprone.gradle')
     apply from: rootProject.file('gradle/publish-jar.gradle')
     apply from: rootProject.file('gradle/publish-maven.gradle')
 
