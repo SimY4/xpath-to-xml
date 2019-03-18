@@ -6,7 +6,6 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import javax.xml.XMLConstants;
@@ -41,7 +40,7 @@ public final class DomNavigator implements Navigator<DomNode> {
 
     @Override
     public Iterable<DomNode> attributesOf(DomNode parent) {
-        final NamedNodeMap attributes = parent.getNode().getAttributes();
+        final var attributes = parent.getNode().getAttributes();
         return () -> IntStream.range(0, attributes.getLength())
                 .mapToObj(i -> new DomNode(attributes.item(i)))
                 .iterator();

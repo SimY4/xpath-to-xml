@@ -3,7 +3,6 @@ package com.github.simy4.xpath.xom.navigator.node;
 import com.github.simy4.xpath.XmlBuilderException;
 import nu.xom.Attribute;
 import nu.xom.Element;
-import nu.xom.Elements;
 import nu.xom.IllegalAddException;
 import nu.xom.Text;
 
@@ -28,7 +27,7 @@ public final class XomElement extends AbstractXomNode<Element> {
 
     @Override
     public Iterable<? extends XomNode> elements() {
-        final Elements childElements = getNode().getChildElements();
+        final var childElements = getNode().getChildElements();
         return (Iterable<XomElement>) () -> IntStream.range(0, childElements.size())
                 .mapToObj(i -> new XomElement(childElements.get(i)))
                 .iterator();
@@ -36,7 +35,7 @@ public final class XomElement extends AbstractXomNode<Element> {
 
     @Override
     public Iterable<? extends XomNode> attributes() {
-        final Element node = getNode();
+        final var node = getNode();
         return (Iterable<XomAttribute>) () -> IntStream.range(0, node.getAttributeCount())
                 .mapToObj(i -> new XomAttribute(node.getAttribute(i)))
                 .iterator();
