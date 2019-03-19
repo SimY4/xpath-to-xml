@@ -1,7 +1,5 @@
 package com.github.simy4.xpath.dom4j.navigator.node;
 
-import com.github.simy4.xpath.util.Function;
-import com.github.simy4.xpath.util.TransformingIterator;
 import org.dom4j.Attribute;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -37,8 +35,7 @@ public final class Dom4jElement extends AbstractDom4jNode<Element> {
         return new Iterable<Dom4jElement>() {
             @Override
             public Iterator<Dom4jElement> iterator() {
-                return new TransformingIterator<Element, Dom4jElement>(getNode().elementIterator(),
-                        new Dom4jElementWrapper());
+                return new Dom4jElementIterator(getNode().elementIterator());
             }
         };
     }
@@ -48,8 +45,7 @@ public final class Dom4jElement extends AbstractDom4jNode<Element> {
         return new Iterable<Dom4jAttribute>() {
             @Override
             public Iterator<Dom4jAttribute> iterator() {
-                return new TransformingIterator<Attribute, Dom4jAttribute>(getNode().attributeIterator(),
-                        new Dom4jAttributeWrapper());
+                return new Dom4jAttributeIterator(getNode().attributeIterator());
             }
         };
     }
@@ -66,20 +62,52 @@ public final class Dom4jElement extends AbstractDom4jNode<Element> {
         return new Dom4jElement(getNode().addElement(element));
     }
 
-    private static final class Dom4jAttributeWrapper implements Function<Attribute, Dom4jAttribute> {
+    private static final class Dom4jAttributeIterator implements Iterator<Dom4jAttribute> {
+
+        private final Iterator<Attribute> attributeIterator;
+
+        private Dom4jAttributeIterator(Iterator<Attribute> attributeIterator) {
+            this.attributeIterator = attributeIterator;
+        }
 
         @Override
-        public Dom4jAttribute apply(Attribute attribute) {
-            return new Dom4jAttribute(attribute);
+        public boolean hasNext() {
+            return attributeIterator.hasNext();
+        }
+
+        @Override
+        public Dom4jAttribute next() {
+            return new Dom4jAttribute(attributeIterator.next());
+        }
+
+        @Override
+        public void remove() {
+            attributeIterator.remove();
         }
 
     }
 
-    private static final class Dom4jElementWrapper implements Function<Element, Dom4jElement> {
+    private static final class Dom4jElementIterator implements Iterator<Dom4jElement> {
+
+        private final Iterator<Element> elementIterator;
+
+        private Dom4jElementIterator(Iterator<Element> elementIterator) {
+            this.elementIterator = elementIterator;
+        }
 
         @Override
-        public Dom4jElement apply(Element element) {
-            return new Dom4jElement(element);
+        public boolean hasNext() {
+            return elementIterator.hasNext();
+        }
+
+        @Override
+        public Dom4jElement next() {
+            return new Dom4jElement(elementIterator.next());
+        }
+
+        @Override
+        public void remove() {
+            elementIterator.remove();
         }
 
     }

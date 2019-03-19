@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
-import com.github.simy4.xpath.util.TransformingIterator;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -74,8 +73,7 @@ abstract class AbstractJacksonNode implements JacksonNode {
 
     private static Iterator<JacksonNode> traverse(JsonNode jsonNode, JacksonNode parent) {
         if (jsonNode.isObject()) {
-            return new TransformingIterator<String, JacksonNode>(jsonNode.fieldNames(),
-                    new JsonObjectWrapper((ObjectNode) jsonNode, parent));
+            return new JsonObjectIterator(jsonNode.fieldNames(), (ObjectNode) jsonNode, parent);
         } else if (jsonNode.isArray()) {
             return new TransformingAndFlatteningIterator<JsonNode, JacksonNode>(jsonNode.elements(),
                     new JsonArrayWrapper((ArrayNode) jsonNode, parent));
@@ -84,19 +82,31 @@ abstract class AbstractJacksonNode implements JacksonNode {
         }
     }
 
-    private static final class JsonObjectWrapper implements Function<String, JacksonNode> {
+    private static final class JsonObjectIterator implements Iterator<JacksonNode> {
 
+        private final Iterator<String> keysIterator;
         private final ObjectNode parentObject;
         private final JacksonNode parent;
 
-        private JsonObjectWrapper(ObjectNode parentObject, JacksonNode parent) {
+        private JsonObjectIterator(Iterator<String> keysIterator, ObjectNode parentObject, JacksonNode parent) {
+            this.keysIterator = keysIterator;
             this.parentObject = parentObject;
             this.parent = parent;
         }
 
         @Override
-        public JacksonNode apply(String name) {
-            return new JacksonByNameNode(parentObject, name, parent);
+        public boolean hasNext() {
+            return keysIterator.hasNext();
+        }
+
+        @Override
+        public JacksonNode next() {
+            return new JacksonByNameNode(parentObject, keysIterator.next(), parent);
+        }
+
+        @Override
+        public void remove() {
+            keysIterator.remove();
         }
 
     }

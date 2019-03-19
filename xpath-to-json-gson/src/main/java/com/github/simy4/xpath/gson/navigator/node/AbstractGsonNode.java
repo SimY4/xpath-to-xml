@@ -2,7 +2,6 @@ package com.github.simy4.xpath.gson.navigator.node;
 
 import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
-import com.github.simy4.xpath.util.TransformingIterator;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -81,8 +80,7 @@ abstract class AbstractGsonNode implements GsonNode {
     private static Iterator<GsonNode> traverse(JsonElement jsonElement, GsonNode parent) {
         if (jsonElement.isJsonObject()) {
             final JsonObject jsonObject = jsonElement.getAsJsonObject();
-            return new TransformingIterator<String, GsonNode>(jsonObject.keySet().iterator(),
-                    new JsonObjectWrapper(jsonObject, parent));
+            return new JsonObjectIterator(jsonObject.keySet().iterator(), jsonObject, parent);
         } else if (jsonElement.isJsonArray()) {
             final JsonArray jsonArray = jsonElement.getAsJsonArray();
             return new TransformingAndFlatteningIterator<JsonElement, GsonNode>(jsonArray.iterator(),
@@ -92,19 +90,31 @@ abstract class AbstractGsonNode implements GsonNode {
         }
     }
 
-    private static final class JsonObjectWrapper implements Function<String, GsonNode> {
+    private static final class JsonObjectIterator implements Iterator<GsonNode> {
 
+        private final Iterator<String> keysIterator;
         private final JsonObject parentObject;
         private final GsonNode parent;
 
-        private JsonObjectWrapper(JsonObject parentObject, GsonNode parent) {
+        private JsonObjectIterator(Iterator<String> keysIterator, JsonObject parentObject, GsonNode parent) {
+            this.keysIterator = keysIterator;
             this.parentObject = parentObject;
             this.parent = parent;
         }
 
         @Override
-        public GsonNode apply(String name) {
-            return new GsonByNameNode(parentObject, name, parent);
+        public boolean hasNext() {
+            return keysIterator.hasNext();
+        }
+
+        @Override
+        public GsonNode next() {
+            return new GsonByNameNode(parentObject, keysIterator.next(), parent);
+        }
+
+        @Override
+        public void remove() {
+            keysIterator.remove();
         }
 
     }

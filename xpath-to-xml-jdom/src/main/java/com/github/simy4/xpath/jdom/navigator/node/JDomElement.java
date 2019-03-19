@@ -1,8 +1,6 @@
 package com.github.simy4.xpath.jdom.navigator.node;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.util.Function;
-import com.github.simy4.xpath.util.TransformingIterator;
 import org.jdom2.Attribute;
 import org.jdom2.Content;
 import org.jdom2.Element;
@@ -53,8 +51,7 @@ public final class JDomElement extends AbstractJDomNode<Element> {
         return new Iterable<JDomElement>() {
             @Override
             public Iterator<JDomElement> iterator() {
-                return new TransformingIterator<Element, JDomElement>(getNode().getChildren().iterator(),
-                        new JDomElementWrapper());
+                return new JDomElementIterator(getNode().getChildren().iterator());
             }
         };
     }
@@ -64,8 +61,7 @@ public final class JDomElement extends AbstractJDomNode<Element> {
         return new Iterable<JDomAttribute>() {
             @Override
             public Iterator<JDomAttribute> iterator() {
-                return new TransformingIterator<Attribute, JDomAttribute>(getNode().getAttributes().iterator(),
-                        new JDomAttributeWrapper());
+                return new JDomAttributeIterator(getNode().getAttributes().iterator());
             }
         };
     }
@@ -120,20 +116,52 @@ public final class JDomElement extends AbstractJDomNode<Element> {
         getNode().detach();
     }
 
-    private static final class JDomAttributeWrapper implements Function<Attribute, JDomAttribute> {
+    private static final class JDomAttributeIterator implements Iterator<JDomAttribute> {
+
+        private final Iterator<Attribute> attributeIterator;
+
+        private JDomAttributeIterator(Iterator<Attribute> attributeIterator) {
+            this.attributeIterator = attributeIterator;
+        }
 
         @Override
-        public JDomAttribute apply(Attribute attribute) {
-            return new JDomAttribute(attribute);
+        public boolean hasNext() {
+            return attributeIterator.hasNext();
+        }
+
+        @Override
+        public JDomAttribute next() {
+            return new JDomAttribute(attributeIterator.next());
+        }
+
+        @Override
+        public void remove() {
+            attributeIterator.remove();
         }
 
     }
 
-    private static final class JDomElementWrapper implements Function<Element, JDomElement> {
+    private static final class JDomElementIterator implements Iterator<JDomElement> {
+
+        private final Iterator<Element> elementIterator;
+
+        private JDomElementIterator(Iterator<Element> elementIterator) {
+            this.elementIterator = elementIterator;
+        }
 
         @Override
-        public JDomElement apply(Element element) {
-            return new JDomElement(element);
+        public boolean hasNext() {
+            return elementIterator.hasNext();
+        }
+
+        @Override
+        public JDomElement next() {
+            return new JDomElement(elementIterator.next());
+        }
+
+        @Override
+        public void remove() {
+            elementIterator.remove();
         }
 
     }
