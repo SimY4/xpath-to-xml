@@ -14,3 +14,10 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter:$jUnitVersion"
     testImplementation "org.assertj:assertj-core:$assertjVersion"
 }
+
+animalsniffer {
+    ignore = ['java.util.stream.Stream'
+              , 'java.util.function.Function'
+              , 'java.util.function.Predicate'
+              , 'java.util.Set']
+}

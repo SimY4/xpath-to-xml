@@ -5,6 +5,8 @@ import com.github.simy4.xpath.navigator.Node;
 
 import javax.json.JsonValue;
 import javax.json.spi.JsonProvider;
+import java.util.Iterator;
+import java.util.stream.Stream;
 
 /**
  * Javax JSON node contract.
@@ -23,5 +25,12 @@ public interface JavaxJsonNode extends Node, Iterable<JavaxJsonNode> {
     void set(JsonProvider jsonProvider, JsonValue jsonValue) throws XmlBuilderException;
 
     void remove(JsonProvider jsonProvider) throws XmlBuilderException;
+
+    Stream<JavaxJsonNode> stream();
+
+    @Override
+    default Iterator<JavaxJsonNode> iterator() {
+        return stream().iterator();
+    }
 
 }
