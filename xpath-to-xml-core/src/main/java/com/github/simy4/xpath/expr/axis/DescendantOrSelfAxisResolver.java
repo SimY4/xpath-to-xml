@@ -3,13 +3,14 @@ package com.github.simy4.xpath.expr.axis;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.util.Function;
-import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
+import com.github.simy4.xpath.util.ReadOnlyIterator;
 import com.github.simy4.xpath.view.NodeView;
 
 import javax.xml.namespace.QName;
+import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Queue;
 
 public class DescendantOrSelfAxisResolver extends AbstractAxisResolver {
 
@@ -56,7 +57,7 @@ public class DescendantOrSelfAxisResolver extends AbstractAxisResolver {
 
         @Override
         public Iterator<T> iterator() {
-            final Iterator<T> descendantOrSelf = new DescendantOrSelf<T>(navigator).apply(node);
+            final Iterator<T> descendantOrSelf = new DescendantOrSelf<T>(navigator, Collections.singleton(node));
             if (!self) {
                 descendantOrSelf.next();
             }
@@ -65,18 +66,31 @@ public class DescendantOrSelfAxisResolver extends AbstractAxisResolver {
 
     }
 
-    private static final class DescendantOrSelf<T extends Node> implements Function<T, Iterator<T>> {
+    private static final class DescendantOrSelf<T extends Node> extends ReadOnlyIterator<T> {
 
         private final Navigator<T> navigator;
+        private final Queue<Iterable<? extends T>> stack = new ArrayDeque<Iterable<? extends T>>();
+        private Iterator<? extends T> current;
 
-        private DescendantOrSelf(Navigator<T> navigator) {
+        private DescendantOrSelf(Navigator<T> navigator, Iterable<T> current) {
             this.navigator = navigator;
+            this.current = current.iterator();
         }
 
         @Override
-        public Iterator<T> apply(T self) {
-            return new TransformingAndFlatteningIterator<T, T>(navigator.elementsOf(self).iterator(),
-                    Collections.singleton(self).iterator(),this);
+        public boolean hasNext() {
+            boolean currentHasNext;
+            while (!(currentHasNext = current.hasNext()) && !stack.isEmpty()) {
+                current = stack.poll().iterator();
+            }
+            return currentHasNext;
+        }
+
+        @Override
+        public T next() {
+            final T next = current.next();
+            stack.offer(navigator.elementsOf(next));
+            return next;
         }
 
     }
