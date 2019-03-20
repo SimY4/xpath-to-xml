@@ -3,8 +3,7 @@ package com.github.simy4.xpath.jackson.navigator.node;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.simy4.xpath.util.Function;
-import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
+import com.github.simy4.xpath.util.ReadOnlyIterator;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -75,8 +74,7 @@ abstract class AbstractJacksonNode implements JacksonNode {
         if (jsonNode.isObject()) {
             return new JsonObjectIterator(jsonNode.fieldNames(), (ObjectNode) jsonNode, parent);
         } else if (jsonNode.isArray()) {
-            return new TransformingAndFlatteningIterator<JsonNode, JacksonNode>(jsonNode.elements(),
-                    new JsonArrayWrapper((ArrayNode) jsonNode, parent));
+            return new JsonArrayIterator(jsonNode.elements(), (ArrayNode) jsonNode, parent);
         } else {
             return Collections.<JacksonNode>emptyList().iterator();
         }
@@ -111,22 +109,35 @@ abstract class AbstractJacksonNode implements JacksonNode {
 
     }
 
-    private static final class JsonArrayWrapper implements Function<JsonNode, Iterator<JacksonNode>> {
+    private static final class JsonArrayIterator extends ReadOnlyIterator<JacksonNode> {
 
+        private final Iterator<JsonNode> arrayIterator;
         private final ArrayNode parentArray;
         private final JacksonNode parent;
         private int index;
+        private Iterator<JacksonNode> current = Collections.<JacksonNode>emptyList().iterator();
 
-        private JsonArrayWrapper(ArrayNode parentArray, JacksonNode parent) {
+        private JsonArrayIterator(Iterator<JsonNode> arrayIterator, ArrayNode parentArray, JacksonNode parent) {
+            this.arrayIterator = arrayIterator;
             this.parentArray = parentArray;
             this.parent = parent;
         }
 
         @Override
-        public Iterator<JacksonNode> apply(JsonNode jsonNode) {
-            final JacksonNode arrayElemNode = new JacksonByIndexNode(parentArray, index++, parent);
-            return jsonNode.isValueNode() ? Collections.singleton(arrayElemNode).iterator()
-                    : traverse(jsonNode, arrayElemNode);
+        public boolean hasNext() {
+            boolean currentHasNext;
+            while (!(currentHasNext = current.hasNext()) && arrayIterator.hasNext()) {
+                final JsonNode jsonNode = arrayIterator.next();
+                final JacksonNode arrayElemNode = new JacksonByIndexNode(parentArray, index++, parent);
+                current = jsonNode.isValueNode() ? Collections.singleton(arrayElemNode).iterator()
+                        : traverse(jsonNode, arrayElemNode);
+            }
+            return currentHasNext;
+        }
+
+        @Override
+        public JacksonNode next() {
+            return current.next();
         }
 
     }

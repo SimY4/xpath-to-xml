@@ -1,7 +1,6 @@
 package com.github.simy4.xpath.gson.navigator.node;
 
-import com.github.simy4.xpath.util.Function;
-import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
+import com.github.simy4.xpath.util.ReadOnlyIterator;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -83,8 +82,7 @@ abstract class AbstractGsonNode implements GsonNode {
             return new JsonObjectIterator(jsonObject.keySet().iterator(), jsonObject, parent);
         } else if (jsonElement.isJsonArray()) {
             final JsonArray jsonArray = jsonElement.getAsJsonArray();
-            return new TransformingAndFlatteningIterator<JsonElement, GsonNode>(jsonArray.iterator(),
-                    new JsonArrayWrapper(jsonArray, parent));
+            return new JsonArrayIterator(jsonArray.iterator(), jsonArray, parent);
         } else {
             return Collections.<GsonNode>emptyList().iterator();
         }
@@ -119,22 +117,35 @@ abstract class AbstractGsonNode implements GsonNode {
 
     }
 
-    private static final class JsonArrayWrapper implements Function<JsonElement, Iterator<GsonNode>> {
+    private static final class JsonArrayIterator extends ReadOnlyIterator<GsonNode> {
 
+        private final Iterator<JsonElement> arrayIterator;
         private final JsonArray parentArray;
         private final GsonNode parent;
         private int index;
+        private Iterator<GsonNode> current = Collections.<GsonNode>emptyList().iterator();
 
-        private JsonArrayWrapper(JsonArray parentArray, GsonNode parent) {
+        private JsonArrayIterator(Iterator<JsonElement> arrayIterator, JsonArray parentArray, GsonNode parent) {
+            this.arrayIterator = arrayIterator;
             this.parentArray = parentArray;
             this.parent = parent;
         }
 
         @Override
-        public Iterator<GsonNode> apply(JsonElement jsonElement) {
-            final GsonNode arrayElemNode = new GsonByIndexNode(parentArray, index++, parent);
-            return jsonElement.isJsonPrimitive() || jsonElement.isJsonNull()
-                    ? Collections.singleton(arrayElemNode).iterator() : traverse(jsonElement, arrayElemNode);
+        public boolean hasNext() {
+            boolean currentHasNext;
+            while (!(currentHasNext = current.hasNext()) && arrayIterator.hasNext()) {
+                final JsonElement jsonElement = arrayIterator.next();
+                final GsonNode arrayElemNode = new GsonByIndexNode(parentArray, index++, parent);
+                current = jsonElement.isJsonPrimitive() || jsonElement.isJsonNull()
+                        ? Collections.singleton(arrayElemNode).iterator() : traverse(jsonElement, arrayElemNode);
+            }
+            return currentHasNext;
+        }
+
+        @Override
+        public GsonNode next() {
+            return current.next();
         }
 
     }
