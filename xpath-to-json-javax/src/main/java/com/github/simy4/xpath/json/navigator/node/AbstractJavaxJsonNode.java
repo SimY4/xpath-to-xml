@@ -77,7 +77,7 @@ abstract class AbstractJavaxJsonNode implements JavaxJsonNode {
             case ARRAY:
                 return jsonValue.asJsonArray().stream().flatMap(new JsonArrayWrapper(parent));
             default:
-                return Stream.of();
+                return Stream.empty();
         }
     }
 

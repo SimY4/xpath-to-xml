@@ -38,20 +38,24 @@ public class JavaxJsonNavigator implements Navigator<JavaxJsonNode> {
 
     @Override
     public Iterable<? extends JavaxJsonNode> elementsOf(final JavaxJsonNode parent) {
-        return () -> parent.stream().filter(node -> {
-            JsonValue jsonValue = node.get();
-            return JsonValue.ValueType.OBJECT == jsonValue.getValueType()
-                    || JsonValue.ValueType.ARRAY == jsonValue.getValueType();
-        }).iterator();
+        return () -> parent.stream()
+                .filter(node -> {
+                    JsonValue jsonValue = node.get();
+                    return JsonValue.ValueType.OBJECT == jsonValue.getValueType()
+                            || JsonValue.ValueType.ARRAY == jsonValue.getValueType();
+                })
+                .iterator();
     }
 
     @Override
     public Iterable<? extends JavaxJsonNode> attributesOf(final JavaxJsonNode parent) {
-        return () -> parent.stream().filter(node -> {
-            JsonValue jsonValue = node.get();
-            return JsonValue.ValueType.OBJECT != jsonValue.getValueType()
-                    && JsonValue.ValueType.ARRAY != jsonValue.getValueType();
-        }).iterator();
+        return () -> parent.stream()
+                .filter(node -> {
+                    JsonValue jsonValue = node.get();
+                    return JsonValue.ValueType.OBJECT != jsonValue.getValueType()
+                            && JsonValue.ValueType.ARRAY != jsonValue.getValueType();
+                })
+                .iterator();
     }
 
     @Override

@@ -358,7 +358,7 @@ public class XPathParser implements Serializable {
     private static final class Context {
 
         private final XPathLexer lexer;
-        private final List<Token> tokens = new ArrayList<>();
+        private final List<Token> tokens = new ArrayList<>(4);
 
         private Context(String xpath) {
             this.lexer = new XPathLexer(xpath);
