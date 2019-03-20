@@ -3,8 +3,6 @@ package com.github.simy4.xpath.view;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.util.FilteringIterator;
-import com.github.simy4.xpath.util.Function;
-import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
 
 import java.io.IOException;
@@ -15,6 +13,8 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>, Serializable {
 

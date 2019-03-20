@@ -2,6 +2,7 @@ package com.github.simy4.xpath.util;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.function.Predicate;
 
 public final class FilteringIterator<T> implements Iterator<T> {
 

@@ -1,7 +1,8 @@
 package com.github.simy4.xpath.view;
 
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.util.Function;
+
+import java.util.function.Function;
 
 /**
  * Abstract XML view to generify access to {@link NodeView} and {@link NodeSetView}.

@@ -3,6 +3,7 @@ package com.github.simy4.xpath.util;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
 
 public final class TransformingAndFlatteningIterator<T, R> implements Iterator<R> {
 

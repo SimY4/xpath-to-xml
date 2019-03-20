@@ -40,7 +40,7 @@ class SelfAxisResolverTest {
 
     @Test
     @DisplayName("When axis traversable should return traversed nodes")
-    void shouldReturnTarversedNodesIfAxisIsTraversable() {
+    void shouldReturnTraversedNodesIfAxisIsTraversable() {
         // when
         var result = axisResolver.resolveAxis(navigator, node, false);
 

@@ -37,8 +37,8 @@ class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
         var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
         // then
-        assertThat(result).extracting("node").containsExactly(parentNode.getNode(), node("node11"),
-                node("node1111"), node("node1112"), node("node12"), node("node1211"), node("node1212"), node(name));
+        assertThat(result).extracting("node").containsExactly(parentNode.getNode(), node("node11"), node("node12"),
+                node("node1111"), node("node1112"), node("node1211"), node("node1212"), node(name));
     }
 
     @Test
@@ -52,8 +52,8 @@ class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
         var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
         // then
-        assertThat(result).extracting("node").containsExactly(node("node11"),
-                node("node1111"), node("node1112"), node("node12"), node("node1211"), node("node1212"), node(name));
+        assertThat(result).extracting("node").containsExactly(node("node11"), node("node12"),
+                node("node1111"), node("node1112"), node("node1211"), node("node1212"), node(name));
     }
 
     @Test
