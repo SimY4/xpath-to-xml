@@ -1,6 +1,5 @@
 package com.github.simy4.xpath.dom.navigator;
 
-import com.github.simy4.xpath.util.ReadOnlyIterator;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -20,7 +19,7 @@ final class DomAttributesIterable implements Iterable<DomNode> {
         return new DomAttributesIterator(parent);
     }
 
-    private static final class DomAttributesIterator extends ReadOnlyIterator<DomNode> {
+    private static final class DomAttributesIterator implements Iterator<DomNode> {
 
         private final NamedNodeMap attributes;
         private int cursor;
@@ -40,6 +39,11 @@ final class DomAttributesIterable implements Iterable<DomNode> {
                 throw new NoSuchElementException("No more attributes");
             }
             return new DomNode(attributes.item(cursor++));
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("remove");
         }
 
     }

@@ -1,7 +1,6 @@
 package com.github.simy4.xpath.xom.navigator.node;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.util.ReadOnlyIterator;
 import nu.xom.Attribute;
 import nu.xom.Element;
 import nu.xom.Elements;
@@ -11,7 +10,6 @@ import nu.xom.Text;
 
 import javax.xml.namespace.QName;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 public final class XomElement extends AbstractXomNode<Element> {
 
@@ -85,7 +83,7 @@ public final class XomElement extends AbstractXomNode<Element> {
         }
     }
 
-    private static final class XomAttributesIterator extends ReadOnlyIterator<XomAttribute> {
+    private static final class XomAttributesIterator implements Iterator<XomAttribute> {
 
         private final Element element;
         private int cursor;
@@ -101,15 +99,17 @@ public final class XomElement extends AbstractXomNode<Element> {
 
         @Override
         public XomAttribute next() {
-            if (!hasNext()) {
-                throw new NoSuchElementException("No more elements");
-            }
             return new XomAttribute(element.getAttribute(cursor++));
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("remove");
         }
 
     }
 
-    private static final class XomElementsIterator extends ReadOnlyIterator<XomElement> {
+    private static final class XomElementsIterator implements Iterator<XomElement> {
 
         private final Elements elements;
         private int cursor;
@@ -125,10 +125,12 @@ public final class XomElement extends AbstractXomNode<Element> {
 
         @Override
         public XomElement next() {
-            if (!hasNext()) {
-                throw new NoSuchElementException("No more elements");
-            }
             return new XomElement(elements.get(cursor++));
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("remove");
         }
 
     }
