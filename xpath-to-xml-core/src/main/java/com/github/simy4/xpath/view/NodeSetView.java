@@ -2,11 +2,9 @@ package com.github.simy4.xpath.view;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
-import com.github.simy4.xpath.util.FilteringIterator;
 import com.github.simy4.xpath.util.Function;
 import com.github.simy4.xpath.util.Predicate;
 import com.github.simy4.xpath.util.ReadOnlyIterator;
-import com.github.simy4.xpath.util.TransformingAndFlatteningIterator;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -79,7 +77,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
     }
 
-    private static final class IterableNodeSet<T extends Node> extends NodeSetView<T> implements Predicate<T> {
+    private static final class IterableNodeSet<T extends Node> extends NodeSetView<T> {
 
         private static final long serialVersionUID = 1L;
 
@@ -97,11 +95,6 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
             return new IteratorImpl();
         }
 
-        @Override
-        public boolean test(T node) {
-            return filter.test(node) && cache.add(node);
-        }
-
         @SuppressWarnings({"StatementWithEmptyBody", "UnusedVariable"})
         private void writeObject(ObjectOutputStream out) throws IOException {
             for (NodeView<T> ignored : this) { } // eagerly consume this node set to populate cache
@@ -117,7 +110,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
             public boolean hasNext() {
                 boolean hasNext = current.hasNext();
                 if (!hasNext && !swapped && null != nodeSet) {
-                    current = new FilteringIterator<T>(nodeSet.iterator(), IterableNodeSet.this);
+                    current = new NodeSetIterator();
                     swapped = true;
                     hasNext = current.hasNext();
                 }
@@ -131,10 +124,50 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
         }
 
+        private final class NodeSetIterator implements Iterator<T> {
+
+            private final Iterator<? extends T> iterator = nodeSet.iterator();
+            private T nextElement;
+            private boolean hasNext;
+
+            private NodeSetIterator() {
+                nextMatch();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return hasNext;
+            }
+
+            @Override
+            public T next() {
+                return nextMatch();
+            }
+
+            @Override
+            public void remove() {
+                iterator.remove();
+            }
+
+            private T nextMatch() {
+                final T oldMatch = nextElement;
+                while (iterator.hasNext()) {
+                    final T next = iterator.next();
+                    if (filter.test(next) && cache.add(next)) {
+                        hasNext = true;
+                        nextElement = next;
+                        return oldMatch;
+                    }
+                }
+                hasNext = false;
+                return oldMatch;
+            }
+
+        }
+
     }
 
-    private static final class FlatMapNodeSet<T extends Node> extends NodeSetView<T>
-            implements Function<NodeView<T>, Iterator<NodeView<T>>>, Predicate<NodeView<T>> {
+    private static final class FlatMapNodeSet<T extends Node> extends NodeSetView<T> {
 
         private static final long serialVersionUID = 1L;
 
@@ -153,16 +186,6 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
             return new IteratorImpl();
         }
 
-        @Override
-        public boolean test(NodeView<T> view) {
-            return cache.add(view.getNode());
-        }
-
-        @Override
-        public Iterator<NodeView<T>> apply(NodeView<T> view) {
-            return fmap.apply(view).iterator();
-        }
-
         @SuppressWarnings({"StatementWithEmptyBody", "UnusedVariable"})
         private void writeObject(ObjectOutputStream out) throws IOException {
             for (NodeView<T> ignored : this) { } // eagerly consume this node set to populate cache
@@ -178,9 +201,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
             public boolean hasNext() {
                 boolean hasNext = current.hasNext();
                 if (!hasNext && !swapped && null != nodeSetView) {
-                    current = new FilteringIterator<NodeView<T>>(
-                            new TransformingAndFlatteningIterator<NodeView<T>, NodeView<T>>(nodeSetView.iterator(),
-                                    FlatMapNodeSet.this), FlatMapNodeSet.this);
+                    current = new FlatMapIterator();
                     swapped = true;
                     hasNext = current.hasNext();
                 }
@@ -192,6 +213,51 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
             public NodeView<T> next(int position) {
                 return swapped ? ((NodeView<T>) current.next()).copy(position, hasNext())
                         : new NodeView<T>((T) current.next(), position, hasNext());
+            }
+
+        }
+
+        private final class FlatMapIterator extends ReadOnlyIterator<NodeView<T>> {
+
+            private final Iterator<? extends NodeView<T>> nodeSetIterator = nodeSetView.iterator();
+            private Iterator<? extends NodeView<T>> current = Collections.<NodeView<T>>emptyList().iterator();
+            private NodeView<T> nextElement;
+            private boolean hasNext;
+
+            private FlatMapIterator() {
+                nextMatch();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return hasNext;
+            }
+
+            @Override
+            public NodeView<T> next() {
+                return nextMatch();
+            }
+
+            private NodeView<T> nextMatch() {
+                final NodeView<T> oldMatch = nextElement;
+                while (tryAdvance()) {
+                    final NodeView<T> next = current.next();
+                    if (cache.add(next.getNode())) {
+                        hasNext = true;
+                        nextElement = next;
+                        return oldMatch;
+                    }
+                }
+                hasNext = false;
+                return oldMatch;
+            }
+
+            private boolean tryAdvance() {
+                boolean currentHasNext;
+                while (!(currentHasNext = current.hasNext()) && nodeSetIterator.hasNext()) {
+                    current = fmap.apply(nodeSetIterator.next()).iterator();
+                }
+                return currentHasNext;
             }
 
         }
