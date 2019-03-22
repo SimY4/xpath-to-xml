@@ -10,7 +10,7 @@ import com.google.gson.JsonElement;
  * @author Alex Simkin
  * @since 1.1
  */
-public interface GsonNode extends Node, Iterable<GsonNode> {
+public interface GsonNode extends Node {
 
     GsonNode getParent();
 
@@ -21,5 +21,9 @@ public interface GsonNode extends Node, Iterable<GsonNode> {
     void set(JsonElement jsonElement) throws XmlBuilderException;
 
     void remove() throws XmlBuilderException;
+
+    Iterable<? extends GsonNode> elements();
+
+    Iterable<? extends GsonNode> attributes();
 
 }

@@ -47,14 +47,22 @@ class GsonByNameNodeTest {
     }
 
     @Test
-    void shouldTraverseObject() {
+    @SuppressWarnings("unchecked")
+    void shouldTraverseObjectAttributes() {
         GsonNode parent = new GsonRootNode(jsonObject);
 
-        assertThat(parent).containsExactlyInAnyOrder(
+        assertThat((Iterable<GsonNode>) parent.attributes()).containsExactlyInAnyOrder(
                 new GsonByNameNode(jsonObject, "one", parent),
                 new GsonByNameNode(jsonObject, "two", parent),
                 new GsonByNameNode(jsonObject, "three", parent)
         );
+    }
+
+    @Test
+    void shouldTraverseObjectElements() {
+        GsonNode parent = new GsonRootNode(jsonObject);
+
+        assertThat((Iterable<?>) parent.elements()).isEmpty();
     }
 
 }

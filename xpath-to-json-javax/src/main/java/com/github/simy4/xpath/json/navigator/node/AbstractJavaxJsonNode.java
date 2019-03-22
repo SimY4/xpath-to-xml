@@ -1,5 +1,6 @@
 package com.github.simy4.xpath.json.navigator.node;
 
+import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 import java.util.function.Function;
@@ -41,8 +42,13 @@ abstract class AbstractJavaxJsonNode implements JavaxJsonNode {
     }
 
     @Override
-    public final Stream<JavaxJsonNode> stream() {
-        return traverse(get(), this);
+    public Stream<JavaxJsonNode> elements() {
+        return traverse(get(), this, false);
+    }
+
+    @Override
+    public Stream<JavaxJsonNode> attributes() {
+        return traverse(get(), this, true);
     }
 
     @Override
@@ -70,36 +76,41 @@ abstract class AbstractJavaxJsonNode implements JavaxJsonNode {
         return null == jsonValue ? "???" : jsonValue.toString();
     }
 
-    private static Stream<JavaxJsonNode> traverse(JsonValue jsonValue, JavaxJsonNode parent) {
+    private static Stream<JavaxJsonNode> traverse(JsonValue jsonValue, JavaxJsonNode parent, boolean attribute) {
         switch (jsonValue.getValueType()) {
             case OBJECT:
-                return jsonValue.asJsonObject().keySet().stream().map(name -> new JavaxJsonByNameNode(name, parent));
+                final JsonObject jsonObject = jsonValue.asJsonObject();
+                return jsonObject.keySet().stream()
+                        .filter(name -> attribute == isAttribute(jsonObject.get(name)))
+                        .map(name -> new JavaxJsonByNameNode(name, parent));
             case ARRAY:
-                return jsonValue.asJsonArray().stream().flatMap(new JsonArrayWrapper(parent));
+                return jsonValue.asJsonArray().stream().flatMap(new JsonArrayWrapper(parent, attribute));
             default:
                 return Stream.empty();
         }
     }
 
+    private static boolean isAttribute(JsonValue jsonValue) {
+        return JsonValue.ValueType.OBJECT != jsonValue.getValueType()
+                && JsonValue.ValueType.ARRAY != jsonValue.getValueType();
+    }
+
     private static final class JsonArrayWrapper implements Function<JsonValue, Stream<JavaxJsonNode>> {
 
         private final JavaxJsonNode parent;
+        private final boolean attribute;
         private int index;
 
-        private JsonArrayWrapper(JavaxJsonNode parent) {
+        private JsonArrayWrapper(JavaxJsonNode parent, boolean attribute) {
             this.parent = parent;
+            this.attribute = attribute;
         }
 
         @Override
         public Stream<JavaxJsonNode> apply(JsonValue jsonValue) {
             final JavaxJsonNode arrayElemNode = new JavaxJsonByIndexNode(index++, parent);
-            switch (jsonValue.getValueType()) {
-                case OBJECT:
-                case ARRAY:
-                    return traverse(jsonValue, arrayElemNode);
-                default:
-                    return Stream.of(arrayElemNode);
-            }
+            return isAttribute(jsonValue) ? attribute ? Stream.of(arrayElemNode) : Stream.empty()
+                    : traverse(jsonValue, arrayElemNode, attribute);
         }
 
     }

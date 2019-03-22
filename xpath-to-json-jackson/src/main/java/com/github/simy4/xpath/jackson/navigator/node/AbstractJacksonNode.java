@@ -3,7 +3,6 @@ package com.github.simy4.xpath.jackson.navigator.node;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.simy4.xpath.util.ReadOnlyIterator;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -41,8 +40,23 @@ abstract class AbstractJacksonNode implements JacksonNode {
     }
 
     @Override
-    public final Iterator<JacksonNode> iterator() {
-        return traverse(get(), this);
+    public final Iterable<? extends JacksonNode> elements() {
+        return new Iterable<JacksonNode>() {
+            @Override
+            public Iterator<JacksonNode> iterator() {
+                return traverse(get(), AbstractJacksonNode.this, false);
+            }
+        };
+    }
+
+    @Override
+    public final Iterable<? extends JacksonNode> attributes() {
+        return new Iterable<JacksonNode>() {
+            @Override
+            public Iterator<JacksonNode> iterator() {
+                return traverse(get(), AbstractJacksonNode.this, true);
+            }
+        };
     }
 
     @Override
@@ -70,14 +84,18 @@ abstract class AbstractJacksonNode implements JacksonNode {
         return null == jsonNode ? "???" : jsonNode.toString();
     }
 
-    private static Iterator<JacksonNode> traverse(JsonNode jsonNode, JacksonNode parent) {
+    private static Iterator<JacksonNode> traverse(JsonNode jsonNode, JacksonNode parent, boolean attribute) {
         if (jsonNode.isObject()) {
-            return new JsonObjectIterator(jsonNode.fieldNames(), (ObjectNode) jsonNode, parent);
+            return new JsonObjectIterator(jsonNode.fieldNames(), (ObjectNode) jsonNode, parent, attribute);
         } else if (jsonNode.isArray()) {
-            return new JsonArrayIterator(jsonNode.elements(), (ArrayNode) jsonNode, parent);
+            return new JsonArrayIterator(jsonNode.elements(), (ArrayNode) jsonNode, parent, attribute);
         } else {
             return Collections.<JacksonNode>emptyList().iterator();
         }
+    }
+
+    private static boolean isAttribute(JsonNode jsonNode) {
+        return jsonNode.isValueNode();
     }
 
     private static final class JsonObjectIterator implements Iterator<JacksonNode> {
@@ -85,21 +103,27 @@ abstract class AbstractJacksonNode implements JacksonNode {
         private final Iterator<String> keysIterator;
         private final ObjectNode parentObject;
         private final JacksonNode parent;
+        private final boolean attribute;
+        private String nextElement;
+        private boolean hasNext;
 
-        private JsonObjectIterator(Iterator<String> keysIterator, ObjectNode parentObject, JacksonNode parent) {
+        private JsonObjectIterator(Iterator<String> keysIterator, ObjectNode parentObject, JacksonNode parent,
+                                   boolean attribute) {
             this.keysIterator = keysIterator;
             this.parentObject = parentObject;
             this.parent = parent;
+            this.attribute = attribute;
+            nextMatch();
         }
 
         @Override
         public boolean hasNext() {
-            return keysIterator.hasNext();
+            return hasNext;
         }
 
         @Override
         public JacksonNode next() {
-            return new JacksonByNameNode(parentObject, keysIterator.next(), parent);
+            return new JacksonByNameNode(parentObject, nextMatch(), parent);
         }
 
         @Override
@@ -107,20 +131,37 @@ abstract class AbstractJacksonNode implements JacksonNode {
             keysIterator.remove();
         }
 
+        private String nextMatch() {
+            final String oldMatch = nextElement;
+            while (keysIterator.hasNext()) {
+                final String next = keysIterator.next();
+                if (attribute == isAttribute(parentObject.get(next))) {
+                    hasNext = true;
+                    nextElement = next;
+                    return oldMatch;
+                }
+            }
+            hasNext = false;
+            return oldMatch;
+        }
+
     }
 
-    private static final class JsonArrayIterator extends ReadOnlyIterator<JacksonNode> {
+    private static final class JsonArrayIterator implements Iterator<JacksonNode> {
 
         private final Iterator<JsonNode> arrayIterator;
         private final ArrayNode parentArray;
         private final JacksonNode parent;
+        private final boolean attribute;
         private int index;
         private Iterator<JacksonNode> current = Collections.<JacksonNode>emptyList().iterator();
 
-        private JsonArrayIterator(Iterator<JsonNode> arrayIterator, ArrayNode parentArray, JacksonNode parent) {
+        private JsonArrayIterator(Iterator<JsonNode> arrayIterator, ArrayNode parentArray, JacksonNode parent,
+                                  boolean attribute) {
             this.arrayIterator = arrayIterator;
             this.parentArray = parentArray;
             this.parent = parent;
+            this.attribute = attribute;
         }
 
         @Override
@@ -129,8 +170,8 @@ abstract class AbstractJacksonNode implements JacksonNode {
             while (!(currentHasNext = current.hasNext()) && arrayIterator.hasNext()) {
                 final JsonNode jsonNode = arrayIterator.next();
                 final JacksonNode arrayElemNode = new JacksonByIndexNode(parentArray, index++, parent);
-                current = jsonNode.isValueNode() ? Collections.singleton(arrayElemNode).iterator()
-                        : traverse(jsonNode, arrayElemNode);
+                current = isAttribute(jsonNode) ? traverseAttributeNode(arrayElemNode)
+                        : traverse(jsonNode, arrayElemNode, attribute);
             }
             return currentHasNext;
         }
@@ -138,6 +179,15 @@ abstract class AbstractJacksonNode implements JacksonNode {
         @Override
         public JacksonNode next() {
             return current.next();
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("remove");
+        }
+
+        private Iterator<JacksonNode> traverseAttributeNode(JacksonNode arrayNode) {
+            return (attribute ? Collections.singleton(arrayNode) : Collections.<JacksonNode>emptyList()).iterator();
         }
 
     }

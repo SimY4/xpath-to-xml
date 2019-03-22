@@ -10,11 +10,8 @@ import com.github.simy4.xpath.jackson.navigator.node.JacksonByIndexNode;
 import com.github.simy4.xpath.jackson.navigator.node.JacksonByNameNode;
 import com.github.simy4.xpath.jackson.navigator.node.JacksonNode;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.util.FilteringIterator;
-import com.github.simy4.xpath.util.Predicate;
 
 import javax.xml.namespace.QName;
-import java.util.Iterator;
 
 public class JacksonNavigator implements Navigator<JacksonNode> {
 
@@ -38,23 +35,13 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
     }
 
     @Override
-    public Iterable<? extends JacksonNode> elementsOf(final JacksonNode parent) {
-        return new Iterable<JacksonNode>() {
-            @Override
-            public Iterator<JacksonNode> iterator() {
-                return new FilteringIterator<JacksonNode>(parent.iterator(), new AttributePredicate(false));
-            }
-        };
+    public Iterable<? extends JacksonNode> elementsOf(JacksonNode parent) {
+        return parent.elements();
     }
 
     @Override
-    public Iterable<? extends JacksonNode> attributesOf(final JacksonNode parent) {
-        return new Iterable<JacksonNode>() {
-            @Override
-            public Iterator<JacksonNode> iterator() {
-                return new FilteringIterator<JacksonNode>(parent.iterator(), new AttributePredicate(true));
-            }
-        };
+    public Iterable<? extends JacksonNode> attributesOf(JacksonNode parent) {
+        return parent.attributes();
     }
 
     @Override
@@ -188,22 +175,6 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
             i -= 1;
         }
         return new JacksonByIndexNode(parentArray, i, parent);
-    }
-
-    private static final class AttributePredicate implements Predicate<JacksonNode> {
-
-        private final boolean attribute;
-
-        private AttributePredicate(boolean attribute) {
-            this.attribute = attribute;
-        }
-
-        @Override
-        public boolean test(JacksonNode jacksonNode) {
-            final JsonNode jsonNode = jacksonNode.get();
-            return attribute == jsonNode.isValueNode();
-        }
-
     }
 
 }

@@ -5,15 +5,12 @@ import com.github.simy4.xpath.gson.navigator.node.GsonByIndexNode;
 import com.github.simy4.xpath.gson.navigator.node.GsonByNameNode;
 import com.github.simy4.xpath.gson.navigator.node.GsonNode;
 import com.github.simy4.xpath.navigator.Navigator;
-import com.github.simy4.xpath.util.FilteringIterator;
-import com.github.simy4.xpath.util.Predicate;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import javax.xml.namespace.QName;
-import java.util.Iterator;
 
 public class GsonNavigator implements Navigator<GsonNode> {
 
@@ -37,23 +34,13 @@ public class GsonNavigator implements Navigator<GsonNode> {
     }
 
     @Override
-    public Iterable<? extends GsonNode> elementsOf(final GsonNode parent) {
-        return new Iterable<GsonNode>() {
-            @Override
-            public Iterator<GsonNode> iterator() {
-                return new FilteringIterator<GsonNode>(parent.iterator(), new AttributePredicate(false));
-            }
-        };
+    public Iterable<? extends GsonNode> elementsOf(GsonNode parent) {
+        return parent.elements();
     }
 
     @Override
-    public Iterable<? extends GsonNode> attributesOf(final GsonNode parent) {
-        return new Iterable<GsonNode>() {
-            @Override
-            public Iterator<GsonNode> iterator() {
-                return new FilteringIterator<GsonNode>(parent.iterator(), new AttributePredicate(true));
-            }
-        };
+    public Iterable<? extends GsonNode> attributesOf(GsonNode parent) {
+        return parent.attributes();
     }
 
     @Override
@@ -186,22 +173,6 @@ public class GsonNavigator implements Navigator<GsonNode> {
             i -= 1;
         }
         return new GsonByIndexNode(parentArray, i, parent);
-    }
-
-    private static final class AttributePredicate implements Predicate<GsonNode> {
-
-        private final boolean attribute;
-
-        private AttributePredicate(boolean attribute) {
-            this.attribute = attribute;
-        }
-
-        @Override
-        public boolean test(GsonNode gsonNode) {
-            final JsonElement jsonElement = gsonNode.get();
-            return attribute == (jsonElement.isJsonNull() || jsonElement.isJsonPrimitive());
-        }
-
     }
 
 }

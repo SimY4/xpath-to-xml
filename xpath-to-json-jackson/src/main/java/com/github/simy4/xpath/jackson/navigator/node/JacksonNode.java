@@ -10,7 +10,7 @@ import com.github.simy4.xpath.navigator.Node;
  * @author Alex Simkin
  * @since 1.2
  */
-public interface JacksonNode extends Node, Iterable<JacksonNode> {
+public interface JacksonNode extends Node {
 
     JacksonNode getParent();
 
@@ -21,5 +21,9 @@ public interface JacksonNode extends Node, Iterable<JacksonNode> {
     void set(JsonNode jsonNode) throws XmlBuilderException;
 
     void remove() throws XmlBuilderException;
+
+    Iterable<? extends JacksonNode> elements();
+
+    Iterable<? extends JacksonNode> attributes();
 
 }
