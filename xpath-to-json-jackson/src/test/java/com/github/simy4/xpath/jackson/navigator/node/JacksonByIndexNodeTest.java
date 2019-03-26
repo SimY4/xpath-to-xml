@@ -40,14 +40,22 @@ class JacksonByIndexNodeTest {
     }
 
     @Test
-    void shouldTraverseArray() {
+    @SuppressWarnings("unchecked")
+    void shouldTraverseArrayAttributes() {
         JacksonNode parent = new JacksonRootNode(jsonArray);
 
-        assertThat(parent).containsExactlyInAnyOrder(
+        assertThat((Iterable<JacksonNode>) parent.attributes()).containsExactlyInAnyOrder(
                 new JacksonByIndexNode(jsonArray, 0, parent),
                 new JacksonByIndexNode(jsonArray, 1, parent),
                 new JacksonByIndexNode(jsonArray, 2, parent)
         );
+    }
+
+    @Test
+    void shouldTraverseArrayElements() {
+        JacksonNode parent = new JacksonRootNode(jsonArray);
+
+        assertThat((Iterable<?>) parent.elements()).isEmpty();
     }
 
 }

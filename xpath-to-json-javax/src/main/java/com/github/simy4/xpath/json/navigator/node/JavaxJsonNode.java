@@ -5,7 +5,6 @@ import com.github.simy4.xpath.navigator.Node;
 
 import javax.json.JsonValue;
 import javax.json.spi.JsonProvider;
-import java.util.Iterator;
 import java.util.stream.Stream;
 
 /**
@@ -14,7 +13,7 @@ import java.util.stream.Stream;
  * @author Alex Simkin
  * @since 2.0
  */
-public interface JavaxJsonNode extends Node, Iterable<JavaxJsonNode> {
+public interface JavaxJsonNode extends Node {
 
     JavaxJsonNode getParent();
 
@@ -26,11 +25,8 @@ public interface JavaxJsonNode extends Node, Iterable<JavaxJsonNode> {
 
     void remove(JsonProvider jsonProvider) throws XmlBuilderException;
 
-    Stream<JavaxJsonNode> stream();
+    Stream<JavaxJsonNode> elements();
 
-    @Override
-    default Iterator<JavaxJsonNode> iterator() {
-        return stream().iterator();
-    }
+    Stream<JavaxJsonNode> attributes();
 
 }

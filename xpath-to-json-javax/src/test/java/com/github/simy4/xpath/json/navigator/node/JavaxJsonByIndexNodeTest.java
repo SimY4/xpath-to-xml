@@ -41,14 +41,21 @@ class JavaxJsonByIndexNodeTest {
     }
 
     @Test
-    void shouldTraverseArray() {
+    void shouldTraverseArrayAttributes() {
         JavaxJsonNode parent = new JavaxJsonRootNode(jsonArray);
 
-        assertThat(parent).containsExactlyInAnyOrder(
+        assertThat(parent.attributes()).containsExactlyInAnyOrder(
                 new JavaxJsonByIndexNode(0, parent),
                 new JavaxJsonByIndexNode(1, parent),
                 new JavaxJsonByIndexNode(2, parent)
         );
+    }
+
+    @Test
+    void shouldTraverseArrayElements() {
+        JavaxJsonNode parent = new JavaxJsonRootNode(jsonArray);
+
+        assertThat(parent.elements()).isEmpty();
     }
 
 }

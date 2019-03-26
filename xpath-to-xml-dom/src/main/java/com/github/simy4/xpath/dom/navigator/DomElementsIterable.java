@@ -48,6 +48,11 @@ final class DomElementsIterable implements Iterable<DomNode> {
             return next;
         }
 
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("remove");
+        }
+
     }
 
 }

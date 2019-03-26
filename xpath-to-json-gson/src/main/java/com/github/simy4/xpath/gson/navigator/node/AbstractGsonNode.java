@@ -4,10 +4,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 abstract class AbstractGsonNode implements GsonNode {
 
@@ -48,8 +47,13 @@ abstract class AbstractGsonNode implements GsonNode {
     }
 
     @Override
-    public final Stream<GsonNode> stream() {
-        return traverse(get(), this);
+    public final Iterable<? extends GsonNode> elements() {
+        return () -> traverse(get(), this, false);
+    }
+
+    @Override
+    public final Iterable<? extends GsonNode> attributes() {
+        return () -> traverse(get(), this, true);
     }
 
     @Override
@@ -76,36 +80,102 @@ abstract class AbstractGsonNode implements GsonNode {
         return Objects.toString(get(), "???");
     }
 
-    private static Stream<GsonNode> traverse(JsonElement jsonElement, GsonNode parent) {
+    private static Iterator<GsonNode> traverse(JsonElement jsonElement, GsonNode parent, boolean attribute) {
         if (jsonElement.isJsonObject()) {
             final JsonObject jsonObject = jsonElement.getAsJsonObject();
-            return jsonObject.keySet().stream()
-                    .map(name -> new GsonByNameNode(jsonObject, name, parent));
+            return new JsonObjectIterator(jsonObject.keySet().iterator(), jsonObject, parent, attribute);
         } else if (jsonElement.isJsonArray()) {
             final JsonArray jsonArray = jsonElement.getAsJsonArray();
-            return StreamSupport.stream(jsonArray.spliterator(), false)
-                    .flatMap(new JsonArrayWrapper(jsonArray, parent));
+            return new JsonArrayIterator(jsonArray.iterator(), jsonArray, parent, attribute);
         } else {
-            return Stream.empty();
+            return Collections.emptyIterator();
         }
     }
 
-    private static final class JsonArrayWrapper implements Function<JsonElement, Stream<GsonNode>> {
+    private static boolean isAttribute(JsonElement jsonElement) {
+        return jsonElement.isJsonPrimitive() || jsonElement.isJsonNull();
+    }
 
-        private final JsonArray parentArray;
+    private static final class JsonObjectIterator implements Iterator<GsonNode> {
+
+        private final Iterator<String> keysIterator;
+        private final JsonObject parentObject;
         private final GsonNode parent;
-        private int index;
+        private final boolean attribute;
+        private String nextElement;
+        private boolean hasNext;
 
-        private JsonArrayWrapper(JsonArray parentArray, GsonNode parent) {
-            this.parentArray = parentArray;
+        private JsonObjectIterator(Iterator<String> keysIterator, JsonObject parentObject, GsonNode parent,
+                                   boolean attribute) {
+            this.keysIterator = keysIterator;
+            this.parentObject = parentObject;
             this.parent = parent;
+            this.attribute = attribute;
+            nextMatch();
         }
 
         @Override
-        public Stream<GsonNode> apply(JsonElement jsonElement) {
-            final GsonNode arrayElemNode = new GsonByIndexNode(parentArray, index++, parent);
-            return jsonElement.isJsonPrimitive() || jsonElement.isJsonNull()
-                    ? Stream.of(arrayElemNode) : traverse(jsonElement, arrayElemNode);
+        public boolean hasNext() {
+            return hasNext;
+        }
+
+        @Override
+        public GsonNode next() {
+            return new GsonByNameNode(parentObject, nextMatch(), parent);
+        }
+
+        private String nextMatch() {
+            final String oldMatch = nextElement;
+            while (keysIterator.hasNext()) {
+                final String next = keysIterator.next();
+                if (attribute == isAttribute(parentObject.get(next))) {
+                    hasNext = true;
+                    nextElement = next;
+                    return oldMatch;
+                }
+            }
+            hasNext = false;
+            return oldMatch;
+        }
+
+    }
+
+    private static final class JsonArrayIterator implements Iterator<GsonNode> {
+
+        private final Iterator<JsonElement> arrayIterator;
+        private final JsonArray parentArray;
+        private final GsonNode parent;
+        private int index;
+        private final boolean attribute;
+        private Iterator<GsonNode> current = Collections.<GsonNode>emptyList().iterator();
+
+        private JsonArrayIterator(Iterator<JsonElement> arrayIterator, JsonArray parentArray, GsonNode parent,
+                                  boolean attribute) {
+            this.arrayIterator = arrayIterator;
+            this.parentArray = parentArray;
+            this.parent = parent;
+            this.attribute = attribute;
+        }
+
+        @Override
+        public boolean hasNext() {
+            boolean currentHasNext;
+            while (!(currentHasNext = current.hasNext()) && arrayIterator.hasNext()) {
+                final JsonElement jsonElement = arrayIterator.next();
+                final GsonNode arrayElemNode = new GsonByIndexNode(parentArray, index++, parent);
+                current = isAttribute(jsonElement) ? traverseAttributeNode(arrayElemNode)
+                        : traverse(jsonElement, arrayElemNode, attribute);
+            }
+            return currentHasNext;
+        }
+
+        @Override
+        public GsonNode next() {
+            return current.next();
+        }
+
+        private Iterator<GsonNode> traverseAttributeNode(GsonNode arrayNode) {
+            return attribute ? Collections.singleton(arrayNode).iterator() : Collections.emptyIterator();
         }
 
     }

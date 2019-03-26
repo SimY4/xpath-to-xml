@@ -4,16 +4,13 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
 import com.google.gson.JsonElement;
 
-import java.util.Iterator;
-import java.util.stream.Stream;
-
 /**
  * Gson node contract.
  *
  * @author Alex Simkin
  * @since 1.1
  */
-public interface GsonNode extends Node, Iterable<GsonNode> {
+public interface GsonNode extends Node {
 
     GsonNode getParent();
 
@@ -25,11 +22,8 @@ public interface GsonNode extends Node, Iterable<GsonNode> {
 
     void remove() throws XmlBuilderException;
 
-    Stream<GsonNode> stream();
+    Iterable<? extends GsonNode> elements();
 
-    @Override
-    default Iterator<GsonNode> iterator() {
-        return stream().iterator();
-    }
+    Iterable<? extends GsonNode> attributes();
 
 }
