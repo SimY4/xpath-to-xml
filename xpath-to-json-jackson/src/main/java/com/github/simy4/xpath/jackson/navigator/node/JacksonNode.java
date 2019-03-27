@@ -4,16 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
 
-import java.util.Iterator;
-import java.util.stream.Stream;
-
 /**
  * Jackson node contract.
  *
  * @author Alex Simkin
  * @since 1.2
  */
-public interface JacksonNode extends Node, Iterable<JacksonNode> {
+public interface JacksonNode extends Node {
 
     JacksonNode getParent();
 
@@ -25,11 +22,8 @@ public interface JacksonNode extends Node, Iterable<JacksonNode> {
 
     void remove() throws XmlBuilderException;
 
-    Stream<JacksonNode> stream();
+    Iterable<? extends JacksonNode> elements();
 
-    @Override
-    default Iterator<JacksonNode> iterator() {
-        return stream().iterator();
-    }
+    Iterable<? extends JacksonNode> attributes();
 
 }

@@ -35,13 +35,13 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
     }
 
     @Override
-    public Iterable<? extends JacksonNode> elementsOf(final JacksonNode parent) {
-        return () -> parent.stream().filter(node -> !node.get().isValueNode()).iterator();
+    public Iterable<? extends JacksonNode> elementsOf(JacksonNode parent) {
+        return parent.elements();
     }
 
     @Override
-    public Iterable<? extends JacksonNode> attributesOf(final JacksonNode parent) {
-        return () ->  parent.stream().filter(node -> node.get().isValueNode()).iterator();
+    public Iterable<? extends JacksonNode> attributesOf(JacksonNode parent) {
+        return parent.attributes();
     }
 
     @Override

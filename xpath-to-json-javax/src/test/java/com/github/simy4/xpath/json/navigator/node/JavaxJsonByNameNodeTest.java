@@ -47,14 +47,21 @@ class JavaxJsonByNameNodeTest {
     }
 
     @Test
-    void shouldTraverseObject() {
+    void shouldTraverseObjectAttributes() {
         var parent = new JavaxJsonRootNode(jsonObject);
 
-        assertThat(parent).containsExactlyInAnyOrder(
+        assertThat(parent.attributes()).containsExactlyInAnyOrder(
                 new JavaxJsonByNameNode("one", parent),
                 new JavaxJsonByNameNode("two", parent),
                 new JavaxJsonByNameNode("three", parent)
         );
+    }
+
+    @Test
+    void shouldTraverseObjectElements() {
+        var parent = new JavaxJsonRootNode(jsonObject);
+
+        assertThat(parent.elements()).isEmpty();
     }
 
 }

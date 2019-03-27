@@ -34,22 +34,13 @@ public class GsonNavigator implements Navigator<GsonNode> {
     }
 
     @Override
-    public Iterable<? extends GsonNode> elementsOf(final GsonNode parent) {
-        return () -> parent.stream()
-                .filter(node -> {
-                    final var jsonElement = node.get();
-                    return jsonElement.isJsonObject() || jsonElement.isJsonArray();
-                })
-                .iterator();
+    public Iterable<? extends GsonNode> elementsOf(GsonNode parent) {
+        return parent.elements();
     }
 
     @Override
-    public Iterable<? extends GsonNode> attributesOf(final GsonNode parent) {
-        return () -> parent.stream()
-                .filter(node -> {
-                    final var jsonElement = node.get();
-                    return jsonElement.isJsonNull() || jsonElement.isJsonPrimitive();
-                }).iterator();
+    public Iterable<? extends GsonNode> attributesOf(GsonNode parent) {
+        return parent.attributes();
     }
 
     @Override
