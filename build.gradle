@@ -47,13 +47,20 @@ subprojects {
         mavenCentral()
     }
 
+    // after gradle 5.3 we need to set this attribute to mark test configuration targeting java 8
+    [configurations.testCompileClasspath, configurations.testRuntimeClasspath].each {
+        it.attributes {
+            attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 8)
+        }
+    }
+
     compileTestJava {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     tasks.withType(JavaCompile) {
-        options.compilerArgs << "-Xlint:all" << "-Xlint:-options" << "-Werror"
+        options.compilerArgs << '-Xlint:all' << '-Xlint:-options' << '-Werror'
     }
 
     test {
@@ -92,5 +99,5 @@ release {
 }
 
 wrapper {
-    gradleVersion = '5.3'
+    gradleVersion = '5.3.1'
 }
