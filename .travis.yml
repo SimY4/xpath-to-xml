@@ -4,6 +4,11 @@ sudo: false
 jdk:
   - openjdk8
   - openjdk11
+  - openjdk12
+
+matrix:
+  allow_failures:
+    - jdk: openjdk12
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
