@@ -76,7 +76,3 @@ tasks.withType(ScalaCompile) {
             '-Yno-adapted-args'                  // Do not adapt an argument list (either by inserting () or creating a tuple) to match the receiver.
     ] : [])
 }
-
-compileTestScala {
-    scalaCompileOptions.additionalParameters << '-target:jvm-1.8'
-}
