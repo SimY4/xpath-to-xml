@@ -15,7 +15,6 @@ import org.junit.jupiter.params.provider.{Arguments, ArgumentsProvider, Argument
 import org.xml.sax.InputSource
 
 import _root_.scala.collection.{mutable, Map}
-import _root_.scala.compat.java8.FunctionConverters
 import _root_.scala.xml.{Elem, NamespaceBinding, Node, Null, PrettyPrinter, TopScope, XML}
 
 class DataProvider extends ArgumentsProvider {
@@ -42,8 +41,6 @@ class XmlBuilderTest {
   import XmlBuilderTest._
   import implicits._
 
-  import FunctionConverters._
-
   @ParameterizedTest
   @ArgumentsSource(classOf[DataProvider])
   def shouldBuildDocumentFromSetOfXPaths(fixtureAccessor: FixtureAccessor,
@@ -59,7 +56,7 @@ class XmlBuilderTest {
       assertThat(xpath.evaluate(documentSource, XPathConstants.NODE)).isNotNull
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(builtDocumentString).is(new Condition(asJavaPredicate { xml: String =>
+    assertThat(builtDocumentString).is(new Condition({ xml: String =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutXml
     }, "XML matches exactly"))
   }
@@ -82,7 +79,7 @@ class XmlBuilderTest {
           .isEqualTo(value)
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(xmlToString(builtDocument)).is(new Condition(asJavaPredicate { xml: String =>
+    assertThat(xmlToString(builtDocument)).is(new Condition({ xml: String =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
     }, "XML matches exactly"))
   }
@@ -107,7 +104,7 @@ class XmlBuilderTest {
           .isEqualTo(value)
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(xmlToString(builtDocument)).is(new Condition(asJavaPredicate { xml: String =>
+    assertThat(xmlToString(builtDocument)).is(new Condition({ xml: String =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
     }, "XML matches exactly"))
   }
@@ -132,7 +129,7 @@ class XmlBuilderTest {
           .isEqualTo(value)
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(xmlToString(builtDocument)).is(new Condition(asJavaPredicate { xml: String =>
+    assertThat(xmlToString(builtDocument)).is(new Condition({ xml: String =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
     }, "XML matches exactly"))
 
@@ -147,7 +144,7 @@ class XmlBuilderTest {
           .isEqualTo(value)
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(xmlToString(builtDocument)).is(new Condition(asJavaPredicate { xml: String =>
+    assertThat(xmlToString(builtDocument)).is(new Condition({ xml: String =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
     }, "XML matches exactly"))
   }
@@ -182,14 +179,13 @@ class XmlBuilderTest {
 }
 
 object XmlBuilderTest {
-  import FunctionConverters._
-
   implicit private[scala] class JUMapOps[K, V](private val map: java.util.Map[K, V]) extends AnyVal {
     def asScala: Map[K, V] = {
       val linkedHashMap = new mutable.LinkedHashMap[K, V]
-      map.entrySet.forEach(asJavaConsumer { entry: java.util.Map.Entry[K, V] =>
+      map.entrySet.forEach { entry: java.util.Map.Entry[K, V] =>
         linkedHashMap += entry.getKey -> entry.getValue
-      })
+        ()
+      }
       linkedHashMap
     }
   }
@@ -204,4 +200,6 @@ object XmlBuilderTest {
 
   implicit private[scala] def toInputSource(xmlString: String): InputSource =
     new InputSource(new StringReader(xmlString))
+  implicit private[scala] def asJavaPredicate[A](p: A => Boolean): java.util.function.Predicate[A] = (a: A) => p(a)
+  implicit private[scala] def asJavaConsumer[A](c: A => Unit): java.util.function.Consumer[A] = (a: A) => c(a)
 }
