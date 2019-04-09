@@ -1,6 +1,7 @@
 package com.github.simy4.xpath
 package scala.navigator
 
+import com.github.ghik.silencer.silent
 import javax.xml.namespace.QName
 import navigator.Navigator
 
@@ -10,7 +11,9 @@ class ScalaXmlNavigator(override val root: Root) extends Navigator[ScalaXmlNode]
   import _root_.scala.collection.JavaConverters._
 
   override def parentOf(node: ScalaXmlNode): ScalaXmlNode = node.parent
+  @silent
   override def elementsOf(parent: ScalaXmlNode): java.lang.Iterable[_ <: ScalaXmlNode] = parent.elements.asJava
+  @silent
   override def attributesOf(parent: ScalaXmlNode): java.lang.Iterable[_ <: ScalaXmlNode] = parent.attributes.asJava
   @throws[XmlBuilderException]("If unable to create attribute for given node")
   override def createAttribute(parent: ScalaXmlNode, attribute: QName): ScalaXmlNode = parent match {
