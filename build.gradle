@@ -13,19 +13,19 @@ plugins {
     id 'cz.alenkacz.gradle.scalafmt' version '1.8.0' apply false
     id 'info.solidsoft.pitest' version '1.4.0' apply false
     id 'me.champeau.gradle.jmh' version '0.4.8' apply false
-    id 'net.ltgt.errorprone' version '0.7.1' apply false
+    id 'net.ltgt.errorprone' version '0.8' apply false
     id 'net.researchgate.release' version '2.8.0'
     id 'ru.vyarus.animalsniffer' version '1.5.0' apply false
 }
 
 ext {
-    assertjVersion = '3.12.1'
-    checkstyleVersion = '8.18'
+    assertjVersion = '3.12.2'
+    checkstyleVersion = '8.19'
     errorproneJavacVersion = '9+181-r4173-1'
     errorproneVersion = '2.3.3'
     jacocoVersion = '0.8.3'
-    jUnitVersion = '5.4.0'
-    mockitoVersion = '2.25.0'
+    jUnitVersion = '5.4.2'
+    mockitoVersion = '2.27.0'
 
     def buildTimeAndDate = new Date()
     buildDate = buildTimeAndDate.format("yyyy-MM-dd")
@@ -99,5 +99,5 @@ release {
 }
 
 wrapper {
-    gradleVersion = '5.3.1'
+    gradleVersion = '5.4'
 }

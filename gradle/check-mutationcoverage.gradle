@@ -1,0 +1,13 @@
+apply plugin: 'info.solidsoft.pitest'
+
+pitest {
+    pitestVersion = '1.4.7'
+    testPlugin = 'junit5'
+    targetClasses = ['com.github.simy4.xpath.*']
+    threads = 4
+    outputFormats = ['XML', 'HTML']
+    mutationThreshold = 80
+    coverageThreshold = 80
+}
+
+check.dependsOn 'pitest'
