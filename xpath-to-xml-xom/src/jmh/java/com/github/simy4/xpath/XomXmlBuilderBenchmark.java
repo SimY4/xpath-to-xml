@@ -53,7 +53,7 @@ public class XomXmlBuilderBenchmark {
     public void shouldBuildDocumentFromSetOfXPaths(Blackhole blackhole)
             throws XPathExpressionException {
         Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-        Document newDocument = new Document((Element) root.copy());
+        Document newDocument = new Document(root.copy());
         blackhole.consume(new XmlBuilder(namespaceContext)
                 .putAll(xmlProperties.keySet())
                 .build(newDocument));
