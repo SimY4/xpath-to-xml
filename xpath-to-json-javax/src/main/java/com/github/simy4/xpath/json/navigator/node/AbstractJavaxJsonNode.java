@@ -3,6 +3,7 @@ package com.github.simy4.xpath.json.navigator.node;
 import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -72,8 +73,7 @@ abstract class AbstractJavaxJsonNode implements JavaxJsonNode {
 
     @Override
     public String toString() {
-        final JsonValue jsonValue = get();
-        return null == jsonValue ? "???" : jsonValue.toString();
+        return Objects.toString(get(), "???");
     }
 
     private static Stream<JavaxJsonNode> traverse(JsonValue jsonValue, JavaxJsonNode parent, boolean attribute) {
