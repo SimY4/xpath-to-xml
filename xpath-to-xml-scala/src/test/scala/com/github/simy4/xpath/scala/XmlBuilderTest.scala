@@ -68,7 +68,7 @@ class XmlBuilderTest {
                                                      root: Elem): Unit = {
     implicit val ns: NamespaceContext = namespaceContext
     val xmlProperties = fixtureAccessor.getXmlProperties.asScala
-    val builtDocument = root.putAllValues(xmlProperties)
+    val builtDocument = root.putAll(xmlProperties)
     val builtDocumentString = xmlToString(builtDocument)
 
     xmlProperties.foreach {
@@ -93,7 +93,7 @@ class XmlBuilderTest {
     val xmlProperties = fixtureAccessor.getXmlProperties.asScala
     val xml = fixtureAccessor.getPutXml
     val oldDocument = XML.loadString(xml)
-    val builtDocument = oldDocument.putAllValues(xmlProperties)
+    val builtDocument = oldDocument.putAll(xmlProperties)
     val builtDocumentString = xmlToString(builtDocument)
 
     xmlProperties.foreach {
@@ -118,7 +118,7 @@ class XmlBuilderTest {
     val xmlProperties = fixtureAccessor.getXmlProperties.asScala
     val xml = fixtureAccessor.getPutValueXml
     val oldDocument = XML.loadString(xml)
-    var builtDocument = oldDocument.putAllValues(xmlProperties)
+    var builtDocument = oldDocument.putAll(xmlProperties)
     var builtDocumentString = xmlToString(builtDocument)
 
     xmlProperties.foreach {
