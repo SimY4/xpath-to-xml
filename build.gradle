@@ -91,7 +91,7 @@ configure(build) {
 }
 
 release {
-    failOnCommitNeeded = false
+    tagTemplate = '$version-scala'
 
     git {
         requireBranch = 'java6-scala-2.x'
