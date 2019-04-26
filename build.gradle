@@ -34,6 +34,7 @@ ext {
 
 subprojects {
     apply plugin: 'java-library'
+    apply plugin: 'net.researchgate.release'
     apply from: rootProject.file('gradle/animal-sniffer.gradle')
     apply from: rootProject.file('gradle/check-checkstyle.gradle')
     apply from: rootProject.file('gradle/check-codecoverage.gradle')
@@ -82,20 +83,22 @@ subprojects {
     afterReleaseBuild.dependsOn publish
 }
 
+allprojects {
+    release {
+        versionPropertyFile = rootProject.file('gradle.properties').toString()
+
+        git {
+            requireBranch = 'java6'
+        }
+    }
+}
+
 task build {
 }
 
 configure(build) {
     group = BasePlugin.BUILD_GROUP
     description = 'Project build'
-}
-
-release {
-    failOnCommitNeeded = false
-
-    git {
-        requireBranch = 'java6'
-    }
 }
 
 wrapper {

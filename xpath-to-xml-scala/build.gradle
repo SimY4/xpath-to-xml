@@ -54,29 +54,31 @@ javadocJar {
 }
 
 tasks.withType(ScalaCompile) {
-    if (scalaVersion.startsWith('2.11')) {
-        scalaCompileOptions.optimize = true
+    scalaCompileOptions.with {
+        if (scalaVersion.startsWith('2.11')) {
+            optimize = true
+        }
+        deprecation = true
+        encoding = 'UTF-8'
+        additionalParameters = [
+                '-explaintypes',                     // Explain type errors in more detail.
+                '-feature',                          // Emit warning and location for usages of features that should be imported explicitly.
+                '-language:implicitConversions',     // Allow definition of implicit functions called views
+                '-unchecked',                        // Enable additional warnings where generated code depends on assumptions.
+                '-Xcheckinit',                       // Wrap field accessors to throw an exception on uninitialized access.
+                '-Xfatal-warnings',                  // Fail the compilation if there are any warnings.
+                '-Xlint',                            // Turn on linting.
+                '-Ywarn-dead-code',                  // Warn when dead code is identified.
+                '-Ywarn-numeric-widen',              // Warn when numerics are widened.
+                '-Xplugin:' + configurations.scalaCompilerPlugin.asPath,
+        ] + (!scalaVersion.startsWith('2.11') ? [
+                '-opt:l:inline',
+                '-opt-inline-from:**',
+        ] : []) + (!scalaVersion.startsWith('2.13') ? [
+                '-Xfuture',                          // Turn on future language features.
+                '-Yno-adapted-args',                 // Do not adapt an argument list (either by inserting () or creating a tuple) to match the receiver.
+        ] : [])
     }
-    scalaCompileOptions.deprecation = true
-    scalaCompileOptions.encoding = 'UTF-8'
-    scalaCompileOptions.additionalParameters = [
-            '-explaintypes',                     // Explain type errors in more detail.
-            '-feature',                          // Emit warning and location for usages of features that should be imported explicitly.
-            '-language:implicitConversions',     // Allow definition of implicit functions called views
-            '-unchecked',                        // Enable additional warnings where generated code depends on assumptions.
-            '-Xcheckinit',                       // Wrap field accessors to throw an exception on uninitialized access.
-            '-Xfatal-warnings',                  // Fail the compilation if there are any warnings.
-            '-Xlint',                            // Turn on linting.
-            '-Ywarn-dead-code',                  // Warn when dead code is identified.
-            '-Ywarn-numeric-widen',              // Warn when numerics are widened.
-            '-Xplugin:' + configurations.scalaCompilerPlugin.asPath,
-    ] + (!scalaVersion.startsWith('2.11') ? [
-            '-opt:l:inline',
-            '-opt-inline-from:**',
-    ] : []) + (!scalaVersion.startsWith('2.13') ? [
-            '-Xfuture',                          // Turn on future language features.
-            '-Yno-adapted-args',                 // Do not adapt an argument list (either by inserting () or creating a tuple) to match the receiver.
-    ] : [])
 }
 
 compileTestScala {
