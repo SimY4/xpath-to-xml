@@ -50,7 +50,7 @@ class XmlBuilderTest {
     void shouldBuildDocumentFromSetOfXPaths(FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext,
                                             Element root) throws XPathExpressionException, IOException {
         var xmlProperties = fixtureAccessor.getXmlProperties();
-        var newDocument = new Document((Element) root.copy());
+        var newDocument = new Document(root.copy());
         var builtDocument = new XmlBuilder(namespaceContext)
                 .putAll(xmlProperties.keySet())
                 .build(newDocument);
@@ -71,7 +71,7 @@ class XmlBuilderTest {
                                                         NamespaceContext namespaceContext,
                                                         Element root) throws XPathExpressionException, IOException {
         var xmlProperties = fixtureAccessor.getXmlProperties();
-        var newDocument = new Document((Element) root.copy());
+        var newDocument = new Document(root.copy());
         var builtDocument = new XmlBuilder(namespaceContext)
                 .putAll(xmlProperties)
                 .build(newDocument);
