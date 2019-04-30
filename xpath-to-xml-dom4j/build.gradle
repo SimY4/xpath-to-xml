@@ -5,7 +5,7 @@ apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 dependencies {
     api project(':xpath-to-xml-core')
 
-    implementation 'org.dom4j:dom4j:[2.0,2.1['
+    implementation 'org.dom4j:dom4j:[2.0,3.0['
 
     testImplementation project(':xpath-to-xml-test')
     testImplementation 'jaxen:jaxen:[1.0,2.0['

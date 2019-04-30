@@ -76,8 +76,7 @@ allprojects {
     }
 }
 
-// DOM4J: Jaxen violates module isolation rules by having it's own org.w3c package. Therefore cannot be modularised.
-configure(subprojects - project(':xpath-to-xml-dom4j') - project(':xpath-to-xml-scala')) {
+configure(subprojects - project(':xpath-to-xml-scala')) {
     afterEvaluate {
         compileJava {
             inputs.property("moduleName", moduleName)
