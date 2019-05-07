@@ -9,7 +9,6 @@ buildscript {
 }
 
 plugins {
-    id 'com.adtran.scala-multiversion-plugin' version '1.0.35' apply false
     id 'cz.alenkacz.gradle.scalafmt' version '1.8.0' apply false
     id 'info.solidsoft.pitest' version '1.4.0' apply false
     id 'me.champeau.gradle.jmh' version '0.4.8' apply false
@@ -102,5 +101,5 @@ configure(build) {
 }
 
 wrapper {
-    gradleVersion = '5.4'
+    gradleVersion = '5.4.1'
 }

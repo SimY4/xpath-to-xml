@@ -1,0 +1,59 @@
+ext.moduleName = 'com.github.simych.xpath.scala'
+
+apply plugin: 'scala'
+apply plugin: 'cz.alenkacz.gradle.scalafmt'
+apply from: rootProject.file('gradle/benchmark-jmh.gradle')
+
+buildDir = 'build-2.13ja'
+
+configurations {
+    scalaCompilerPlugin
+}
+
+dependencies {
+    api project(':xpath-to-xml-core')
+
+    implementation 'org.scala-lang:scala-library:2.13.0-RC1'
+    implementation 'org.scala-lang.modules:scala-xml_2.13.0-RC1:[1.2, 2.0['
+    implementation 'com.github.ghik:silencer-lib_2.13.0-RC1:[1.3, 2.0['
+
+    scalaCompilerPlugin 'com.github.ghik:silencer-plugin_2.13.0-RC1:[1.3, 2.0['
+
+    testImplementation project(':xpath-to-xml-test')
+    testImplementation "org.junit.jupiter:junit-jupiter:$jUnitVersion"
+    testImplementation "org.assertj:assertj-core:$assertjVersion"
+}
+
+sourcesJar {
+    from sourceSets.main.allSource
+}
+
+javadocJar {
+    dependsOn scalad
+    from scaladoc
+}
+
+tasks.withType(ScalaCompile) {
+    scalaCompileOptions.with {
+        deprecation = true
+        encoding = 'UTF-8'
+        additionalParameters = [
+                '-explaintypes',                     // Explain type errors in more detail.
+                '-feature',                          // Emit warning and location for usages of features that should be imported explicitly.
+                '-language:implicitConversions',     // Allow definition of implicit functions called views
+                '-unchecked',                        // Enable additional warnings where generated code depends on assumptions.
+                '-Xcheckinit',                       // Wrap field accessors to throw an exception on uninitialized access.
+                '-Xfatal-warnings',                  // Fail the compilation if there are any warnings.
+                '-Xlint',                            // Turn on linting.
+                '-Ywarn-dead-code',                  // Warn when dead code is identified.
+                '-Ywarn-numeric-widen',              // Warn when numerics are widened.
+                '-opt:l:inline',
+                '-opt-inline-from:**',
+                '-Xplugin:' + configurations.scalaCompilerPlugin.asPath,
+        ]
+    }
+}
+
+compileTestScala {
+    scalaCompileOptions.additionalParameters << '-target:jvm-1.8'
+}
