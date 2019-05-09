@@ -6,6 +6,10 @@ apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 
 buildDir = 'build-2.12'
 
+clean {
+    delete 'build-2.12'
+}
+
 configurations {
     scalaCompilerPlugin
 }

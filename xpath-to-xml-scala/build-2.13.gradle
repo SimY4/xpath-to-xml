@@ -4,7 +4,11 @@ apply plugin: 'scala'
 apply plugin: 'cz.alenkacz.gradle.scalafmt'
 apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 
-buildDir = 'build-2.13ja'
+buildDir = 'build-2.13'
+
+clean {
+    delete 'build-2.13'
+}
 
 configurations {
     scalaCompilerPlugin
@@ -29,7 +33,7 @@ sourcesJar {
 }
 
 javadocJar {
-    dependsOn scalad
+    dependsOn scaladoc
     from scaladoc
 }
 
