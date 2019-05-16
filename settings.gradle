@@ -5,7 +5,6 @@ include 'xpath-to-json-javax'
 include 'xpath-to-xml-core'
 include 'xpath-to-xml-dom'
 include 'xpath-to-xml-dom4j'
-include 'xpath-to-xml-jdom'
 include 'xpath-to-xml-scala_2.11'
 project(':xpath-to-xml-scala_2.11').with {
     projectDir = file('xpath-to-xml-scala')
