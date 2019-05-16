@@ -75,7 +75,7 @@ allprojects {
     }
 }
 
-configure(subprojects - project(':xpath-to-xml-scala')) {
+configure(subprojects.findAll { !it.name.startsWith("xpath-to-xml-scala") }) {
     afterEvaluate {
         compileJava {
             inputs.property("moduleName", moduleName)
