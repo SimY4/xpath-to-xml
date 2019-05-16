@@ -17,7 +17,7 @@ public class PutEffect implements Effect, Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static final ViewVisitor<? extends Node, Void> eagerVisitor = new EagerVisitor<>();
+    private static final ViewVisitor<Node, Void> eagerVisitor = new EagerVisitor();
 
     private final Expr expr;
 
@@ -31,17 +31,17 @@ public class PutEffect implements Effect, Serializable {
         expr.resolve(navigator, new NodeView<>(xml), true).visit((ViewVisitor<N, Void>) eagerVisitor);
     }
 
-    private static final class EagerVisitor<N extends Node> extends AbstractViewVisitor<N, Void> {
+    private static final class EagerVisitor extends AbstractViewVisitor<Node, Void> {
 
         @Override
         @SuppressWarnings({"StatementWithEmptyBody", "UnusedVariable"})
-        public Void visit(IterableNodeView<N> nodeSet) {
+        public Void visit(IterableNodeView<Node> nodeSet) throws XmlBuilderException {
             for (var ignored : nodeSet) { } // eagerly consume resolved iterable
             return null;
         }
 
         @Override
-        protected Void returnDefault(View<N> view) {
+        protected Void returnDefault(View<Node> view) {
             return null;
         }
 

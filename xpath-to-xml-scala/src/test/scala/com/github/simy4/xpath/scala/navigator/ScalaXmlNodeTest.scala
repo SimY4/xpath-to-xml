@@ -87,10 +87,10 @@ class ScalaXmlNodeTest {
 }
 
 object ScalaXmlNodeTest {
-  private[scala] def moreAssertThat[A](it: Iterable[_ <: A]): IterableAssert[A] = new IterableAssert[A](it)
+  private[scala] def moreAssertThat[A](it: Iterable[A]): IterableAssert[A] = new IterableAssert[A](it)
 
-  private[scala] final class IterableAssert[A](it: Iterable[_ <: A])
-    extends AbstractAssert[IterableAssert[A], Iterable[_ <: A]](it, classOf[IterableAssert[A]]) {
+  private[scala] final class IterableAssert[A](it: Iterable[A])
+    extends AbstractAssert[IterableAssert[A], Iterable[A]](it, classOf[IterableAssert[A]]) {
     def isEmpty: IterableAssert[A] = {
       isNotNull
       if (actual.nonEmpty) failWithMessage("%nExpecting empty but was:<%s>", actual)
