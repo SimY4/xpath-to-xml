@@ -6,7 +6,7 @@ import javax.xml.namespace.NamespaceContext
 import org.openjdk.jmh.annotations.{ Benchmark, BenchmarkMode, Mode, Param, Scope, Setup, State }
 import org.openjdk.jmh.infra.Blackhole
 
-import _root_.scala.xml.Elem
+import xml.Elem
 
 @BenchmarkMode(Array(Mode.Throughput))
 @State(Scope.Benchmark)

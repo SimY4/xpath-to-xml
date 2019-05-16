@@ -4,7 +4,7 @@ package scala.navigator
 import javax.xml.namespace.QName
 import navigator.Navigator
 
-import _root_.scala.xml.{ Elem, Null, Text, Attribute => XmlAttribute }
+import xml.{Elem, Null, Text, Attribute => XmlAttribute}
 
 class ScalaXmlNavigator(override val root: Root) extends Navigator[ScalaXmlNode] {
   import scala.compat.Converters._

@@ -4,7 +4,7 @@ package scala.navigator
 import javax.xml.namespace.QName
 import navigator.{ Node => NavigatorNode }
 
-import _root_.scala.xml.{ Elem, MetaData, Text, Attribute => XmlAttribute }
+import xml.{Elem, MetaData, Text, Attribute => XmlAttribute}
 
 /**
   * Scala XML node contract.

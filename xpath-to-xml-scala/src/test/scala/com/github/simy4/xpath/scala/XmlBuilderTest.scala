@@ -14,8 +14,8 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.{Arguments, ArgumentsProvider, ArgumentsSource}
 import org.xml.sax.InputSource
 
-import _root_.scala.collection.{mutable, Map}
-import _root_.scala.xml.{Elem, NamespaceBinding, Node, Null, PrettyPrinter, TopScope, XML}
+import collection.{mutable, Map}
+import xml.{Elem, NamespaceBinding, Node, Null, PrettyPrinter, TopScope, XML}
 
 //noinspection ConvertExpressionToSAM
 class DataProvider extends ArgumentsProvider {
