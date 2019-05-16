@@ -17,13 +17,13 @@ import org.xml.sax.InputSource
 import _root_.scala.collection.{mutable, Map}
 import _root_.scala.xml.{Elem, NamespaceBinding, Node, Null, PrettyPrinter, TopScope, XML}
 
+//noinspection ConvertExpressionToSAM
 class DataProvider extends ArgumentsProvider {
-  import Arguments._
 
   private val namespaceContext = new SimpleNamespaceContext
   private val namespaceBinding = NamespaceBinding("my", namespaceContext.getNamespaceURI("my"), TopScope)
 
-  override def provideArguments(context: ExtensionContext): Stream[_ <: Arguments] = Stream.of(
+  override def provideArguments(context: ExtensionContext): Stream[_ <: Arguments] = java.util.Arrays.stream(Array(
     arguments(new FixtureAccessor("simple"), null, <breakfast_menu/>),
     arguments(new FixtureAccessor("simple"), namespaceContext, <breakfast_menu/>),
     arguments(new FixtureAccessor("ns-simple"),
@@ -33,7 +33,11 @@ class DataProvider extends ArgumentsProvider {
     arguments(new FixtureAccessor("attr"), namespaceContext, <breakfast_menu/>),
     arguments(new FixtureAccessor("special"), null, <records/>),
     arguments(new FixtureAccessor("special"), namespaceContext, <records/>)
-  )
+  ))
+
+  private def arguments(args: AnyRef*): Arguments = new Arguments {
+    override def get(): Array[AnyRef] = args.toArray
+  }
 }
 
 class XmlBuilderTest {
@@ -178,6 +182,7 @@ class XmlBuilderTest {
   }
 }
 
+//noinspection ConvertExpressionToSAM
 object XmlBuilderTest {
   implicit private[scala] class JUMapOps[K, V](private val map: java.util.Map[K, V]) extends AnyVal {
     def asScala: Map[K, V] = {
@@ -200,6 +205,12 @@ object XmlBuilderTest {
 
   implicit private[scala] def toInputSource(xmlString: String): InputSource =
     new InputSource(new StringReader(xmlString))
-  implicit private[scala] def asJavaPredicate[A](p: A => Boolean): java.util.function.Predicate[A] = (a: A) => p(a)
-  implicit private[scala] def asJavaConsumer[A](c: A => Unit): java.util.function.Consumer[A] = (a: A) => c(a)
+  implicit private[scala] def asJavaPredicate[A](p: A => Boolean): java.util.function.Predicate[A] =
+    new java.util.function.Predicate[A] {
+      override def test(a: A): Boolean = p(a)
+    }
+  implicit private[scala] def asJavaConsumer[A](c: A => Unit): java.util.function.Consumer[A] =
+    new java.util.function.Consumer[A] {
+      override def accept(a: A): Unit = c(a)
+    }
 }
