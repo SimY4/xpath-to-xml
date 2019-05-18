@@ -41,7 +41,7 @@ dependencies {
 }
 
 sourcesJar {
-    from sourceSets.main.allSource
+    from sourceSets.main.allSource + sourceSets.compat.allSource
 }
 
 javadocJar {
