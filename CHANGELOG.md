@@ -8,6 +8,12 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 
 ### Upcoming
 
+- scala XML
+  - Bump scala-xml version to 1.2.0
+  - Compile against scala 2.13.0-RC2
+  
+### 2.1.3
+
 Improvements:
 
 - Core
@@ -18,9 +24,6 @@ Improvements:
   - Use java 8 std-library features
 - DOM4J
   - Push DOM4J version down to 2.0.2
-- scala XML
-  - Bump scala-xml version to 1.2.0
-  - Compile against scala 2.13.0-RC2
 - XOM
   - Bump XOM version to 1.3.2
 
