@@ -1,7 +1,7 @@
 package com.github.simy4.xpath.util;
 
 /**
- * java.util.function.Predicate exact copy.
+ * {@code java.util.function.Predicate} exact copy.
  *
  * @param <T> predicate parameter type
  * @author Alex Simkin

@@ -1,7 +1,7 @@
 package com.github.simy4.xpath.util;
 
 /**
- * java.util.function.Function exact copy.
+ * {@code java.util.function.Function} exact copy.
  *
  * @param <T> function parameter type
  * @param <R> function return type
