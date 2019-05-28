@@ -8,6 +8,10 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 
 ### Upcoming
 
+Improvements:
+
+- Core
+  - Threadsafe service loader adaptor
 - scala XML
   - Bump scala-xml version to 1.2.0
   - Compile against scala 2.13.0-RC2
