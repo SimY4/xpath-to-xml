@@ -96,7 +96,9 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
         @SuppressWarnings({"StatementWithEmptyBody", "UnusedVariable"})
         private void writeObject(ObjectOutputStream out) throws IOException {
-            for (var ignored : this) { } // eagerly consume this node set to populate cache
+            for (var ignored : this) {
+                // eagerly consume this node set to populate cache
+            }
             out.writeObject(cache);
         }
 
@@ -187,7 +189,9 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
         @SuppressWarnings({"StatementWithEmptyBody", "UnusedVariable"})
         private void writeObject(ObjectOutputStream out) throws IOException {
-            for (var ignored : this) { } // eagerly consume this node set to populate cache
+            for (var ignored : this) {
+                // eagerly consume this node set to populate cache
+            }
             out.writeObject(cache);
         }
 

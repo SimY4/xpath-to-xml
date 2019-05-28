@@ -105,7 +105,9 @@ final class Token {
             return result;
         }
 
-        private Type() { }
+        private Type() {
+            throw new UnsupportedOperationException("new");
+        }
     }
 
 }

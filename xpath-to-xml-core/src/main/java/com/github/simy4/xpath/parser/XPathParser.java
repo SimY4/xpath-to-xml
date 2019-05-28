@@ -412,7 +412,9 @@ public class XPathParser implements Serializable {
             return LOOKUP_MAP.getOrDefault(axisToken.getToken(), INVALID);
         }
 
-        private Axis() { }
+        private Axis() {
+            throw new UnsupportedOperationException("new");
+        }
     }
 
 }

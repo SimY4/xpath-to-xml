@@ -36,7 +36,9 @@ public class PutEffect implements Effect, Serializable {
         @Override
         @SuppressWarnings({"StatementWithEmptyBody", "UnusedVariable"})
         public Void visit(IterableNodeView<Node> nodeSet) throws XmlBuilderException {
-            for (var ignored : nodeSet) { } // eagerly consume resolved iterable
+            for (var ignored : nodeSet) {
+                // eagerly consume resolved iterable
+            }
             return null;
         }
 
