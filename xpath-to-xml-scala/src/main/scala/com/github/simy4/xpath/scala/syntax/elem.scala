@@ -3,8 +3,8 @@ package scala.syntax
 
 import javax.xml.namespace.NamespaceContext
 
-import _root_.scala.collection.{Iterable, Map}
-import _root_.scala.xml.Elem
+import collection.{Iterable, Map}
+import xml.Elem
 
 trait ElemSyntax {
   implicit def toXmlElemOps(elem: Elem): XmlElemOps = new XmlElemOps(elem)

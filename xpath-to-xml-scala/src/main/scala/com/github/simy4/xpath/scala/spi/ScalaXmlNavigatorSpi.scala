@@ -4,7 +4,7 @@ package scala.spi
 import scala.navigator.{Root, ScalaXmlNavigator}
 import spi.{Effect, NavigatorSpi}
 
-import _root_.scala.xml.Elem
+import xml.Elem
 
 /**
  * Scala XML model navigator extension SPI.

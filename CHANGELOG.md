@@ -11,6 +11,16 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 Improvements:
 
 - Core
+  - Threadsafe service loader adaptor
+- scala XML
+  - Bump scala-xml version to 1.2.0
+  - Compile against scala 2.13.0-RC2
+  
+### 2.1.3
+
+Improvements:
+
+- Core
   - Descendant-or-Self axis is now stack-safe
   - util.FilteringIterator, util.TransformingIterator and util.TransformingAndFlatteningIterator were completely removed and their usages were replaced with private specialized iterators
 - javax.json
@@ -18,9 +28,6 @@ Improvements:
   - Use java 8 std-library features
 - DOM4J
   - Push DOM4J version down to 2.0.2
-- scala XML
-  - Bump scala-xml version to 1.2.0
-  - Compile against scala 2.13.0-RC1
 - XOM
   - Bump XOM version to 1.3.2
 

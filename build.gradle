@@ -19,9 +19,9 @@ plugins {
 
 ext {
     assertjVersion = '3.12.2'
-    checkstyleVersion = '8.19'
+    checkstyleVersion = '8.21'
     errorproneVersion = '2.3.3'
-    jacocoVersion = '0.8.3'
+    jacocoVersion = '0.8.4'
     jUnitVersion = '5.4.2'
     mockitoVersion = '2.27.0'
 
@@ -75,10 +75,10 @@ allprojects {
     }
 }
 
-configure(subprojects.findAll { !it.name.startsWith("xpath-to-xml-scala") }) {
+configure(subprojects.findAll { !it.name.startsWith('xpath-to-xml-scala') }) {
     afterEvaluate {
         compileJava {
-            inputs.property("moduleName", moduleName)
+            inputs.property('moduleName', moduleName)
             doFirst {
                 options.compilerArgs = [
                         '--module-path', classpath.asPath,

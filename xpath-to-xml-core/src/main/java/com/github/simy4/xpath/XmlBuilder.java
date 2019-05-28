@@ -6,6 +6,7 @@ import com.github.simy4.xpath.effects.RemoveEffect;
 import com.github.simy4.xpath.parser.XPathParser;
 import com.github.simy4.xpath.spi.Effect;
 import com.github.simy4.xpath.spi.NavigatorSpi;
+import com.github.simy4.xpath.util.LazyMemoizedServiceLoader;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPathExpressionException;
@@ -13,7 +14,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.ServiceLoader;
+import java.util.function.Function;
 
 /**
  * XML model modifier that works via XPath expressions processing.
@@ -24,7 +25,8 @@ import java.util.ServiceLoader;
 public class XmlBuilder implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private static final Iterable<NavigatorSpi> navigatorSpis = ServiceLoader.load(NavigatorSpi.class);
+    private static final Function<? super Class<NavigatorSpi>, ? extends Iterable<NavigatorSpi>> serviceLoader =
+            new LazyMemoizedServiceLoader<>();
 
     /**
      * Checks whether {@link XmlBuilder} supports given XML model.
@@ -33,7 +35,7 @@ public class XmlBuilder implements Serializable {
      * @return {@code true} if it can handle given model or {@code false} otherwise
      */
     public static boolean canHandle(Object xml) {
-        for (var navigatorSpi : navigatorSpis) {
+        for (var navigatorSpi : serviceLoader.apply(NavigatorSpi.class)) {
             if (navigatorSpi.canHandle(xml)) {
                 return true;
             }
@@ -185,7 +187,7 @@ public class XmlBuilder implements Serializable {
      * @throws XmlBuilderException if XML model modification failed
      */
     public <T> T build(T xml) throws XmlBuilderException {
-        for (var navigatorSpi : navigatorSpis) {
+        for (var navigatorSpi : serviceLoader.apply(NavigatorSpi.class)) {
             if (navigatorSpi.canHandle(xml)) {
                 return navigatorSpi.process(xml, effects);
             }
