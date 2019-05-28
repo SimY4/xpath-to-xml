@@ -420,7 +420,9 @@ public class XPathParser implements Serializable {
             return null == axis ? INVALID : axis;
         }
 
-        private Axis() { }
+        private Axis() {
+            throw new UnsupportedOperationException("new");
+        }
     }
 
 }
