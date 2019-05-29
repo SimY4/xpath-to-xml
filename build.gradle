@@ -82,6 +82,8 @@ subprojects {
 }
 
 release {
+    failOnCommitNeeded = false
+    
     git {
         requireBranch = 'java6'
     }
