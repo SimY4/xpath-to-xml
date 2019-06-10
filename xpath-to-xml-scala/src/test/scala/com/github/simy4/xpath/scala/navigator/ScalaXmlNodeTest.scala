@@ -45,7 +45,9 @@ class ScalaXmlNodeTest {
   def shouldSerializeAndDeserializeRoot(): Unit = {
     val deserializedNode = SerializationHelper.serializeAndDeserializeBack(root)
 
+    assertThat(deserializedNode.canEqual(root)).isTrue()
     assertThat(deserializedNode).isEqualTo(root)
+    assertThat(deserializedNode.hashCode()).isEqualTo(root.hashCode())
   }
 
   @Test
@@ -60,7 +62,9 @@ class ScalaXmlNodeTest {
   def shouldSerializeAndDeserializeElement(): Unit = {
     val deserializedNode = SerializationHelper.serializeAndDeserializeBack(root.elements.head)
 
+    assertThat(deserializedNode.canEqual(root.elements.head)).isTrue()
     assertThat(deserializedNode).isEqualTo(root.elements.head)
+    assertThat(deserializedNode.hashCode()).isEqualTo(root.elements.head.hashCode())
   }
 
   @Test
@@ -81,7 +85,9 @@ class ScalaXmlNodeTest {
   def shouldSerializeAndDeserializeAttribute(): Unit = {
     val deserializedNode = SerializationHelper.serializeAndDeserializeBack(root.elements.head.attributes.head)
 
+    assertThat(deserializedNode.canEqual(root.elements.head.attributes.head)).isTrue()
     assertThat(deserializedNode).isEqualTo(root.elements.head.attributes.head)
+    assertThat(deserializedNode.hashCode()).isEqualTo(root.elements.head.attributes.head.hashCode())
   }
 
 }

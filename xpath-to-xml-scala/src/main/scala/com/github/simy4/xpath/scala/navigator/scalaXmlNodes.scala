@@ -18,7 +18,7 @@ sealed trait ScalaXmlNode extends NavigatorNode {
   def attributes: Iterable[ScalaXmlNode]
 }
 @SerialVersionUID(1L)
-sealed abstract class Parent extends ScalaXmlNode with Serializable {
+sealed abstract class Parent extends ScalaXmlNode with Serializable with Equals {
   private[navigator] var node: Elem
   override def getText: String = node.child.collect { case Text(t) => t }.mkString
 }
@@ -29,7 +29,8 @@ final class Root(override var node: Elem) extends Parent {
   override val parent: Parent = null
   override def elements: Iterable[Element] = new Element(node, 0, this) :: Nil
   override def attributes: Iterable[Attribute] = Nil
-  override def equals(obj: Any): Boolean = obj match {
+  override def canEqual(that: Any): Boolean = that.isInstanceOf[Root]
+  override def equals(that: Any): Boolean = that match {
     case r: Root => node == r.node
     case _       => false
   }
@@ -55,7 +56,8 @@ final class Element private[navigator](private[this] var _node: Elem, var index:
       else parentNode.copy(child = parentNode.child.updated(index, elem))
     _node = elem
   }
-  override def equals(obj: Any): Boolean = obj match {
+  override def canEqual(that: Any): Boolean = that.isInstanceOf[Element]
+  override def equals(that: Any): Boolean = that match {
     case e: Element => _node == e.node && index == e.index
     case _          => false
   }
@@ -80,7 +82,8 @@ object Element {
 @SerialVersionUID(1L)
 final class Attribute private[navigator](private[this] var _meta: MetaData, override val parent: Parent)
     extends ScalaXmlNode
-    with Serializable {
+    with Serializable
+    with Equals {
   override def getName: QName = _meta match {
     case a: XmlAttribute if a.isPrefixed => new QName(a.getNamespace(parent.node), a.key, a.pre)
     case _                               => new QName(_meta.key)
@@ -88,7 +91,8 @@ final class Attribute private[navigator](private[this] var _meta: MetaData, over
   override def getText: String = _meta.value.text
   override def elements: Iterable[Element] = Nil
   override def attributes: Iterable[Attribute] = Nil
-  override def equals(obj: Any): Boolean = obj match {
+  override def canEqual(that: Any): Boolean = that.isInstanceOf[Attribute]
+  override def equals(that: Any): Boolean = that match {
     case a: Attribute => _meta == a.meta
     case _            => false
   }
