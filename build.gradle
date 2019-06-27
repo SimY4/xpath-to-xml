@@ -19,7 +19,7 @@ plugins {
 
 ext {
     assertjVersion = '3.12.2'
-    checkstyleVersion = '8.21'
+    checkstyleVersion = '8.22'
     errorproneJavacVersion = '9+181-r4173-1'
     errorproneVersion = '2.3.3'
     jacocoVersion = '0.8.4'
