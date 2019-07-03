@@ -32,8 +32,8 @@ sourceSets {
 dependencies {
     api project(':xpath-to-xml-core')
 
-    compatImplementation 'org.scala-lang:scala-library:2.13.0-RC2'
-    implementation 'org.scala-lang.modules:scala-xml_2.13.0-RC2:[1.2, 2.0['
+    compatImplementation 'org.scala-lang:scala-library:2.13.0'
+    implementation 'org.scala-lang.modules:scala-xml_2.13:[1.2, 2.0['
 
     testImplementation project(':xpath-to-xml-test')
     testImplementation "org.junit.jupiter:junit-jupiter:$jUnitVersion"
