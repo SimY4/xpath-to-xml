@@ -65,8 +65,13 @@ tasks.withType(ScalaCompile) {
                 '-Ywarn-numeric-widen',              // Warn when numerics are widened.
                 '-Xfuture',                          // Turn on future language features.
                 '-Yno-adapted-args',                 // Do not adapt an argument list (either by inserting () or creating a tuple) to match the receiver.
-                '-opt:l:inline',
-                '-opt-inline-from:**',
         ]
+        if (!JavaVersion.current().isJava12Compatible()) {
+            additionalParameters += [
+                    '-opt:l:method',
+                    '-opt:l:inline',
+                    '-opt-inline-from:com.github.simy4.xpath.scala.navigator.**,com.github.simy4.xpath.scala.syntax.**',
+            ]
+        }
     }
 }
