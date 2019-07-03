@@ -63,9 +63,14 @@ tasks.withType(ScalaCompile) {
                 '-Xlint',                            // Turn on linting.
                 '-Ywarn-dead-code',                  // Warn when dead code is identified.
                 '-Ywarn-numeric-widen',              // Warn when numerics are widened.
-                '-opt:l:inline',
-                '-opt-inline-from:**',
         ]
+        if (!JavaVersion.current().isJava12Compatible()) {
+            additionalParameters += [
+                    '-opt:l:method',
+                    '-opt:l:inline',
+                    '-opt-inline-from:com.github.simy4.xpath.scala.navigator.**,com.github.simy4.xpath.scala.syntax.**',
+            ]
+        }
     }
 }
 
