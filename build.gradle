@@ -36,7 +36,9 @@ subprojects {
     apply from: rootProject.file('gradle/animal-sniffer.gradle')
     apply from: rootProject.file('gradle/check-checkstyle.gradle')
     apply from: rootProject.file('gradle/check-codecoverage.gradle')
-    apply from: rootProject.file('gradle/check-errorprone.gradle')
+    if (!JavaVersion.current().isJava9Compatible()) {
+        apply from: rootProject.file('gradle/check-errorprone.gradle')
+    }
     apply from: rootProject.file('gradle/publish-jar.gradle')
     apply from: rootProject.file('gradle/publish-maven.gradle')
 
