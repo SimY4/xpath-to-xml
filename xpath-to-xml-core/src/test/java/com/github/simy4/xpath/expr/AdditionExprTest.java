@@ -73,7 +73,7 @@ class AdditionExprTest extends AbstractOperationExprTest {
 
         // when
         assertThat(operationExpr.resolve(navigator, new NodeView<>(node("node")), false))
-                .extracting("number").contains(6.0);
+                .extracting("number").isEqualTo(6.0);
     }
 
     @ParameterizedTest(name = "Given {0} and {1}")
@@ -86,7 +86,7 @@ class AdditionExprTest extends AbstractOperationExprTest {
 
         // when
         assertThat(operationExpr.resolve(navigator, new NodeView<>(node("node")), false))
-                .extracting("number").contains(Double.NaN);
+                .extracting("number").isEqualTo(Double.NaN);
     }
 
 }

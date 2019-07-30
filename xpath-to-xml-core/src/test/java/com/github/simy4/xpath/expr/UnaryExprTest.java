@@ -69,7 +69,7 @@ class UnaryExprTest {
 
         // when
         assertThat(unaryExpr.resolve(navigator, new NodeView<>(node("node")), false))
-                .extracting("number").contains(-number.toNumber());
+                .extracting("number").isEqualTo(-number.toNumber());
     }
 
     @ParameterizedTest(name = "Given {0}")
@@ -81,7 +81,7 @@ class UnaryExprTest {
 
         // when
         assertThat(unaryExpr.resolve(navigator, new NodeView<>(node("node")), false))
-                .extracting("number").contains(Double.NaN);
+                .extracting("number").isEqualTo(Double.NaN);
     }
 
     @Test

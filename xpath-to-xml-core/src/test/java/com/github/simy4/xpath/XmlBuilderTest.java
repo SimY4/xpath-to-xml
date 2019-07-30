@@ -50,7 +50,7 @@ class XmlBuilderTest {
         XmlBuilder deserializedBuild = SerializationHelper.serializeAndDeserializeBack(builder);
 
         // then
-        assertThat(deserializedBuild).extracting("effects").flatExtracting(o -> ((Collection<?>) o))
+        assertThat(deserializedBuild).extracting(new String[] { "effects" }).flatExtracting(o -> ((Collection<?>) o))
                 .hasSize(16);
     }
 

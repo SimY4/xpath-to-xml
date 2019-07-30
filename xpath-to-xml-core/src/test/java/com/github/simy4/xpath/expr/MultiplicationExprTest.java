@@ -74,7 +74,7 @@ class MultiplicationExprTest extends AbstractOperationExprTest {
 
         // when
         assertThat(operationExpr.resolve(navigator, new NodeView<>(node("node")), false))
-                .extracting("number").contains(9.0);
+                .extracting("number").isEqualTo(9.0);
     }
 
     @ParameterizedTest(name = "Given {0} and {1}")
@@ -87,7 +87,7 @@ class MultiplicationExprTest extends AbstractOperationExprTest {
 
         // when
         assertThat(operationExpr.resolve(navigator, new NodeView<>(node("node")), false))
-                .extracting("number").contains(Double.NaN);
+                .extracting("number").isEqualTo(Double.NaN);
     }
 
 }

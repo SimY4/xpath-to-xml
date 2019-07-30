@@ -78,7 +78,7 @@ abstract class AbstractAxisResolverTest {
         AxisResolver deserializedAxis = SerializationHelper.serializeAndDeserializeBack(axisResolver);
 
         // then
-        assertThat(deserializedAxis).isEqualToComparingFieldByFieldRecursively(axisResolver);
+        assertThat(deserializedAxis).usingRecursiveComparison().isEqualTo(axisResolver);
     }
 
     abstract void setUpResolvableAxis();
