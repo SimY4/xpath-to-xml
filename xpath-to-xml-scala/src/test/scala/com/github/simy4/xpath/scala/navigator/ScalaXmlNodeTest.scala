@@ -46,8 +46,7 @@ class ScalaXmlNodeTest {
     val deserializedNode = SerializationHelper.serializeAndDeserializeBack(root)
 
     assertThat(deserializedNode.canEqual(root)).isTrue()
-    assertThat(deserializedNode).isEqualTo(root)
-    assertThat(deserializedNode.hashCode()).isEqualTo(root.hashCode())
+    assertThat(deserializedNode).isEqualTo(root).hasSameHashCodeAs(root).hasToString(root.toString())
   }
 
   @Test
