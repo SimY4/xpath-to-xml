@@ -79,7 +79,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
     private static final class IterableNodeSet<T extends Node> extends NodeSetView<T> {
 
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 2L;
 
         private final Set<T> cache = new LinkedHashSet<T>();
         private final transient Iterable<? extends T> nodeSet;
@@ -172,7 +172,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
     private static final class FlatMapNodeSet<T extends Node> extends NodeSetView<T> {
 
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 2L;
 
         private final Set<T> cache = new LinkedHashSet<T>();
         private final transient NodeSetView<T> nodeSetView;
