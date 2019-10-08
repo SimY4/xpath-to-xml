@@ -40,7 +40,7 @@ class ScalaXmlNavigator(override val root: Root) extends Navigator[ScalaXmlNode]
       val elem = e.node
       e.node = elem.copy(child = elem.child.filterNot(_.isInstanceOf[Text]) :+ Text(text))
     case a: Attribute =>
-      val attr    = a.node
+      val attr = a.node
       a.node = XmlAttribute(Option(attr.pre), attr.key, Text(text), Null)
     case _ =>
       throw new XmlBuilderException(s"Unable to set text to $node")

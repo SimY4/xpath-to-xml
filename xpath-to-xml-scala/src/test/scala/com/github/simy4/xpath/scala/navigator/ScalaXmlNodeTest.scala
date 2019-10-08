@@ -15,6 +15,14 @@ class ScalaXmlNodeTest {
   private val root = new Root(xml)
 
   @Test
+  def shouldGetAndSetRoot(): Unit = {
+    assertThat(root.node).isEqualTo(xml)
+    val anotherRoot = <another_root/>
+    root.node = anotherRoot
+    assertThat(root.node).isNotEqualTo(xml).isEqualTo(anotherRoot)
+  }
+
+  @Test
   def shouldReturnDocumentName(): Unit =
     assertThat(root.getName).isEqualTo(new QName(Node.DOCUMENT))
 
