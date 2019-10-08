@@ -4,14 +4,14 @@ package scala.navigator
 import helpers.SerializationHelper
 import javax.xml.namespace.QName
 import navigator.Node
-import org.assertj.core.api.{AbstractAssert, Assertions}
+import org.assertj.core.api.{ AbstractAssert, Assertions }
 import org.junit.jupiter.api.Test
 
 class ScalaXmlNodeTest {
   import Assertions._
   import ScalaXmlNodeTest._
 
-  private val xml = <root attr="value">text</root>
+  private val xml  = <root attr="value">text</root>
   private val root = new Root(xml)
 
   @Test
@@ -19,8 +19,8 @@ class ScalaXmlNodeTest {
     assertThat(root.getName).isEqualTo(new QName(Node.DOCUMENT))
 
   @Test
-  def shouldReturnRootElementTextRootTextAccessed(): Unit =
-    assertThat(root.getText).isEqualTo("text")
+  def shouldReturnEmptyTextWhenRootTextAccessed(): Unit =
+    assertThat(root.getText).isEqualTo("")
 
   @Test
   def shouldReturnRootElementWhenRootElementsAccessed(): Unit =
@@ -51,7 +51,7 @@ class ScalaXmlNodeTest {
 
   @Test
   def shouldReturnParentWhenAttributeParentAccessed(): Unit = {
-    val parent = root.elements.head
+    val parent    = root.elements.head
     val attribute = parent.attributes.head
 
     assertThat(attribute.parent).isEqualTo(parent)
@@ -94,8 +94,8 @@ class ScalaXmlNodeTest {
 object ScalaXmlNodeTest {
   private[scala] def moreAssertThat[A](it: Iterable[A]): IterableAssert[A] = new IterableAssert[A](it)
 
-  private[scala] final class IterableAssert[A](it: Iterable[A])
-    extends AbstractAssert[IterableAssert[A], Iterable[A]](it, classOf[IterableAssert[A]]) {
+  final private[scala] class IterableAssert[A](it: Iterable[A])
+      extends AbstractAssert[IterableAssert[A], Iterable[A]](it, classOf[IterableAssert[A]]) {
     def isEmpty: IterableAssert[A] = {
       isNotNull
       if (actual.nonEmpty) failWithMessage("%nExpecting empty but was:<%s>", actual)
