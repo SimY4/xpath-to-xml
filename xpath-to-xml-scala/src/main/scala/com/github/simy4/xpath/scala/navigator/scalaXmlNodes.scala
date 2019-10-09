@@ -12,18 +12,21 @@ import xml.{ Elem, Text, Attribute => XmlAttribute }
  * @author Alex Simkin
  * @since 2.0
  */
-@SerialVersionUID(1L)
-sealed abstract class ScalaXmlNode protected (val parent: ScalaXmlNode)
-    extends NavigatorNode
-    with Serializable
-    with Equals {
+sealed trait ScalaXmlNode extends NavigatorNode with Equals {
   type N
+  val parent: ScalaXmlNode
   private[navigator] var node: N
   def elements: Iterable[ScalaXmlNode]
   def attributes: Iterable[ScalaXmlNode]
+}
+
+@SerialVersionUID(1L)
+abstract private[navigator] class AbstractScalaXmlNode protected (override val parent: ScalaXmlNode)
+    extends ScalaXmlNode
+    with Serializable {
   override def canEqual(that: Any): Boolean = that.isInstanceOf[ScalaXmlNode]
   override def equals(that: Any): Boolean = that match {
-    case n: ScalaXmlNode => node == n.node
+    case n: ScalaXmlNode => n.canEqual(this) && node == n.node
     case _               => false
   }
   override def hashCode(): Int  = node.hashCode()
@@ -31,12 +34,12 @@ sealed abstract class ScalaXmlNode protected (val parent: ScalaXmlNode)
 }
 
 @SerialVersionUID(1L)
-final class Root(override var node: Elem) extends ScalaXmlNode(null) {
+final class Root(override var node: Elem) extends AbstractScalaXmlNode(null) {
   override type N = Elem
-  override def getName: QName                  = new QName(NavigatorNode.DOCUMENT)
-  override def getText: String                 = ""
-  override def elements: Iterable[Element]     = new Element(node, 0, this) :: Nil
-  override def attributes: Iterable[Attribute] = Nil
+  @noinline override def getName: QName                  = new QName(NavigatorNode.DOCUMENT)
+  @noinline override def getText: String                 = ""
+  override def elements: Iterable[Element]               = new Element(node, 0, this) :: Nil
+  @noinline override def attributes: Iterable[Attribute] = Nil
 }
 
 @SerialVersionUID(1L)
@@ -44,7 +47,7 @@ final class Element private[navigator] (
   private[this] var _node: Elem,
   var index: Int,
   override val parent: ScalaXmlNode { type N = Elem }
-) extends ScalaXmlNode(parent) {
+) extends AbstractScalaXmlNode(parent) {
   override type N = Elem
   override def getName: QName = {
     val node = _node
@@ -66,7 +69,7 @@ final class Element private[navigator] (
   }
   override def canEqual(that: Any): Boolean = that.isInstanceOf[Element]
   override def equals(that: Any): Boolean = that match {
-    case e: Element => _node == e.node && index == e.index
+    case e: Element => e.canEqual(this) && index == e.index && super.equals(that)
     case _          => false
   }
   override def hashCode(): Int = {
@@ -79,17 +82,17 @@ final class Element private[navigator] (
 @SerialVersionUID(1L)
 final class Attribute private[navigator] (private[this] var _attr: XmlAttribute, override val parent: ScalaXmlNode {
   type N = Elem
-}) extends ScalaXmlNode(parent) {
+}) extends AbstractScalaXmlNode(parent) {
   override type N = XmlAttribute
   override def getName: QName = {
     val attr = _attr
     if (attr.isPrefixed) new QName(attr.getNamespace(parent.node), attr.key, attr.pre)
     else new QName(attr.key)
   }
-  override def getText: String                       = _attr.value.text
-  override def elements: Iterable[Element]           = Nil
-  override def attributes: Iterable[Attribute]       = Nil
-  override private[navigator] def node: XmlAttribute = _attr
+  override def getText: String                           = _attr.value.text
+  @noinline override def elements: Iterable[Element]     = Nil
+  @noinline override def attributes: Iterable[Attribute] = Nil
+  override private[navigator] def node: XmlAttribute     = _attr
   override private[navigator] def node_=(attr: XmlAttribute): Unit = {
     parent.node = parent.node % attr
     _attr = attr

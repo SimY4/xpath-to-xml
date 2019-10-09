@@ -23,6 +23,22 @@ class ScalaXmlNodeTest {
   }
 
   @Test
+  def checkEquality(): Unit = {
+    val parent    = root.elements.head
+    val attribute = parent.attributes.head
+
+    assertThat(root.canEqual(parent)).isTrue
+    assertThat(root.canEqual(attribute)).isTrue
+    assertThat(root).isNotEqualTo(parent).isNotEqualTo(attribute)
+    assertThat(parent.canEqual(root)).isFalse
+    assertThat(parent.canEqual(attribute)).isFalse
+    assertThat(parent).isNotEqualTo(root).isNotEqualTo(attribute)
+    assertThat(attribute.canEqual(parent)).isTrue
+    assertThat(attribute.canEqual(attribute)).isTrue
+    assertThat(attribute).isNotEqualTo(root).isNotEqualTo(parent)
+  }
+
+  @Test
   def shouldReturnDocumentName(): Unit =
     assertThat(root.getName).isEqualTo(new QName(Node.DOCUMENT))
 
