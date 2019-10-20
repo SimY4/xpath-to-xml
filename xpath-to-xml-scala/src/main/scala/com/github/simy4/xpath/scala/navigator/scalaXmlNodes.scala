@@ -36,10 +36,10 @@ abstract private[navigator] class AbstractScalaXmlNode protected (override val p
 @SerialVersionUID(1L)
 final class Root(override var node: Elem) extends AbstractScalaXmlNode(null) {
   override type N = Elem
-  @noinline override def getName: QName                  = new QName(NavigatorNode.DOCUMENT)
-  @noinline override def getText: String                 = ""
-  override def elements: Iterable[Element]               = new Element(node, 0, this) :: Nil
-  @noinline override def attributes: Iterable[Attribute] = Nil
+  override def getName: QName                  = new QName(NavigatorNode.DOCUMENT)
+  override def getText: String                 = ""
+  override def elements: Iterable[Element]     = new Element(node, 0, this) :: Nil
+  override def attributes: Iterable[Attribute] = Nil
 }
 
 @SerialVersionUID(1L)
@@ -89,10 +89,10 @@ final class Attribute private[navigator] (private[this] var _attr: XmlAttribute,
     if (attr.isPrefixed) new QName(attr.getNamespace(parent.node), attr.key, attr.pre)
     else new QName(attr.key)
   }
-  override def getText: String                           = _attr.value.text
-  @noinline override def elements: Iterable[Element]     = Nil
-  @noinline override def attributes: Iterable[Attribute] = Nil
-  override private[navigator] def node: XmlAttribute     = _attr
+  override def getText: String                       = _attr.value.text
+  override def elements: Iterable[Element]           = Nil
+  override def attributes: Iterable[Attribute]       = Nil
+  override private[navigator] def node: XmlAttribute = _attr
   override private[navigator] def node_=(attr: XmlAttribute): Unit = {
     parent.node = parent.node % attr
     _attr = attr

@@ -40,11 +40,11 @@ class ScalaXmlNodeTest {
 
   @Test
   def shouldReturnDocumentName(): Unit =
-    assertThat(root.getName).isEqualTo(new QName(Node.DOCUMENT))
+    assertThat(root.getName : @noinline).isEqualTo(new QName(Node.DOCUMENT))
 
   @Test
   def shouldReturnEmptyTextWhenRootTextAccessed(): Unit =
-    assertThat(root.getText).isEqualTo("")
+    assertThat(root.getText : @noinline).isEqualTo("")
 
   @Test
   def shouldReturnRootElementWhenRootElementsAccessed(): Unit =
@@ -52,7 +52,7 @@ class ScalaXmlNodeTest {
 
   @Test
   def shouldReturnNilWhenRootAttributesAccessed(): Unit =
-    moreAssertThat(root.attributes).isEmpty
+    moreAssertThat(root.attributes : @noinline).isEmpty
 
   @Test
   def shouldReturnNullWhenRootParentAccessed(): Unit =
@@ -94,14 +94,14 @@ class ScalaXmlNodeTest {
   def shouldReturnNilWhenAttributeElementsAccessed(): Unit = {
     val attribute = root.elements.head.attributes.head
 
-    moreAssertThat(attribute.elements).isEmpty
+    moreAssertThat(attribute.elements : @noinline).isEmpty
   }
 
   @Test
   def shouldReturnNilWhenAttributeAttributesAccessed(): Unit = {
     val attribute = root.elements.head.attributes.head
 
-    moreAssertThat(attribute.attributes).isEmpty
+    moreAssertThat(attribute.attributes : @noinline).isEmpty
   }
 
   @Test
