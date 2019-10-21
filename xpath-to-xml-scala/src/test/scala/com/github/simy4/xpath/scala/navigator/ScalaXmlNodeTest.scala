@@ -4,23 +4,47 @@ package scala.navigator
 import helpers.SerializationHelper
 import javax.xml.namespace.QName
 import navigator.Node
-import org.assertj.core.api.{AbstractAssert, Assertions}
+import org.assertj.core.api.{ AbstractAssert, Assertions }
 import org.junit.jupiter.api.Test
 
 class ScalaXmlNodeTest {
   import Assertions._
   import ScalaXmlNodeTest._
 
-  private val xml = <root attr="value">text</root>
+  private val xml  = <root attr="value">text</root>
   private val root = new Root(xml)
 
   @Test
-  def shouldReturnDocumentName(): Unit =
-    assertThat(root.getName).isEqualTo(new QName(Node.DOCUMENT))
+  def shouldGetAndSetRoot(): Unit = {
+    assertThat(root.node).isEqualTo(xml)
+    val anotherRoot = <another_root/>
+    root.node = anotherRoot
+    assertThat(root.node).isNotEqualTo(xml).isEqualTo(anotherRoot)
+  }
 
   @Test
-  def shouldReturnRootElementTextRootTextAccessed(): Unit =
-    assertThat(root.getText).isEqualTo("text")
+  def checkEquality(): Unit = {
+    val parent    = root.elements.head
+    val attribute = parent.attributes.head
+
+    assertThat(root.canEqual(parent)).isTrue
+    assertThat(root.canEqual(attribute)).isTrue
+    assertThat(root).isNotEqualTo(parent).isNotEqualTo(attribute)
+    assertThat(parent.canEqual(root)).isFalse
+    assertThat(parent.canEqual(attribute)).isFalse
+    assertThat(parent).isNotEqualTo(root).isNotEqualTo(attribute)
+    assertThat(attribute.canEqual(parent)).isTrue
+    assertThat(attribute.canEqual(attribute)).isTrue
+    assertThat(attribute).isNotEqualTo(root).isNotEqualTo(parent)
+  }
+
+  @Test
+  def shouldReturnDocumentName(): Unit =
+    assertThat(root.getName : @noinline).isEqualTo(new QName(Node.DOCUMENT))
+
+  @Test
+  def shouldReturnEmptyTextWhenRootTextAccessed(): Unit =
+    assertThat(root.getText : @noinline).isEqualTo("")
 
   @Test
   def shouldReturnRootElementWhenRootElementsAccessed(): Unit =
@@ -28,7 +52,7 @@ class ScalaXmlNodeTest {
 
   @Test
   def shouldReturnNilWhenRootAttributesAccessed(): Unit =
-    moreAssertThat(root.attributes).isEmpty
+    moreAssertThat(root.attributes : @noinline).isEmpty
 
   @Test
   def shouldReturnNullWhenRootParentAccessed(): Unit =
@@ -46,13 +70,12 @@ class ScalaXmlNodeTest {
     val deserializedNode = SerializationHelper.serializeAndDeserializeBack(root)
 
     assertThat(deserializedNode.canEqual(root)).isTrue()
-    assertThat(deserializedNode).isEqualTo(root)
-    assertThat(deserializedNode.hashCode()).isEqualTo(root.hashCode())
+    assertThat(deserializedNode).isEqualTo(root).hasSameHashCodeAs(root).hasToString(root.toString())
   }
 
   @Test
   def shouldReturnParentWhenAttributeParentAccessed(): Unit = {
-    val parent = root.elements.head
+    val parent    = root.elements.head
     val attribute = parent.attributes.head
 
     assertThat(attribute.parent).isEqualTo(parent)
@@ -71,14 +94,14 @@ class ScalaXmlNodeTest {
   def shouldReturnNilWhenAttributeElementsAccessed(): Unit = {
     val attribute = root.elements.head.attributes.head
 
-    moreAssertThat(attribute.elements).isEmpty
+    moreAssertThat(attribute.elements : @noinline).isEmpty
   }
 
   @Test
   def shouldReturnNilWhenAttributeAttributesAccessed(): Unit = {
     val attribute = root.elements.head.attributes.head
 
-    moreAssertThat(attribute.attributes).isEmpty
+    moreAssertThat(attribute.attributes : @noinline).isEmpty
   }
 
   @Test
@@ -95,8 +118,8 @@ class ScalaXmlNodeTest {
 object ScalaXmlNodeTest {
   private[scala] def moreAssertThat[A](it: Iterable[A]): IterableAssert[A] = new IterableAssert[A](it)
 
-  private[scala] final class IterableAssert[A](it: Iterable[A])
-    extends AbstractAssert[IterableAssert[A], Iterable[A]](it, classOf[IterableAssert[A]]) {
+  final private[scala] class IterableAssert[A](it: Iterable[A])
+      extends AbstractAssert[IterableAssert[A], Iterable[A]](it, classOf[IterableAssert[A]]) {
     def isEmpty: IterableAssert[A] = {
       isNotNull
       if (actual.nonEmpty) failWithMessage("%nExpecting empty but was:<%s>", actual)

@@ -7,15 +7,15 @@ import java.util.stream.Stream
 import fixtures.FixtureAccessor
 import helpers.SimpleNamespaceContext
 import javax.xml.namespace.NamespaceContext
-import javax.xml.xpath.{XPathConstants, XPathExpression, XPathFactory}
-import org.assertj.core.api.{Assertions, Condition}
+import javax.xml.xpath.{ XPathConstants, XPathExpression, XPathFactory }
+import org.assertj.core.api.{ Assertions, Condition }
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.{Arguments, ArgumentsProvider, ArgumentsSource}
+import org.junit.jupiter.params.provider.{ Arguments, ArgumentsProvider, ArgumentsSource }
 import org.xml.sax.InputSource
 
-import collection.{mutable, Map}
-import xml.{Elem, NamespaceBinding, Node, Null, PrettyPrinter, TopScope, XML}
+import collection.{ mutable, Map }
+import xml.{ Elem, NamespaceBinding, Node, Null, PrettyPrinter, TopScope, XML }
 
 //noinspection ConvertExpressionToSAM
 class DataProvider extends ArgumentsProvider {
@@ -23,17 +23,22 @@ class DataProvider extends ArgumentsProvider {
   private val namespaceContext = new SimpleNamespaceContext
   private val namespaceBinding = NamespaceBinding("my", namespaceContext.getNamespaceURI("my"), TopScope)
 
-  override def provideArguments(context: ExtensionContext): Stream[_ <: Arguments] = java.util.Arrays.stream(Array(
-    arguments(new FixtureAccessor("simple"), null, <breakfast_menu/>),
-    arguments(new FixtureAccessor("simple"), namespaceContext, <breakfast_menu/>),
-    arguments(new FixtureAccessor("ns-simple"),
-              namespaceContext,
-              Elem("my", "breakfast_menu", Null, namespaceBinding, minimizeEmpty = true)),
-    arguments(new FixtureAccessor("attr"), null, <breakfast_menu/>),
-    arguments(new FixtureAccessor("attr"), namespaceContext, <breakfast_menu/>),
-    arguments(new FixtureAccessor("special"), null, <records/>),
-    arguments(new FixtureAccessor("special"), namespaceContext, <records/>)
-  ))
+  override def provideArguments(context: ExtensionContext): Stream[_ <: Arguments] =
+    java.util.Arrays.stream(
+      Array(
+        arguments(new FixtureAccessor("simple"), null, <breakfast_menu/>),
+        arguments(new FixtureAccessor("simple"), namespaceContext, <breakfast_menu/>),
+        arguments(
+          new FixtureAccessor("ns-simple"),
+          namespaceContext,
+          Elem("my", "breakfast_menu", Null, namespaceBinding, minimizeEmpty = true)
+        ),
+        arguments(new FixtureAccessor("attr"), null, <breakfast_menu/>),
+        arguments(new FixtureAccessor("attr"), namespaceContext, <breakfast_menu/>),
+        arguments(new FixtureAccessor("special"), null, <records/>),
+        arguments(new FixtureAccessor("special"), namespaceContext, <records/>)
+      )
+    )
 
   private def arguments(args: AnyRef*): Arguments = new Arguments {
     override def get(): Array[AnyRef] = args.toArray
@@ -47,13 +52,15 @@ class XmlBuilderTest {
 
   @ParameterizedTest
   @ArgumentsSource(classOf[DataProvider])
-  def shouldBuildDocumentFromSetOfXPaths(fixtureAccessor: FixtureAccessor,
-                                         namespaceContext: NamespaceContext,
-                                         root: Elem): Unit = {
+  def shouldBuildDocumentFromSetOfXPaths(
+    fixtureAccessor: FixtureAccessor,
+    namespaceContext: NamespaceContext,
+    root: Elem
+  ): Unit = {
     implicit val ns: NamespaceContext = namespaceContext
-    val xmlProperties = fixtureAccessor.getXmlProperties.asScala
-    val builtDocument = root.putAll(xmlProperties.keys)
-    val builtDocumentString = xmlToString(builtDocument)
+    val xmlProperties                 = fixtureAccessor.getXmlProperties.asScala
+    val builtDocument                 = root.putAll(xmlProperties.keys)
+    val builtDocumentString           = xmlToString(builtDocument)
 
     xmlProperties.keys.foreach { xpath =>
       val documentSource: InputSource = builtDocumentString
@@ -62,18 +69,20 @@ class XmlBuilderTest {
     // although these cases are working fine the order of attribute is messed up
     assertThat(builtDocumentString).is(new Condition({ xml: String =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutXml
-    }, "XML matches exactly"))
+    }, "\"%s\" matches exactly", fixtureAccessor.getPutXml))
   }
 
   @ParameterizedTest
   @ArgumentsSource(classOf[DataProvider])
-  def shouldBuildDocumentFromSetOfXPathsAndSetValues(fixtureAccessor: FixtureAccessor,
-                                                     namespaceContext: NamespaceContext,
-                                                     root: Elem): Unit = {
+  def shouldBuildDocumentFromSetOfXPathsAndSetValues(
+    fixtureAccessor: FixtureAccessor,
+    namespaceContext: NamespaceContext,
+    root: Elem
+  ): Unit = {
     implicit val ns: NamespaceContext = namespaceContext
-    val xmlProperties = fixtureAccessor.getXmlProperties.asScala
-    val builtDocument = root.putAllValues(xmlProperties)
-    val builtDocumentString = xmlToString(builtDocument)
+    val xmlProperties                 = fixtureAccessor.getXmlProperties.asScala
+    val builtDocument                 = root.putAllValues(xmlProperties)
+    val builtDocumentString           = xmlToString(builtDocument)
 
     xmlProperties.foreach {
       case (xpath, value) =>
@@ -85,20 +94,22 @@ class XmlBuilderTest {
     // although these cases are working fine the order of attribute is messed up
     assertThat(xmlToString(builtDocument)).is(new Condition({ xml: String =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
-    }, "XML matches exactly"))
+    }, "\"%s\" matches exactly", fixtureAccessor.getPutValueXml))
   }
 
   @ParameterizedTest
   @ArgumentsSource(classOf[DataProvider])
-  def shouldModifyDocumentWhenXPathsAreNotTraversable(fixtureAccessor: FixtureAccessor,
-                                                      namespaceContext: NamespaceContext,
-                                                      root: Elem): Unit = {
+  def shouldModifyDocumentWhenXPathsAreNotTraversable(
+    fixtureAccessor: FixtureAccessor,
+    namespaceContext: NamespaceContext,
+    root: Elem
+  ): Unit = {
     implicit val ns: NamespaceContext = namespaceContext
-    val xmlProperties = fixtureAccessor.getXmlProperties.asScala
-    val xml = fixtureAccessor.getPutXml
-    val oldDocument = XML.loadString(xml)
-    val builtDocument = oldDocument.putAllValues(xmlProperties)
-    val builtDocumentString = xmlToString(builtDocument)
+    val xmlProperties                 = fixtureAccessor.getXmlProperties.asScala
+    val xml                           = fixtureAccessor.getPutXml
+    val oldDocument                   = XML.loadString(xml)
+    val builtDocument                 = oldDocument.putAllValues(xmlProperties)
+    val builtDocumentString           = xmlToString(builtDocument)
 
     xmlProperties.foreach {
       case (xpath, value) =>
@@ -108,22 +119,24 @@ class XmlBuilderTest {
           .isEqualTo(value)
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(xmlToString(builtDocument)).is(new Condition({ xml: String =>
+    assertThat(builtDocumentString).is(new Condition({ xml: String =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
-    }, "XML matches exactly"))
+    }, "\"%s\" matches exactly", fixtureAccessor.getPutValueXml))
   }
 
   @ParameterizedTest
   @ArgumentsSource(classOf[DataProvider])
-  def shouldNotModifyDocumentWhenAllXPathsTraversable(fixtureAccessor: FixtureAccessor,
-                                                      namespaceContext: NamespaceContext,
-                                                      root: Elem): Unit = {
+  def shouldNotModifyDocumentWhenAllXPathsTraversable(
+    fixtureAccessor: FixtureAccessor,
+    namespaceContext: NamespaceContext,
+    root: Elem
+  ): Unit = {
     implicit val ns: NamespaceContext = namespaceContext
-    val xmlProperties = fixtureAccessor.getXmlProperties.asScala
-    val xml = fixtureAccessor.getPutValueXml
-    val oldDocument = XML.loadString(xml)
-    var builtDocument = oldDocument.putAllValues(xmlProperties)
-    var builtDocumentString = xmlToString(builtDocument)
+    val xmlProperties                 = fixtureAccessor.getXmlProperties.asScala
+    val xml                           = fixtureAccessor.getPutValueXml
+    val oldDocument                   = XML.loadString(xml)
+    var builtDocument                 = oldDocument.putAllValues(xmlProperties)
+    var builtDocumentString           = xmlToString(builtDocument)
 
     xmlProperties.foreach {
       case (xpath, value) =>
@@ -133,9 +146,9 @@ class XmlBuilderTest {
           .isEqualTo(value)
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(xmlToString(builtDocument)).is(new Condition({ xml: String =>
+    assertThat(builtDocumentString).is(new Condition({ xml: String =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
-    }, "XML matches exactly"))
+    }, "\"%s\" matches exactly", fixtureAccessor.getPutValueXml))
 
     builtDocument = oldDocument.putAll(xmlProperties.keys)
     builtDocumentString = xmlToString(builtDocument)
@@ -148,22 +161,24 @@ class XmlBuilderTest {
           .isEqualTo(value)
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(xmlToString(builtDocument)).is(new Condition({ xml: String =>
+    assertThat(builtDocumentString).is(new Condition({ xml: String =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
-    }, "XML matches exactly"))
+    }, "\"%s\" matches exactly", fixtureAccessor.getPutValueXml))
   }
 
   @ParameterizedTest
   @ArgumentsSource(classOf[DataProvider])
-  def shouldRemovePathsFromExistingXml(fixtureAccessor: FixtureAccessor,
-                                       namespaceContext: NamespaceContext,
-                                       root: Elem): Unit = {
+  def shouldRemovePathsFromExistingXml(
+    fixtureAccessor: FixtureAccessor,
+    namespaceContext: NamespaceContext,
+    root: Elem
+  ): Unit = {
     implicit val ns: NamespaceContext = namespaceContext
-    val xmlProperties = fixtureAccessor.getXmlProperties.asScala
-    val xml = fixtureAccessor.getPutValueXml
-    val oldDocument = XML.loadString(xml)
-    val builtDocument = oldDocument.removeAll(xmlProperties.keys)
-    val builtDocumentString = xmlToString(builtDocument)
+    val xmlProperties                 = fixtureAccessor.getXmlProperties.asScala
+    val xml                           = fixtureAccessor.getPutValueXml
+    val oldDocument                   = XML.loadString(xml)
+    val builtDocument                 = oldDocument.removeAll(xmlProperties.keys)
+    val builtDocumentString           = xmlToString(builtDocument)
 
     xmlProperties.keySet.foreach { xpath =>
       val documentSource: InputSource = builtDocumentString
@@ -176,8 +191,8 @@ class XmlBuilderTest {
 
   private def xmlToString(xml: Node) = {
     val lineSeparator = System.lineSeparator()
-    val printer = new PrettyPrinter(255, 4)
-    val string = printer.format(xml).replaceAll(s">\n\\s*(\\w.+?)\n\\s*</", ">$1</") + "\n"
+    val printer       = new PrettyPrinter(255, 4)
+    val string        = printer.format(xml).replaceAll(s">\n\\s*(\\w.+?)\n\\s*</", ">$1</") + "\n"
     string.replaceAll("\n", lineSeparator)
   }
 }

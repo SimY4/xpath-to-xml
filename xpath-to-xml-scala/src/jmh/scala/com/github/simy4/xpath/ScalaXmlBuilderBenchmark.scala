@@ -3,7 +3,7 @@ package com.github.simy4.xpath
 import fixtures.FixtureAccessor
 import helpers.SimpleNamespaceContext
 import javax.xml.namespace.NamespaceContext
-import org.openjdk.jmh.annotations.{Benchmark, BenchmarkMode, Mode, Param, Scope, Setup, State}
+import org.openjdk.jmh.annotations.{ Benchmark, BenchmarkMode, Mode, Param, Scope, Setup, State }
 import org.openjdk.jmh.infra.Blackhole
 
 import xml.Elem
@@ -18,8 +18,8 @@ class ScalaXmlBuilderBenchmark {
   @Param(Array("null"))
   var nsContext: String = _
 
-  private var root: Elem = _
-  private var fixtureAccessor: FixtureAccessor = _
+  private var root: Elem                         = _
+  private var fixtureAccessor: FixtureAccessor   = _
   private var namespaceContext: NamespaceContext = _
 
   @Setup
@@ -42,7 +42,7 @@ class ScalaXmlBuilderBenchmark {
 
 object ScalaXmlBuilderBenchmark {
   private[ScalaXmlBuilderBenchmark] val namespaceContextMap: Map[String, NamespaceContext] = Map(
-    "null" -> null,
+    "null"   -> null,
     "simple" -> new SimpleNamespaceContext
   )
 }

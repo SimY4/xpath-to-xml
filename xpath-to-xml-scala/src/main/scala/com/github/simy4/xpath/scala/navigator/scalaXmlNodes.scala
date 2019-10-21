@@ -2,9 +2,9 @@ package com.github.simy4.xpath
 package scala.navigator
 
 import javax.xml.namespace.QName
-import navigator.{Node => NavigatorNode}
+import navigator.{ Node => NavigatorNode }
 
-import xml.{Elem, MetaData, Text, Attribute => XmlAttribute}
+import xml.{ Elem, Text, Attribute => XmlAttribute }
 
 /**
  * Scala XML node contract.
@@ -12,42 +12,53 @@ import xml.{Elem, MetaData, Text, Attribute => XmlAttribute}
  * @author Alex Simkin
  * @since 2.0
  */
-sealed trait ScalaXmlNode extends NavigatorNode {
-  val parent: Parent
+sealed trait ScalaXmlNode extends NavigatorNode with Equals {
+  type N
+  val parent: ScalaXmlNode
+  private[navigator] var node: N
   def elements: Iterable[ScalaXmlNode]
   def attributes: Iterable[ScalaXmlNode]
 }
-@SerialVersionUID(1L)
-sealed abstract class Parent extends ScalaXmlNode with Serializable with Equals {
-  private[navigator] var node: Elem
-  override def getText: String = node.child.collect { case Text(t) => t }.mkString
-}
 
 @SerialVersionUID(1L)
-final class Root(override var node: Elem) extends Parent {
-  override def getName: QName = new QName(NavigatorNode.DOCUMENT)
-  override val parent: Parent = null
-  override def elements: Iterable[Element] = new Element(node, 0, this) :: Nil
-  override def attributes: Iterable[Attribute] = Nil
-  override def canEqual(that: Any): Boolean = that.isInstanceOf[Root]
+abstract private[navigator] class AbstractScalaXmlNode protected (override val parent: ScalaXmlNode)
+    extends ScalaXmlNode
+    with Serializable {
+  override def canEqual(that: Any): Boolean = that.isInstanceOf[ScalaXmlNode]
   override def equals(that: Any): Boolean = that match {
-    case r: Root => node == r.node
-    case _       => false
+    case n: ScalaXmlNode => n.canEqual(this) && node == n.node
+    case _               => false
   }
-  override def hashCode(): Int = node.hashCode()
+  override def hashCode(): Int  = node.hashCode()
   override def toString: String = node.toString
 }
 
 @SerialVersionUID(1L)
-final class Element private[navigator](private[this] var _node: Elem, var index: Int, override val parent: Parent)
-    extends Parent {
-  override def getName: QName = _node match {
-    case prefixed if null != prefixed.prefix => new QName(prefixed.namespace, prefixed.label, prefixed.prefix)
-    case simple                              => new QName(simple.label)
+final class Root(override var node: Elem) extends AbstractScalaXmlNode(null) {
+  override type N = Elem
+  override def getName: QName                  = new QName(NavigatorNode.DOCUMENT)
+  override def getText: String                 = ""
+  override def elements: Iterable[Element]     = new Element(node, 0, this) :: Nil
+  override def attributes: Iterable[Attribute] = Nil
+}
+
+@SerialVersionUID(1L)
+final class Element private[navigator] (
+  private[this] var _node: Elem,
+  var index: Int,
+  override val parent: ScalaXmlNode { type N = Elem }
+) extends AbstractScalaXmlNode(parent) {
+  override type N = Elem
+  override def getName: QName = {
+    val node = _node
+    if (null != node.prefix) new QName(node.namespace, node.label, node.prefix)
+    else new QName(node.label)
   }
+  override def getText: String = node.child.collect { case Text(t) => t }.mkString
   override def elements: Iterable[Element] =
     _node.child.view.zipWithIndex.collect { case (e: Elem, i) => new Element(e, i, this) }
-  override def attributes: Iterable[Attribute] = _node.attributes.view.map(new Attribute(_, this))
+  override def attributes: Iterable[Attribute] =
+    _node.attributes.view.collect { case a: XmlAttribute => new Attribute(a, this) }
   override private[navigator] def node: Elem = _node
   override private[navigator] def node_=(elem: Elem): Unit = {
     val parentNode = parent.node
@@ -58,56 +69,32 @@ final class Element private[navigator](private[this] var _node: Elem, var index:
   }
   override def canEqual(that: Any): Boolean = that.isInstanceOf[Element]
   override def equals(that: Any): Boolean = that match {
-    case e: Element => _node == e.node && index == e.index
+    case e: Element => e.canEqual(this) && index == e.index && super.equals(that)
     case _          => false
   }
   override def hashCode(): Int = {
-    var result = 1
-    result = 31 * result + _node.hashCode()
+    var result = super.hashCode()
     result = 31 * result + index
     result
-  }
-  override def toString: String = _node.toString
-}
-
-object Element {
-  def apply(elem: Elem, parent: Parent): Element = {
-    val node = parent.node
-    val children = node.child
-    parent.node = node.copy(child = children :+ elem)
-    new Element(elem, children.size, parent)
   }
 }
 
 @SerialVersionUID(1L)
-final class Attribute private[navigator](private[this] var _meta: MetaData, override val parent: Parent)
-    extends ScalaXmlNode
-    with Serializable
-    with Equals {
-  override def getName: QName = _meta match {
-    case a: XmlAttribute if a.isPrefixed => new QName(a.getNamespace(parent.node), a.key, a.pre)
-    case _                               => new QName(_meta.key)
+final class Attribute private[navigator] (private[this] var _attr: XmlAttribute, override val parent: ScalaXmlNode {
+  type N = Elem
+}) extends AbstractScalaXmlNode(parent) {
+  override type N = XmlAttribute
+  override def getName: QName = {
+    val attr = _attr
+    if (attr.isPrefixed) new QName(attr.getNamespace(parent.node), attr.key, attr.pre)
+    else new QName(attr.key)
   }
-  override def getText: String = _meta.value.text
-  override def elements: Iterable[Element] = Nil
-  override def attributes: Iterable[Attribute] = Nil
-  override def canEqual(that: Any): Boolean = that.isInstanceOf[Attribute]
-  override def equals(that: Any): Boolean = that match {
-    case a: Attribute => _meta == a.meta
-    case _            => false
-  }
-  override def hashCode(): Int = _meta.hashCode()
-  override def toString: String = _meta.toString
-  private[navigator] def meta: MetaData = _meta
-  private[navigator] def meta_=(meta: MetaData): Unit = {
-    parent.node = parent.node % meta
-    _meta = meta
-  }
-}
-
-object Attribute {
-  def apply(meta: MetaData, parent: Parent): Attribute = {
-    parent.node = parent.node % meta
-    new Attribute(meta, parent)
+  override def getText: String                       = _attr.value.text
+  override def elements: Iterable[Element]           = Nil
+  override def attributes: Iterable[Attribute]       = Nil
+  override private[navigator] def node: XmlAttribute = _attr
+  override private[navigator] def node_=(attr: XmlAttribute): Unit = {
+    parent.node = parent.node % attr
+    _attr = attr
   }
 }
