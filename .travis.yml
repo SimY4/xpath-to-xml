@@ -3,12 +3,12 @@ sudo: false
 
 jdk:
   - openjdk11
-  - openjdk12
+  - openjdk13
   - openjdk-ea
 
 matrix:
   allow_failures:
-    - jdk: openjdk12
+    - jdk: openjdk13
     - jdk: openjdk-ea
 
 before_cache:
