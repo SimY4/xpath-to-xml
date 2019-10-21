@@ -78,11 +78,12 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
     private static final class IterableNodeSet<T extends Node> extends NodeSetView<T> {
 
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 2L;
 
         private final Set<T> cache = new LinkedHashSet<>();
         private final transient Iterable<? extends T> nodeSet;
         private final transient Predicate<? super T> filter;
+        private volatile boolean exhausted;
 
         private IterableNodeSet(Iterable<? extends T> nodeSet, Predicate<? super T> filter) {
             this.nodeSet = nodeSet;
@@ -99,7 +100,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
             for (var ignored : this) {
                 // eagerly consume this node set to populate cache
             }
-            out.writeObject(cache);
+            out.defaultWriteObject();
         }
 
         private final class IteratorImpl extends PositionAwareIterator<NodeView<T>> {
@@ -110,7 +111,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
             @Override
             public boolean hasNext() {
                 var hasNext = current.hasNext();
-                if (!hasNext && !swapped && null != nodeSet) {
+                if (!hasNext && !swapped && !exhausted) {
                     current = new NodeSetIterator();
                     swapped = true;
                     hasNext = current.hasNext();
@@ -137,7 +138,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
             @Override
             public boolean hasNext() {
-                return hasNext;
+                return hasNext || !(exhausted = true);
             }
 
             @Override
@@ -170,11 +171,12 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
     private static final class FlatMapNodeSet<T extends Node> extends NodeSetView<T> {
 
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 2L;
 
         private final Set<T> cache = new LinkedHashSet<>();
         private final transient NodeSetView<T> nodeSetView;
         private final transient Function<? super NodeView<T>, ? extends IterableNodeView<T>> fmap;
+        private volatile boolean exhausted;
 
         private FlatMapNodeSet(NodeSetView<T> nodeSetView,
                                Function<? super NodeView<T>, ? extends IterableNodeView<T>> fmap) {
@@ -192,7 +194,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
             for (var ignored : this) {
                 // eagerly consume this node set to populate cache
             }
-            out.writeObject(cache);
+            out.defaultWriteObject();
         }
 
         private final class IteratorImpl extends PositionAwareIterator<NodeView<T>> {
@@ -203,7 +205,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
             @Override
             public boolean hasNext() {
                 var hasNext = current.hasNext();
-                if (!hasNext && !swapped && null != nodeSetView) {
+                if (!hasNext && !swapped && !exhausted) {
                     current = new FlatMapIterator();
                     swapped = true;
                     hasNext = current.hasNext();
@@ -233,7 +235,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
             @Override
             public boolean hasNext() {
-                return hasNext;
+                return hasNext || !(exhausted = true);
             }
 
             @Override

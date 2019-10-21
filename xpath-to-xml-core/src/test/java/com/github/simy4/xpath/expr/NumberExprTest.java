@@ -26,7 +26,7 @@ class NumberExprTest {
     @DisplayName("Should always return single number node")
     void shouldAlwaysReturnSingleNumberNode() {
         var result = numberExpr.resolve(navigator, parentNode, false);
-        assertThat(result).extracting("number").contains(3.0);
+        assertThat(result).extracting("number").isEqualTo(3.0);
     }
 
     @Test

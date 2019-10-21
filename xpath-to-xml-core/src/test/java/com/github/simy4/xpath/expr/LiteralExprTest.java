@@ -25,7 +25,7 @@ class LiteralExprTest {
     @DisplayName("Should always return single literal node")
     void shouldAlwaysReturnSingleLiteralNode() {
         var result = literalExpr.resolve(navigator, parentNode, false);
-        assertThat(result).extracting("literal").contains("value");
+        assertThat(result).extracting("literal").isEqualTo("value");
     }
 
     @Test

@@ -58,7 +58,7 @@ class Dom4JDocumentTest {
 
         var newRoot = node.createElement(new org.dom4j.QName("elem"));
 
-        assertThat(newRoot).extracting("name").containsExactly(new QName("elem"));
+        assertThat(newRoot).extracting("name").isEqualTo(new QName("elem"));
     }
 
     @Test
@@ -83,7 +83,7 @@ class Dom4JDocumentTest {
         var deserializedNode = SerializationHelper.serializeAndDeserializeBack(node);
 
         // then
-        assertThat(deserializedNode).extracting("name").containsExactly(node.getName());
+        assertThat(deserializedNode).extracting("name").isEqualTo(node.getName());
     }
 
 }

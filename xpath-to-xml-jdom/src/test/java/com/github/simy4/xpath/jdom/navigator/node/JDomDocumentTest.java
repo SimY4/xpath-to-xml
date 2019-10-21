@@ -66,7 +66,7 @@ class JDomDocumentTest {
         var deserializedNode = SerializationHelper.serializeAndDeserializeBack(node);
 
         // then
-        assertThat(deserializedNode).extracting("name").containsExactly(node.getName());
+        assertThat(deserializedNode).extracting("name").isEqualTo(node.getName());
     }
 
 }

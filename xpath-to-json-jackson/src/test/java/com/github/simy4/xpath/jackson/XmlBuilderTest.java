@@ -109,7 +109,7 @@ class XmlBuilderTest {
     }
 
     private String jsonToString(JsonNode json) throws JsonProcessingException {
-        return objectMapper.writer(new DefaultPrettyPrinter() {
+        return objectMapper.writer(new DefaultPrettyPrinter(new DefaultPrettyPrinter() {
             private static final long serialVersionUID = 1;
 
             {
@@ -117,7 +117,7 @@ class XmlBuilderTest {
                 _arrayIndenter = new DefaultIndenter();
                 _objectIndenter = new DefaultIndenter();
             }
-        }).writeValueAsString(json).replaceAll("\\{ }", "{}");
+        })).writeValueAsString(json).replaceAll("\\{ }", "{}");
     }
 
 }

@@ -3,7 +3,7 @@ package scala.syntax
 
 import javax.xml.namespace.NamespaceContext
 
-import collection.{Iterable, Map}
+import collection.{ Iterable, Map }
 import xml.Elem
 
 trait ElemSyntax {
