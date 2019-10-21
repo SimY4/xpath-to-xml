@@ -1,6 +1,6 @@
 module com.github.simych.xpath.gson {
     requires transitive com.github.simych.xpath.core;
-    requires gson;
+    requires com.google.gson;
 
     exports com.github.simy4.xpath.gson.spi;
 
