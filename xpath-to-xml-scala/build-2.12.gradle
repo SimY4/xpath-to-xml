@@ -32,7 +32,8 @@ sourceSets {
 dependencies {
     api project(':xpath-to-xml-core')
 
-    compatImplementation 'org.scala-lang:scala-library:2.12.8'
+    compatImplementation 'org.scala-lang:scala-library:2.12.10'
+    implementation 'org.scala-lang:scala-library:2.12.10'
     implementation 'org.scala-lang.modules:scala-xml_2.12:[1.2, 2.0['
 
     testImplementation project(':xpath-to-xml-test')
