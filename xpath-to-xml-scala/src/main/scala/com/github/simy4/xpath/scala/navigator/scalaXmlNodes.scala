@@ -55,6 +55,7 @@ final class Element private[navigator] (
     else new QName(node.label)
   }
   override def getText: String = node.child.collect { case Text(t) => t }.mkString
+  @SuppressWarnings(Array("org.wartremover.warts.Any"))
   override def elements: Iterable[Element] =
     _node.child.view.zipWithIndex.collect { case (e: Elem, i) => new Element(e, i, this) }
   override def attributes: Iterable[Attribute] =
