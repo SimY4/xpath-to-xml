@@ -25,7 +25,7 @@ public final class JacksonRootNode extends AbstractJacksonNode {
     }
 
     @Override
-    public void set(JsonNode jsonElement) {
+    public void set(JsonNode jsonElement) throws XmlBuilderException {
         if (null == jsonElement) {
             throw new XmlBuilderException("Unable to remove from root element");
         }

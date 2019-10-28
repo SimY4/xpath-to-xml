@@ -25,7 +25,7 @@ public final class GsonRootNode extends AbstractGsonNode {
     }
 
     @Override
-    public void set(JsonElement jsonElement) {
+    public void set(JsonElement jsonElement) throws XmlBuilderException {
         if (null == jsonElement) {
             throw new XmlBuilderException("Unable to remove from root element");
         }
