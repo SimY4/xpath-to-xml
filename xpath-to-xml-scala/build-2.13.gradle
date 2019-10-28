@@ -2,6 +2,7 @@ ext.moduleName = 'com.github.simych.xpath.scala'
 
 apply plugin: 'scala'
 apply plugin: 'cz.alenkacz.gradle.scalafmt'
+apply plugin: 'cz.augi.gradle.wartremover'
 apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 
 buildDir = 'build-2.13'
@@ -48,6 +49,13 @@ sourcesJar {
 javadocJar {
     dependsOn scaladoc
     from scaladoc
+}
+
+wartremover {
+    warningWarts -= ['DefaultArguments', 'IsInstanceOf', 'Null', 'Throw', 'Var']
+    test {
+        warningWarts -= ['NonUnitStatements', 'TraversableOps']
+    }
 }
 
 tasks.withType(ScalaCompile) {
