@@ -35,12 +35,11 @@ public final class JacksonByIndexNode extends AbstractJacksonNode {
 
     @Override
     public void set(JsonNode jsonElement) {
-        parentArray.set(index, jsonElement);
-    }
-
-    @Override
-    public void remove() {
-        parentArray.remove(index);
+        if (null == jsonElement) {
+            parentArray.remove(index);
+        } else {
+            parentArray.set(index, jsonElement);
+        }
     }
 
     @Override

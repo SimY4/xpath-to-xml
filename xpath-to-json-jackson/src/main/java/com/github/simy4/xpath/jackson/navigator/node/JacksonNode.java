@@ -20,8 +20,6 @@ public interface JacksonNode extends Node {
 
     void set(JsonNode jsonNode) throws XmlBuilderException;
 
-    void remove() throws XmlBuilderException;
-
     Iterable<? extends JacksonNode> elements();
 
     Iterable<? extends JacksonNode> attributes();

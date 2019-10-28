@@ -107,7 +107,7 @@ public class GsonNavigator implements Navigator<GsonNode> {
 
     @Override
     public void remove(GsonNode node) throws XmlBuilderException {
-        node.remove();
+        node.set(null);
     }
 
     private GsonNode appendElement(GsonNode parent, String name, JsonElement newElement) {
