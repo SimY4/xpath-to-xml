@@ -10,7 +10,7 @@ buildscript {
 
 plugins {
     id 'cz.alenkacz.gradle.scalafmt' version '1.8.0' apply false
-    id 'cz.augi.gradle.wartremover' version '0.9.7' apply false
+    id 'cz.augi.gradle.wartremover' version '0.9.8' apply false
     id 'info.solidsoft.pitest' version '1.4.5' apply false
     id 'me.champeau.gradle.jmh' version '0.4.8' apply false
     id 'net.ltgt.errorprone' version '1.1.1' apply false
