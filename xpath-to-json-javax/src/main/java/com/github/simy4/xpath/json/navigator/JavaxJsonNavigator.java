@@ -121,7 +121,7 @@ public class JavaxJsonNavigator implements Navigator<JavaxJsonNode> {
 
     @Override
     public void remove(JavaxJsonNode node) throws XmlBuilderException {
-        node.remove(jsonProvider);
+        node.set(jsonProvider, null);
     }
 
     private JavaxJsonNode appendElement(JavaxJsonNode parent, String name, JsonValue newValue) {

@@ -23,8 +23,6 @@ public interface JavaxJsonNode extends Node {
 
     void set(JsonProvider jsonProvider, JsonValue jsonValue) throws XmlBuilderException;
 
-    void remove(JsonProvider jsonProvider) throws XmlBuilderException;
-
     Stream<JavaxJsonNode> elements();
 
     Stream<JavaxJsonNode> attributes();

@@ -31,17 +31,18 @@ public final class JavaxJsonByNameNode extends AbstractJavaxJsonNode {
     }
 
     @Override
-    public void set(JsonProvider jsonProvider,  JsonValue jsonValue) {
-        getParent().set(jsonProvider, jsonProvider.createObjectBuilder(getParentObject())
-                .add(name, jsonValue)
-                .build());
-    }
-
-    @Override
-    public void remove(JsonProvider jsonProvider) {
-        getParent().set(jsonProvider, jsonProvider.createObjectBuilder(getParentObject())
-                .remove(name)
-                .build());
+    public void set(JsonProvider jsonProvider, JsonValue jsonValue) {
+        final JavaxJsonNode parent = getParent();
+        final JsonObject parentObject = getParentObject();
+        if (null == jsonValue) {
+            parent.set(jsonProvider, jsonProvider.createObjectBuilder(parentObject)
+                    .remove(name)
+                    .build());
+        } else {
+            parent.set(jsonProvider, jsonProvider.createObjectBuilder(parentObject)
+                    .add(name, jsonValue)
+                    .build());
+        }
     }
 
     @Override
