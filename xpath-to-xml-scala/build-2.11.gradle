@@ -2,6 +2,7 @@ ext.moduleName = 'com.github.simych.xpath.scala'
 
 apply plugin: 'scala'
 apply plugin: 'cz.alenkacz.gradle.scalafmt'
+apply plugin: 'cz.augi.gradle.wartremover'
 apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 
 buildDir = 'build-2.11'
@@ -33,6 +34,7 @@ dependencies {
     api project(':xpath-to-xml-core')
 
     compatImplementation 'org.scala-lang:scala-library:2.11.12'
+    implementation 'org.scala-lang:scala-library:2.11.12'
     implementation 'org.scala-lang.modules:scala-xml_2.11:[1.2, 2.0['
 
     testImplementation project(':xpath-to-xml-test')
@@ -47,6 +49,13 @@ sourcesJar {
 javadocJar {
     dependsOn scaladoc
     from scaladoc
+}
+
+wartremover {
+    warningWarts -= ['DefaultArguments', 'IsInstanceOf', 'Null', 'Throw', 'Var']
+    test {
+        warningWarts -= ['NonUnitStatements', 'TraversableOps']
+    }
 }
 
 tasks.withType(ScalaCompile) {
