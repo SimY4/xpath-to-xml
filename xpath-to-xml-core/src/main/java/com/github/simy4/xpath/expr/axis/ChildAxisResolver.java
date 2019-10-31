@@ -24,7 +24,7 @@ public class ChildAxisResolver extends AbstractAxisResolver {
     public <N extends Node> NodeView<N> createAxisNode(Navigator<N> navigator, NodeView<N> parent, int position)
             throws XmlBuilderException {
         if (isWildcard()) {
-            throw new XmlBuilderException("Wildcard attribute cannot be created");
+            throw new XmlBuilderException("Wildcard elements cannot be created");
         }
         return new NodeView<N>(navigator.createElement(parent.getNode(), name), position);
     }
