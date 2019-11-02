@@ -5,12 +5,19 @@ import spi.ScalaXmlNavigatorSpi
 
 import xml.Elem
 
+/**
+ * XML model modifier that works via XPath expressions processing.
+ *
+ * @see com.github.simy4.xpath.XmlBuilder
+ * @author Alex Simkin
+ * @since 3.0
+ */
 object XmlBuilder {
   import compat.Converters._
 
-  def apply(effects: Effect*): BuilderPartiallyApplied = new BuilderPartiallyApplied(effects)
+  def apply(effects: Effect*) = new BuilderPartiallyApplied(effects)
 
-  def apply(effects: Iterable[Effect]): BuilderPartiallyApplied = new BuilderPartiallyApplied(effects)
+  def apply(effects: Iterable[Effect]) = new BuilderPartiallyApplied(effects)
 
   final class BuilderPartiallyApplied private[XmlBuilder] (private val effects: Iterable[Effect]) extends AnyVal {
     def apply(xml: Elem): Either[XmlBuilderException, Elem] =
