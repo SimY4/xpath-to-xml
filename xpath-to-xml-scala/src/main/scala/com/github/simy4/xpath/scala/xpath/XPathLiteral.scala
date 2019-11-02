@@ -1,9 +1,8 @@
-package com.github.simy4.xpath
-package scala.xpath
+package com.github.simy4.xpath.scala.xpath
 
-import expr.Expr
+import com.github.simy4.xpath.expr.Expr
+import com.github.simy4.xpath.parser.XPathParser
 import javax.xml.xpath.XPathExpressionException
-import parser.XPathParser
 
 import reflect.macros.blackbox
 

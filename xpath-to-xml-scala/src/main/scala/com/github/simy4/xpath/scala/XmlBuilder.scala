@@ -3,7 +3,6 @@ package scala
 
 import spi.ScalaXmlNavigatorSpi
 
-import _root_.scala.util.Try
 import xml.Elem
 
 object XmlBuilder {
@@ -15,8 +14,9 @@ object XmlBuilder {
 
   final class BuilderPartiallyApplied private[XmlBuilder] (private val effects: Iterable[Effect]) extends AnyVal {
     def apply(xml: Elem): Either[XmlBuilderException, Elem] =
-      Try {
-        new ScalaXmlNavigatorSpi().process(xml, effects.map(_.effect))
-      }.fold({ case xbe: XmlBuilderException => Left(xbe) }, Right(_))
+      try Right(new ScalaXmlNavigatorSpi().process(xml, effects.map(_.effect)))
+      catch {
+        case xbe: XmlBuilderException => Left(xbe)
+      }
   }
 }
