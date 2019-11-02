@@ -7,7 +7,7 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 dependencies {
     api project(':xpath-to-xml-core')
 
-    implementation 'jakarta.json:jakarta.json-api:[1.0,2.0['
+    compileOnly 'jakarta.json:jakarta.json-api:[1.0,2.0['
 
     testImplementation project(':xpath-to-xml-test')
     testImplementation 'org.glassfish:jakarta.json:[1.0,2.0['
