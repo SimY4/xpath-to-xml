@@ -1,5 +1,5 @@
 package com.github.simy4.xpath.scala
 
-import syntax.ElemSyntax
+import xpath.ToXPathLiteral
 
-object implicits extends ElemSyntax
+object implicits extends ToXPathLiteral
