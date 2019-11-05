@@ -1,0 +1,65 @@
+ext.moduleName = 'com.github.simych.xpath.scala'
+
+apply plugin: 'java-library'
+
+buildDir = 'build-dotty'
+
+ext {
+    classesDir = file("/${buildDir}/classes")
+}
+
+clean {
+    delete 'build-dotty'
+}
+
+configurations {
+    dotty.extendsFrom api, implementation
+    dotc
+}
+
+
+sourceSets {
+    dotty.java.srcDirs += [file('src/main/scala-2.13+'), file('src/main/scala')]
+}
+
+dependencies {
+    api project(':xpath-to-xml-core')
+
+    dotty 'ch.epfl.lamp:dotty-library_0.19:0.19.0-RC1'
+    dotty 'org.scala-lang.modules:scala-xml_2.13:[1.2, 2.0['
+
+    dotc 'ch.epfl.lamp:dotty-compiler_0.19:0.19.0-RC1'
+
+    testImplementation project(':xpath-to-xml-test')
+    testImplementation "org.junit.jupiter:junit-jupiter:$jUnitVersion"
+    testImplementation "org.assertj:assertj-core:$assertjVersion"
+}
+
+task compileDotty(type: JavaExec) {
+    dependsOn compileJava
+    description 'Compile Scala source files'
+    classpath configurations.dotc, configurations.dotty
+
+    def sources = sourceSets.dotty.allSource.files
+
+    main 'dotty.tools.dotc.Main'
+
+    jvmArgs '-Dscala.usejavacp=true', '-Dfile.encoding=UTF-8'
+
+    args ([
+            '-d', classesDir,
+            '-explain',                          // Explain type errors in more detail.
+            '-feature',                          // Emit warning and location for usages of features that should be imported explicitly.
+            '-language:implicitConversions',     // Allow definition of implicit functions called views
+            '-unchecked',                        // Enable additional warnings where generated code depends on assumptions.
+            '-Xfatal-warnings',                  // Fail the compilation if there are any warnings.
+    ] + sources)
+}
+
+compileDotty.doFirst {
+    if (!classesDir.exists()) classesDir.mkdirs()
+}
+
+build {
+    dependsOn compileDotty
+}
