@@ -12,7 +12,7 @@ clean {
 }
 
 sourceSets {
-    main.scala.srcDirs += file('src/main/scala-2.13+')
+    main.scala.srcDirs += [file('src/main/scala-2-'), file('src/main/scala-2.13+')]
 }
 
 dependencies {

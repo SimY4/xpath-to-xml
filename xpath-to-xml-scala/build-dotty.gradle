@@ -19,7 +19,7 @@ configurations {
 
 
 sourceSets {
-    dotty.java.srcDirs += [file('src/main/scala-2.13+'), file('src/main/scala')]
+    dotty.java.srcDirs += [file('src/main/scala'), file('src/main/scala-2.13+'), file('src/main/dotty')]
 }
 
 dependencies {
@@ -48,11 +48,11 @@ task compileDotty(type: JavaExec) {
 
     args ([
             '-d', classesDir,
-            '-explain',                          // Explain type errors in more detail.
-            '-feature',                          // Emit warning and location for usages of features that should be imported explicitly.
-            '-language:implicitConversions',     // Allow definition of implicit functions called views
-            '-unchecked',                        // Enable additional warnings where generated code depends on assumptions.
-            '-Xfatal-warnings',                  // Fail the compilation if there are any warnings.
+            '-explain',                             // Explain type errors in more detail.
+            '-feature',                             // Emit warning and location for usages of features that should be imported explicitly.
+            '-language:macros,implicitConversions', // Allow definition of implicit functions called views
+            '-unchecked',                           // Enable additional warnings where generated code depends on assumptions.
+            '-Xfatal-warnings',                     // Fail the compilation if there are any warnings.
     ] + sources)
 }
 
