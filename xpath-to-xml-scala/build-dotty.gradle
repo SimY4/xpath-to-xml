@@ -5,7 +5,8 @@ apply plugin: 'java-library'
 buildDir = 'build-dotty'
 
 ext {
-    classesDir = file("/${buildDir}/classes")
+    classesDir = file("/${buildDir}/classes/dotty/main")
+    testClassesDir = file("/${buildDir}/classes/dotty/test")
 }
 
 clean {
@@ -13,13 +14,14 @@ clean {
 }
 
 configurations {
-    dotty.extendsFrom api, implementation
+    dotty.extendsFrom implementation
+    dottyTest.extendsFrom dotty, testImplementation
     dotc
 }
 
-
 sourceSets {
     dotty.java.srcDirs += [file('src/main/scala'), file('src/main/scala-2.13+'), file('src/main/dotty')]
+    dottyTest.java.srcDirs += [file('src/test/scala'), file('src/test/scala-2.13+'), file('src/test/dotty')]
 }
 
 dependencies {
@@ -30,36 +32,57 @@ dependencies {
 
     dotc 'ch.epfl.lamp:dotty-compiler_0.19:0.19.0-RC1'
 
-    testImplementation project(':xpath-to-xml-test')
-    testImplementation "org.junit.jupiter:junit-jupiter:$jUnitVersion"
-    testImplementation "org.assertj:assertj-core:$assertjVersion"
+    dottyTest project(':xpath-to-xml-test')
+    dottyTest "org.junit.jupiter:junit-jupiter:$jUnitVersion"
+    dottyTest "org.assertj:assertj-core:$assertjVersion"
 }
 
 task compileDotty(type: JavaExec) {
     dependsOn compileJava
     description 'Compile Scala source files'
     classpath configurations.dotc, configurations.dotty
-
-    def sources = sourceSets.dotty.allSource.files
-
     main 'dotty.tools.dotc.Main'
-
     jvmArgs '-Dscala.usejavacp=true', '-Dfile.encoding=UTF-8'
-
     args ([
             '-d', classesDir,
             '-explain',                             // Explain type errors in more detail.
             '-feature',                             // Emit warning and location for usages of features that should be imported explicitly.
-            '-language:macros,implicitConversions', // Allow definition of implicit functions called views
+            '-language:macros,implicitConversions',
             '-unchecked',                           // Enable additional warnings where generated code depends on assumptions.
             '-Xfatal-warnings',                     // Fail the compilation if there are any warnings.
-    ] + sources)
+    ] + sourceSets.dotty.allSource.files)
 }
 
 compileDotty.doFirst {
     if (!classesDir.exists()) classesDir.mkdirs()
 }
 
+task compileTestDotty(type: JavaExec) {
+    dependsOn compileDotty, compileTestJava
+    description 'Compile Scala test source files'
+    classpath configurations.dotc, configurations.dottyTest, classesDir
+    main 'dotty.tools.dotc.Main'
+    jvmArgs '-Dscala.usejavacp=true', '-Dfile.encoding=UTF-8'
+    args ([
+            '-d', testClassesDir,
+            '-explain',                             // Explain type errors in more detail.
+            '-feature',                             // Emit warning and location for usages of features that should be imported explicitly.
+            '-language:macros,implicitConversions,Scala2',
+            '-unchecked',                           // Enable additional warnings where generated code depends on assumptions.
+            '-Xfatal-warnings',                     // Fail the compilation if there are any warnings.
+            '-rewrite',
+            '-migration'
+    ] + sourceSets.dottyTest.allSource.files)
+}
+
+compileTestDotty.doFirst {
+    if (!testClassesDir.exists()) testClassesDir.mkdirs()
+}
+
 build {
     dependsOn compileDotty
+}
+
+test {
+    dependsOn compileTestDotty
 }

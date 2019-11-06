@@ -73,7 +73,7 @@ class XmlBuilderTest {
       assertThat(xpath.evaluate(documentSource, XPathConstants.NODE)).isNotNull
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(builtDocumentString).is(new Condition({ xml: String =>
+    assertThat(builtDocumentString).is(new Condition({ (xml: String) =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutXml
     }, "\"%s\" matches exactly", fixtureAccessor.getPutXml))
   }
@@ -105,7 +105,7 @@ class XmlBuilderTest {
           .isEqualTo(value)
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(xmlToString(builtDocument)).is(new Condition({ xml: String =>
+    assertThat(xmlToString(builtDocument)).is(new Condition({ (xml: String) =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
     }, "\"%s\" matches exactly", fixtureAccessor.getPutValueXml))
   }
@@ -139,7 +139,7 @@ class XmlBuilderTest {
           .isEqualTo(value)
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(builtDocumentString).is(new Condition({ xml: String =>
+    assertThat(builtDocumentString).is(new Condition({ (xml: String) =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
     }, "\"%s\" matches exactly", fixtureAccessor.getPutValueXml))
   }
@@ -173,7 +173,7 @@ class XmlBuilderTest {
           .isEqualTo(value)
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(builtDocumentString).is(new Condition({ xml: String =>
+    assertThat(builtDocumentString).is(new Condition({ (xml: String) =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
     }, "\"%s\" matches exactly", fixtureAccessor.getPutValueXml))
 
@@ -195,7 +195,7 @@ class XmlBuilderTest {
           .isEqualTo(value)
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(builtDocumentString).is(new Condition({ xml: String =>
+    assertThat(builtDocumentString).is(new Condition({ (xml: String) =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
     }, "\"%s\" matches exactly", fixtureAccessor.getPutValueXml))
   }
@@ -243,7 +243,7 @@ object XmlBuilderTest {
   implicit private[scala] class JUMapOps[K, V](private val map: java.util.Map[K, V]) extends AnyVal {
     def asScala: Map[K, V] = {
       val linkedHashMap = new mutable.LinkedHashMap[K, V]
-      map.entrySet.forEach { entry: java.util.Map.Entry[K, V] =>
+      map.entrySet.forEach { (entry: java.util.Map.Entry[K, V]) =>
         linkedHashMap += entry.getKey -> entry.getValue
         ()
       }

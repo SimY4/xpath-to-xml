@@ -6,14 +6,15 @@ import javax.xml.xpath.XPathExpressionException
 
 import scala.quoted._
 
-final class XPathLiteral(val sc: StringContext) extends AnyVal
-  inline def xpath(args: Any*): JExpr = ${XPathLiteral.xpathImpl('sc)}
+final class XPathLiteral(private val sc: StringContext) extends AnyVal
+  inline def xpath(args: Any*): JExpr = ${XPathLiteral.xpathImpl('this)}
 
 object XPathLiteral
-  def xpathImpl(sc: Expr[StringContext])(given qctx: QuoteContext): Expr[JExpr] =
+  def xpathImpl(sc: Expr[XPathLiteral])(given qctx: QuoteContext): Expr[JExpr] =
     import qctx.tasty.{_, given}
-    sc.unseal match
-      case Apply(_, List(Apply(_, List(lit @ Literal(Constant(str: String)))))) =>
+
+    sc.unseal.underlyingArgument match
+      case Apply(_, List(Apply(_, List(Typed(Repeated(List(lit @ Literal(Constant(str: String))), _), _))))) =>
         try
           val _ = new XPathParser(null).parse(str)
           '{new XPathParser(null).parse(${lit.seal.cast[String]})}
