@@ -24,6 +24,3 @@ object XPathLiteral
       case _ =>
         qctx.error("xpath can only be used on string literals")
         '{null}
-
-trait ToXPathLiteral
-  implicit def toXPathLiteral(sc: StringContext): XPathLiteral = new XPathLiteral(sc)

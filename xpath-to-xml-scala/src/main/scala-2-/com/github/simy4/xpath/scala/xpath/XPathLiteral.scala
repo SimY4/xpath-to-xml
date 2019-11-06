@@ -29,7 +29,3 @@ object XPathLiteral {
     }
   }
 }
-
-trait ToXPathLiteral {
-  implicit def toXPathLiteral(sc: StringContext): XPathLiteral = new XPathLiteral(sc)
-}
