@@ -21,7 +21,7 @@ sealed trait ScalaXmlNode extends NavigatorNode with Equals {
 }
 
 @SerialVersionUID(1L)
-abstract private[navigator] class AbstractScalaXmlNode protected (override val parent: ScalaXmlNode)
+abstract private[navigator] class AbstractScalaXmlNode protected (val parent: ScalaXmlNode)
     extends ScalaXmlNode
     with Serializable {
   def canEqual(that: Any): Boolean = that.isInstanceOf[ScalaXmlNode]
