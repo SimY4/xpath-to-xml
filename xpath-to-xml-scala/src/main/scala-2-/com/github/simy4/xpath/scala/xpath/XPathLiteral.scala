@@ -6,7 +6,7 @@ import javax.xml.xpath.XPathExpressionException
 
 import reflect.macros.blackbox
 
-final class XPathLiteral(val sc: StringContext) extends AnyVal {
+final class XPathLiteral(private val sc: StringContext) extends AnyVal {
   def xpath(args: Any*): Expr =
     macro XPathLiteral.xpathImpl
 }
