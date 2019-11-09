@@ -1,7 +1,5 @@
 ext.moduleName = 'com.github.simych.xpath.scala'
 
-apply plugin: 'java-library'
-
 buildDir = 'build-dotty'
 
 ext {

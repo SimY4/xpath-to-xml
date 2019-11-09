@@ -15,8 +15,9 @@ import parser.XPathParser
  * @author Alex Simkin
  * @since 3.0
  */
-sealed abstract case class Effect private(effect: JEffect)
+sealed abstract case class Effect private (effect: JEffect)
 object Effect {
+
   /**
    * Creates XML put effect.
    *
