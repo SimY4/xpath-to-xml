@@ -21,6 +21,7 @@ jacocoTestCoverageVerification {
             includes = ['com.github.simy4.xpath.*']
             excludes = [
                     'com.github.simy4.xpath.scala.XmlBuilder.BuilderPartiallyApplied',
+                    'com.github.simy4.xpath.scala.impl.*',
                     'com.github.simy4.xpath.scala.implicits.*',
                     'com.github.simy4.xpath.scala.xpath.*',
             ]
