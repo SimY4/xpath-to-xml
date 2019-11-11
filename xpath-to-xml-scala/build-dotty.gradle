@@ -83,4 +83,6 @@ build {
 
 test {
     dependsOn compileTestDotty
+    classpath += configurations.dottyTest + files(classesDir, testClassesDir)
+    testClassesDirs += files(testClassesDir)
 }
