@@ -13,7 +13,7 @@ import parser.XPathParser
  *
  * @see com.github.simy4.xpath.spi.Effect
  * @author Alex Simkin
- * @since 3.0
+ * @since 2.2
  */
 sealed abstract case class Effect private (effect: JEffect)
 object Effect {

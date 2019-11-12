@@ -10,7 +10,7 @@ import xml.Elem
  *
  * @see com.github.simy4.xpath.XmlBuilder
  * @author Alex Simkin
- * @since 3.0
+ * @since 2.2
  */
 object XmlBuilder {
   import compat.Converters._
