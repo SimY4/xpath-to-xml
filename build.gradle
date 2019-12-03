@@ -20,7 +20,7 @@ plugins {
 
 ext {
     assertjVersion = '3.14.0'
-    checkstyleVersion = '8.26'
+    checkstyleVersion = '8.27'
     errorproneJavacVersion = '9+181-r4173-1'
     errorproneVersion = '2.3.3'
     jacocoVersion = '0.8.4'
@@ -101,5 +101,5 @@ configure(build) {
 }
 
 wrapper {
-    gradleVersion = '6.0'
+    gradleVersion = '6.0.1'
 }
