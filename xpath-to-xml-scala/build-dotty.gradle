@@ -25,10 +25,10 @@ sourceSets {
 dependencies {
     api project(':xpath-to-xml-core')
 
-    dotty 'ch.epfl.lamp:dotty-library_0.19:0.19.0-RC1'
+    dotty 'ch.epfl.lamp:dotty-library_0.20:0.20.0-RC1'
     dotty 'org.scala-lang.modules:scala-xml_2.13:[1.2, 2.0['
 
-    dotc 'ch.epfl.lamp:dotty-compiler_0.19:0.19.0-RC1'
+    dotc 'ch.epfl.lamp:dotty-compiler_0.20:0.20.0-RC1'
 
     dottyTest project(':xpath-to-xml-test')
     dottyTest "org.junit.jupiter:junit-jupiter:$jUnitVersion"
