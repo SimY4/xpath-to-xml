@@ -25,7 +25,7 @@ ext {
     errorproneVersion = '2.3.3'
     jacocoVersion = '0.8.4'
     jUnitVersion = '5.5.2'
-    mockitoVersion = '3.2.0'
+    mockitoVersion = '3.2.4'
 
     def buildTimeAndDate = new Date()
     buildDate = buildTimeAndDate.format("yyyy-MM-dd")
