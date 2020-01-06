@@ -23,7 +23,7 @@ ext {
     checkstyleVersion = '8.28'
     errorproneJavacVersion = '9+181-r4173-1'
     errorproneVersion = '2.3.3'
-    jacocoVersion = '0.8.4'
+    jacocoVersion = '0.8.5'
     jUnitVersion = '5.5.2'
     mockitoVersion = '3.2.4'
 
