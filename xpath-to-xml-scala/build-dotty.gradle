@@ -25,14 +25,14 @@ sourceSets {
 dependencies {
     api project(':xpath-to-xml-core')
 
-    dotty 'ch.epfl.lamp:dotty-library_0.21:0.21.0-RC1'
-    dotty 'org.scala-lang.modules:scala-xml_2.13:[1.2, 2.0['
+    dotty libraries.dottyLibrary
+    dotty libraries.scalaXml('2.13')
 
-    dotc 'ch.epfl.lamp:dotty-compiler_0.21:0.21.0-RC1'
+    dotc libraries.dottyCompiler
 
     dottyTest project(':xpath-to-xml-test')
-    dottyTest "org.junit.jupiter:junit-jupiter:$jUnitVersion"
-    dottyTest "org.assertj:assertj-core:$assertjVersion"
+    dottyTest libraries.junit
+    dottyTest libraries.assertj
 }
 
 task compileDotty(type: JavaExec) {

@@ -1,6 +1,6 @@
 apply plugin: 'net.ltgt.errorprone'
 
 dependencies {
-    errorproneJavac "com.google.errorprone:javac:$errorproneJavacVersion"
-    errorprone "com.google.errorprone:error_prone_core:$errorproneVersion"
+    errorproneJavac libraries.errorproneJavac
+    errorprone libraries.errorprone
 }

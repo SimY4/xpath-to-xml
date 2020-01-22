@@ -1,7 +1,7 @@
 apply plugin: 'checkstyle'
 
 dependencies {
-    checkstyle "com.puppycrawl.tools:checkstyle:$checkstyleVersion"
+    checkstyle libraries.checkstyle
 }
 
 checkstyle {

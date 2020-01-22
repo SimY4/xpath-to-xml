@@ -19,13 +19,7 @@ plugins {
 }
 
 ext {
-    assertjVersion = '3.14.0'
-    checkstyleVersion = '8.28'
-    errorproneJavacVersion = '9+181-r4173-1'
-    errorproneVersion = '2.3.3'
     jacocoVersion = '0.8.5'
-    jUnitVersion = '5.5.2'
-    mockitoVersion = '3.2.4'
 
     def buildTimeAndDate = new Date()
     buildDate = buildTimeAndDate.format("yyyy-MM-dd")
@@ -34,6 +28,7 @@ ext {
 
 subprojects {
     apply plugin: 'java-library'
+    apply from: rootProject.file('gradle/dependencies.gradle')
     apply from: rootProject.file('gradle/animal-sniffer.gradle')
     apply from: rootProject.file('gradle/check-checkstyle.gradle')
     apply from: rootProject.file('gradle/check-codecoverage.gradle')

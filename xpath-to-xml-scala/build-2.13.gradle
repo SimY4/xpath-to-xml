@@ -11,10 +11,6 @@ clean {
     delete 'build-2.13'
 }
 
-configurations {
-    scaladocExtras.extendsFrom implementation
-}
-
 sourceSets {
     main.scala.srcDirs += [file('src/main/scala-2-'), file('src/main/scala-2.13+')]
 }
@@ -22,21 +18,23 @@ sourceSets {
 dependencies {
     api project(':xpath-to-xml-core')
 
-    implementation 'org.scala-lang:scala-library:2.13.1'
-    implementation 'org.scala-lang:scala-reflect:2.13.1'
-    implementation 'org.scala-lang.modules:scala-xml_2.13:[1.2, 2.0['
-
-    scaladocExtras 'org.scala-lang:scala-compiler:2.13.1'
-    scaladocExtras 'org.scala-lang:scala-reflect:2.13.1'
-    scaladocExtras 'org.apache.ant:ant:1.9.14'
+    implementation libraries.scalaLibrary('2.13.1')
+    implementation libraries.scalaReflect('2.13.1')
+    implementation libraries.scalaXml('2.13')
 
     testImplementation project(':xpath-to-xml-test')
-    testImplementation "org.junit.jupiter:junit-jupiter:$jUnitVersion"
-    testImplementation "org.assertj:assertj-core:$assertjVersion"
+    testImplementation libraries.junit
+    testImplementation libraries.assertj
 }
 
 scaladoc {
-    scalaClasspath = configurations.scaladocExtras + files("lib/scala-ant-2.13.1.jar")
+    scalaClasspath += files("lib/scala-ant-2.13.1.jar")
+    scalaDocOptions.with {
+        additionalParameters = [
+                '-language:experimental.macros',     // Allow macro definition (besides implementation and application)
+                '-language:implicitConversions',     // Allow definition of implicit functions called views
+        ]
+    }
 }
 
 javadocJar {
