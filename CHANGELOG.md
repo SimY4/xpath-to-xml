@@ -9,8 +9,17 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 ### Upcoming
 
 - scala XML
-  - Aternative, more idiomatic scala API
   - Scala 3 support
+  
+### 2.1.5
+
+Improvements:
+
+- Core
+  - Performance optimisations
+  - Support for following and following-sibling axises
+- scala XML
+  - Aternative, more idiomatic scala API
   
 ### 2.1.4
 
