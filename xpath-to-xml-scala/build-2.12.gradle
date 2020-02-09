@@ -32,6 +32,15 @@ javadocJar {
     from scaladoc
 }
 
+scaladoc {
+    scalaDocOptions.with {
+        additionalParameters = [
+                '-language:experimental.macros',     // Allow macro definition (besides implementation and application)
+                '-language:implicitConversions',     // Allow definition of implicit functions called views
+        ]
+    }
+}
+
 wartremover {
     warningWarts -= ['DefaultArguments', 'IsInstanceOf', 'Null', 'Throw', 'Var']
     test {
