@@ -1,0 +1,41 @@
+ext {
+    libraries = [:]
+}
+
+def versions = [:]
+
+versions.assertj = '3.14.0'
+versions.checkstyle = '8.29'
+versions.dom4j = '2.1.1'
+versions.dotty = '0.22.0-RC1'
+versions.errorprone = '2.3.3'
+versions.errorproneJavac = '9+181-r4173-1'
+versions.gson = '2.8.6'
+versions.jackson = '2.10.1'
+versions.jakartaJson = '1.1.6'
+versions.jaxen = '1.2.0'
+versions.jdom2 = '2.0.6'
+versions.junit = '5.6.0'
+versions.mockito = '3.2.4'
+versions.scalaXml = '1.2.0'
+versions.xom = '1.3.2'
+
+libraries.assertj = "org.assertj:assertj-core:${versions.assertj}"
+libraries.checkstyle = "com.puppycrawl.tools:checkstyle:${versions.checkstyle}"
+libraries.dom4j = "org.dom4j:dom4j:${versions.dom4j}"
+libraries.dottyCompiler = "ch.epfl.lamp:dotty-compiler_0.22:${versions.dotty}"
+libraries.dottyLibrary = "ch.epfl.lamp:dotty-library_0.22:${versions.dotty}"
+libraries.errorprone = "com.google.errorprone:error_prone_core:${versions.errorprone}"
+libraries.errorproneJavac = "com.google.errorprone:javac:${versions.errorproneJavac}"
+libraries.gson = "com.google.code.gson:gson:${versions.gson}"
+libraries.jackson = "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}"
+libraries.jakartaJsonApi = "jakarta.json:jakarta.json-api:${versions.jakartaJson}"
+libraries.jakartaJsonImpl = "org.glassfish:jakarta.json:${versions.jakartaJson}"
+libraries.jaxen = "jaxen:jaxen:${versions.jaxen}"
+libraries.jdom2 = "org.jdom:jdom2:${versions.jdom2}"
+libraries.junit = "org.junit.jupiter:junit-jupiter:${versions.junit}"
+libraries.mockito = "org.mockito:mockito-junit-jupiter:${versions.mockito}"
+libraries.scalaLibrary = { version -> "org.scala-lang:scala-library:${version}" }
+libraries.scalaReflect = { version -> "org.scala-lang:scala-reflect:${version}" }
+libraries.scalaXml = { compilerVersion -> "org.scala-lang.modules:scala-xml_$compilerVersion:${versions.scalaXml}" }
+libraries.xom = "xom:xom:${versions.xom}"

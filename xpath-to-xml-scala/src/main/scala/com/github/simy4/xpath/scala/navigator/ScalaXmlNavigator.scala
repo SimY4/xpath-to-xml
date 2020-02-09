@@ -20,7 +20,7 @@ class ScalaXmlNavigator(override val root: Root) extends Navigator[ScalaXmlNode]
       e.node = e.node % attr
       new Attribute(attr, e)
     case _ =>
-      throw new XmlBuilderException(s"Unable to create attribute for $parent")
+      throw new XmlBuilderException(s"Unable to create attribute for ${parent.toString}")
   }
   @throws[XmlBuilderException]("If unable to create element for given node")
   override def createElement(parent: ScalaXmlNode, element: QName): ScalaXmlNode = parent match {
@@ -32,7 +32,7 @@ class ScalaXmlNavigator(override val root: Root) extends Navigator[ScalaXmlNode]
       e.node = node.copy(child = children :+ elem)
       new Element(elem, children.size, e)
     case _ =>
-      throw new XmlBuilderException(s"Unable to create element for $parent")
+      throw new XmlBuilderException(s"Unable to create element for ${parent.toString}")
   }
   @throws[XmlBuilderException]("If unable to set text to given node")
   override def setText(node: ScalaXmlNode, text: String): Unit = node match {
@@ -43,7 +43,7 @@ class ScalaXmlNavigator(override val root: Root) extends Navigator[ScalaXmlNode]
       val attr = a.node
       a.node = XmlAttribute(Option(attr.pre), attr.key, Text(text), Null)
     case _ =>
-      throw new XmlBuilderException(s"Unable to set text to $node")
+      throw new XmlBuilderException(s"Unable to set text to ${node.toString}")
   }
   @throws[XmlBuilderException]("If unable to prepend copy to given node")
   override def prependCopy(node: ScalaXmlNode): Unit = node match {
@@ -55,7 +55,7 @@ class ScalaXmlNavigator(override val root: Root) extends Navigator[ScalaXmlNode]
       e.parent.node = parentNode.copy(child = parentNode.child.patch(idx, Seq(copy, toCopy), 1))
       e.index += 1
     case _ =>
-      throw new XmlBuilderException(s"Unable to prepend copy to $node")
+      throw new XmlBuilderException(s"Unable to prepend copy to ${node.toString}")
   }
   @throws[XmlBuilderException]("If unable to remove given node")
   override def remove(node: ScalaXmlNode): Unit = node match {
@@ -72,6 +72,6 @@ class ScalaXmlNavigator(override val root: Root) extends Navigator[ScalaXmlNode]
         else parentNode.attributes.remove(toDelete.key)
       a.parent.node = parentNode.copy(attributes = newAttr)
     case _ =>
-      throw new XmlBuilderException(s"Unable to remove node $node")
+      throw new XmlBuilderException(s"Unable to remove node ${node.toString}")
   }
 }

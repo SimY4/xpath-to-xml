@@ -48,7 +48,6 @@ class DataProvider extends ArgumentsProvider {
 class XmlBuilderTest {
   import Assertions._
   import XmlBuilderTest._
-  import implicits._
 
   @ParameterizedTest
   @ArgumentsSource(classOf[DataProvider])
@@ -59,15 +58,22 @@ class XmlBuilderTest {
   ): Unit = {
     implicit val ns: NamespaceContext = namespaceContext
     val xmlProperties                 = fixtureAccessor.getXmlProperties.asScala
-    val builtDocument                 = root.putAll(xmlProperties.keys)
-    val builtDocumentString           = xmlToString(builtDocument)
+    val builtDocument = xmlProperties.keys
+      .foldRight(Right(Nil): Either[Throwable, List[Effect]]) { (xpath, acc) =>
+        acc >>= { xs =>
+          Effect.put(xpath).fmap(_ :: xs)
+        }
+      }
+      .>>=(XmlBuilder(_)(root))
+      .unsafeGet
+    val builtDocumentString = xmlToString(builtDocument)
 
     xmlProperties.keys.foreach { xpath =>
       val documentSource: InputSource = builtDocumentString
       assertThat(xpath.evaluate(documentSource, XPathConstants.NODE)).isNotNull
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(builtDocumentString).is(new Condition({ xml: String =>
+    assertThat(builtDocumentString).is(new Condition({ (xml: String) =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutXml
     }, "\"%s\" matches exactly", fixtureAccessor.getPutXml))
   }
@@ -81,8 +87,15 @@ class XmlBuilderTest {
   ): Unit = {
     implicit val ns: NamespaceContext = namespaceContext
     val xmlProperties                 = fixtureAccessor.getXmlProperties.asScala
-    val builtDocument                 = root.putAllValues(xmlProperties)
-    val builtDocumentString           = xmlToString(builtDocument)
+    val builtDocument = xmlProperties.toSeq
+      .foldRight(Right(Nil): Either[Throwable, List[Effect]]) { (pair, acc) =>
+        acc >>= { xs =>
+          Effect.putValue(pair._1, pair._2).fmap(_ :: xs)
+        }
+      }
+      .>>=(XmlBuilder(_)(root))
+      .unsafeGet
+    val builtDocumentString = xmlToString(builtDocument)
 
     xmlProperties.foreach {
       case (xpath, value) =>
@@ -92,7 +105,7 @@ class XmlBuilderTest {
           .isEqualTo(value)
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(xmlToString(builtDocument)).is(new Condition({ xml: String =>
+    assertThat(xmlToString(builtDocument)).is(new Condition({ (xml: String) =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
     }, "\"%s\" matches exactly", fixtureAccessor.getPutValueXml))
   }
@@ -108,8 +121,15 @@ class XmlBuilderTest {
     val xmlProperties                 = fixtureAccessor.getXmlProperties.asScala
     val xml                           = fixtureAccessor.getPutXml
     val oldDocument                   = XML.loadString(xml)
-    val builtDocument                 = oldDocument.putAllValues(xmlProperties)
-    val builtDocumentString           = xmlToString(builtDocument)
+    val builtDocument = xmlProperties.toSeq
+      .foldRight(Right(Nil): Either[Throwable, List[Effect]]) { (pair, acc) =>
+        acc >>= { xs =>
+          Effect.putValue(pair._1, pair._2).fmap(_ :: xs)
+        }
+      }
+      .>>=(XmlBuilder(_)(oldDocument))
+      .unsafeGet
+    val builtDocumentString = xmlToString(builtDocument)
 
     xmlProperties.foreach {
       case (xpath, value) =>
@@ -119,7 +139,7 @@ class XmlBuilderTest {
           .isEqualTo(value)
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(builtDocumentString).is(new Condition({ xml: String =>
+    assertThat(builtDocumentString).is(new Condition({ (xml: String) =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
     }, "\"%s\" matches exactly", fixtureAccessor.getPutValueXml))
   }
@@ -135,8 +155,15 @@ class XmlBuilderTest {
     val xmlProperties                 = fixtureAccessor.getXmlProperties.asScala
     val xml                           = fixtureAccessor.getPutValueXml
     val oldDocument                   = XML.loadString(xml)
-    var builtDocument                 = oldDocument.putAllValues(xmlProperties)
-    var builtDocumentString           = xmlToString(builtDocument)
+    var builtDocument = xmlProperties.toSeq
+      .foldRight(Right(Nil): Either[Throwable, List[Effect]]) { (pair, acc) =>
+        acc >>= { xs =>
+          Effect.putValue(pair._1, pair._2).fmap(_ :: xs)
+        }
+      }
+      .>>=(XmlBuilder(_)(oldDocument))
+      .unsafeGet
+    var builtDocumentString = xmlToString(builtDocument)
 
     xmlProperties.foreach {
       case (xpath, value) =>
@@ -146,11 +173,18 @@ class XmlBuilderTest {
           .isEqualTo(value)
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(builtDocumentString).is(new Condition({ xml: String =>
+    assertThat(builtDocumentString).is(new Condition({ (xml: String) =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
     }, "\"%s\" matches exactly", fixtureAccessor.getPutValueXml))
 
-    builtDocument = oldDocument.putAll(xmlProperties.keys)
+    builtDocument = xmlProperties.keys
+      .foldRight(Right(Nil): Either[Throwable, List[Effect]]) { (xpath, acc) =>
+        acc >>= { xs =>
+          Effect.put(xpath).fmap(_ :: xs)
+        }
+      }
+      .>>=(XmlBuilder(_)(oldDocument))
+      .unsafeGet
     builtDocumentString = xmlToString(builtDocument)
 
     xmlProperties.foreach {
@@ -161,7 +195,7 @@ class XmlBuilderTest {
           .isEqualTo(value)
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(builtDocumentString).is(new Condition({ xml: String =>
+    assertThat(builtDocumentString).is(new Condition({ (xml: String) =>
       fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
     }, "\"%s\" matches exactly", fixtureAccessor.getPutValueXml))
   }
@@ -177,8 +211,15 @@ class XmlBuilderTest {
     val xmlProperties                 = fixtureAccessor.getXmlProperties.asScala
     val xml                           = fixtureAccessor.getPutValueXml
     val oldDocument                   = XML.loadString(xml)
-    val builtDocument                 = oldDocument.removeAll(xmlProperties.keys)
-    val builtDocumentString           = xmlToString(builtDocument)
+    val builtDocument = xmlProperties.keys
+      .foldRight(Right(Nil): Either[Throwable, List[Effect]]) { (xpath, acc) =>
+        acc >>= { xs =>
+          Effect.remove(xpath).fmap(_ :: xs)
+        }
+      }
+      .>>=(XmlBuilder(_)(oldDocument))
+      .unsafeGet
+    val builtDocumentString = xmlToString(builtDocument)
 
     xmlProperties.keySet.foreach { xpath =>
       val documentSource: InputSource = builtDocumentString
@@ -202,12 +243,20 @@ object XmlBuilderTest {
   implicit private[scala] class JUMapOps[K, V](private val map: java.util.Map[K, V]) extends AnyVal {
     def asScala: Map[K, V] = {
       val linkedHashMap = new mutable.LinkedHashMap[K, V]
-      map.entrySet.forEach { entry: java.util.Map.Entry[K, V] =>
+      map.entrySet.forEach { (entry: java.util.Map.Entry[K, V]) =>
         linkedHashMap += entry.getKey -> entry.getValue
         ()
       }
       linkedHashMap
     }
+  }
+
+  implicit private[scala] class EitherOps[+L, +R](private val either: Either[L, R]) extends AnyVal {
+    def fmap[RR](f: R => RR): Either[L, RR] = >>= { r =>
+      Right(f(r))
+    }
+    def >>=[LL >: L, RR](f: R => Either[LL, RR]): Either[LL, RR] = either.fold(Left(_), f)
+    def unsafeGet(implicit ev: L <:< Throwable): R               = either.fold(ex => throw ev(ex), identity)
   }
 
   implicit private[scala] def toXPathExpression(

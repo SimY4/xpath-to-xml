@@ -1,6 +1,7 @@
 package com.github.simy4.xpath.json.navigator.node;
 
 import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonValue;
 import javax.json.spi.JsonProvider;
 import javax.xml.namespace.QName;
@@ -32,16 +33,11 @@ public final class JavaxJsonByIndexNode extends AbstractJavaxJsonNode {
 
     @Override
     public void set(JsonProvider jsonProvider, JsonValue jsonValue) {
-        getParent().set(jsonProvider, jsonProvider.createArrayBuilder(getParentArray())
-                .set(index, jsonValue)
-                .build());
-    }
-
-    @Override
-    public void remove(JsonProvider jsonProvider) {
-        getParent().set(jsonProvider, jsonProvider.createArrayBuilder(getParentArray())
-                .remove(index)
-                .build());
+        final JsonArrayBuilder arrayBuilder = jsonProvider.createArrayBuilder(getParentArray());
+        final JsonArray newJsonArray = null == jsonValue
+                ? arrayBuilder.remove(index).build()
+                : arrayBuilder.set(index, jsonValue).build();
+        getParent().set(jsonProvider, newJsonArray);
     }
 
     @Override

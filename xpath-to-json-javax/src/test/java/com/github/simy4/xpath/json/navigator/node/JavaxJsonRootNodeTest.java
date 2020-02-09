@@ -36,8 +36,8 @@ class JavaxJsonRootNodeTest {
     }
 
     @Test
-    void shouldThrowOnRemove() {
-        assertThatThrownBy(() -> rootNode.remove(jsonProvider)).isInstanceOf(XmlBuilderException.class);
+    void shouldThrowOnSetNull() {
+        assertThatThrownBy(() -> rootNode.set(jsonProvider, null)).isInstanceOf(XmlBuilderException.class);
     }
 
 }

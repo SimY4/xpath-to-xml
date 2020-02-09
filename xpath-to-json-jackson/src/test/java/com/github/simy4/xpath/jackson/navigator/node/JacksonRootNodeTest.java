@@ -34,8 +34,8 @@ class JacksonRootNodeTest {
     }
 
     @Test
-    void shouldThrowOnRemove() {
-        assertThatThrownBy(rootNode::remove).isInstanceOf(XmlBuilderException.class);
+    void shouldThrowOnSetNull() {
+        assertThatThrownBy(() -> rootNode.set(null)).isInstanceOf(XmlBuilderException.class);
     }
 
 }

@@ -33,8 +33,8 @@ class JacksonByIndexNodeTest {
     }
 
     @Test
-    void shouldRemoveElementByIndexOnRemove() {
-        byIndexNode.remove();
+    void shouldRemoveElementByIndexOnSetNull() {
+        byIndexNode.set(null);
 
         assertThat(jsonArray).containsExactly(new IntNode(1), new IntNode(3));
     }

@@ -37,8 +37,8 @@ class GsonByNameNodeTest {
     }
 
     @Test
-    void shouldRemoveElementByIndexOnRemove() {
-        byNameNode.remove();
+    void shouldRemoveElementByIndexOnSetNull() {
+        byNameNode.set(null);
 
         assertThat(jsonObject.entrySet()).containsExactly(
                 entry("one", new JsonPrimitive(1)),

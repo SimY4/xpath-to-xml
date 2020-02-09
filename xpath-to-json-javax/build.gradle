@@ -5,10 +5,10 @@ apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 dependencies {
     api project(':xpath-to-xml-core')
 
-    implementation 'jakarta.json:jakarta.json-api:[1.0,2.0['
+    compileOnly libraries.jakartaJsonApi
 
     testImplementation project(':xpath-to-xml-test')
-    testImplementation 'org.glassfish:jakarta.json:[1.0,2.0['
-    testImplementation "org.junit.jupiter:junit-jupiter:$jUnitVersion"
-    testImplementation "org.assertj:assertj-core:$assertjVersion"
+    testImplementation libraries.jakartaJsonImpl
+    testImplementation libraries.junit
+    testImplementation libraries.assertj
 }

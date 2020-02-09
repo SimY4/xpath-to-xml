@@ -108,7 +108,7 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
 
     @Override
     public void remove(JacksonNode node) throws XmlBuilderException {
-        node.remove();
+        node.set(null);
     }
 
     private JacksonNode appendElement(JacksonNode parent, String name, JsonNode newNode) {

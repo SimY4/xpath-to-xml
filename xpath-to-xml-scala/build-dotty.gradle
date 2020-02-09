@@ -1,0 +1,88 @@
+ext.moduleName = 'com.github.simych.xpath.scala'
+
+buildDir = 'build-dotty'
+
+ext {
+    classesDir = file("/${buildDir}/classes/dotty/main")
+    testClassesDir = file("/${buildDir}/classes/dotty/test")
+}
+
+clean {
+    delete 'build-dotty'
+}
+
+configurations {
+    dotty.extendsFrom implementation
+    dottyTest.extendsFrom dotty, testImplementation
+    dotc
+}
+
+sourceSets {
+    dotty.java.srcDirs += [file('src/main/scala'), file('src/main/scala-2.13+'), file('src/main/dotty')]
+    dottyTest.java.srcDirs += [file('src/test/scala'), file('src/test/scala-2.13+'), file('src/test/dotty')]
+}
+
+dependencies {
+    api project(':xpath-to-xml-core')
+
+    dotty libraries.dottyLibrary
+    dotty libraries.scalaXml('2.13')
+
+    dotc libraries.dottyCompiler
+
+    dottyTest project(':xpath-to-xml-test')
+    dottyTest libraries.junit
+    dottyTest libraries.assertj
+}
+
+task compileDotty(type: JavaExec) {
+    dependsOn compileJava
+    description 'Compile Scala source files'
+    classpath configurations.dotc, configurations.dotty
+    main 'dotty.tools.dotc.Main'
+    jvmArgs '-Dscala.usejavacp=true', '-Dfile.encoding=UTF-8'
+    args ([
+            '-d', classesDir,
+            '-explain',                             // Explain type errors in more detail.
+            '-feature',                             // Emit warning and location for usages of features that should be imported explicitly.
+            '-language:macros,implicitConversions',
+            '-unchecked',                           // Enable additional warnings where generated code depends on assumptions.
+            '-Xfatal-warnings',                     // Fail the compilation if there are any warnings.
+    ] + sourceSets.dotty.allSource.files)
+}
+
+compileDotty.doFirst {
+    if (!classesDir.exists()) classesDir.mkdirs()
+}
+
+task compileTestDotty(type: JavaExec) {
+    dependsOn compileDotty, compileTestJava
+    description 'Compile Scala test source files'
+    classpath configurations.dotc, configurations.dottyTest, classesDir
+    main 'dotty.tools.dotc.Main'
+    jvmArgs '-Dscala.usejavacp=true', '-Dfile.encoding=UTF-8'
+    args ([
+            '-d', testClassesDir,
+            '-explain',                             // Explain type errors in more detail.
+            '-feature',                             // Emit warning and location for usages of features that should be imported explicitly.
+            '-language:macros,implicitConversions,Scala2',
+            '-unchecked',                           // Enable additional warnings where generated code depends on assumptions.
+            '-Xfatal-warnings',                     // Fail the compilation if there are any warnings.
+            '-rewrite',
+            '-migration'
+    ] + sourceSets.dottyTest.allSource.files)
+}
+
+compileTestDotty.doFirst {
+    if (!testClassesDir.exists()) testClassesDir.mkdirs()
+}
+
+build {
+    dependsOn compileDotty
+}
+
+test {
+    dependsOn compileTestDotty
+    classpath += configurations.dottyTest + files(classesDir, testClassesDir)
+    testClassesDirs += files(testClassesDir)
+}

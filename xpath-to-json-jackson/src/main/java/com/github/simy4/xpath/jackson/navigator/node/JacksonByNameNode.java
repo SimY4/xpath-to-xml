@@ -35,12 +35,11 @@ public final class JacksonByNameNode extends AbstractJacksonNode {
 
     @Override
     public void set(JsonNode jsonElement) {
-        parentObject.set(name, jsonElement);
-    }
-
-    @Override
-    public void remove() {
-        parentObject.remove(name);
+        if (null == jsonElement) {
+            parentObject.remove(name);
+        } else {
+            parentObject.set(name, jsonElement);
+        }
     }
 
     @Override

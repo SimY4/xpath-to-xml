@@ -6,8 +6,7 @@ dependencies {
     api project(':xpath-to-xml-core')
 
     testImplementation project(':xpath-to-xml-test')
-    testImplementation "org.junit.jupiter:junit-jupiter:$jUnitVersion"
-    testImplementation "org.mockito:mockito-core:$mockitoVersion"
-    testImplementation "org.mockito:mockito-junit-jupiter:$mockitoVersion"
-    testImplementation "org.assertj:assertj-core:$assertjVersion"
+    testImplementation libraries.junit
+    testImplementation libraries.mockito
+    testImplementation libraries.assertj
 }

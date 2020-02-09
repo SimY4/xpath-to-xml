@@ -22,6 +22,7 @@ import com.github.simy4.xpath.expr.axis.AttributeAxisResolver;
 import com.github.simy4.xpath.expr.axis.AxisResolver;
 import com.github.simy4.xpath.expr.axis.ChildAxisResolver;
 import com.github.simy4.xpath.expr.axis.DescendantOrSelfAxisResolver;
+import com.github.simy4.xpath.expr.axis.FollowingSiblingAxisResolver;
 import com.github.simy4.xpath.expr.axis.ParentAxisResolver;
 import com.github.simy4.xpath.expr.axis.SelfAxisResolver;
 import com.github.simy4.xpath.parser.Token.Type;
@@ -276,6 +277,12 @@ public class XPathParser implements Serializable {
             case Axis.ANCESTOR:
                 axisResolver = new AncestorOrSelfAxisResolver(NodeTest(context), false);
                 break;
+            case Axis.FOLLOWING_SIBLING:
+                axisResolver = new FollowingSiblingAxisResolver(NodeTest(context), true);
+                break;
+            case Axis.FOLLOWING:
+                axisResolver = new FollowingSiblingAxisResolver(NodeTest(context), false);
+                break;
             case Axis.ATTRIBUTE:
                 axisResolver = new AttributeAxisResolver(NodeTest(context));
                 break;
@@ -393,6 +400,8 @@ public class XPathParser implements Serializable {
         private static final short DESCENDANT = 2;
         private static final short PARENT = 3;
         private static final short ANCESTOR = 4;
+        private static final short FOLLOWING_SIBLING = 5;
+        private static final short FOLLOWING = 7;
         private static final short ATTRIBUTE = 9;
         private static final short SELF = 11;
         private static final short DESCENDANT_OR_SELF = 12;
@@ -403,6 +412,8 @@ public class XPathParser implements Serializable {
                 entry("descendant", DESCENDANT),
                 entry("parent", PARENT),
                 entry("ancestor", ANCESTOR),
+                entry("following-sibling", FOLLOWING_SIBLING),
+                entry("following", FOLLOWING),
                 entry("attribute", ATTRIBUTE),
                 entry("self", SELF),
                 entry("descendant-or-self", DESCENDANT_OR_SELF),
