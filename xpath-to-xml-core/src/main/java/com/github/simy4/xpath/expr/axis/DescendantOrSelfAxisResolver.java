@@ -49,15 +49,19 @@ public class DescendantOrSelfAxisResolver extends AbstractAxisResolver {
         return (self ? "descendant-or-self::" : "descendant::") + super.toString();
     }
 
-    private static final class DescendantOrSelf<T extends Node> implements Iterator<T> {
+    static final class DescendantOrSelf<T extends Node> implements Iterator<T> {
 
         private final Navigator<T> navigator;
         private final Queue<Iterable<? extends T>> stack = new ArrayDeque<>();
         private Iterator<? extends T> current;
 
-        private DescendantOrSelf(Navigator<T> navigator, Iterable<T> current) {
+        private DescendantOrSelf(Navigator<T> navigator, Iterable<? extends T> current) {
+            this(navigator, current.iterator());
+        }
+
+        DescendantOrSelf(Navigator<T> navigator, Iterator<? extends T> current) {
             this.navigator = navigator;
-            this.current = current.iterator();
+            this.current = current;
         }
 
         @Override

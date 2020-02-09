@@ -32,8 +32,8 @@ class GsonByIndexNodeTest {
     }
 
     @Test
-    void shouldRemoveElementByIndexOnRemove() {
-        byIndexNode.remove();
+    void shouldRemoveElementByIndexOnSetNull() {
+        byIndexNode.set(null);
 
         assertThat(jsonArray).containsExactly(new JsonPrimitive(1), new JsonPrimitive(3));
     }

@@ -26,13 +26,11 @@ public final class JavaxJsonRootNode extends AbstractJavaxJsonNode {
     }
 
     @Override
-    public void set(JsonProvider jsonProvider, JsonValue jsonValue) {
+    public void set(JsonProvider jsonProvider, JsonValue jsonValue) throws XmlBuilderException {
+        if (null == jsonValue) {
+            throw new XmlBuilderException("Unable to remove from root element");
+        }
         root = jsonValue;
-    }
-
-    @Override
-    public void remove(JsonProvider jsonProvider) throws XmlBuilderException {
-        throw new XmlBuilderException("Unable to remove from root element");
     }
 
 }

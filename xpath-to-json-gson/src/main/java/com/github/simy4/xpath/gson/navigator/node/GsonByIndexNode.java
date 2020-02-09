@@ -35,12 +35,11 @@ public final class GsonByIndexNode extends AbstractGsonNode {
 
     @Override
     public void set(JsonElement jsonElement) {
-        parentArray.set(index, jsonElement);
-    }
-
-    @Override
-    public void remove() {
-        parentArray.remove(index);
+        if (null == jsonElement) {
+            parentArray.remove(index);
+        } else {
+            parentArray.set(index, jsonElement);
+        }
     }
 
     @Override

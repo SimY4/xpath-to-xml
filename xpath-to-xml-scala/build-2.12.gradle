@@ -2,6 +2,7 @@ ext.moduleName = 'com.github.simych.xpath.scala'
 
 apply plugin: 'scala'
 apply plugin: 'cz.alenkacz.gradle.scalafmt'
+apply plugin: 'cz.augi.gradle.wartremover'
 apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 
 buildDir = 'build-2.12'
@@ -11,42 +12,40 @@ clean {
 }
 
 sourceSets {
-    compat {
-        scala {
-            srcDir 'src/main/scala-2.12-'
-        }
-    }
-    main {
-        scala {
-            compileClasspath += compat.output
-        }
-    }
-    test {
-        scala {
-            compileClasspath += compat.output
-            runtimeClasspath += compat.output
-        }
-    }
+    main.scala.srcDirs += [file('src/main/scala-2-'), file('src/main/scala-2.12-')]
 }
 
 dependencies {
     api project(':xpath-to-xml-core')
 
-    compatImplementation 'org.scala-lang:scala-library:2.12.8'
-    implementation 'org.scala-lang.modules:scala-xml_2.12:[1.2, 2.0['
+    implementation libraries.scalaLibrary('2.12.10')
+    implementation libraries.scalaReflect('2.12.10')
+    implementation libraries.scalaXml('2.12')
 
     testImplementation project(':xpath-to-xml-test')
-    testImplementation "org.junit.jupiter:junit-jupiter:$jUnitVersion"
-    testImplementation "org.assertj:assertj-core:$assertjVersion"
-}
-
-sourcesJar {
-    from sourceSets.main.allSource + sourceSets.compat.allSource
+    testImplementation libraries.junit
+    testImplementation libraries.assertj
 }
 
 javadocJar {
     dependsOn scaladoc
     from scaladoc
+}
+
+scaladoc {
+    scalaDocOptions.with {
+        additionalParameters = [
+                '-language:experimental.macros',     // Allow macro definition (besides implementation and application)
+                '-language:implicitConversions',     // Allow definition of implicit functions called views
+        ]
+    }
+}
+
+wartremover {
+    warningWarts -= ['DefaultArguments', 'IsInstanceOf', 'Null', 'Throw', 'Var']
+    test {
+        warningWarts -= ['NonUnitStatements', 'TraversableOps']
+    }
 }
 
 tasks.withType(ScalaCompile) {
@@ -56,6 +55,7 @@ tasks.withType(ScalaCompile) {
         additionalParameters = [
                 '-explaintypes',                     // Explain type errors in more detail.
                 '-feature',                          // Emit warning and location for usages of features that should be imported explicitly.
+                '-language:experimental.macros',     // Allow macro definition (besides implementation and application)
                 '-language:implicitConversions',     // Allow definition of implicit functions called views
                 '-unchecked',                        // Enable additional warnings where generated code depends on assumptions.
                 '-Xcheckinit',                       // Wrap field accessors to throw an exception on uninitialized access.

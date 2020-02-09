@@ -20,8 +20,6 @@ public interface GsonNode extends Node {
 
     void set(JsonElement jsonElement) throws XmlBuilderException;
 
-    void remove() throws XmlBuilderException;
-
     Iterable<? extends GsonNode> elements();
 
     Iterable<? extends GsonNode> attributes();

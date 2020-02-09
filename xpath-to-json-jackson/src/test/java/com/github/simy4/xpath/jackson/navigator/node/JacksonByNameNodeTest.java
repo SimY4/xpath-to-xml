@@ -38,8 +38,8 @@ class JacksonByNameNodeTest {
     }
 
     @Test
-    void shouldRemoveElementByIndexOnRemove() {
-        byNameNode.remove();
+    void shouldRemoveElementByIndexOnSetNull() {
+        byNameNode.set(null);
 
         assertThat(jsonObject.fields()).toIterable().containsExactly(
                 entry("one", new IntNode(1)),

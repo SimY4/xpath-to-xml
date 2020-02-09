@@ -5,9 +5,9 @@ apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 dependencies {
     api project(':xpath-to-xml-core')
 
-    implementation 'com.fasterxml.jackson.core:jackson-databind:[2.0,3.0['
+    implementation libraries.jackson
 
     testImplementation project(':xpath-to-xml-test')
-    testImplementation "org.junit.jupiter:junit-jupiter:$jUnitVersion"
-    testImplementation "org.assertj:assertj-core:$assertjVersion"
+    testImplementation libraries.junit
+    testImplementation libraries.assertj
 }

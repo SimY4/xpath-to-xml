@@ -35,12 +35,11 @@ public final class GsonByNameNode extends AbstractGsonNode {
 
     @Override
     public void set(JsonElement jsonElement) {
-        parentObject.add(name, jsonElement);
-    }
-
-    @Override
-    public void remove() {
-        parentObject.remove(name);
+        if (null == jsonElement) {
+            parentObject.remove(name);
+        } else {
+            parentObject.add(name, jsonElement);
+        }
     }
 
     @Override
