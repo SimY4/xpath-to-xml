@@ -27,19 +27,18 @@ dependencies {
     testImplementation libraries.assertj
 }
 
+javadocJar {
+    dependsOn scaladoc
+    from scaladoc
+}
+
 scaladoc {
-    scalaClasspath += files("lib/scala-ant-2.13.1.jar")
     scalaDocOptions.with {
         additionalParameters = [
                 '-language:experimental.macros',     // Allow macro definition (besides implementation and application)
                 '-language:implicitConversions',     // Allow definition of implicit functions called views
         ]
     }
-}
-
-javadocJar {
-    dependsOn scaladoc
-    from scaladoc
 }
 
 wartremover {
