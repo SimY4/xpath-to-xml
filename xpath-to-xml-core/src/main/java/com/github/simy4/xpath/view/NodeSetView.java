@@ -15,6 +15,7 @@ import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+@SuppressWarnings("SameNameButDifferent")
 public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>, Serializable {
 
     private static final long serialVersionUID = 1L;
