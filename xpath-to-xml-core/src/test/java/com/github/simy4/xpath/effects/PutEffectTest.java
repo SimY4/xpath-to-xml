@@ -33,14 +33,15 @@ class PutEffectTest {
 
     @BeforeEach
     void setUp() {
-        when(expr.resolve(any(), any(), anyBoolean())).thenReturn(new NodeView<>(node("node")));
-
         putEffect = new PutEffect(expr);
     }
 
     @Test
     @DisplayName("Should greedily resolve expr")
     void shouldGreedilyResolveExpr() {
+        // given
+        when(expr.resolve(any(), any(), anyBoolean())).thenReturn(new NodeView<>(node("node")));
+
         // when
         putEffect.perform(navigator, node("xml"));
 

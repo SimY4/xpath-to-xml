@@ -18,7 +18,6 @@ import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.doThrow;
@@ -35,14 +34,15 @@ class PutValueEffectTest {
 
     @BeforeEach
     void setUp() {
-        when(expr.resolve(any(), any(), anyBoolean())).thenReturn(new NodeView<>(node("node")));
-
         putValueEffect = new PutValueEffect(expr, "value");
     }
 
     @Test
     @DisplayName("Should put value to all resolved nodes")
     void shouldPutValueToAllResolvedNodes() {
+        // given
+        when(expr.resolve(any(), any(), anyBoolean())).thenReturn(new NodeView<>(node("node")));
+
         // when
         putValueEffect.perform(navigator, node("xml"));
 
@@ -67,8 +67,9 @@ class PutValueEffectTest {
     @DisplayName("When exception should propagate")
     void shouldPropagateOnException() {
         // given
+        when(expr.resolve(any(), any(), anyBoolean())).thenReturn(new NodeView<>(node("node")));
         var failure = new XmlBuilderException("Failure");
-        doThrow(failure).when(navigator).setText(any(TestNode.class), anyString());
+        doThrow(failure).when(navigator).setText(node("node"), "value");
 
         // when
         assertThatThrownBy(() -> putValueEffect.perform(navigator, node("xml"))).isSameAs(failure);
