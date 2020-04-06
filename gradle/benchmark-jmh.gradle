@@ -1,5 +1,5 @@
 apply plugin: 'me.champeau.gradle.jmh'
 
 jmh {
-    jmhVersion = '1.22'
+    jmhVersion = '1.23'
 }

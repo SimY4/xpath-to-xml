@@ -35,14 +35,15 @@ class RemoveEffectTest {
 
     @BeforeEach
     void setUp() {
-        when(expr.resolve(any(), any(), anyBoolean())).thenReturn(new NodeView<>(node("node")));
-
         removeEffect = new RemoveEffect(expr);
     }
 
     @Test
     @DisplayName("Should detach resolved nodes")
     void shouldDetachResolvedNodes() {
+        // given
+        when(expr.resolve(any(), any(), anyBoolean())).thenReturn(new NodeView<>(node("node")));
+
         // when
         removeEffect.perform(navigator, node("xml"));
 
@@ -67,8 +68,9 @@ class RemoveEffectTest {
     @DisplayName("When exception should propagate")
     void shouldPropagateOnException() {
         // given
+        when(expr.resolve(any(), any(), anyBoolean())).thenReturn(new NodeView<>(node("node")));
         XmlBuilderException failure = new XmlBuilderException("Failure");
-        doThrow(failure).when(navigator).remove(any(TestNode.class));
+        doThrow(failure).when(navigator).remove(node("node"));
 
         // when
         assertThatThrownBy(() -> removeEffect.perform(navigator, node("xml"))).isSameAs(failure);

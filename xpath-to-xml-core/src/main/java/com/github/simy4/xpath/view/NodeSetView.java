@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+@SuppressWarnings("SameNameButDifferent")
 public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>, Serializable {
 
     private static final long serialVersionUID = 1L;
