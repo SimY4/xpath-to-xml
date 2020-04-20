@@ -5,10 +5,10 @@ apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 dependencies {
     api project(':xpath-to-xml-core')
 
-    implementation libraries.dom4j
+    implementation 'org.dom4j:dom4j'
 
     testImplementation project(':xpath-to-xml-test')
-    testImplementation libraries.jaxen
-    testImplementation libraries.junit
-    testImplementation libraries.assertj
+    testImplementation 'jaxen:jaxen'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.assertj:assertj-core'
 }

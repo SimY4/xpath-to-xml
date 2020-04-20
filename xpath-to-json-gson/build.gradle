@@ -5,9 +5,9 @@ apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 dependencies {
     api project(':xpath-to-xml-core')
 
-    implementation libraries.gson
+    implementation 'com.google.code.gson:gson'
 
     testImplementation project(':xpath-to-xml-test')
-    testImplementation libraries.junit
-    testImplementation libraries.assertj
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.assertj:assertj-core'
 }

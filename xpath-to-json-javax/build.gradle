@@ -7,12 +7,12 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 dependencies {
     api project(':xpath-to-xml-core')
 
-    compileOnly libraries.jakartaJsonApi
+    compileOnly 'jakarta.json:jakarta.json-api'
 
     testImplementation project(':xpath-to-xml-test')
-    testImplementation libraries.jakartaJsonImpl
-    testImplementation libraries.junit
-    testImplementation libraries.assertj
+    testImplementation 'org.glassfish:jakarta.json'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.assertj:assertj-core'
 }
 
 animalsniffer {

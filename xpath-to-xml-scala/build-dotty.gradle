@@ -31,8 +31,8 @@ dependencies {
     dotc libraries.dottyCompiler
 
     dottyTest project(':xpath-to-xml-test')
-    dottyTest libraries.junit
-    dottyTest libraries.assertj
+    dottyTest 'org.junit.jupiter:junit-jupiter'
+    dottyTest 'org.assertj:assertj-core'
 }
 
 task compileDotty(type: JavaExec) {
