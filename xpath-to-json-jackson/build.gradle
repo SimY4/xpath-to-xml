@@ -2,6 +2,8 @@ ext.moduleName = 'com.github.simych.xpath.jackson'
 
 apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 
+sourceCompatibility = JavaVersion.VERSION_1_8
+
 dependencies {
     api project(':xpath-to-xml-core')
 

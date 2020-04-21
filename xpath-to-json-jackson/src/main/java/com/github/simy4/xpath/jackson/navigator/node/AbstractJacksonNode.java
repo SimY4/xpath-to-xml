@@ -41,22 +41,12 @@ abstract class AbstractJacksonNode implements JacksonNode {
 
     @Override
     public final Iterable<? extends JacksonNode> elements() {
-        return new Iterable<JacksonNode>() {
-            @Override
-            public Iterator<JacksonNode> iterator() {
-                return traverse(get(), AbstractJacksonNode.this, false);
-            }
-        };
+        return () -> traverse(get(), this, false);
     }
 
     @Override
     public final Iterable<? extends JacksonNode> attributes() {
-        return new Iterable<JacksonNode>() {
-            @Override
-            public Iterator<JacksonNode> iterator() {
-                return traverse(get(), AbstractJacksonNode.this, true);
-            }
-        };
+        return () -> traverse(get(), AbstractJacksonNode.this, true);
     }
 
     @Override
@@ -90,7 +80,7 @@ abstract class AbstractJacksonNode implements JacksonNode {
         } else if (jsonNode.isArray()) {
             return new JsonArrayIterator(jsonNode.elements(), (ArrayNode) jsonNode, parent, attribute);
         } else {
-            return Collections.<JacksonNode>emptyList().iterator();
+            return Collections.emptyIterator();
         }
     }
 
@@ -154,7 +144,7 @@ abstract class AbstractJacksonNode implements JacksonNode {
         private final JacksonNode parent;
         private final boolean attribute;
         private int index;
-        private Iterator<JacksonNode> current = Collections.<JacksonNode>emptyList().iterator();
+        private Iterator<JacksonNode> current = Collections.emptyIterator();
 
         private JsonArrayIterator(Iterator<JsonNode> arrayIterator, ArrayNode parentArray, JacksonNode parent,
                                   boolean attribute) {
@@ -187,7 +177,7 @@ abstract class AbstractJacksonNode implements JacksonNode {
         }
 
         private Iterator<JacksonNode> traverseAttributeNode(JacksonNode arrayNode) {
-            return (attribute ? Collections.singleton(arrayNode) : Collections.<JacksonNode>emptyList()).iterator();
+            return attribute ? Collections.singleton(arrayNode).iterator() : Collections.emptyIterator();
         }
 
     }

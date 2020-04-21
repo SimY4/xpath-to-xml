@@ -1,9 +1,9 @@
 apply plugin: 'ru.vyarus.animalsniffer'
 
 dependencies {
-    signature 'org.codehaus.mojo.signature:java16:1.1@signature'
-}
-
-animalsniffer {
-    sourceSets = [sourceSets.main]
+    if (sourceCompatibility == JavaVersion.VERSION_1_6) {
+        signature 'org.codehaus.mojo.signature:java16:1.1@signature'
+    } else {
+        signature 'org.codehaus.mojo.signature:java18:1.0@signature'
+    }
 }
