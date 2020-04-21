@@ -31,23 +31,13 @@ public final class Dom4jElement extends AbstractDom4jNode<Element> {
     }
 
     @Override
-    public Iterable<? extends Dom4jNode> elements() {
-        return new Iterable<Dom4jElement>() {
-            @Override
-            public Iterator<Dom4jElement> iterator() {
-                return new Dom4jElementIterator(getNode().elementIterator());
-            }
-        };
+    public Iterable<Dom4jElement> elements() {
+        return () -> new Dom4jElementIterator(getNode().elementIterator());
     }
 
     @Override
-    public Iterable<? extends Dom4jNode> attributes() {
-        return new Iterable<Dom4jAttribute>() {
-            @Override
-            public Iterator<Dom4jAttribute> iterator() {
-                return new Dom4jAttributeIterator(getNode().attributeIterator());
-            }
-        };
+    public Iterable<Dom4jAttribute> attributes() {
+        return () -> new Dom4jAttributeIterator(getNode().attributeIterator());
     }
 
     @Override

@@ -29,12 +29,12 @@ public final class Dom4jAttribute extends AbstractDom4jNode<Attribute> {
     }
 
     @Override
-    public Iterable<? extends Dom4jNode> elements() {
+    public Iterable<Dom4jElement> elements() {
         return Collections.emptyList();
     }
 
     @Override
-    public Iterable<? extends Dom4jNode> attributes() {
+    public Iterable<Dom4jAttribute> attributes() {
         return Collections.emptyList();
     }
 

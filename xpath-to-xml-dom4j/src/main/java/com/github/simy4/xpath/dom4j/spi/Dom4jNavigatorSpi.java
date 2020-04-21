@@ -23,7 +23,7 @@ import java.util.Set;
  */
 public class Dom4jNavigatorSpi implements NavigatorSpi {
 
-    private static final Set<Short> SUPPORTED_NODE_TYPES = new HashSet<Short>(
+    private static final Set<Short> SUPPORTED_NODE_TYPES = new HashSet<>(
             Arrays.asList(Node.DOCUMENT_NODE, Node.ELEMENT_NODE, Node.ATTRIBUTE_NODE));
 
     @Override
