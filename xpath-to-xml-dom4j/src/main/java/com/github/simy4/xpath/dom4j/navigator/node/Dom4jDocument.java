@@ -26,13 +26,13 @@ public final class Dom4jDocument extends AbstractDom4jNode<Document> {
     }
 
     @Override
-    public Iterable<? extends Dom4jNode> elements() {
+    public Iterable<Dom4jElement> elements() {
         final Element root = getNode().getRootElement();
-        return null == root ? Collections.<Dom4jElement>emptyList() : Collections.singletonList(new Dom4jElement(root));
+        return null == root ? Collections.emptyList() : Collections.singletonList(new Dom4jElement(root));
     }
 
     @Override
-    public Iterable<Dom4jNode> attributes() {
+    public Iterable<Dom4jAttribute> attributes() {
         return Collections.emptyList();
     }
 
