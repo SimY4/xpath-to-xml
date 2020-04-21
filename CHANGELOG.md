@@ -11,6 +11,21 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 - scala XML
   - Scala 3 support
   
+### 2.1.6
+
+Improvements:
+
+- Jackson
+  - Bump Jackson version to 2.10.3
+  - Push minimal java version to Java 8
+- DOM4J
+  - Bump DOM4J version to 2.1.3
+  - Push minimal java version to Java 8
+- scala XML
+  - Bump scala-xml version to 1.3.0
+- XOM
+  - Bump XOM version to 1.3.4
+    
 ### 2.1.5
 
 Improvements:
