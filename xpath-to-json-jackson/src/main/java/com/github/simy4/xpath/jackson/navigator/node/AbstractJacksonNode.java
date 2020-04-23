@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Objects;
 
 abstract class AbstractJacksonNode implements JacksonNode {
 
@@ -46,7 +47,7 @@ abstract class AbstractJacksonNode implements JacksonNode {
 
     @Override
     public final Iterable<? extends JacksonNode> attributes() {
-        return () -> traverse(get(), AbstractJacksonNode.this, true);
+        return () -> traverse(get(), this, true);
     }
 
     @Override
@@ -70,8 +71,7 @@ abstract class AbstractJacksonNode implements JacksonNode {
 
     @Override
     public String toString() {
-        final JsonNode jsonNode = get();
-        return null == jsonNode ? "???" : jsonNode.toString();
+        return Objects.toString(get(), "???");
     }
 
     private static Iterator<JacksonNode> traverse(JsonNode jsonNode, JacksonNode parent, boolean attribute) {
@@ -169,11 +169,6 @@ abstract class AbstractJacksonNode implements JacksonNode {
         @Override
         public JacksonNode next() {
             return current.next();
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException("remove");
         }
 
         private Iterator<JacksonNode> traverseAttributeNode(JacksonNode arrayNode) {
