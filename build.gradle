@@ -17,6 +17,8 @@ ext {
     buildTime = buildTimeAndDate.format("HH:mm:ss.SSSZ")
 }
 
+apply from: rootProject.file('gradle/publish-maven-platform.gradle')
+
 subprojects {
     apply plugin: 'java-library'
     apply from: rootProject.file('gradle/dependencies.gradle')
@@ -68,8 +70,6 @@ subprojects {
             options.addBooleanOption('html5', true)
         }
     }
-
-    afterReleaseBuild.dependsOn publish
 }
 
 dependencies {
@@ -95,6 +95,10 @@ release {
     git {
         requireBranch = 'java6'
     }
+}
+
+allprojects {
+    afterReleaseBuild.dependsOn publish
 }
 
 wrapper {
