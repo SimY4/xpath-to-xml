@@ -4,7 +4,7 @@ ext {
 
 def versions = [:]
 
-versions.checkstyle = '8.31'
+versions.checkstyle = '8.32'
 versions.dotty = '0.24.0-RC1'
 versions.errorprone = '2.3.4'
 versions.errorproneJavac = '9+181-r4173-1'
