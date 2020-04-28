@@ -17,8 +17,6 @@ ext {
     buildTime = buildTimeAndDate.format("HH:mm:ss.SSSZ")
 }
 
-apply from: rootProject.file('gradle/publish-maven-platform.gradle')
-
 subprojects {
     apply plugin: 'java-library'
     apply from: rootProject.file('gradle/dependencies.gradle')
@@ -35,8 +33,20 @@ subprojects {
         mavenCentral()
     }
 
+    configurations {
+        internal {
+            visible = false
+            canBeConsumed = false
+            canBeResolved = false
+        }
+        compileClasspath.extendsFrom internal
+        runtimeClasspath.extendsFrom internal
+        testCompileClasspath.extendsFrom internal
+        testRuntimeClasspath.extendsFrom internal
+    }
+
     dependencies {
-        api platform(rootProject)
+        internal platform(rootProject)
     }
 
     java {
@@ -72,6 +82,8 @@ subprojects {
             options.addStringOption('-release', '8') // workaround javadoc issues in Java 9+
         }
     }
+
+    afterReleaseBuild.dependsOn publish
 }
 
 dependencies {
@@ -96,10 +108,6 @@ release {
     git {
         requireBranch = 'java6'
     }
-}
-
-allprojects {
-    afterReleaseBuild.dependsOn publish
 }
 
 wrapper {

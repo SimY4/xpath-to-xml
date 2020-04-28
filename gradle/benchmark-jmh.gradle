@@ -6,6 +6,7 @@ jmh {
 
 // after gradle 5.3 we need to set this attribute to mark test configuration targeting java 8
 [configurations.jmhCompileClasspath, configurations.jmhRuntimeClasspath].each {
+    it.extendsFrom configurations.internal
     it.attributes {
         attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 8)
     }
