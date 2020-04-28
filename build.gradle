@@ -39,6 +39,11 @@ subprojects {
         api platform(rootProject)
     }
 
+    java {
+        withJavadocJar()
+        withSourcesJar()
+    }
+
     // after gradle 5.3 we need to set this attribute to mark test configuration targeting java 8
     [configurations.testCompileClasspath, configurations.testRuntimeClasspath].each {
         it.attributes {
@@ -60,14 +65,11 @@ subprojects {
     }
 
     javadoc {
-        source = sourceSets.main.allJava
-        classpath = configurations.compileClasspath
-
         options.memberLevel = JavadocMemberLevel.PROTECTED
-        options.links = ["https://docs.oracle.com/javase/6/docs/api/"]
 
-        if(JavaVersion.current().isJava9Compatible()) {
+        if (JavaVersion.current().isJava9Compatible()) {
             options.addBooleanOption('html5', true)
+            options.addStringOption('-release', '8') // workaround javadoc issues in Java 9+
         }
     }
 }
