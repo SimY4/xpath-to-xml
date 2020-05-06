@@ -73,7 +73,3 @@ tasks.withType(ScalaCompile) {
         }
     }
 }
-
-compileTestScala {
-    scalaCompileOptions.additionalParameters << '-target:jvm-1.8'
-}

@@ -1,5 +1,0 @@
-apply plugin: 'ru.vyarus.animalsniffer'
-
-dependencies {
-    signature 'org.codehaus.mojo.signature:java18:1.0@signature'
-}

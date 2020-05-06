@@ -1,5 +1,6 @@
 package com.github.simy4.xpath.dom4j.navigator.node;
 
+import org.dom4j.Attribute;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 

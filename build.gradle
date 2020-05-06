@@ -20,7 +20,6 @@ ext {
 subprojects {
     apply plugin: 'java-library'
     apply from: rootProject.file('gradle/dependencies.gradle')
-    // apply from: rootProject.file('gradle/animal-sniffer.gradle')
     apply from: rootProject.file('gradle/check-checkstyle.gradle')
     apply from: rootProject.file('gradle/check-codecoverage.gradle')
     apply from: rootProject.file('gradle/check-errorprone.gradle')
@@ -57,7 +56,7 @@ subprojects {
     }
 
     tasks.withType(JavaCompile) {
-        options.compilerArgs << '-Xlint:all' << '-Werror'
+        options.compilerArgs << '-Xlint:all' << '-Werror' << '--release' << '11'
     }
 
     test {
