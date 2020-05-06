@@ -11,3 +11,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'org.assertj:assertj-core'
 }
+
+compileJava {
+    options.compilerArgs << '-Xlint:-requires-automatic'
+}

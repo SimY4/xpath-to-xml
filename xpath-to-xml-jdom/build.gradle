@@ -12,3 +12,13 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'org.assertj:assertj-core'
 }
+
+compileJava {
+    options.compilerArgs << '--module-path' << classpath.asPath << '-Xlint:-requires-automatic'
+    classpath = files()
+}
+
+javadoc {
+    options.modulePath += classpath
+    classpath = files()
+}
