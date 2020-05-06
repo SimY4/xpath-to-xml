@@ -26,14 +26,14 @@ public interface Dom4jNode extends Node {
      *
      * @return child element nodes
      */
-    Iterable<? extends Dom4jNode> elements();
+    Iterable<Dom4jElement> elements();
 
     /**
      * Retrieves all attributes of this node.
      *
      * @return attributes
      */
-    Iterable<? extends Dom4jNode> attributes();
+    Iterable<Dom4jAttribute> attributes();
 
     /**
      * Creates XML attribute node and appends to ths node.

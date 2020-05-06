@@ -10,7 +10,31 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 
 - scala XML
   - Scala 3 support
+
+### 2.1.7 - 2.1.8
+
+Improvements:
+
+- Jackson
+  - Bump Jackson version to 2.11.0
+- XOM
+  - Bump XOM version to 1.3.5
   
+### 2.1.6
+
+Improvements:
+
+- Jackson
+  - Bump Jackson version to 2.10.3
+  - Push minimal java version to Java 8
+- DOM4J
+  - Bump DOM4J version to 2.1.3
+  - Push minimal java version to Java 8
+- scala XML
+  - Bump scala-xml version to 1.3.0
+- XOM
+  - Bump XOM version to 1.3.4
+    
 ### 2.1.5
 
 Improvements:
@@ -50,6 +74,8 @@ Improvements:
 Improvements:
 
 - Core
+  - Overall optimisations to make library performant for all extensions.
+  - Inconsistent use of index predicate (i.e. `node[2][3]`) now will raise an error.
   - XmlBuilder instances are now serializable
   - Expressions and views are serializable as long as particular XML model underneath is serializable
 
@@ -57,15 +83,7 @@ Bugfixes:
 
 - Core
   - Partially resolvable axis nodes are now correctly created.
-
-### 2.1.1
-
-Improvements:
-
-- Core
-  - Overall optimisations to make library performant for all extensions.
-  - Inconsistent use of index predicate (i.e. `node[2][3]`) now will raise an error.
-
+  
 ### 2.1.0: JDOM model support
 
 Features:
@@ -104,6 +122,16 @@ Improvements:
 
 ### 1.2.4
 
+Improvements:
+
+- Core
+  - Fix performance regression between 1.1.0 and 1.2.0
+  - Fixing JavaDoc publishing
+- Gson, Jackson
+  - Root node now can be overwritten
+- XOM
+  - Minor performance improvements
+
 Bugfixes:
 
 - Gson, Jackson
@@ -112,29 +140,7 @@ Bugfixes:
   - Correctly resolve parent for top level element.
 - XOM
   - Align can handle with what XOM SPI can actually handle.
-
-### 1.2.3
-
-Improvements:
-
-- XOM
-  - Minor performance improvements
-- Gson, Jackson
-  - Root node now can be overwritten
-
-### 1.2.2
-
-Improvements:
-
-- Fixing JavaDoc publishing
-
-### 1.2.1
-
-Improvements:
-
-- Core
-  - Fix performance regression between 1.1.0 and 1.2.0
-
+  
 ### 1.2.0 Jackson model support
 
 Features:
@@ -149,23 +155,14 @@ Improvements:
     - ancestor
     - ancestor-or-self
 
-### 1.1.2
-
 Bugfixes:
-
-- DOM
-  - Fix navigator not always traversing element only nodes.
 
 - Gson
   - Fix an infinite loop while fetching nodes parent
   - Fix a node identity error when traversing an array
-
-### 1.1.1
-
-Bugfixes:
-
 - DOM 
   - Fix attribute removal issue
+  - Fix navigator not always traversing element only nodes.
 
 ### 1.1.0 Gson model support
 
@@ -173,30 +170,20 @@ Features:
 
 - Support for Gson JSON model
 
-### 1.0.3
-
-Bugfixes:
-
-- Core
-  - Fix longstanding issue when index predicate may create more nodes than is has to
-
-### 1.0.2
-
 Improvements:
 
 - DOM4J
   - Bump DOM4J version to 2.1.0
 - XOM
   - Bump XOM version to 1.2.10
-
-### 1.0.1
-
+  
 Bugfixes:
 
 - Core:
   - EqualsExpr now correctly reports an error if unable to satisfy given case
   - NotEqualsExpr supports more cases now and also correctly reports an error
-  - LessThatOrEquals and GreaterThanOrEquals are now supported (with fallback to EqualsExpr resolver) 
+  - LessThatOrEquals and GreaterThanOrEquals are now supported (with fallback to EqualsExpr resolver)
+  - Fix longstanding issue when index predicate may create more nodes than is has to 
 
 ### 1.0.0 Initial Release
 

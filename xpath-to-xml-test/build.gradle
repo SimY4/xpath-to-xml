@@ -1,7 +1,3 @@
 ext.moduleName = 'com.github.simych.xpath.test'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
-
-animalsniffer {
-    sourceSets = []
-}
