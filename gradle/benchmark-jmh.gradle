@@ -3,3 +3,7 @@ apply plugin: 'me.champeau.gradle.jmh'
 jmh {
     jmhVersion = '1.23'
 }
+
+[configurations.jmhCompileClasspath, configurations.jmhRuntimeClasspath].each {
+    it.extendsFrom configurations.internal
+}

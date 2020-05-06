@@ -18,13 +18,13 @@ sourceSets {
 dependencies {
     api project(':xpath-to-xml-core')
 
-    implementation libraries.scalaLibrary('2.13.1')
-    implementation libraries.scalaReflect('2.13.1')
+    implementation libraries.scalaLibrary('2.13.2')
+    implementation libraries.scalaReflect('2.13.2')
     implementation libraries.scalaXml('2.13')
 
     testImplementation project(':xpath-to-xml-test')
-    testImplementation libraries.junit
-    testImplementation libraries.assertj
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.assertj:assertj-core'
 }
 
 javadocJar {

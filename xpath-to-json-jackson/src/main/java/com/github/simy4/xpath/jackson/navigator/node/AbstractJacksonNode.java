@@ -140,7 +140,7 @@ abstract class AbstractJacksonNode implements JacksonNode {
         private final JacksonNode parent;
         private final boolean attribute;
         private int index;
-        private Iterator<JacksonNode> current = Collections.<JacksonNode>emptyList().iterator();
+        private Iterator<JacksonNode> current = Collections.emptyIterator();
 
         private JsonArrayIterator(Iterator<JsonNode> arrayIterator, ArrayNode parentArray, JacksonNode parent,
                                   boolean attribute) {

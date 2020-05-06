@@ -37,16 +37,14 @@ class Dom4JElementTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void shouldReturnListOfAttributesWhenObtainAttributes() {
-        assertThat((Iterable<Dom4jNode>) node.attributes())
+        assertThat(node.attributes())
                 .containsExactly(new Dom4jAttribute(attr1), new Dom4jAttribute(attr2));
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void shouldReturnListOfElementsWhenObtainElements() {
-        assertThat((Iterable<Dom4jNode>) node.elements())
+        assertThat(node.elements())
                 .containsExactly(new Dom4jElement(child1), new Dom4jElement(child2));
     }
 

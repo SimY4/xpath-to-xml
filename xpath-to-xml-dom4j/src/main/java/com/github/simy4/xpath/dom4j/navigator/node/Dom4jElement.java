@@ -4,6 +4,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
 import javax.xml.namespace.QName;
+import java.util.Iterator;
 
 public final class Dom4jElement extends AbstractDom4jNode<Element> {
 
@@ -28,17 +29,13 @@ public final class Dom4jElement extends AbstractDom4jNode<Element> {
     }
 
     @Override
-    public Iterable<? extends Dom4jNode> elements() {
-        return (Iterable<Dom4jElement>) () -> getNode().elements().stream()
-                .map(Dom4jElement::new)
-                .iterator();
+    public Iterable<Dom4jElement> elements() {
+        return () -> new Dom4jElementIterator(getNode().elementIterator());
     }
 
     @Override
-    public Iterable<? extends Dom4jNode> attributes() {
-        return (Iterable<Dom4jAttribute>) () -> getNode().attributes().stream()
-                .map(Dom4jAttribute::new)
-                .iterator();
+    public Iterable<Dom4jAttribute> attributes() {
+        return () -> new Dom4jAttributeIterator(getNode().attributeIterator());
     }
 
     @Override
@@ -51,6 +48,56 @@ public final class Dom4jElement extends AbstractDom4jNode<Element> {
     @Override
     public Dom4jNode createElement(org.dom4j.QName element) {
         return new Dom4jElement(getNode().addElement(element));
+    }
+
+    private static final class Dom4jAttributeIterator implements Iterator<Dom4jAttribute> {
+
+        private final Iterator<Attribute> attributeIterator;
+
+        private Dom4jAttributeIterator(Iterator<Attribute> attributeIterator) {
+            this.attributeIterator = attributeIterator;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return attributeIterator.hasNext();
+        }
+
+        @Override
+        public Dom4jAttribute next() {
+            return new Dom4jAttribute(attributeIterator.next());
+        }
+
+        @Override
+        public void remove() {
+            attributeIterator.remove();
+        }
+
+    }
+
+    private static final class Dom4jElementIterator implements Iterator<Dom4jElement> {
+
+        private final Iterator<Element> elementIterator;
+
+        private Dom4jElementIterator(Iterator<Element> elementIterator) {
+            this.elementIterator = elementIterator;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return elementIterator.hasNext();
+        }
+
+        @Override
+        public Dom4jElement next() {
+            return new Dom4jElement(elementIterator.next());
+        }
+
+        @Override
+        public void remove() {
+            elementIterator.remove();
+        }
+
     }
 
 }
