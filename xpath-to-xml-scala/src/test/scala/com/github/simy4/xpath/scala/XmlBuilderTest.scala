@@ -40,9 +40,10 @@ class DataProvider extends ArgumentsProvider {
       )
     )
 
-  private def arguments(args: AnyRef*): Arguments = new Arguments {
-    override def get(): Array[AnyRef] = args.toArray
-  }
+  private def arguments(args: AnyRef*): Arguments =
+    new Arguments {
+      override def get(): Array[AnyRef] = args.toArray
+    }
 }
 
 class XmlBuilderTest {
@@ -73,9 +74,13 @@ class XmlBuilderTest {
       assertThat(xpath.evaluate(documentSource, XPathConstants.NODE)).isNotNull
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(builtDocumentString).is(new Condition({ (xml: String) =>
-      fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutXml
-    }, "\"%s\" matches exactly", fixtureAccessor.getPutXml))
+    assertThat(builtDocumentString).is(
+      new Condition(
+        (xml: String) => fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutXml,
+        "\"%s\" matches exactly",
+        fixtureAccessor.getPutXml
+      )
+    )
   }
 
   @ParameterizedTest
@@ -105,9 +110,13 @@ class XmlBuilderTest {
           .isEqualTo(value)
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(xmlToString(builtDocument)).is(new Condition({ (xml: String) =>
-      fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
-    }, "\"%s\" matches exactly", fixtureAccessor.getPutValueXml))
+    assertThat(xmlToString(builtDocument)).is(
+      new Condition(
+        (xml: String) => fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml,
+        "\"%s\" matches exactly",
+        fixtureAccessor.getPutValueXml
+      )
+    )
   }
 
   @ParameterizedTest
@@ -139,9 +148,13 @@ class XmlBuilderTest {
           .isEqualTo(value)
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(builtDocumentString).is(new Condition({ (xml: String) =>
-      fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
-    }, "\"%s\" matches exactly", fixtureAccessor.getPutValueXml))
+    assertThat(builtDocumentString).is(
+      new Condition(
+        (xml: String) => fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml,
+        "\"%s\" matches exactly",
+        fixtureAccessor.getPutValueXml
+      )
+    )
   }
 
   @ParameterizedTest
@@ -173,9 +186,13 @@ class XmlBuilderTest {
           .isEqualTo(value)
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(builtDocumentString).is(new Condition({ (xml: String) =>
-      fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
-    }, "\"%s\" matches exactly", fixtureAccessor.getPutValueXml))
+    assertThat(builtDocumentString).is(
+      new Condition(
+        (xml: String) => fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml,
+        "\"%s\" matches exactly",
+        fixtureAccessor.getPutValueXml
+      )
+    )
 
     builtDocument = xmlProperties.keys
       .foldRight(Right(Nil): Either[Throwable, List[Effect]]) { (xpath, acc) =>
@@ -195,9 +212,13 @@ class XmlBuilderTest {
           .isEqualTo(value)
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(builtDocumentString).is(new Condition({ (xml: String) =>
-      fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
-    }, "\"%s\" matches exactly", fixtureAccessor.getPutValueXml))
+    assertThat(builtDocumentString).is(
+      new Condition(
+        (xml: String) => fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml,
+        "\"%s\" matches exactly",
+        fixtureAccessor.getPutValueXml
+      )
+    )
   }
 
   @ParameterizedTest
@@ -252,9 +273,10 @@ object XmlBuilderTest {
   }
 
   implicit private[scala] class EitherOps[+L, +R](private val either: Either[L, R]) extends AnyVal {
-    def fmap[RR](f: R => RR): Either[L, RR] = >>= { r =>
-      Right(f(r))
-    }
+    def fmap[RR](f: R => RR): Either[L, RR] =
+      >>= { r =>
+        Right(f(r))
+      }
     def >>=[LL >: L, RR](f: R => Either[LL, RR]): Either[LL, RR] = either.fold(Left(_), f)
     def unsafeGet(implicit ev: L <:< Throwable): R               = either.fold(ex => throw ev(ex), identity)
   }
