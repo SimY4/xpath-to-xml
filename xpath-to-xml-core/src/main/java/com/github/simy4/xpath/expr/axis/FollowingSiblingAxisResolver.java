@@ -40,7 +40,7 @@ public class FollowingSiblingAxisResolver extends AbstractAxisResolver {
             throw new XmlBuilderException("Can't append siblings to root");
         }
         final N element = navigator.createElement(parentParent, name);
-        return new NodeView<N>(element);
+        return new NodeView<N>(element, position);
     }
 
     @Override
