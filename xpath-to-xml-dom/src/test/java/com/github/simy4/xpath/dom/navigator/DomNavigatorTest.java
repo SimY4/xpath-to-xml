@@ -19,9 +19,7 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.w3c.dom.Attr;
@@ -38,10 +36,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class DomNavigatorTest {
 
@@ -73,10 +71,12 @@ class DomNavigatorTest {
     when(xml.getAttributes()).thenReturn(attributes);
     when(xml.cloneNode(true)).thenReturn(xml);
 
-    when(attributes.getLength()).thenReturn(3);
-    when(attributes.item(0)).thenReturn(child1);
-    when(attributes.item(1)).thenReturn(child2);
-    when(attributes.item(2)).thenReturn(child3);
+        when(attr.getNodeType()).thenReturn(Node.ATTRIBUTE_NODE);
+
+        when(attributes.getLength()).thenReturn(3);
+        when(attributes.item(0)).thenReturn(child1);
+        when(attributes.item(1)).thenReturn(child2);
+        when(attributes.item(2)).thenReturn(child3);
 
     when(child1.getNextSibling()).thenReturn(child2);
     when(child2.getNextSibling()).thenReturn(child3);
@@ -113,27 +113,17 @@ class DomNavigatorTest {
         .containsExactly(child1, child2, child3);
   }
 
-  @Test
-  void testCreateAttributeSuccess() {
-    assertThat(navigator.createAttribute(new DomNode(xml), new QName("attr"))).isNotNull();
-    verify(root).createAttribute("attr");
-    verify(xml).setAttributeNode(attr);
-  }
+    @Test
+    void testCreateAttributeSuccess() {
+        assertThat(navigator.createAttribute(new DomNode(xml), new QName("attr"))).isNotNull();
+        verify(root).createAttribute("attr");
+    }
 
-  @Test
-  void testCreateNsAttributeSuccess() {
-    assertThat(
-            navigator.createAttribute(new DomNode(xml), new QName("http://example.com/my", "attr")))
-        .isNotNull();
-    verify(root).createAttributeNS("http://example.com/my", "attr");
-    verify(xml).setAttributeNode(attr);
-  }
-
-  @Test
-  void testCreateAttributeFailureWhenParentIsNotAnElement() {
-    assertThatThrownBy(() -> navigator.createAttribute(new DomNode(root), new QName("attr")))
-        .isInstanceOf(XmlBuilderException.class);
-  }
+    @Test
+    void testCreateNsAttributeSuccess() {
+        assertThat(navigator.createAttribute(new DomNode(xml), new QName("http://example.com/my", "attr"))).isNotNull();
+        verify(root).createAttributeNS("http://example.com/my", "attr");
+    }
 
   @Test
   void testCreateAttributeFailure() {
@@ -152,21 +142,17 @@ class DomNavigatorTest {
         .isInstanceOf(XmlBuilderException.class);
   }
 
-  @Test
-  void testCreateElementSuccess() {
-    assertThat(navigator.createElement(new DomNode(xml), new QName("elem"))).isNotNull();
-    verify(root).createElement("elem");
-    verify(xml).appendChild(xml);
-  }
+    @Test
+    void testCreateElementSuccess() {
+        assertThat(navigator.createElement(new DomNode(xml), new QName("elem"))).isNotNull();
+        verify(root).createElement("elem");
+    }
 
-  @Test
-  void testCreateNsElementSuccess() {
-    assertThat(
-            navigator.createElement(new DomNode(xml), new QName("http://example.com/my", "elem")))
-        .isNotNull();
-    verify(root).createElementNS("http://example.com/my", "elem");
-    verify(xml).appendChild(xml);
-  }
+    @Test
+    void testCreateNsElementSuccess() {
+        assertThat(navigator.createElement(new DomNode(xml), new QName("http://example.com/my", "elem"))).isNotNull();
+        verify(root).createElementNS("http://example.com/my", "elem");
+    }
 
   @Test
   void testCreateElementFailure() {
@@ -185,25 +171,103 @@ class DomNavigatorTest {
         .isInstanceOf(XmlBuilderException.class);
   }
 
-  @Test
-  void testPrependCopySuccess() {
-    navigator.prependCopy(new DomNode(xml));
-    verify(xml).cloneNode(true);
-    verify(root).insertBefore(xml, xml);
-  }
+    @Test
+    void testAppendChildElementSuccess() {
+        navigator.appendChild(new DomNode(xml), new DomNode(xml));
+        verify(xml).appendChild(xml);
+    }
 
-  @Test
-  void testPrependCopyNoParent() {
-    assertThatThrownBy(() -> navigator.prependCopy(new DomNode(root)))
-        .isInstanceOf(XmlBuilderException.class);
-  }
+    @Test
+    void testAppendChildElementFailure() {
+        doThrow(DOMException.class).when(xml).appendChild(any(Node.class));
+        assertThatThrownBy(() -> navigator.appendChild(new DomNode(xml), new DomNode(xml)))
+                .isInstanceOf(XmlBuilderException.class);
+    }
 
-  @Test
-  void testPrependCopyFailure() {
-    doThrow(DOMException.class).when(root).insertBefore(any(Node.class), any(Node.class));
-    assertThatThrownBy(() -> navigator.prependCopy(new DomNode(xml)))
-        .isInstanceOf(XmlBuilderException.class);
-  }
+    @Test
+    void testAppendChildAttributeSuccess() {
+        navigator.appendChild(new DomNode(xml), new DomNode(attr));
+        verify(xml).setAttributeNode(attr);
+    }
+
+    @Test
+    void testAppendChildAttributeFailure() {
+        doThrow(DOMException.class).when(xml).setAttributeNode(any(Attr.class));
+        assertThatThrownBy(() -> navigator.appendChild(new DomNode(xml), new DomNode(attr)))
+                .isInstanceOf(XmlBuilderException.class);
+    }
+
+    @Test
+    void testAppendNextSuccess() {
+        final Node next = mock(Node.class);
+        when(xml.getNextSibling()).thenReturn(next);
+
+        navigator.appendNext(new DomNode(xml), new DomNode(xml));
+        verify(root).insertBefore(xml, next);
+    }
+
+    @Test
+    void testAppendNextSuccessLastElement() {
+        navigator.appendNext(new DomNode(xml), new DomNode(xml));
+        verify(root).appendChild(xml);
+    }
+
+    @Test
+    void testAppendNextRoot() {
+        assertThatThrownBy(() -> navigator.appendNext(new DomNode(root), new DomNode(xml)))
+                .isInstanceOf(XmlBuilderException.class);
+    }
+
+    @Test
+    void testAppendNextNoParent() {
+        when(xml.getParentNode()).thenReturn(null);
+
+        assertThatThrownBy(() -> navigator.appendNext(new DomNode(xml), new DomNode(xml)))
+                .isInstanceOf(XmlBuilderException.class);
+    }
+
+    @Test
+    void testAppendNextFailure() {
+        when(xml.getNextSibling()).thenReturn(mock(Node.class));
+
+        doThrow(DOMException.class).when(root).insertBefore(any(Node.class), any(Node.class));
+        assertThatThrownBy(() -> navigator.appendNext(new DomNode(xml), new DomNode(xml)))
+                .isInstanceOf(XmlBuilderException.class);
+    }
+
+    @Test
+    void testAppendNextFailureLastElement() {
+        doThrow(DOMException.class).when(root).appendChild(any(Node.class));
+        assertThatThrownBy(() -> navigator.appendNext(new DomNode(xml), new DomNode(xml)))
+                .isInstanceOf(XmlBuilderException.class);
+    }
+
+    @Test
+    void testAppendPrevSuccess() {
+        navigator.appendPrev(new DomNode(xml), new DomNode(xml));
+        verify(root).insertBefore(xml, xml);
+    }
+
+    @Test
+    void testAppendPrevRoot() {
+        assertThatThrownBy(() -> navigator.appendPrev(new DomNode(root), new DomNode(xml)))
+                .isInstanceOf(XmlBuilderException.class);
+    }
+
+    @Test
+    void testAppendPrevNoParent() {
+        when(xml.getParentNode()).thenReturn(null);
+
+        assertThatThrownBy(() -> navigator.appendPrev(new DomNode(xml), new DomNode(xml)))
+                .isInstanceOf(XmlBuilderException.class);
+    }
+
+    @Test
+    void testAppendPrevFailure() {
+        doThrow(DOMException.class).when(root).insertBefore(any(Node.class), any(Node.class));
+        assertThatThrownBy(() -> navigator.appendPrev(new DomNode(xml), new DomNode(xml)))
+                .isInstanceOf(XmlBuilderException.class);
+    }
 
   @Test
   void testSetTextSuccess() {
