@@ -39,6 +39,7 @@ import com.github.simy4.xpath.expr.axis.ChildAxisResolver;
 import com.github.simy4.xpath.expr.axis.DescendantOrSelfAxisResolver;
 import com.github.simy4.xpath.expr.axis.FollowingSiblingAxisResolver;
 import com.github.simy4.xpath.expr.axis.ParentAxisResolver;
+import com.github.simy4.xpath.expr.axis.PrecedingSiblingAxisResolver;
 import com.github.simy4.xpath.expr.axis.SelfAxisResolver;
 import com.github.simy4.xpath.parser.Token.Type;
 
@@ -281,47 +282,53 @@ public class XPathParser implements Serializable {
     return new AxisStepExpr(axisResolver, predicateList);
   }
 
-  private AxisResolver AxisTest(Context context) throws XPathExpressionException {
-    final Token axisToken = context.tokenAt(1);
-    context.match(Type.IDENTIFIER);
-    context.match(Type.DOUBLE_COLON);
-    final AxisResolver axisResolver;
-    switch (Axis.lookup(axisToken)) {
-      case Axis.CHILD:
-        axisResolver = new ChildAxisResolver(NodeTest(context));
-        break;
-      case Axis.DESCENDANT:
-        axisResolver = new DescendantOrSelfAxisResolver(NodeTest(context), false);
-        break;
-      case Axis.PARENT:
-        axisResolver = new ParentAxisResolver(NodeTest(context));
-        break;
-      case Axis.ANCESTOR:
-        axisResolver = new AncestorOrSelfAxisResolver(NodeTest(context), false);
-        break;
-      case Axis.FOLLOWING_SIBLING:
-        axisResolver = new FollowingSiblingAxisResolver(NodeTest(context), true);
-        break;
-      case Axis.FOLLOWING:
-        axisResolver = new FollowingSiblingAxisResolver(NodeTest(context), false);
-        break;
-      case Axis.ATTRIBUTE:
-        axisResolver = new AttributeAxisResolver(NodeTest(context));
-        break;
-      case Axis.SELF:
-        axisResolver = new SelfAxisResolver(NodeTest(context));
-        break;
-      case Axis.DESCENDANT_OR_SELF:
-        axisResolver = new DescendantOrSelfAxisResolver(NodeTest(context), true);
-        break;
-      case Axis.ANCESTOR_OR_SELF:
-        axisResolver = new AncestorOrSelfAxisResolver(NodeTest(context), true);
-        break;
-      default:
-        throw new XPathParserException(axisToken, Type.lookup(Type.IDENTIFIER));
+    private AxisResolver AxisTest(Context context) throws XPathExpressionException {
+        final Token axisToken = context.tokenAt(1);
+        context.match(Type.IDENTIFIER);
+        context.match(Type.DOUBLE_COLON);
+        final AxisResolver axisResolver;
+        switch (Axis.lookup(axisToken)) {
+            case Axis.CHILD:
+                axisResolver = new ChildAxisResolver(NodeTest(context));
+                break;
+            case Axis.DESCENDANT:
+                axisResolver = new DescendantOrSelfAxisResolver(NodeTest(context), false);
+                break;
+            case Axis.PARENT:
+                axisResolver = new ParentAxisResolver(NodeTest(context));
+                break;
+            case Axis.ANCESTOR:
+                axisResolver = new AncestorOrSelfAxisResolver(NodeTest(context), false);
+                break;
+            case Axis.FOLLOWING_SIBLING:
+                axisResolver = new FollowingSiblingAxisResolver(NodeTest(context), true);
+                break;
+            case Axis.PRECEDING_SIBLING:
+                axisResolver = new PrecedingSiblingAxisResolver(NodeTest(context), true);
+                break;
+            case Axis.FOLLOWING:
+                axisResolver = new FollowingSiblingAxisResolver(NodeTest(context), false);
+                break;
+            case Axis.PRECEDING:
+                axisResolver = new PrecedingSiblingAxisResolver(NodeTest(context), false);
+                break;
+            case Axis.ATTRIBUTE:
+                axisResolver = new AttributeAxisResolver(NodeTest(context));
+                break;
+            case Axis.SELF:
+                axisResolver = new SelfAxisResolver(NodeTest(context));
+                break;
+            case Axis.DESCENDANT_OR_SELF:
+                axisResolver = new DescendantOrSelfAxisResolver(NodeTest(context), true);
+                break;
+            case Axis.ANCESTOR_OR_SELF:
+                axisResolver = new AncestorOrSelfAxisResolver(NodeTest(context), true);
+                break;
+            default:
+                throw new XPathParserException(axisToken, Type.lookup(Type.IDENTIFIER));
+        }
+        return axisResolver;
     }
-    return axisResolver;
-  }
 
   @SuppressWarnings("fallthrough")
   private QName NodeTest(Context context) throws XPathExpressionException {
@@ -416,35 +423,39 @@ public class XPathParser implements Serializable {
     }
   }
 
-  private static final class Axis {
-    private static final short INVALID = -1;
-    private static final short CHILD = 1;
-    private static final short DESCENDANT = 2;
-    private static final short PARENT = 3;
-    private static final short ANCESTOR = 4;
-    private static final short FOLLOWING_SIBLING = 5;
-    private static final short FOLLOWING = 7;
-    private static final short ATTRIBUTE = 9;
-    private static final short SELF = 11;
-    private static final short DESCENDANT_OR_SELF = 12;
-    private static final short ANCESTOR_OR_SELF = 13;
+    private static final class Axis {
+        private static final short INVALID = -1;
+        private static final short CHILD = 1;
+        private static final short DESCENDANT = 2;
+        private static final short PARENT = 3;
+        private static final short ANCESTOR = 4;
+        private static final short FOLLOWING_SIBLING = 5;
+        private static final short PRECEDING_SIBLING = 6;
+        private static final short FOLLOWING = 7;
+        private static final short PRECEDING = 8;
+        private static final short ATTRIBUTE = 9;
+        private static final short SELF = 11;
+        private static final short DESCENDANT_OR_SELF = 12;
+        private static final short ANCESTOR_OR_SELF = 13;
 
     private static final Map<String, Short> LOOKUP_MAP;
 
-    static {
-      Map<String, Short> lookupMap = new HashMap<>();
-      lookupMap.put("child", CHILD);
-      lookupMap.put("descendant", DESCENDANT);
-      lookupMap.put("parent", PARENT);
-      lookupMap.put("ancestor", ANCESTOR);
-      lookupMap.put("following-sibling", FOLLOWING_SIBLING);
-      lookupMap.put("following", FOLLOWING);
-      lookupMap.put("attribute", ATTRIBUTE);
-      lookupMap.put("self", SELF);
-      lookupMap.put("descendant-or-self", DESCENDANT_OR_SELF);
-      lookupMap.put("ancestor-or-self", ANCESTOR_OR_SELF);
-      LOOKUP_MAP = Collections.unmodifiableMap(lookupMap);
-    }
+        static {
+            Map<String, Short> lookupMap = new HashMap<String, Short>();
+            lookupMap.put("child", CHILD);
+            lookupMap.put("descendant", DESCENDANT);
+            lookupMap.put("parent", PARENT);
+            lookupMap.put("ancestor", ANCESTOR);
+            lookupMap.put("following-sibling", FOLLOWING_SIBLING);
+            lookupMap.put("preceding-sibling", PRECEDING_SIBLING);
+            lookupMap.put("following", FOLLOWING);
+            lookupMap.put("preceding", PRECEDING);
+            lookupMap.put("attribute", ATTRIBUTE);
+            lookupMap.put("self", SELF);
+            lookupMap.put("descendant-or-self", DESCENDANT_OR_SELF);
+            lookupMap.put("ancestor-or-self", ANCESTOR_OR_SELF);
+            LOOKUP_MAP = Collections.unmodifiableMap(lookupMap);
+        }
 
     private static short lookup(Token axisToken) {
       return LOOKUP_MAP.getOrDefault(axisToken.getToken(), INVALID);

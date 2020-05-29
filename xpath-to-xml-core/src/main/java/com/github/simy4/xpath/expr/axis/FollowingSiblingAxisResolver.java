@@ -57,20 +57,17 @@ public class FollowingSiblingAxisResolver extends AbstractAxisResolver {
         };
   }
 
-  @Override
-  public <N extends Node> NodeView<N> createAxisNode(
-      Navigator<N> navigator, NodeView<N> parent, int position) throws XmlBuilderException {
-    if (isWildcard()) {
-      throw new XmlBuilderException("Wildcard elements cannot be created");
+    @Override
+    public <N extends Node> NodeView<N> createAxisNode(Navigator<N> navigator, NodeView<N> node, int position)
+            throws XmlBuilderException {
+        if (isWildcard()) {
+            throw new XmlBuilderException("Wildcard elements cannot be created");
+        }
+        final N nodeNode = node.getNode();
+        final N newElement = navigator.createElement(navigator.parentOf(nodeNode), name);
+        navigator.appendNext(nodeNode, newElement);
+        return new NodeView<>(newElement, position);
     }
-    final N parentNode = parent.getNode();
-    final N parentParent = navigator.parentOf(parentNode);
-    if (null == parentParent) {
-      throw new XmlBuilderException("Can't append siblings to root");
-    }
-    final N element = navigator.createElement(parentParent, name);
-    return new NodeView<N>(element, position);
-  }
 
   @Override
   public String toString() {

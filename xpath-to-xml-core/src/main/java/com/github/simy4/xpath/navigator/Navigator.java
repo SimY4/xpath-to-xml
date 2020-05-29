@@ -59,25 +59,25 @@ public interface Navigator<N extends Node> {
    */
   Iterable<? extends N> attributesOf(N parent);
 
-  /**
-   * Creates XML attribute node and appends to given parent.
-   *
-   * @param parent parent XML node to modify
-   * @param attribute new XML attribute's name
-   * @return newly created attribute node
-   * @throws XmlBuilderException if failure occur during XML attribute creation
-   */
-  N createAttribute(N parent, QName attribute) throws XmlBuilderException;
+    /**
+     * Creates XML attribute node.
+     *
+     * @param parent    parent XML node
+     * @param attribute new XML attribute's name
+     * @return newly created attribute node
+     * @throws XmlBuilderException if failure occur during XML attribute creation
+     */
+    N createAttribute(N parent, QName attribute) throws XmlBuilderException;
 
-  /**
-   * Creates XML element node and appends to given parent.
-   *
-   * @param parent parent XML node to modify
-   * @param element new XML element's name
-   * @return newly created element node
-   * @throws XmlBuilderException if failure occur during XML element creation
-   */
-  N createElement(N parent, QName element) throws XmlBuilderException;
+    /**
+     * Creates XML element node.
+     *
+     * @param parent  parent XML node
+     * @param element new XML element's name
+     * @return newly created element node
+     * @throws XmlBuilderException if failure occur during XML element creation
+     */
+    N createElement(N parent, QName element) throws XmlBuilderException;
 
   /**
    * Sets the given text content to a given node.
@@ -88,13 +88,32 @@ public interface Navigator<N extends Node> {
    */
   void setText(N node, String text) throws XmlBuilderException;
 
-  /**
-   * Prepends a copy of given node to this node.
-   *
-   * @param node XML node to copy and prepend
-   * @throws XmlBuilderException if failure occur during node appending
-   */
-  void prependCopy(N node) throws XmlBuilderException;
+    /**
+     * Appends given node to parent node as child node.
+     *
+     * @param parent parent XML node to modify
+     * @param node XML node to append as a child
+     * @throws XmlBuilderException if failure occur during node appending
+     */
+    void appendChild(N parent, N node) throws XmlBuilderException;
+
+    /**
+     * Appends given node to this node as following node.
+     *
+     * @param node XML node to append
+     * @param append appending XML node
+     * @throws XmlBuilderException if failure occur during node appending
+     */
+    void appendNext(N node, N append) throws XmlBuilderException;
+
+    /**
+     * Prepends given node to this node as preceding node.
+     *
+     * @param node XML node to prepend
+     * @param prepend prepending XML node
+     * @throws XmlBuilderException if failure occur during node prepending
+     */
+    void appendPrev(N node, N prepend) throws XmlBuilderException;
 
   /**
    * Removes/detaches given node from XML model.
