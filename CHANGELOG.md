@@ -8,9 +8,19 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 
 ### Upcoming
 
+- Core
+  - preceding and preceding-sibling axises support.
 - scala XML
   - Scala 3 support
 
+### 2.1.9
+
+Bugfixes:
+
+- Core
+  - descendant and descendant-or-self axises now can resolve.
+  - fix an issue when following and following-sibling may have wrong position during resolve.
+  
 ### 2.1.7 - 2.1.8
 
 Improvements:
