@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * XML model modifier that works via XPath expressions processing.
@@ -132,7 +131,7 @@ public class XmlBuilder implements Serializable {
     public XmlBuilder putAll(Map<String, Object> xpathToValueMap) throws XPathExpressionException {
         final List<Effect> effects = new ArrayList<Effect>(this.effects.size() + xpathToValueMap.size());
         effects.addAll(this.effects);
-        for (Entry<String, Object> xpathToValuePair : xpathToValueMap.entrySet()) {
+        for (Map.Entry<String, Object> xpathToValuePair : xpathToValueMap.entrySet()) {
             final Expr expr = parser.parse(xpathToValuePair.getKey());
             effects.add(new PutValueEffect(expr, xpathToValuePair.getValue()));
         }

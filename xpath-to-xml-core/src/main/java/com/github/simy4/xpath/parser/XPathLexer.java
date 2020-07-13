@@ -3,6 +3,7 @@ package com.github.simy4.xpath.parser;
 import com.github.simy4.xpath.parser.Token.Type;
 import com.github.simy4.xpath.util.ReadOnlyIterator;
 
+@SuppressWarnings("BadImport")
 class XPathLexer extends ReadOnlyIterator<Token> {
 
     private final String xpath;

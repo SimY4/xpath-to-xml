@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -82,7 +81,7 @@ class XmlBuilderTest {
                 .putAll(xmlProperties)
                 .build(new Document());
 
-        for (Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
+        for (Map.Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
             Namespace[] namespaces = null == namespaceContext ? new Namespace[0]
                     : toNamespaces(namespaceContext);
             XPathExpression<Object> xpathExpression = XPathFactory.instance()
@@ -145,7 +144,7 @@ class XmlBuilderTest {
                 .removeAll(xmlProperties.keySet())
                 .build(oldDocument);
 
-        for (Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
+        for (Map.Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
             Namespace[] namespaces = null == namespaceContext ? new Namespace[0]
                     : toNamespaces(namespaceContext);
             XPathExpression<Object> xpathExpression = XPathFactory.instance()
