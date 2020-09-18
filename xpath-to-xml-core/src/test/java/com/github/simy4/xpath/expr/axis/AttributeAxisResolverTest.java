@@ -28,7 +28,7 @@ class AttributeAxisResolverTest extends AbstractAxisResolverTest {
 
     @BeforeEach
     void setUp() {
-        when(navigator.createAttribute(any(TestNode.class), eq(name))).thenReturn(node("name"));
+        when(navigator.createAttribute(any(TestNode.class), eq(name))).thenReturn(node(name.getLocalPart()));
 
         axisResolver = new AttributeAxisResolver(name);
     }
@@ -40,8 +40,8 @@ class AttributeAxisResolverTest extends AbstractAxisResolverTest {
         IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, true);
 
         // then
-        assertThat(result).extracting("node").containsExactly(node("name"));
-        verify(navigator).createAttribute(node("node"), new QName("name"));
+        assertThat((Object) result).extracting("node", "position").containsExactly(node("name"), 1);
+        verify(navigator).createAttribute(parentNode.getNode(), name);
     }
 
     @Test

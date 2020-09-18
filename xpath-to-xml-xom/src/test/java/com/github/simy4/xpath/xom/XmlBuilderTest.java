@@ -24,7 +24,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -79,7 +78,7 @@ class XmlBuilderTest {
                 .putAll(xmlProperties)
                 .build(newDocument);
 
-        for (Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
+        for (Map.Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
             Nodes nodes = null == namespaceContext
                     ? builtDocument.query(xpathToValuePair.getKey())
                     : builtDocument.query(xpathToValuePair.getKey(), toXpathContext(namespaceContext));
@@ -138,7 +137,7 @@ class XmlBuilderTest {
                 .removeAll(xmlProperties.keySet())
                 .build(oldDocument);
 
-        for (Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
+        for (Map.Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
             Nodes nodes = null == namespaceContext
                     ? builtDocument.query(xpathToValuePair.getKey())
                     : builtDocument.query(xpathToValuePair.getKey(), toXpathContext(namespaceContext));

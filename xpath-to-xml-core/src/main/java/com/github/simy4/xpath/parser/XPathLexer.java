@@ -4,6 +4,7 @@ import com.github.simy4.xpath.parser.Token.Type;
 
 import java.util.Iterator;
 
+@SuppressWarnings("BadImport")
 class XPathLexer implements Iterator<Token> {
 
     private final String xpath;

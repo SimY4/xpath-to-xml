@@ -25,10 +25,11 @@ abstract private[navigator] class AbstractScalaXmlNode protected (val parent: Sc
     extends ScalaXmlNode
     with Serializable {
   def canEqual(that: Any): Boolean = that.isInstanceOf[ScalaXmlNode]
-  override def equals(that: Any): Boolean = that match {
-    case n: ScalaXmlNode => n.canEqual(this) && node == n.node
-    case _               => false
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case n: ScalaXmlNode => n.canEqual(this) && node == n.node
+      case _               => false
+    }
   override def hashCode(): Int  = node.hashCode()
   override def toString: String = node.toString
 }
@@ -69,10 +70,11 @@ final class Element private[navigator] (
     _node = elem
   }
   override def canEqual(that: Any): Boolean = that.isInstanceOf[Element]
-  override def equals(that: Any): Boolean = that match {
-    case e: Element => e.canEqual(this) && index == e.index && super.equals(that)
-    case _          => false
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case e: Element => e.canEqual(this) && index == e.index && super.equals(that)
+      case _          => false
+    }
   override def hashCode(): Int = {
     var result = super.hashCode()
     result = 31 * result + index
@@ -81,9 +83,12 @@ final class Element private[navigator] (
 }
 
 @SerialVersionUID(1L)
-final class Attribute private[navigator] (private[this] var _attr: XmlAttribute, override val parent: ScalaXmlNode {
-  type N = Elem
-}) extends AbstractScalaXmlNode(parent) {
+final class Attribute private[navigator] (
+  private[this] var _attr: XmlAttribute,
+  override val parent: ScalaXmlNode {
+    type N = Elem
+  }
+) extends AbstractScalaXmlNode(parent) {
   type N = XmlAttribute
   def getName: QName = {
     val attr = _attr

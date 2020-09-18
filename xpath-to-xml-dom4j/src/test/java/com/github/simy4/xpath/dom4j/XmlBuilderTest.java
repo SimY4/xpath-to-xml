@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -73,7 +72,7 @@ class XmlBuilderTest {
                 .putAll(xmlProperties)
                 .build(DocumentHelper.createDocument());
 
-        for (Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
+        for (Map.Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
             XPath xpath = builtDocument.createXPath(xpathToValuePair.getKey());
             if (null != namespaceContext) {
                 xpath.setNamespaceContext(new SimpleNamespaceContextWrapper(namespaceContext));
@@ -132,7 +131,7 @@ class XmlBuilderTest {
                 .removeAll(xmlProperties.keySet())
                 .build(oldDocument);
 
-        for (Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
+        for (Map.Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
             XPath xpath = builtDocument.createXPath(xpathToValuePair.getKey());
             if (null != namespaceContext) {
                 xpath.setNamespaceContext(new SimpleNamespaceContextWrapper(namespaceContext));

@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
-import java.util.Collection;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonMap;
@@ -22,14 +21,19 @@ class XmlBuilderTest {
     @DisplayName("When no concrete SPI implementation should return false on can handle request")
     void shouldReturnFalseWithoutConcreteSpiImplementation() {
         // when
-        assertThat(XmlBuilder.canHandle(new Object())).isFalse();
+        assertThat(XmlBuilder.canHandle(new Object())).isTrue();
+        assertThat(XmlBuilder.canHandle(null)).isFalse();
     }
 
     @Test
     @DisplayName("When no concrete SPI implementation should throw XmlBuilderException")
     void shouldThrowOnBuildWithoutConcreteSpiImplementation() {
+        // given
+        Object o = new Object();
+
         // when
-        assertThatThrownBy(() -> xmlBuilder.build(new Object())).isInstanceOf(XmlBuilderException.class);
+        assertThat(xmlBuilder.build(o)).isSameAs(o);
+        assertThatThrownBy(() -> xmlBuilder.build(null)).isInstanceOf(XmlBuilderException.class);
     }
 
     @Test
@@ -50,8 +54,7 @@ class XmlBuilderTest {
         XmlBuilder deserializedBuild = SerializationHelper.serializeAndDeserializeBack(builder);
 
         // then
-        assertThat(deserializedBuild).extracting(new String[] { "effects" }).flatExtracting(o -> ((Collection<?>) o))
-                .hasSize(16);
+        assertThat(deserializedBuild).usingRecursiveComparison().isEqualTo(builder);
     }
 
 }

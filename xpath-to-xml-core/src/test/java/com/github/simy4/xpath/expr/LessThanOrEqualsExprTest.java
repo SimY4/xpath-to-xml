@@ -141,7 +141,7 @@ class LessThanOrEqualsExprTest extends AbstractOperationExprTest {
     @DisplayName("Should throw on resolve")
     @MethodSource("lessThan")
     void shouldThrowWhenShouldCreate(View<Node> less, View<Node> greater) {
-        assumeThat(greater).isNotInstanceOf(IterableNodeView.class);
+        assumeThat(greater).overridingErrorMessage("no iterables").isNotInstanceOf(IterableNodeView.class);
         // given
         when(leftExpr.resolve(any(), any(), anyBoolean())).thenReturn(greater);
         when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(less);

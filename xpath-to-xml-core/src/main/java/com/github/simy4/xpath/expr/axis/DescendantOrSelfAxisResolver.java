@@ -37,11 +37,10 @@ public class DescendantOrSelfAxisResolver extends AbstractAxisResolver {
     @Override
     public <N extends Node> NodeView<N> createAxisNode(Navigator<N> navigator, NodeView<N> view, int position)
             throws XmlBuilderException {
-        if (self) {
-            throw new XmlBuilderException("Descendant-of-self axis cannot modify XML model");
-        } else {
-            throw new XmlBuilderException("Descendant axis cannot modify XML model");
+        if (isWildcard()) {
+            throw new XmlBuilderException("Wildcard elements cannot be created");
         }
+        return new NodeView<N>(navigator.createElement(view.getNode(), name), position);
     }
 
     @Override

@@ -18,13 +18,19 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.StreamSupport.stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
 class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
 
     @BeforeEach
     void setUp() {
+        when(navigator.createElement(any(TestNode.class), eq(name))).thenReturn(node(name.getLocalPart()));
+
         axisResolver = new DescendantOrSelfAxisResolver(name, true);
     }
 
@@ -87,9 +93,37 @@ class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     }
 
     @Test
-    @DisplayName("Should throw on create node")
+    @DisplayName("Should create element")
+    void shouldCreateElement() {
+        // when
+        IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, true);
+
+        // then
+        assertThat((Object) result).extracting("node", "position").containsExactly(node("name"), 1);
+        verify(navigator).createElement(parentNode.getNode(), name);
+    }
+
+    @Test
+    @DisplayName("When wildcard namespace should throw")
     @SuppressWarnings("ReturnValueIgnored")
-    void shouldThrowOnCreateNode() {
+    void shouldThrowForElementsWithWildcardNamespace() {
+        // given
+        axisResolver = new DescendantOrSelfAxisResolver(new QName("*", "elem"), false);
+
+        // when
+        assertThatThrownBy(() ->
+                stream(axisResolver.resolveAxis(navigator, parentNode, true).spliterator(), false)
+                        .collect(Collectors.toList()))
+                .isInstanceOf(XmlBuilderException.class);
+    }
+
+    @Test
+    @DisplayName("When wildcard local part should throw")
+    @SuppressWarnings("ReturnValueIgnored")
+    void shouldThrowForElementsWithWildcardLocalPart() {
+        // given
+        axisResolver = new DescendantOrSelfAxisResolver(new QName("http://www.example.com/my", "*", "my"), false);
+
         // when
         assertThatThrownBy(() ->
                 stream(axisResolver.resolveAxis(navigator, parentNode, true).spliterator(), false)
