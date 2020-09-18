@@ -67,6 +67,7 @@ subprojects {
 
         if (JavaVersion.current().isJava9Compatible()) {
             options.addBooleanOption('html5', true)
+            options.addStringOption('Xdoclint:all,-missing', '-quiet')
             options.addStringOption('-release', '8') // workaround javadoc issues in Java 9+
         }
     }
