@@ -13,6 +13,7 @@ import java.util.Set;
  *
  * @author Alex Simkin
  */
+@SuppressWarnings("JdkObsolete")
 public class OrderedProperties extends Properties {
 
     private static final long serialVersionUID = 1L;

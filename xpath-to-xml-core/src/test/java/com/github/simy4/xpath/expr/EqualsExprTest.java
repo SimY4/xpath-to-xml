@@ -127,7 +127,7 @@ class EqualsExprTest extends AbstractOperationExprTest {
     @DisplayName("Should throw on resolve")
     @MethodSource("notEqualPairs")
     void shouldThrowWhenShouldCreate(View<Node> left, View<Node> right) {
-        assumeThat(left).isNotInstanceOf(IterableNodeView.class);
+        assumeThat(left).overridingErrorMessage("no iterables").isNotInstanceOf(IterableNodeView.class);
         // given
         when(leftExpr.resolve(any(), any(), anyBoolean())).thenReturn(left);
         when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(right);

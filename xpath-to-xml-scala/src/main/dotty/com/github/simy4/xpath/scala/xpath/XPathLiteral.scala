@@ -4,7 +4,7 @@ import com.github.simy4.xpath.expr.{ Expr => JExpr }
 import com.github.simy4.xpath.parser.XPathParser
 import javax.xml.xpath.XPathExpressionException
 
-import scala.quoted._
+import scala.quoted.{ Expr, QuoteContext, report }
 
 final class XPathLiteral(private val sc: StringContext) extends AnyVal {
   inline def xpath(args: Any*): JExpr = ${XPathLiteral.xpathImpl('this)}
@@ -21,11 +21,11 @@ object XPathLiteral {
           '{new XPathParser(null).parse(${lit.seal.cast[String]})}
         } catch {
           case xpee: XPathExpressionException =>
-            qctx.error(s"Illegal XPath expression: ${xpee.getMessage}")
+            report.error(s"Illegal XPath expression: ${xpee.getMessage}")
             '{null}
         }
       case _ =>
-        qctx.error("xpath can only be used on string literals")
+        report.error("xpath can only be used on string literals")
         '{null}
     }
   }

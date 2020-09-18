@@ -12,11 +12,6 @@ import java.util.Scanner;
  */
 public final class FixtureAccessor {
 
-    private static final String XML_PROPERTIES_PATH_FORMAT =
-            "/com/github/simy4/xpath/fixtures/%1$s/%1$s.properties";
-    private static final String XML_PUT_PATH_FORMAT = "/com/github/simy4/xpath/fixtures/%1$s/%1$s-put.%2$s";
-    private static final String XML_PUT_VALUE_PATH_FORMAT = "/com/github/simy4/xpath/fixtures/%1$s/%1$s-put-value.%2$s";
-
     private final String fixtureName;
     private final String fixtureType;
 
@@ -35,7 +30,7 @@ public final class FixtureAccessor {
      * @return ordered XPath to Value mappings
      */
     public Map<String, Object> getXmlProperties() {
-        final var resource = String.format(XML_PROPERTIES_PATH_FORMAT, fixtureName);
+        final var resource = String.format("/com/github/simy4/xpath/fixtures/%1$s/%1$s.properties", fixtureName);
         try (var xpathPropertiesStream = getClass().getResourceAsStream(resource)) {
             var xpathProperties = new OrderedProperties();
             xpathProperties.load(xpathPropertiesStream);
@@ -46,11 +41,11 @@ public final class FixtureAccessor {
     }
 
     public String getPutXml() {
-        return getXml(XML_PUT_PATH_FORMAT);
+        return getXml("/com/github/simy4/xpath/fixtures/%1$s/%1$s-put.%2$s");
     }
 
     public String getPutValueXml() {
-        return getXml(XML_PUT_VALUE_PATH_FORMAT);
+        return getXml("/com/github/simy4/xpath/fixtures/%1$s/%1$s-put-value.%2$s");
     }
 
     private String getXml(String format) {

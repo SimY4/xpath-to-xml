@@ -17,7 +17,6 @@ import org.xml.sax.InputSource
 import collection.{ mutable, Map }
 import xml.{ Elem, NamespaceBinding, Node, Null, PrettyPrinter, TopScope, XML }
 
-//noinspection ConvertExpressionToSAM
 class DataProvider extends ArgumentsProvider {
 
   private val namespaceContext = new SimpleNamespaceContext
@@ -25,24 +24,26 @@ class DataProvider extends ArgumentsProvider {
 
   override def provideArguments(context: ExtensionContext): Stream[_ <: Arguments] =
     java.util.Arrays.stream(
-      Array(
-        arguments(new FixtureAccessor("simple"), null, <breakfast_menu/>),
-        arguments(new FixtureAccessor("simple"), namespaceContext, <breakfast_menu/>),
-        arguments(
+      Array[Arguments](
+        (new FixtureAccessor("simple"), null, <breakfast_menu/>),
+        (new FixtureAccessor("simple"), namespaceContext, <breakfast_menu/>),
+        (
           new FixtureAccessor("ns-simple"),
           namespaceContext,
           Elem("my", "breakfast_menu", Null, namespaceBinding, minimizeEmpty = true)
         ),
-        arguments(new FixtureAccessor("attr"), null, <breakfast_menu/>),
-        arguments(new FixtureAccessor("attr"), namespaceContext, <breakfast_menu/>),
-        arguments(new FixtureAccessor("special"), null, <records/>),
-        arguments(new FixtureAccessor("special"), namespaceContext, <records/>)
+        (new FixtureAccessor("attr"), null, <breakfast_menu/>),
+        (new FixtureAccessor("attr"), namespaceContext, <breakfast_menu/>),
+        (new FixtureAccessor("special"), null, <records/>),
+        (new FixtureAccessor("special"), namespaceContext, <records/>)
       )
     )
 
-  private def arguments(args: AnyRef*): Arguments = new Arguments {
-    override def get(): Array[AnyRef] = args.toArray
-  }
+  implicit private def arguments(p: Product): Arguments =
+    new Arguments {
+      @SuppressWarnings(Array("org.wartremover.warts.Any", "org.wartremover.warts.AsInstanceOf"))
+      override def get(): Array[AnyRef] = p.productIterator.toArray.asInstanceOf[Array[AnyRef]]
+    }
 }
 
 class XmlBuilderTest {
@@ -73,9 +74,13 @@ class XmlBuilderTest {
       assertThat(xpath.evaluate(documentSource, XPathConstants.NODE)).isNotNull
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(builtDocumentString).is(new Condition({ (xml: String) =>
-      fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutXml
-    }, "\"%s\" matches exactly", fixtureAccessor.getPutXml))
+    assertThat(builtDocumentString).is(
+      new Condition(
+        (xml: String) => fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutXml,
+        "\"%s\" matches exactly",
+        fixtureAccessor.getPutXml
+      )
+    )
   }
 
   @ParameterizedTest
@@ -97,17 +102,20 @@ class XmlBuilderTest {
       .unsafeGet
     val builtDocumentString = xmlToString(builtDocument)
 
-    xmlProperties.foreach {
-      case (xpath, value) =>
-        val documentSource: InputSource = builtDocumentString
-        assertThat(xpath.evaluate(documentSource, XPathConstants.STRING))
-          .as("Should evaluate XPath %s to %s", xpath, value)
-          .isEqualTo(value)
+    xmlProperties.foreach { case (xpath, value) =>
+      val documentSource: InputSource = builtDocumentString
+      assertThat(xpath.evaluate(documentSource, XPathConstants.STRING))
+        .as("Should evaluate XPath %s to %s", xpath, value)
+        .isEqualTo(value)
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(xmlToString(builtDocument)).is(new Condition({ (xml: String) =>
-      fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
-    }, "\"%s\" matches exactly", fixtureAccessor.getPutValueXml))
+    assertThat(xmlToString(builtDocument)).is(
+      new Condition(
+        (xml: String) => fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml,
+        "\"%s\" matches exactly",
+        fixtureAccessor.getPutValueXml
+      )
+    )
   }
 
   @ParameterizedTest
@@ -131,17 +139,20 @@ class XmlBuilderTest {
       .unsafeGet
     val builtDocumentString = xmlToString(builtDocument)
 
-    xmlProperties.foreach {
-      case (xpath, value) =>
-        val documentSource: InputSource = builtDocumentString
-        assertThat(xpath.evaluate(documentSource, XPathConstants.STRING))
-          .as("Should evaluate XPath %s to %s", xpath, value)
-          .isEqualTo(value)
+    xmlProperties.foreach { case (xpath, value) =>
+      val documentSource: InputSource = builtDocumentString
+      assertThat(xpath.evaluate(documentSource, XPathConstants.STRING))
+        .as("Should evaluate XPath %s to %s", xpath, value)
+        .isEqualTo(value)
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(builtDocumentString).is(new Condition({ (xml: String) =>
-      fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
-    }, "\"%s\" matches exactly", fixtureAccessor.getPutValueXml))
+    assertThat(builtDocumentString).is(
+      new Condition(
+        (xml: String) => fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml,
+        "\"%s\" matches exactly",
+        fixtureAccessor.getPutValueXml
+      )
+    )
   }
 
   @ParameterizedTest
@@ -165,17 +176,20 @@ class XmlBuilderTest {
       .unsafeGet
     var builtDocumentString = xmlToString(builtDocument)
 
-    xmlProperties.foreach {
-      case (xpath, value) =>
-        val documentSource: InputSource = builtDocumentString
-        assertThat(xpath.evaluate(documentSource, XPathConstants.STRING))
-          .as("Should evaluate XPath %s to %s", xpath, value)
-          .isEqualTo(value)
+    xmlProperties.foreach { case (xpath, value) =>
+      val documentSource: InputSource = builtDocumentString
+      assertThat(xpath.evaluate(documentSource, XPathConstants.STRING))
+        .as("Should evaluate XPath %s to %s", xpath, value)
+        .isEqualTo(value)
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(builtDocumentString).is(new Condition({ (xml: String) =>
-      fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
-    }, "\"%s\" matches exactly", fixtureAccessor.getPutValueXml))
+    assertThat(builtDocumentString).is(
+      new Condition(
+        (xml: String) => fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml,
+        "\"%s\" matches exactly",
+        fixtureAccessor.getPutValueXml
+      )
+    )
 
     builtDocument = xmlProperties.keys
       .foldRight(Right(Nil): Either[Throwable, List[Effect]]) { (xpath, acc) =>
@@ -187,17 +201,20 @@ class XmlBuilderTest {
       .unsafeGet
     builtDocumentString = xmlToString(builtDocument)
 
-    xmlProperties.foreach {
-      case (xpath, value) =>
-        val documentSource: InputSource = builtDocumentString
-        assertThat(xpath.evaluate(documentSource, XPathConstants.STRING))
-          .as("Should evaluate XPath %s to %s", xpath, value)
-          .isEqualTo(value)
+    xmlProperties.foreach { case (xpath, value) =>
+      val documentSource: InputSource = builtDocumentString
+      assertThat(xpath.evaluate(documentSource, XPathConstants.STRING))
+        .as("Should evaluate XPath %s to %s", xpath, value)
+        .isEqualTo(value)
     }
     // although these cases are working fine the order of attribute is messed up
-    assertThat(builtDocumentString).is(new Condition({ (xml: String) =>
-      fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml
-    }, "\"%s\" matches exactly", fixtureAccessor.getPutValueXml))
+    assertThat(builtDocumentString).is(
+      new Condition(
+        (xml: String) => fixtureAccessor.toString.startsWith("attr") || xml == fixtureAccessor.getPutValueXml,
+        "\"%s\" matches exactly",
+        fixtureAccessor.getPutValueXml
+      )
+    )
   }
 
   @ParameterizedTest
@@ -236,6 +253,14 @@ class XmlBuilderTest {
     val string        = printer.format(xml).replaceAll(s">\n\\s*(\\w.+?)\n\\s*</", ">$1</") + "\n"
     string.replaceAll("\n", lineSeparator)
   }
+
+  implicit private def toXPathExpression(xpathString: String)(implicit nc: NamespaceContext): XPathExpression = {
+    val xpath = XPathFactory.newInstance().newXPath()
+    Option(nc).foreach(xpath.setNamespaceContext)
+    xpath.compile(xpathString)
+  }
+
+  implicit private def toInputSource(xmlString: String): InputSource = new InputSource(new StringReader(xmlString))
 }
 
 //noinspection ConvertExpressionToSAM
@@ -243,38 +268,25 @@ object XmlBuilderTest {
   implicit private[scala] class JUMapOps[K, V](private val map: java.util.Map[K, V]) extends AnyVal {
     def asScala: Map[K, V] = {
       val linkedHashMap = new mutable.LinkedHashMap[K, V]
-      map.entrySet.forEach { (entry: java.util.Map.Entry[K, V]) =>
+      val iterator      = map.entrySet().iterator()
+      while (iterator.hasNext) {
+        val entry = iterator.next()
         linkedHashMap += entry.getKey -> entry.getValue
-        ()
       }
       linkedHashMap
     }
   }
 
   implicit private[scala] class EitherOps[+L, +R](private val either: Either[L, R]) extends AnyVal {
-    def fmap[RR](f: R => RR): Either[L, RR] = >>= { r =>
-      Right(f(r))
-    }
+    def fmap[RR](f: R => RR): Either[L, RR] =
+      >>= { r =>
+        Right(f(r))
+      }
     def >>=[LL >: L, RR](f: R => Either[LL, RR]): Either[LL, RR] = either.fold(Left(_), f)
     def unsafeGet(implicit ev: L <:< Throwable): R               = either.fold(ex => throw ev(ex), identity)
   }
-
-  implicit private[scala] def toXPathExpression(
-    xpathString: String
-  )(implicit nc: NamespaceContext = null): XPathExpression = {
-    val xpath = XPathFactory.newInstance().newXPath()
-    Option(nc).foreach(xpath.setNamespaceContext)
-    xpath.compile(xpathString)
-  }
-
-  implicit private[scala] def toInputSource(xmlString: String): InputSource =
-    new InputSource(new StringReader(xmlString))
   implicit private[scala] def asJavaPredicate[A](p: A => Boolean): java.util.function.Predicate[A] =
     new java.util.function.Predicate[A] {
       override def test(a: A): Boolean = p(a)
-    }
-  implicit private[scala] def asJavaConsumer[A](c: A => Unit): java.util.function.Consumer[A] =
-    new java.util.function.Consumer[A] {
-      override def accept(a: A): Unit = c(a)
     }
 }

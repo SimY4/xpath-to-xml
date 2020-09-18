@@ -44,7 +44,7 @@ import static java.util.Map.entry;
  * @author Alex Simkin
  * @since 1.0
  */
-@SuppressWarnings({"MethodName", "SwitchStatementWithTooFewBranches"})
+@SuppressWarnings({"MethodName", "SwitchStatementWithTooFewBranches", "BadImport"})
 public class XPathParser implements Serializable {
 
     private static final long serialVersionUID = 1L;

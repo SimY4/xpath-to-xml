@@ -39,7 +39,8 @@ class SerializationTest {
         var deserializedView = SerializationHelper.serializeAndDeserializeBack(view);
 
         // then
-        assertThat(deserializedView).isEqualToIgnoringGivenFields(view, "nodeSet", "filter", "nodeSetView", "fmap");
+        assertThat(deserializedView).usingRecursiveComparison()
+                .ignoringFields("nodeSet", "filter", "nodeSetView", "fmap").isEqualTo(view);
     }
 
 }
