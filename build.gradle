@@ -92,7 +92,7 @@ dependencies {
         api 'org.dom4j:dom4j:2.1.3'
         api 'com.google.code.gson:gson:2.8.6'
         api 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
-        api 'jakarta.json:jakarta.json-api:1.1.6'
+        api 'jakarta.json:jakarta.json-api:2.0.0'
         api 'org.glassfish:jakarta.json:1.1.6'
         api 'jaxen:jaxen:1.2.0'
         api 'org.jdom:jdom2:2.0.6'
