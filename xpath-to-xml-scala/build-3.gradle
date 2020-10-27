@@ -1,14 +1,14 @@
 ext.moduleName = 'com.github.simych.xpath.scala'
 
-buildDir = 'build-dotty'
+buildDir = 'build-3'
 
 ext {
-    classesDir = file("/${buildDir}/classes/dotty/main")
-    testClassesDir = file("/${buildDir}/classes/dotty/test")
+    classesDir = file("/${buildDir}/classes/scala/main")
+    testClassesDir = file("/${buildDir}/classes/scala/test")
 }
 
 clean {
-    delete 'build-dotty'
+    delete 'build-3'
 }
 
 configurations {
@@ -16,8 +16,8 @@ configurations {
 }
 
 sourceSets {
-    main.java.srcDirs = [file('src/main/scala'), file('src/main/scala-2.13+'), file('src/main/dotty')]
-    test.java.srcDirs = [file('src/test/scala'), file('src/test/scala-2.13+'), file('src/test/dotty')]
+    main.java.srcDirs = [file('src/main/scala'), file('src/main/scala-2.13+'), file('src/main/scala-3+')]
+    test.java.srcDirs = [file('src/test/scala'), file('src/test/scala-2.13+'), file('src/test/scala-3+')]
 }
 
 dependencies {
@@ -55,6 +55,9 @@ def dottyCompilerOptions = [
 
 task compileDotty(type: JavaExec) {
     dependsOn compileJava
+    doFirst {
+        if (!classesDir.exists()) classesDir.mkdirs()
+    }
     description 'Compile Scala source files'
     classpath configurations.dotc, configurations.compileClasspath
     main 'dotty.tools.dotc.Main'
@@ -62,21 +65,16 @@ task compileDotty(type: JavaExec) {
     args dottyCompilerOptions + ['-d', classesDir] + sourceSets.main.allSource.filter { it.name.endsWith('.scala') }.files
 }
 
-compileDotty.doFirst {
-    if (!classesDir.exists()) classesDir.mkdirs()
-}
-
 task compileTestDotty(type: JavaExec) {
     dependsOn compileDotty, compileTestJava
+    doFirst {
+        if (!testClassesDir.exists()) testClassesDir.mkdirs()
+    }
     description 'Compile Scala test source files'
     classpath configurations.dotc, configurations.testCompileClasspath, classesDir
     main 'dotty.tools.dotc.Main'
     jvmArgs '-Dscala.usejavacp=true'
     args dottyCompilerOptions + ['-d', testClassesDir] + sourceSets.test.allSource.filter { it.name.endsWith('.scala') }.files
-}
-
-compileTestDotty.doFirst {
-    if (!testClassesDir.exists()) testClassesDir.mkdirs()
 }
 
 build {

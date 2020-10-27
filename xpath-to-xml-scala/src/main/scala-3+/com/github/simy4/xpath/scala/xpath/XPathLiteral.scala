@@ -21,12 +21,9 @@ object XPathLiteral {
           '{new XPathParser(null).parse(${lit.seal.cast[String]})}
         } catch {
           case xpee: XPathExpressionException =>
-            report.error(s"Illegal XPath expression: ${xpee.getMessage}")
-            '{null}
+            report.throwError(s"Illegal XPath expression: ${xpee.getMessage}", sc)
         }
-      case _ =>
-        report.error("xpath can only be used on string literals")
-        '{null}
+      case _ => report.throwError("xpath can only be used on string literals", sc)
     }
   }
 }
