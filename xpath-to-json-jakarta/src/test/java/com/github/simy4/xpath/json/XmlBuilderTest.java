@@ -108,7 +108,7 @@ class XmlBuilderTest {
         Json.createWriterFactory(Collections.singletonMap(JsonGenerator.PRETTY_PRINTING, true))
                 .createWriter(sw)
                 .write(json);
-        return sw.toString().substring(1)
+        return sw.toString()
                 .replaceAll(" {4}", "  ")
                 .replaceAll("\\{\n\\p{Space}*}", "{}")
                 .replaceAll("\n", lineSeparator);
