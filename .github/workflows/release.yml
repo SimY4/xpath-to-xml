@@ -1,0 +1,35 @@
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 8
+      - name: Caching
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Release with Gradle
+        run: |
+          echo "${{ secrets.secRing }}" > /tmp/secring.gpg
+          echo "signing.keyId = ${{ secrets.keyId }}, signing.password = ${{ secrets.keyPassword }}, signing.secretKeyRingFile = /tmp/secring.gpg, sonatypeUsername = ${{ secrets.sonatypeUsername }}, sonatypePassword = ${{ secrets.sonatypePassword }}" > ~/gradle.properties
+          if [ -z "${{ github.event.inputs.version }}" ]; then
+            ./gradlew release -Prelease.useAutomaticVersion=true
+          else
+            ./gradlew release -Prelease.releaseVersion=${{ github.event.inputs.version }}
+          fi
