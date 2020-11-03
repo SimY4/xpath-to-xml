@@ -10,9 +10,19 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 
 - Core
   - preceding and preceding-sibling axises support.
-- scala XML
-  - Scala 3 support
 
+### 2.2.0: Jakarta and Dotty
+
+Features:
+
+- Support for dotty
+- Support for javax.json model superseded by jakarta.json
+
+Improvements:
+
+- Jackson
+  - Bump Jackson version to 2.11.3
+  
 ### 2.1.9
 
 Bugfixes:

@@ -16,10 +16,12 @@ jobs:
       with:
         java-version: ${{ matrix.java }}
     - name: Caching
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
-        path: ~/.gradle/caches
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
     - name: Build with Gradle

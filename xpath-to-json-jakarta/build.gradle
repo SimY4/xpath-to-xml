@@ -1,0 +1,14 @@
+ext.moduleName = 'com.github.simych.xpath.jakarta'
+
+apply from: rootProject.file('gradle/benchmark-jmh.gradle')
+
+dependencies {
+    api project(':xpath-to-xml-core')
+
+    compileOnly 'jakarta.json:jakarta.json-api'
+
+    testImplementation project(':xpath-to-xml-test')
+    testImplementation 'org.glassfish:jakarta.json'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.assertj:assertj-core'
+}
