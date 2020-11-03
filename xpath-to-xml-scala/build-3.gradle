@@ -1,0 +1,88 @@
+ext.moduleName = 'com.github.simych.xpath.scala'
+
+buildDir = 'build-3'
+
+ext {
+    classesDir = file("/${buildDir}/classes/scala/main")
+    testClassesDir = file("/${buildDir}/classes/scala/test")
+}
+
+clean {
+    delete 'build-3'
+}
+
+configurations {
+    dotc
+}
+
+sourceSets {
+    main.java.srcDirs = [file('src/main/scala'), file('src/main/scala-2.13+'), file('src/main/scala-3+')]
+    test.java.srcDirs = [file('src/test/scala'), file('src/test/scala-2.13+'), file('src/test/scala-3+')]
+}
+
+dependencies {
+    api project(':xpath-to-xml-core')
+
+    implementation libraries.dottyLibrary
+    implementation libraries.scalaXml('2.13')
+
+    dotc libraries.dottyCompiler
+
+    testImplementation project(':xpath-to-xml-test')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.assertj:assertj-core'
+}
+
+jar {
+    from classesDir
+}
+
+def dottyCompilerOptions = [
+        '-project',         project.name,
+        '-project-url',     projectUrl,
+        '-project-version', project.version,
+        '-encoding',        'UTF-8',
+        '-deprecation',
+        '-migration',                           // Emit warning and location for migration issues from Scala 2.
+        '-explain',                             // Explain errors in more detail.
+        '-explain-types',                       // Explain type errors in more detail.
+        '-feature',                             // Emit warning and location for usages of features that should be imported explicitly.
+        '-language:macros,implicitConversions',
+        '-unchecked',                           // Enable additional warnings where generated code depends on assumptions.
+        '-indent',                              // Allow significant indentation.
+        '-Xfatal-warnings',                     // Fail the compilation if there are any warnings.
+]
+
+task compileDotty(type: JavaExec) {
+    dependsOn compileJava
+    doFirst {
+        if (!classesDir.exists()) classesDir.mkdirs()
+    }
+    description 'Compile Scala source files'
+    classpath configurations.dotc, configurations.compileClasspath
+    main 'dotty.tools.dotc.Main'
+    jvmArgs '-Dscala.usejavacp=true'
+    args dottyCompilerOptions + ['-d', classesDir] + sourceSets.main.allSource.filter { it.name.endsWith('.scala') }.files
+}
+
+task compileTestDotty(type: JavaExec) {
+    dependsOn compileDotty, compileTestJava
+    doFirst {
+        if (!testClassesDir.exists()) testClassesDir.mkdirs()
+    }
+    description 'Compile Scala test source files'
+    classpath configurations.dotc, configurations.testCompileClasspath, classesDir
+    main 'dotty.tools.dotc.Main'
+    jvmArgs '-Dscala.usejavacp=true'
+    args dottyCompilerOptions + ['-d', testClassesDir] + sourceSets.test.allSource.filter { it.name.endsWith('.scala') }.files
+}
+
+build {
+    dependsOn compileDotty
+}
+
+test {
+    dependsOn compileTestDotty
+    classpath += configurations.testRuntimeClasspath + files(classesDir, testClassesDir)
+    testClassesDirs += files(testClassesDir)
+}

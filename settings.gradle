@@ -1,7 +1,7 @@
 rootProject.name = 'xpath-to-xml'
 include 'xpath-to-json-gson'
 include 'xpath-to-json-jackson'
-include 'xpath-to-json-javax'
+include 'xpath-to-json-jakarta'
 include 'xpath-to-xml-core'
 include 'xpath-to-xml-dom'
 include 'xpath-to-xml-dom4j'
@@ -21,10 +21,10 @@ project(':xpath-to-xml-scala_2.13').with {
     projectDir = file('xpath-to-xml-scala')
     buildFileName = 'build-2.13.gradle'
 }
-include 'xpath-to-xml-scala_dotty'
-project(':xpath-to-xml-scala_dotty').with {
+include 'xpath-to-xml-scala_0.27'
+project(':xpath-to-xml-scala_0.27').with {
     projectDir = file('xpath-to-xml-scala')
-    buildFileName = 'build-dotty.gradle'
+    buildFileName = 'build-3.gradle'
 }
 include 'xpath-to-xml-test'
 include 'xpath-to-xml-xom'

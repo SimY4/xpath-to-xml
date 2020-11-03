@@ -19,7 +19,7 @@ Convenient utility to build XML models by evaluating XPath expressions.
  
 ## Additionally supported models
 
- - javax.json
+ - jakarta.json
  - Gson
  - Jackson
 
@@ -31,7 +31,7 @@ Include an artifact with necessary model extension into your project:
 <dependency>
     <groupId>com.github.simy4.xpath</groupId>
     <artifactId>xpath-to-xml-dom</artifactId>
-    <version>2.1.0</version>
+    <version>2.2.0</version>
 </dependency>
 ```
 
@@ -56,6 +56,8 @@ import javax.xml.parsers.*;
 import org.xml.sax.InputSource;
 
 class Example0 { 
+    private static final String xmlSource = "my-xml-source";
+
     public static Document document(String xml) throws Exception {
         var documentBuilderFactory = DocumentBuilderFactory.newInstance();
         var documentBuilder = documentBuilderFactory.newDocumentBuilder();
