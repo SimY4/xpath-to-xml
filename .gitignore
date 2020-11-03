@@ -7,7 +7,7 @@ build/
 build-2.11/
 build-2.12/
 build-2.13/
-build-dotty/
+build-3/
 .project
 .classpath
 *.iml
