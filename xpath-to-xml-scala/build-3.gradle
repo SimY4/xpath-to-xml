@@ -43,7 +43,6 @@ def dottyCompilerOptions = [
         '-project-version', project.version,
         '-encoding',        'UTF-8',
         '-deprecation',
-        '-migration',                           // Emit warning and location for migration issues from Scala 2.
         '-explain',                             // Explain errors in more detail.
         '-explain-types',                       // Explain type errors in more detail.
         '-feature',                             // Emit warning and location for usages of features that should be imported explicitly.

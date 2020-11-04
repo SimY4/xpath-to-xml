@@ -12,12 +12,12 @@ final class XPathLiteral(private val sc: StringContext) extends AnyVal {
 
 object XPathLiteral {
   def xpathImpl(sc: Expr[XPathLiteral])(using qctx: QuoteContext): Expr[JExpr] = {
-    import qctx.tasty._
+    import qctx.reflect._
 
     sc.unseal.underlyingArgument match {
-      case Apply(_, List(Apply(_, List(Typed(Repeated(List(lit @ Literal(Constant(str: String))), _), _))))) =>
+      case Apply(_, List(Apply(_, List(Typed(Repeated(List(lit @ Literal(const)), _), _))))) =>
         try {
-          val _ = new XPathParser(null).parse(str)
+          val _ = new XPathParser(null).parse(const.value.asInstanceOf[String])
           '{new XPathParser(null).parse(${lit.seal.cast[String]})}
         } catch {
           case xpee: XPathExpressionException =>
