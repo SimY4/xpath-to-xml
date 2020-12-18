@@ -18,8 +18,8 @@ sourceSets {
 dependencies {
     api project(':xpath-to-xml-core')
 
-    implementation libraries.scalaLibrary('2.13.3')
-    implementation libraries.scalaReflect('2.13.3')
+    implementation libraries.scalaLibrary('2.13.4')
+    implementation libraries.scalaReflect('2.13.4')
     implementation libraries.scalaXml('2.13')
 
     testImplementation project(':xpath-to-xml-test')
@@ -63,6 +63,7 @@ tasks.withType(ScalaCompile) {
                 '-Xlint',                            // Turn on linting.
                 '-Ywarn-dead-code',                  // Warn when dead code is identified.
                 '-Ywarn-numeric-widen',              // Warn when numerics are widened.
+                '-Xsource:3',                        // Turn on future language features.
         ]
         if (!JavaVersion.current().isJava12Compatible()) {
             additionalParameters += [
