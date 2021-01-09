@@ -4,12 +4,13 @@ import com.github.simy4.xpath.expr.{ Expr => JExpr }
 import com.github.simy4.xpath.parser.XPathParser
 import javax.xml.xpath.XPathExpressionException
 
-import scala.quoted.{ Consts, Expr, Quotes, report }
+import scala.quoted.{ Exprs, Expr, Quotes, Varargs, quotes }
 
 object XPathLiteral {
   def xpathImpl(sc: Expr[StringContext])(using Quotes): Expr[JExpr] = {
+    import quotes.reflect.report
     sc match {
-      case Expr.StringContext(Consts(args)) if args.size == 1 =>
+      case '{StringContext(${Varargs(Exprs(args))}: _*)} if args.size == 1 =>
         try {
           val const = args.head
           val _ = new XPathParser(null).parse(const)
