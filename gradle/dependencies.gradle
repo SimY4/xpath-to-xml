@@ -6,7 +6,7 @@ def versions = [:]
 
 versions.checkstyle = '8.39'
 versions.scala3 = '3.0.0-M3'
-versions.errorprone = '2.4.0'
+versions.errorprone = '2.5.1'
 versions.errorproneJavac = '9+181-r4173-1'
 versions.scalaXml = '1.3.0'
 
