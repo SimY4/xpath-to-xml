@@ -21,8 +21,8 @@ project(':xpath-to-xml-scala_2.13').with {
     projectDir = file('xpath-to-xml-scala')
     buildFileName = 'build-2.13.gradle'
 }
-include 'xpath-to-xml-scala_3.0.0-M3'
-project(':xpath-to-xml-scala_3.0.0-M3').with {
+include 'xpath-to-xml-scala_3.0.0-RC1'
+project(':xpath-to-xml-scala_3.0.0-RC1').with {
     projectDir = file('xpath-to-xml-scala')
     buildFileName = 'build-3.gradle'
 }
