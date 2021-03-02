@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
+        required: false
         description: 'Release version'
 
 jobs:
@@ -26,10 +27,11 @@ jobs:
             ${{ runner.os }}-gradle-
       - name: Release with Gradle
         run: |
-          echo "${{ secrets.secRing }}" > /tmp/secring.gpg
-          echo "signing.keyId = ${{ secrets.keyId }}, signing.password = ${{ secrets.keyPassword }}, signing.secretKeyRingFile = /tmp/secring.gpg, sonatypeUsername = ${{ secrets.sonatypeUsername }}, sonatypePassword = ${{ secrets.sonatypePassword }}" > ~/gradle.properties
-          if [ -z "${{ github.event.inputs.version }}" ]; then
-            ./gradlew release -Prelease.useAutomaticVersion=true
-          else
-            ./gradlew release -Prelease.releaseVersion=${{ github.event.inputs.version }}
-          fi
+          echo "sonatypeUsername=$SONATYPE_USERNAME" >> gradle.properties
+          echo "sonatypePassword=$SONATYPE_PASSWORD" >> gradle.properties
+          ./gradlew release -Prelease.useAutomaticVersion=true
+        env:
+          GPG_SECRET_KEY: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
+          GPG_SECRET_KEY_PASSWORD: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
+          SONATYPE_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.OSSRH_TOKEN }}

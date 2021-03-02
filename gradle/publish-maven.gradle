@@ -55,6 +55,12 @@ publishing {
     }
 }
 
+def signingKey = System.getenv("GPG_SECRET_KEY")
+def signingPassword = System.getenv("GPG_SECRET_KEY_PASSWORD")
+
 signing {
+    if (signingKey != null && signingPassword != null && !signingKey.isEmpty() && !signingPassword.isEmpty()) {
+        useInMemoryPgpKeys(signingKey, signingPassword)
+    }
     sign publishing.publications.mavenJava
 }
