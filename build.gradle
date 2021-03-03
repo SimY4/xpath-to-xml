@@ -82,8 +82,6 @@ subprojects {
             options.addStringOption('-release', '8') // workaround javadoc issues in Java 9+
         }
     }
-
-    afterReleaseBuild.dependsOn publish
 }
 
 dependencies {
@@ -103,13 +101,11 @@ dependencies {
 }
 
 release {
-    failOnCommitNeeded = false
-    
     git {
         requireBranch = 'java6'
     }
 }
 
 wrapper {
-    gradleVersion = '6.8.2'
+    gradleVersion = '6.8.3'
 }
