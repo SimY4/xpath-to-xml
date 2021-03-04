@@ -89,7 +89,7 @@ dependencies {
         api 'org.assertj:assertj-core:3.19.0'
         api 'org.dom4j:dom4j:2.1.3'
         api 'com.google.code.gson:gson:2.8.6'
-        api 'com.fasterxml.jackson.core:jackson-databind:2.12.1'
+        api 'com.fasterxml.jackson.core:jackson-databind:2.12.2'
         api 'jakarta.json:jakarta.json-api:2.0.0'
         api 'org.glassfish:jakarta.json:2.0.0'
         api 'jaxen:jaxen:1.2.0'
