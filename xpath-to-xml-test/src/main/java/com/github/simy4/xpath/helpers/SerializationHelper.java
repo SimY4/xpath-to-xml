@@ -22,7 +22,7 @@ public final class SerializationHelper {
      * @throws ClassNotFoundException if serialized object cannon be found
      * @throws IOException if any exception thrown by the underlying OutputStream
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "BanSerializableRead"})
     public static <T> T serializeAndDeserializeBack(T t) throws IOException, ClassNotFoundException {
         var out = new ByteArrayOutputStream();
         new ObjectOutputStream(out).writeObject(t);
