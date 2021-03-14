@@ -23,10 +23,10 @@ sourceSets {
 dependencies {
     api project(':xpath-to-xml-core')
 
-    implementation libraries.dottyLibrary
+    implementation libraries.scala3Library
     implementation libraries.scalaXml('2.13')
 
-    dotc libraries.dottyCompiler
+    dotc libraries.scala3Compiler
 
     testImplementation project(':xpath-to-xml-test')
     testImplementation 'org.junit.jupiter:junit-jupiter'
@@ -43,7 +43,6 @@ def dottyCompilerOptions = [
         '-project-version', project.version,
         '-encoding',        'UTF-8',
         '-deprecation',
-        '-migration',                           // Emit warning and location for migration issues from Scala 2.
         '-explain',                             // Explain errors in more detail.
         '-explain-types',                       // Explain type errors in more detail.
         '-feature',                             // Emit warning and location for usages of features that should be imported explicitly.
