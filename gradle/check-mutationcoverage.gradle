@@ -1,7 +1,7 @@
 apply plugin: 'info.solidsoft.pitest'
 
 pitest {
-    junit5PluginVersion = '0.12'
+    junit5PluginVersion = '0.14'
     pitestVersion = '1.6.3'
     targetClasses = ['com.github.simy4.xpath.*']
     threads = 4
