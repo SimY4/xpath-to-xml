@@ -4,7 +4,7 @@ plugins {
     id 'info.solidsoft.pitest' version '1.6.0' apply false
     id 'java-platform'
     id 'me.champeau.gradle.jmh' version '0.5.3' apply false
-    id 'net.ltgt.errorprone' version '1.3.0' apply false
+    id 'net.ltgt.errorprone' version '2.0.0' apply false
     id 'net.researchgate.release' version '2.8.1'
     id 'ru.vyarus.animalsniffer' version '1.5.3' apply false
 }
