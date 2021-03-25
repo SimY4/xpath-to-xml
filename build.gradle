@@ -96,5 +96,5 @@ release {
 }
 
 wrapper {
-    gradleVersion = '6.8.3'
+    gradleVersion = '7.0-rc-1'
 }
