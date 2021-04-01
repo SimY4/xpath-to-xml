@@ -9,14 +9,6 @@ plugins {
     id 'ru.vyarus.animalsniffer' version '1.5.3' apply false
 }
 
-ext {
-    jacocoVersion = '0.8.6'
-
-    def buildTimeAndDate = new Date()
-    buildDate = buildTimeAndDate.format("yyyy-MM-dd")
-    buildTime = buildTimeAndDate.format("HH:mm:ss.SSSZ")
-}
-
 subprojects {
     apply plugin: 'java-library'
     apply from: rootProject.file('gradle/dependencies.gradle')
