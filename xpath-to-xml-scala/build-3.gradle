@@ -5,6 +5,7 @@ buildDir = 'build-3'
 ext {
     classesDir = file("/${buildDir}/classes/scala/main")
     testClassesDir = file("/${buildDir}/classes/scala/test")
+    scaladocDir = file("/${buildDir}/docs/scaladoc")
 }
 
 clean {
@@ -27,6 +28,7 @@ dependencies {
     implementation libraries.scalaXml('2.13')
 
     dotc libraries.scala3Compiler
+    dotc libraries.scala3Doc
 
     testImplementation project(':xpath-to-xml-test')
     testImplementation 'org.junit.jupiter:junit-jupiter'
@@ -52,7 +54,7 @@ def dottyCompilerOptions = [
         '-Xfatal-warnings',                     // Fail the compilation if there are any warnings.
 ]
 
-task compileDotty(type: JavaExec) {
+task compileScala(type: JavaExec) {
     dependsOn compileJava
     doFirst {
         if (!classesDir.exists()) classesDir.mkdirs()
@@ -64,8 +66,8 @@ task compileDotty(type: JavaExec) {
     args dottyCompilerOptions + ['-d', classesDir] + sourceSets.main.allSource.filter { it.name.endsWith('.scala') }.files
 }
 
-task compileTestDotty(type: JavaExec) {
-    dependsOn compileDotty, compileTestJava
+task compileTestScala(type: JavaExec) {
+    dependsOn compileScala, compileTestJava
     doFirst {
         if (!testClassesDir.exists()) testClassesDir.mkdirs()
     }
@@ -76,12 +78,29 @@ task compileTestDotty(type: JavaExec) {
     args dottyCompilerOptions + ['-d', testClassesDir] + sourceSets.test.allSource.filter { it.name.endsWith('.scala') }.files
 }
 
+task scaladoc(type: JavaExec) {
+    dependsOn compileScala
+    doFirst {
+        if (!scaladocDir.exists()) scaladocDir.mkdirs()
+    }
+    description 'Generate docs'
+    classpath configurations.dotc, configurations.compileClasspath, classesDir
+    main 'dotty.tools.scaladoc.Main'
+    jvmArgs '-Dscala.usejavacp=true'
+    args '-d', scaladocDir, classesDir
+}
+
 build {
-    dependsOn compileDotty
+    dependsOn compileScala
 }
 
 test {
-    dependsOn compileTestDotty
+    dependsOn compileTestScala
     classpath += configurations.testRuntimeClasspath + files(classesDir, testClassesDir)
     testClassesDirs += files(testClassesDir)
+}
+
+javadocJar {
+    dependsOn scaladoc
+    from scaladoc
 }
