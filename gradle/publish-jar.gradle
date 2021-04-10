@@ -2,10 +2,7 @@ jar {
     afterEvaluate {
         manifest.attributes(
                 'Built-By': System.properties['user.name'],
-                'Created-By': System.properties['java.version'] + ' (' + System.properties['java.vendor']
-                        + ' ' + System.properties['java.vm.version'] + ')',
-                'Build-Date': project.buildDate,
-                'Build-Time': project.buildTime,
+                'Created-By': System.properties['java.version'] + ' (' + System.properties['java.vendor'] + ' ' + System.properties['java.vm.version'] + ')',
                 'Implementation-Title': project.name,
                 'Implementation-Version': project.version,
                 'Automatic-Module-Name': moduleName,
