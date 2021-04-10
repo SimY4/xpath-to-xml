@@ -10,7 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        java: [ 11, 15 ]
+        java: [ 11, 16 ]
 
     steps:
     - uses: actions/checkout@v2
@@ -18,13 +18,13 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: ${{ matrix.java }}
-    - name: Caching
+    - name: Cache Gradle packages
       uses: actions/cache@v2
       with:
         path: |
           ~/.gradle/caches
           ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
     - name: Build with Gradle
@@ -33,3 +33,7 @@ jobs:
       uses: codecov/codecov-action@v1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
+    - name: Cleanup Gradle Cache
+      run: |
+        rm -f ~/.gradle/caches/modules-2/modules-2.lock
+        rm -f ~/.gradle/caches/modules-2/gc.properties
