@@ -19,6 +19,9 @@ import org.jdom2.Parent;
  */
 public class JDomNavigatorSpi implements NavigatorSpi {
 
+    public JDomNavigatorSpi() {
+    }
+
     @Override
     public boolean canHandle(Object o) {
         return (o instanceof Parent && null != ((Parent) o).getDocument())

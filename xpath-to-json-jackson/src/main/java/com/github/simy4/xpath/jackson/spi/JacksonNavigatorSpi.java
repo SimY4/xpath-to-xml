@@ -12,6 +12,9 @@ import com.github.simy4.xpath.spi.NavigatorSpi;
  */
 public class JacksonNavigatorSpi implements NavigatorSpi {
 
+    public JacksonNavigatorSpi() {
+    }
+
     @Override
     public boolean canHandle(Object o) {
         return o instanceof JsonNode;

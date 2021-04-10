@@ -15,10 +15,12 @@ import java.util.Set;
  */
 @SuppressWarnings("JdkObsolete")
 public class OrderedProperties extends Properties {
-
     private static final long serialVersionUID = 1L;
 
     private final Set<Object> keys = new LinkedHashSet<>();
+
+    public OrderedProperties() {
+    }
 
     /**
      * Transforms properties to linked hash map.

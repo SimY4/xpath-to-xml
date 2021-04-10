@@ -13,6 +13,9 @@ import org.w3c.dom.Node;
  */
 public class DomNavigatorSpi implements NavigatorSpi {
 
+    public DomNavigatorSpi() {
+    }
+
     @Override
     public boolean canHandle(Object o) {
         return o instanceof Node && (o instanceof Document || (null != ((Node) o).getOwnerDocument()));

@@ -18,6 +18,9 @@ import nu.xom.ParentNode;
  */
 public class XomNavigatorSpi implements NavigatorSpi {
 
+    public XomNavigatorSpi() {
+    }
+
     @Override
     public boolean canHandle(Object o) {
         return (o instanceof ParentNode && null != ((ParentNode) o).getDocument())

@@ -15,6 +15,9 @@ public class JakartaJsonNavigatorSpi implements NavigatorSpi {
 
     private final JsonProvider jsonProvider = JsonProvider.provider();
 
+    public JakartaJsonNavigatorSpi() {
+    }
+
     @Override
     public boolean canHandle(Object o) {
         return o instanceof JsonValue;

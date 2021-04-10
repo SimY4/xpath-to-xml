@@ -23,6 +23,9 @@ public class Dom4jNavigatorSpi implements NavigatorSpi {
     private static final Set<Short> SUPPORTED_NODE_TYPES = Set.of(
             Node.DOCUMENT_NODE, Node.ELEMENT_NODE, Node.ATTRIBUTE_NODE);
 
+    public Dom4jNavigatorSpi() {
+    }
+
     @Override
     public boolean canHandle(Object o) {
         return o instanceof Node && SUPPORTED_NODE_TYPES.contains(((Node) o).getNodeType())

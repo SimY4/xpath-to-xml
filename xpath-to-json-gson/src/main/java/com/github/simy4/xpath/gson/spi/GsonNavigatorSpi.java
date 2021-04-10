@@ -12,6 +12,9 @@ import com.google.gson.JsonElement;
  */
 public class GsonNavigatorSpi implements NavigatorSpi {
 
+    public GsonNavigatorSpi() {
+    }
+
     @Override
     public boolean canHandle(Object o) {
         return o instanceof JsonElement;
