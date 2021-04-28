@@ -19,71 +19,77 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class Dom4JAttributeTest {
 
-    private Attribute attribute = DocumentHelper.createAttribute(
-            DocumentHelper.createElement(new org.dom4j.QName("parent")), new org.dom4j.QName("node"), "text");
+  private Attribute attribute =
+      DocumentHelper.createAttribute(
+          DocumentHelper.createElement(new org.dom4j.QName("parent")),
+          new org.dom4j.QName("node"),
+          "text");
 
-    private Dom4jNode node;
+  private Dom4jNode node;
 
-    @BeforeEach
-    void setUp() {
-        node = new Dom4jAttribute(attribute);
-    }
+  @BeforeEach
+  void setUp() {
+    node = new Dom4jAttribute(attribute);
+  }
 
-    @Test
-    void shouldReturnEmptyListWhenObtainAttributes() {
-        assertThat(node.attributes()).isEmpty();
-    }
+  @Test
+  void shouldReturnEmptyListWhenObtainAttributes() {
+    assertThat(node.attributes()).isEmpty();
+  }
 
-    @Test
-    void shouldReturnEmptyListWhenObtainElements() {
-        assertThat(node.elements()).isEmpty();
-    }
+  @Test
+  void shouldReturnEmptyListWhenObtainElements() {
+    assertThat(node.elements()).isEmpty();
+  }
 
-    @Test
-    void shouldThrowExceptionWhenCreateAttribute() {
-        assertThatThrownBy(() -> node.createAttribute(new org.dom4j.QName("attr")))
-                .isInstanceOf(XmlBuilderException.class);
-    }
+  @Test
+  void shouldThrowExceptionWhenCreateAttribute() {
+    assertThatThrownBy(() -> node.createAttribute(new org.dom4j.QName("attr")))
+        .isInstanceOf(XmlBuilderException.class);
+  }
 
-    @Test
-    void shouldThrowExceptionWhenCreateElement() {
-        assertThatThrownBy(() -> node.createElement(new org.dom4j.QName("elem")))
-                .isInstanceOf(XmlBuilderException.class);
-    }
+  @Test
+  void shouldThrowExceptionWhenCreateElement() {
+    assertThatThrownBy(() -> node.createElement(new org.dom4j.QName("elem")))
+        .isInstanceOf(XmlBuilderException.class);
+  }
 
-    @Test
-    void shouldReturnNodeNameForNamespaceUnawareAttribute() {
-        QName result = node.getName();
+  @Test
+  void shouldReturnNodeNameForNamespaceUnawareAttribute() {
+    QName result = node.getName();
 
-        assertThat(result).extracting("namespaceURI", "localPart", "prefix")
-                .containsExactly(XMLConstants.NULL_NS_URI, "node", XMLConstants.DEFAULT_NS_PREFIX);
-    }
+    assertThat(result)
+        .extracting("namespaceURI", "localPart", "prefix")
+        .containsExactly(XMLConstants.NULL_NS_URI, "node", XMLConstants.DEFAULT_NS_PREFIX);
+  }
 
-    @Test
-    void shouldReturnNodeNameForNamespaceAwareAttribute() {
-        attribute = DocumentHelper.createAttribute(
-                DocumentHelper.createElement(new org.dom4j.QName("parent")), new org.dom4j.QName("node",
-                        new Namespace("my", "http://www.example.com/my")), "text");
-        node = new Dom4jAttribute(attribute);
+  @Test
+  void shouldReturnNodeNameForNamespaceAwareAttribute() {
+    attribute =
+        DocumentHelper.createAttribute(
+            DocumentHelper.createElement(new org.dom4j.QName("parent")),
+            new org.dom4j.QName("node", new Namespace("my", "http://www.example.com/my")),
+            "text");
+    node = new Dom4jAttribute(attribute);
 
-        QName result = node.getName();
+    QName result = node.getName();
 
-        assertThat(result).extracting("namespaceURI", "localPart", "prefix")
-                .containsExactly("http://www.example.com/my", "node", "my");
-    }
+    assertThat(result)
+        .extracting("namespaceURI", "localPart", "prefix")
+        .containsExactly("http://www.example.com/my", "node", "my");
+  }
 
-    @Test
-    void shouldReturnNodeTextContent() {
-        assertThat(node.getText()).isEqualTo("text");
-    }
+  @Test
+  void shouldReturnNodeTextContent() {
+    assertThat(node.getText()).isEqualTo("text");
+  }
 
-    @Test
-    void shouldSerializeAndDeserialize() throws IOException, ClassNotFoundException {
-        // when
-        Node deserializedNode = SerializationHelper.serializeAndDeserializeBack(node);
+  @Test
+  void shouldSerializeAndDeserialize() throws IOException, ClassNotFoundException {
+    // when
+    Node deserializedNode = SerializationHelper.serializeAndDeserializeBack(node);
 
-        // then
-        assertThat(deserializedNode).extracting("name").isEqualTo(node.getName());
-    }
-
+    // then
+    assertThat(deserializedNode).extracting("name").isEqualTo(node.getName());
+  }
 }

@@ -16,23 +16,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(MockitoExtension.class)
 class NumberExprTest {
 
-    private static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));
+  private static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));
 
-    @Mock
-    private Navigator<TestNode> navigator;
+  @Mock private Navigator<TestNode> navigator;
 
-    private final Expr numberExpr = new NumberExpr(3.0);
+  private final Expr numberExpr = new NumberExpr(3.0);
 
-    @Test
-    @DisplayName("Should always return single number node")
-    void shouldAlwaysReturnSingleNumberNode() {
-        View<TestNode> result = numberExpr.resolve(navigator, parentNode, false);
-        assertThat(result).extracting("number").isEqualTo(3.0);
-    }
+  @Test
+  @DisplayName("Should always return single number node")
+  void shouldAlwaysReturnSingleNumberNode() {
+    View<TestNode> result = numberExpr.resolve(navigator, parentNode, false);
+    assertThat(result).extracting("number").isEqualTo(3.0);
+  }
 
-    @Test
-    void testToString() {
-        assertThat(numberExpr).hasToString("3.0");
-    }
-
+  @Test
+  void testToString() {
+    assertThat(numberExpr).hasToString("3.0");
+  }
 }

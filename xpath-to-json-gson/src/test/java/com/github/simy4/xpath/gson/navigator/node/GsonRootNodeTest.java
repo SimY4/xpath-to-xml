@@ -12,29 +12,28 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class GsonRootNodeTest {
 
-    private final JsonObject jsonObject = new JsonObject();
-    private final GsonNode rootNode = new GsonRootNode(jsonObject);
+  private final JsonObject jsonObject = new JsonObject();
+  private final GsonNode rootNode = new GsonRootNode(jsonObject);
 
-    @Test
-    void shouldReturnRootName() {
-        assertThat(rootNode.getName()).isEqualTo(new QName(GsonNode.DOCUMENT));
-    }
+  @Test
+  void shouldReturnRootName() {
+    assertThat(rootNode.getName()).isEqualTo(new QName(GsonNode.DOCUMENT));
+  }
 
-    @Test
-    void shouldReturnRootNode() {
-        assertThat(rootNode.get()).isSameAs(jsonObject);
-    }
+  @Test
+  void shouldReturnRootNode() {
+    assertThat(rootNode.get()).isSameAs(jsonObject);
+  }
 
-    @Test
-    void shouldReplaceRootNodeOnSet() {
-        JsonArray array = new JsonArray();
-        rootNode.set(array);
-        assertThat(rootNode.get()).isSameAs(array);
-    }
+  @Test
+  void shouldReplaceRootNodeOnSet() {
+    JsonArray array = new JsonArray();
+    rootNode.set(array);
+    assertThat(rootNode.get()).isSameAs(array);
+  }
 
-    @Test
-    void shouldThrowOnSetNull() {
-        assertThatThrownBy(() -> rootNode.set(null)).isInstanceOf(XmlBuilderException.class);
-    }
-
+  @Test
+  void shouldThrowOnSetNull() {
+    assertThatThrownBy(() -> rootNode.set(null)).isInstanceOf(XmlBuilderException.class);
+  }
 }

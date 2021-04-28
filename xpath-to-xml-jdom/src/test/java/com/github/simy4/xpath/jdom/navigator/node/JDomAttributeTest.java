@@ -18,57 +18,57 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class JDomAttributeTest {
 
-    private JDomNode node;
+  private JDomNode node;
 
-    @BeforeEach
-    void setUp() {
-        Attribute attribute = new Attribute("attr", "text");
-        attribute.setNamespace(Namespace.getNamespace("my", "http://www.example.com/my"));
-        node = new JDomAttribute(attribute);
-    }
+  @BeforeEach
+  void setUp() {
+    Attribute attribute = new Attribute("attr", "text");
+    attribute.setNamespace(Namespace.getNamespace("my", "http://www.example.com/my"));
+    node = new JDomAttribute(attribute);
+  }
 
-    @Test
-    void shouldReturnEmptyListWhenObtainAttributes() {
-        assertThat(node.attributes()).isEmpty();
-    }
+  @Test
+  void shouldReturnEmptyListWhenObtainAttributes() {
+    assertThat(node.attributes()).isEmpty();
+  }
 
-    @Test
-    void shouldReturnEmptyListWhenObtainElements() {
-        assertThat(node.elements()).isEmpty();
-    }
+  @Test
+  void shouldReturnEmptyListWhenObtainElements() {
+    assertThat(node.elements()).isEmpty();
+  }
 
-    @Test
-    void shouldThrowExceptionWhenAppendAttribute() {
-        assertThatThrownBy(() -> node.appendAttribute(new Attribute("attr", "")))
-                .isInstanceOf(XmlBuilderException.class);
-    }
+  @Test
+  void shouldThrowExceptionWhenAppendAttribute() {
+    assertThatThrownBy(() -> node.appendAttribute(new Attribute("attr", "")))
+        .isInstanceOf(XmlBuilderException.class);
+  }
 
-    @Test
-    void shouldThrowExceptionWhenAppendElement() {
-        assertThatThrownBy(() -> node.appendElement(new Element("elem")))
-                .isInstanceOf(XmlBuilderException.class);
-    }
+  @Test
+  void shouldThrowExceptionWhenAppendElement() {
+    assertThatThrownBy(() -> node.appendElement(new Element("elem")))
+        .isInstanceOf(XmlBuilderException.class);
+  }
 
-    @Test
-    void shouldReturnNodeNameWithNamespaceUri() {
-        QName result = node.getName();
+  @Test
+  void shouldReturnNodeNameWithNamespaceUri() {
+    QName result = node.getName();
 
-        assertThat(result).extracting("namespaceURI", "localPart", "prefix")
-                .containsExactly("http://www.example.com/my", "attr", "my");
-    }
+    assertThat(result)
+        .extracting("namespaceURI", "localPart", "prefix")
+        .containsExactly("http://www.example.com/my", "attr", "my");
+  }
 
-    @Test
-    void shouldReturnNodeTextContent() {
-        assertThat(node.getText()).isEqualTo("text");
-    }
+  @Test
+  void shouldReturnNodeTextContent() {
+    assertThat(node.getText()).isEqualTo("text");
+  }
 
-    @Test
-    void shouldSerializeAndDeserialize() throws IOException, ClassNotFoundException {
-        // when
-        Node deserializedNode = SerializationHelper.serializeAndDeserializeBack(node);
+  @Test
+  void shouldSerializeAndDeserialize() throws IOException, ClassNotFoundException {
+    // when
+    Node deserializedNode = SerializationHelper.serializeAndDeserializeBack(node);
 
-        // then
-        assertThat(deserializedNode).extracting("name").isEqualTo(node.getName());
-    }
-
+    // then
+    assertThat(deserializedNode).extracting("name").isEqualTo(node.getName());
+  }
 }

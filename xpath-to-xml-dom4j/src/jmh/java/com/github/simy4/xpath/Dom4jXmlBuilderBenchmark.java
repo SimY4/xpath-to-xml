@@ -14,6 +14,7 @@ import org.openjdk.jmh.infra.Blackhole;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPathExpressionException;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,37 +23,37 @@ import java.util.Map;
 @State(Scope.Benchmark)
 public class Dom4jXmlBuilderBenchmark {
 
-    private static final Map<String, NamespaceContext> NAMESPACE_CONTEXT_MAP;
+  private static final Map<String, NamespaceContext> NAMESPACE_CONTEXT_MAP;
 
-    static {
-        Map<String, NamespaceContext> namespaceContextMap = new HashMap<String, NamespaceContext>();
-        namespaceContextMap.put("null", null);
-        namespaceContextMap.put("simple", new SimpleNamespaceContext());
-        NAMESPACE_CONTEXT_MAP = Collections.unmodifiableMap(namespaceContextMap);
-    }
+  static {
+    Map<String, NamespaceContext> namespaceContextMap = new HashMap<String, NamespaceContext>();
+    namespaceContextMap.put("null", null);
+    namespaceContextMap.put("simple", new SimpleNamespaceContext());
+    NAMESPACE_CONTEXT_MAP = Collections.unmodifiableMap(namespaceContextMap);
+  }
 
-    @Param({ "simple", "ns-simple", "attr", "special" })
-    public String fixtureName;
+  @Param({"simple", "ns-simple", "attr", "special"})
+  public String fixtureName;
 
-    @Param({ "null" })
-    public String nsContext;
+  @Param({"null"})
+  public String nsContext;
 
-    private FixtureAccessor fixtureAccessor;
-    private NamespaceContext namespaceContext;
+  private FixtureAccessor fixtureAccessor;
+  private NamespaceContext namespaceContext;
 
-    @Setup
-    public void setUp() {
-        fixtureAccessor = new FixtureAccessor(fixtureName);
-        namespaceContext = NAMESPACE_CONTEXT_MAP.get(nsContext);
-    }
+  @Setup
+  public void setUp() {
+    fixtureAccessor = new FixtureAccessor(fixtureName);
+    namespaceContext = NAMESPACE_CONTEXT_MAP.get(nsContext);
+  }
 
-    @Benchmark
-    public void shouldBuildDocumentFromSetOfXPaths(Blackhole blackhole)
-            throws XPathExpressionException {
-        Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-        blackhole.consume(new XmlBuilder(namespaceContext)
-                .putAll(xmlProperties.keySet())
-                .build(DocumentHelper.createDocument()));
-    }
-
+  @Benchmark
+  public void shouldBuildDocumentFromSetOfXPaths(Blackhole blackhole)
+      throws XPathExpressionException {
+    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
+    blackhole.consume(
+        new XmlBuilder(namespaceContext)
+            .putAll(xmlProperties.keySet())
+            .build(DocumentHelper.createDocument()));
+  }
 }

@@ -7,37 +7,36 @@ import java.io.Serializable;
 
 public final class NumberView<N extends Node> implements View<N>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private final double number;
+  private final double number;
 
-    public NumberView(double number) {
-        this.number = number;
-    }
+  public NumberView(double number) {
+    this.number = number;
+  }
 
-    @Override
-    public int compareTo(View<N> other) {
-        return Double.compare(number, other.toNumber());
-    }
+  @Override
+  public int compareTo(View<N> other) {
+    return Double.compare(number, other.toNumber());
+  }
 
-    @Override
-    public boolean toBoolean() {
-        return 0 != Double.compare(0.0, number);
-    }
+  @Override
+  public boolean toBoolean() {
+    return 0 != Double.compare(0.0, number);
+  }
 
-    @Override
-    public double toNumber() {
-        return number;
-    }
+  @Override
+  public double toNumber() {
+    return number;
+  }
 
-    @Override
-    public String toString() {
-        return Double.toString(number);
-    }
+  @Override
+  public String toString() {
+    return Double.toString(number);
+  }
 
-    @Override
-    public <T> T visit(ViewVisitor<N, T> visitor) throws XmlBuilderException {
-        return visitor.visit(this);
-    }
-
+  @Override
+  public <T> T visit(ViewVisitor<N, T> visitor) throws XmlBuilderException {
+    return visitor.visit(this);
+  }
 }

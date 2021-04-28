@@ -10,23 +10,20 @@ import javax.xml.namespace.QName;
  */
 public interface Node {
 
-    /**
-     * Document node constant name.
-     */
-    String DOCUMENT = "#document";
+  /** Document node constant name. */
+  String DOCUMENT = "#document";
 
-    /**
-     * XML node name.
-     *
-     * @return node name.
-     */
-    QName getName();
+  /**
+   * XML node name.
+   *
+   * @return node name.
+   */
+  QName getName();
 
-    /**
-     * XML node text content.
-     *
-     * @return text content.
-     */
-    String getText();
-
+  /**
+   * XML node text content.
+   *
+   * @return text content.
+   */
+  String getText();
 }

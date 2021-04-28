@@ -9,48 +9,49 @@ import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 
 import javax.xml.namespace.QName;
+
 import java.io.Serializable;
 
 abstract class AbstractAxisResolver implements AxisResolver, Predicate<Node>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected final QName name;
+  protected final QName name;
 
-    protected AbstractAxisResolver(QName name) {
-        this.name = name;
+  protected AbstractAxisResolver(QName name) {
+    this.name = name;
+  }
+
+  @Override
+  public final <N extends Node> IterableNodeView<N> resolveAxis(
+      Navigator<N> navigator, NodeView<N> parent, boolean greedy) throws XmlBuilderException {
+    IterableNodeView<N> result = NodeSetView.of(traverseAxis(navigator, parent), this);
+    if (greedy && !result.toBoolean()) {
+      result = createAxisNode(navigator, parent, 1);
     }
+    return result;
+  }
 
-    @Override
-    public final <N extends Node> IterableNodeView<N> resolveAxis(Navigator<N> navigator, NodeView<N> parent,
-                                                                  boolean greedy) throws XmlBuilderException {
-        IterableNodeView<N> result = NodeSetView.of(traverseAxis(navigator, parent), this);
-        if (greedy && !result.toBoolean()) {
-            result = createAxisNode(navigator, parent, 1);
-        }
-        return result;
-    }
+  protected abstract <N extends Node> Iterable<? extends N> traverseAxis(
+      Navigator<N> navigator, NodeView<N> view);
 
-    protected abstract <N extends Node> Iterable<? extends N> traverseAxis(Navigator<N> navigator, NodeView<N> view);
+  protected final boolean isWildcard() {
+    return "*".equals(name.getNamespaceURI()) || "*".equals(name.getLocalPart());
+  }
 
-    protected final boolean isWildcard() {
-        return "*".equals(name.getNamespaceURI()) || "*".equals(name.getLocalPart());
-    }
+  @Override
+  public boolean test(Node t) {
+    final QName actual = t.getName();
+    return test(name.getNamespaceURI(), actual.getNamespaceURI())
+        && test(name.getLocalPart(), actual.getLocalPart());
+  }
 
-    @Override
-    public boolean test(Node t) {
-        final QName actual = t.getName();
-        return test(name.getNamespaceURI(), actual.getNamespaceURI())
-                && test(name.getLocalPart(), actual.getLocalPart());
-    }
+  private boolean test(String expected, String actual) {
+    return "*".equals(expected) || "*".equals(actual) || expected.equals(actual);
+  }
 
-    private boolean test(String expected, String actual) {
-        return "*".equals(expected) || "*".equals(actual) || expected.equals(actual);
-    }
-
-    @Override
-    public String toString() {
-        return name.toString();
-    }
-
+  @Override
+  public String toString() {
+    return name.toString();
+  }
 }

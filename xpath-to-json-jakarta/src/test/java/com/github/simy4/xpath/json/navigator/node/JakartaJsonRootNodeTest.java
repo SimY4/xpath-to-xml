@@ -14,31 +14,31 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class JakartaJsonRootNodeTest {
 
-    private static final JsonProvider jsonProvider = JsonProvider.provider();
+  private static final JsonProvider jsonProvider = JsonProvider.provider();
 
-    private final JsonObject jsonObject = JsonValue.EMPTY_JSON_OBJECT;
-    private final JakartaJsonNode rootNode = new JakartaJsonRootNode(jsonObject);
+  private final JsonObject jsonObject = JsonValue.EMPTY_JSON_OBJECT;
+  private final JakartaJsonNode rootNode = new JakartaJsonRootNode(jsonObject);
 
-    @Test
-    void shouldReturnRootName() {
-        assertThat(rootNode.getName()).isEqualTo(new QName(JakartaJsonNode.DOCUMENT));
-    }
+  @Test
+  void shouldReturnRootName() {
+    assertThat(rootNode.getName()).isEqualTo(new QName(JakartaJsonNode.DOCUMENT));
+  }
 
-    @Test
-    void shouldReturnRootNode() {
-        assertThat(rootNode.get()).isSameAs(jsonObject);
-    }
+  @Test
+  void shouldReturnRootNode() {
+    assertThat(rootNode.get()).isSameAs(jsonObject);
+  }
 
-    @Test
-    void shouldReplaceRootNodeOnSet() {
-        JsonArray array = JsonValue.EMPTY_JSON_ARRAY;
-        rootNode.set(jsonProvider, array);
-        assertThat(rootNode.get()).isSameAs(array);
-    }
+  @Test
+  void shouldReplaceRootNodeOnSet() {
+    JsonArray array = JsonValue.EMPTY_JSON_ARRAY;
+    rootNode.set(jsonProvider, array);
+    assertThat(rootNode.get()).isSameAs(array);
+  }
 
-    @Test
-    void shouldThrowOnSetNull() {
-        assertThatThrownBy(() -> rootNode.set(jsonProvider, null)).isInstanceOf(XmlBuilderException.class);
-    }
-
+  @Test
+  void shouldThrowOnSetNull() {
+    assertThatThrownBy(() -> rootNode.set(jsonProvider, null))
+        .isInstanceOf(XmlBuilderException.class);
+  }
 }

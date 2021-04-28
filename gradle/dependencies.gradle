@@ -4,13 +4,11 @@ ext {
 
 def versions = [:]
 
-versions.checkstyle = '8.41.1'
 versions.scala3 = '3.0.0-RC3'
 versions.errorprone = '2.6.0'
 versions.errorproneJavac = '9+181-r4173-1'
 versions.scalaXml = '1.3.0'
 
-libraries.checkstyle = "com.puppycrawl.tools:checkstyle:${versions.checkstyle}"
 libraries.scala3Compiler = "org.scala-lang:scala3-compiler_${versions.scala3}:${versions.scala3}"
 libraries.scala3Doc = "org.scala-lang:scaladoc_${versions.scala3}:${versions.scala3}"
 libraries.scala3Library = "org.scala-lang:scala3-library_${versions.scala3}:${versions.scala3}"

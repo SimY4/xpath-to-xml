@@ -9,23 +9,23 @@ import java.io.Serializable;
 
 public class LiteralExpr implements Expr, Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private final LiteralView<?> literal;
+  private final LiteralView<?> literal;
 
-    public LiteralExpr(String literal) {
-        this.literal = new LiteralView<Node>(literal);
-    }
+  public LiteralExpr(String literal) {
+    this.literal = new LiteralView<Node>(literal);
+  }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public <N extends Node> LiteralView<N> resolve(Navigator<N> navigator, NodeView<N> view, boolean greedy) {
-        return (LiteralView<N>) literal;
-    }
+  @Override
+  @SuppressWarnings("unchecked")
+  public <N extends Node> LiteralView<N> resolve(
+      Navigator<N> navigator, NodeView<N> view, boolean greedy) {
+    return (LiteralView<N>) literal;
+  }
 
-    @Override
-    public String toString() {
-        return "'" + literal.toString() + "'";
-    }
-
+  @Override
+  public String toString() {
+    return "'" + literal.toString() + "'";
+  }
 }

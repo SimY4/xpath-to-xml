@@ -9,6 +9,5 @@ package com.github.simy4.xpath.util;
  */
 public interface Predicate<T> {
 
-    boolean test(T t);
-
+  boolean test(T t);
 }

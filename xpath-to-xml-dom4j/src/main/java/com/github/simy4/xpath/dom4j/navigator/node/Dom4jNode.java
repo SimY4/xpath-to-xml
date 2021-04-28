@@ -12,45 +12,44 @@ import org.dom4j.QName;
  */
 public interface Dom4jNode extends Node {
 
-    org.dom4j.Node getNode();
+  org.dom4j.Node getNode();
 
-    /**
-     * Retrieves parent node of this node.
-     *
-     * @return parent node
-     */
-    Dom4jNode getParent();
+  /**
+   * Retrieves parent node of this node.
+   *
+   * @return parent node
+   */
+  Dom4jNode getParent();
 
-    /**
-     * Retrieves all child element nodes of this node.
-     *
-     * @return child element nodes
-     */
-    Iterable<Dom4jElement> elements();
+  /**
+   * Retrieves all child element nodes of this node.
+   *
+   * @return child element nodes
+   */
+  Iterable<Dom4jElement> elements();
 
-    /**
-     * Retrieves all attributes of this node.
-     *
-     * @return attributes
-     */
-    Iterable<Dom4jAttribute> attributes();
+  /**
+   * Retrieves all attributes of this node.
+   *
+   * @return attributes
+   */
+  Iterable<Dom4jAttribute> attributes();
 
-    /**
-     * Creates XML attribute node and appends to ths node.
-     *
-     * @param attribute new XML attribute's name
-     * @return new attribute node
-     * @throws XmlBuilderException if failure occur during XML attribute creation
-     */
-    Dom4jNode createAttribute(QName attribute) throws XmlBuilderException;
+  /**
+   * Creates XML attribute node and appends to ths node.
+   *
+   * @param attribute new XML attribute's name
+   * @return new attribute node
+   * @throws XmlBuilderException if failure occur during XML attribute creation
+   */
+  Dom4jNode createAttribute(QName attribute) throws XmlBuilderException;
 
-    /**
-     * Creates XML element node and appends to ths node.
-     *
-     * @param element new XML element's name
-     * @return new element node
-     * @throws XmlBuilderException if failure occur during XML element creation
-     */
-    Dom4jNode createElement(QName element) throws XmlBuilderException;
-
+  /**
+   * Creates XML element node and appends to ths node.
+   *
+   * @param element new XML element's name
+   * @return new element node
+   * @throws XmlBuilderException if failure occur during XML element creation
+   */
+  Dom4jNode createElement(QName element) throws XmlBuilderException;
 }

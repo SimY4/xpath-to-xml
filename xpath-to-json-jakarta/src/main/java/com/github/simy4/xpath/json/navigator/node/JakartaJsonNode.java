@@ -15,16 +15,15 @@ import java.util.stream.Stream;
  */
 public interface JakartaJsonNode extends Node {
 
-    JakartaJsonNode getParent();
+  JakartaJsonNode getParent();
 
-    void setParent(JakartaJsonNode parent);
+  void setParent(JakartaJsonNode parent);
 
-    JsonValue get();
+  JsonValue get();
 
-    void set(JsonProvider jsonProvider, JsonValue jsonValue) throws XmlBuilderException;
+  void set(JsonProvider jsonProvider, JsonValue jsonValue) throws XmlBuilderException;
 
-    Stream<JakartaJsonNode> elements();
+  Stream<JakartaJsonNode> elements();
 
-    Stream<JakartaJsonNode> attributes();
-
+  Stream<JakartaJsonNode> attributes();
 }

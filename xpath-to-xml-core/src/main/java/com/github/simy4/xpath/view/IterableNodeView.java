@@ -14,6 +14,5 @@ import com.github.simy4.xpath.util.Function;
  */
 public interface IterableNodeView<N extends Node> extends View<N>, Iterable<NodeView<N>> {
 
-    IterableNodeView<N> flatMap(Function<? super NodeView<N>, ? extends IterableNodeView<N>> fmap);
-
+  IterableNodeView<N> flatMap(Function<? super NodeView<N>, ? extends IterableNodeView<N>> fmap);
 }

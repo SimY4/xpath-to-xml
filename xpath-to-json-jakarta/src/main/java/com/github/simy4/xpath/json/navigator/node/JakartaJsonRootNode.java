@@ -8,29 +8,28 @@ import javax.xml.namespace.QName;
 
 public final class JakartaJsonRootNode extends AbstractJakartaJsonNode {
 
-    private JsonValue root;
+  private JsonValue root;
 
-    public JakartaJsonRootNode(JsonValue root) {
-        super(null);
-        this.root = root;
+  public JakartaJsonRootNode(JsonValue root) {
+    super(null);
+    this.root = root;
+  }
+
+  @Override
+  public QName getName() {
+    return new QName(DOCUMENT);
+  }
+
+  @Override
+  public JsonValue get() {
+    return root;
+  }
+
+  @Override
+  public void set(JsonProvider jsonProvider, JsonValue jsonValue) throws XmlBuilderException {
+    if (null == jsonValue) {
+      throw new XmlBuilderException("Unable to remove from root element");
     }
-
-    @Override
-    public QName getName() {
-        return new QName(DOCUMENT);
-    }
-
-    @Override
-    public JsonValue get() {
-        return root;
-    }
-
-    @Override
-    public void set(JsonProvider jsonProvider, JsonValue jsonValue) throws XmlBuilderException {
-        if (null == jsonValue) {
-            throw new XmlBuilderException("Unable to remove from root element");
-        }
-        root = jsonValue;
-    }
-
+    root = jsonValue;
+  }
 }

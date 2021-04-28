@@ -9,29 +9,29 @@ import javax.xml.namespace.QName;
 
 public class AttributeAxisResolver extends AbstractAxisResolver {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public AttributeAxisResolver(QName name) {
-        super(name);
+  public AttributeAxisResolver(QName name) {
+    super(name);
+  }
+
+  @Override
+  protected <N extends Node> Iterable<? extends N> traverseAxis(
+      Navigator<N> navigator, NodeView<N> parent) {
+    return navigator.attributesOf(parent.getNode());
+  }
+
+  @Override
+  public <N extends Node> NodeView<N> createAxisNode(
+      Navigator<N> navigator, NodeView<N> parent, int position) throws XmlBuilderException {
+    if (isWildcard()) {
+      throw new XmlBuilderException("Wildcard attribute cannot be created");
     }
+    return new NodeView<N>(navigator.createAttribute(parent.getNode(), name), position);
+  }
 
-    @Override
-    protected <N extends Node> Iterable<? extends N> traverseAxis(Navigator<N> navigator, NodeView<N> parent) {
-        return navigator.attributesOf(parent.getNode());
-    }
-
-    @Override
-    public <N extends Node> NodeView<N> createAxisNode(Navigator<N> navigator, NodeView<N> parent, int position)
-            throws XmlBuilderException {
-        if (isWildcard()) {
-            throw new XmlBuilderException("Wildcard attribute cannot be created");
-        }
-        return new NodeView<N>(navigator.createAttribute(parent.getNode(), name), position);
-    }
-
-    @Override
-    public String toString() {
-        return "attribute::" + super.toString();
-    }
-
+  @Override
+  public String toString() {
+    return "attribute::" + super.toString();
+  }
 }

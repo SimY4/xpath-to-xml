@@ -1,11 +1,11 @@
-apply plugin: 'checkstyle'
+apply plugin: 'com.diffplug.spotless'
 
-dependencies {
-    checkstyle libraries.checkstyle
-}
+spotless {
+    java {
+        googleJavaFormat()
+        trimTrailingWhitespace()
+        removeUnusedImports()
 
-checkstyle {
-    configFile = rootProject.file('config/checkstyle/checkstyle.xml')
-    maxWarnings = 0
-    ignoreFailures = false
+        importOrder '', 'javax', 'java', '\\#', '\\#javax', '\\#java'
+    }
 }

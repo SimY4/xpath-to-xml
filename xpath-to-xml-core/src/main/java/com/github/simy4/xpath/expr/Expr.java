@@ -14,17 +14,16 @@ import com.github.simy4.xpath.view.View;
  */
 public interface Expr {
 
-    /**
-     * Evaluate this expression using given context.
-     *
-     * @param navigator XML navigator
-     * @param view      XML node view
-     * @param greedy    whether resolution is greedy
-     * @param <N>       XML model type
-     * @return evaluated XML view
-     * @throws XmlBuilderException if error occur during XML model modification
-     */
-    <N extends Node> View<N> resolve(Navigator<N> navigator, NodeView<N> view, boolean greedy)
-            throws XmlBuilderException;
-
+  /**
+   * Evaluate this expression using given context.
+   *
+   * @param navigator XML navigator
+   * @param view XML node view
+   * @param greedy whether resolution is greedy
+   * @param <N> XML model type
+   * @return evaluated XML view
+   * @throws XmlBuilderException if error occur during XML model modification
+   */
+  <N extends Node> View<N> resolve(Navigator<N> navigator, NodeView<N> view, boolean greedy)
+      throws XmlBuilderException;
 }

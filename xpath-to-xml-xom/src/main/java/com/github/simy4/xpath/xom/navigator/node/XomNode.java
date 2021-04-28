@@ -13,46 +13,45 @@ import nu.xom.Element;
  */
 public interface XomNode extends Node {
 
-    nu.xom.Node getNode();
+  nu.xom.Node getNode();
 
-    /**
-     * Retrieves all child element nodes of this node.
-     *
-     * @return child element nodes
-     */
-    Iterable<? extends XomNode> elements();
+  /**
+   * Retrieves all child element nodes of this node.
+   *
+   * @return child element nodes
+   */
+  Iterable<? extends XomNode> elements();
 
-    /**
-     * Retrieves all attributes of this node.
-     *
-     * @return attributes
-     */
-    Iterable<? extends XomNode> attributes();
+  /**
+   * Retrieves all attributes of this node.
+   *
+   * @return attributes
+   */
+  Iterable<? extends XomNode> attributes();
 
-    /**
-     * Creates XML attribute node and appends to ths node.
-     *
-     * @param attribute new XML attribute's name
-     * @return new attribute node
-     * @throws XmlBuilderException if failure occur during XML attribute creation
-     */
-    XomNode appendAttribute(Attribute attribute) throws XmlBuilderException;
+  /**
+   * Creates XML attribute node and appends to ths node.
+   *
+   * @param attribute new XML attribute's name
+   * @return new attribute node
+   * @throws XmlBuilderException if failure occur during XML attribute creation
+   */
+  XomNode appendAttribute(Attribute attribute) throws XmlBuilderException;
 
-    /**
-     * Creates XML element node and appends to ths node.
-     *
-     * @param element new XML element's name
-     * @return new element node
-     * @throws XmlBuilderException if failure occur during XML element creation
-     */
-    XomNode appendElement(Element element) throws XmlBuilderException;
+  /**
+   * Creates XML element node and appends to ths node.
+   *
+   * @param element new XML element's name
+   * @return new element node
+   * @throws XmlBuilderException if failure occur during XML element creation
+   */
+  XomNode appendElement(Element element) throws XmlBuilderException;
 
-    /**
-     * Sets the given text content to this node.
-     *
-     * @param text text content to set
-     * @throws XmlBuilderException if failure occur during setting the text content
-     */
-    void setText(String text) throws XmlBuilderException;
-
+  /**
+   * Sets the given text content to this node.
+   *
+   * @param text text content to set
+   * @throws XmlBuilderException if failure occur during setting the text content
+   */
+  void setText(String text) throws XmlBuilderException;
 }

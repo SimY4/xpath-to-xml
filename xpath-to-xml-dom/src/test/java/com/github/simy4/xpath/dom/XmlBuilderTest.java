@@ -23,6 +23,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -35,158 +36,161 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class XmlBuilderTest {
 
-    private static final TransformerFactory transformerFactory = TransformerFactory.newInstance();
-    private static final XPathFactory xpathFactory = XPathFactory.newInstance();
+  private static final TransformerFactory transformerFactory = TransformerFactory.newInstance();
+  private static final XPathFactory xpathFactory = XPathFactory.newInstance();
 
-    static Stream<Arguments> data() {
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilderFactory nsAwareDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
-        nsAwareDocumentBuilderFactory.setNamespaceAware(true);
-        return Stream.of(
-                arguments(new FixtureAccessor("simple"), null, documentBuilderFactory),
-                arguments(new FixtureAccessor("simple"), new SimpleNamespaceContext(),
-                        documentBuilderFactory),
-                arguments(new FixtureAccessor("ns-simple"), new SimpleNamespaceContext(),
-                        nsAwareDocumentBuilderFactory),
-                arguments(new FixtureAccessor("attr"), null, documentBuilderFactory),
-                arguments(new FixtureAccessor("attr"), new SimpleNamespaceContext(),
-                        documentBuilderFactory),
-                arguments(new FixtureAccessor("special"), null, documentBuilderFactory),
-                arguments(new FixtureAccessor("special"), new SimpleNamespaceContext(),
-                        documentBuilderFactory)
-        );
+  static Stream<Arguments> data() {
+    DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+    DocumentBuilderFactory nsAwareDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
+    nsAwareDocumentBuilderFactory.setNamespaceAware(true);
+    return Stream.of(
+        arguments(new FixtureAccessor("simple"), null, documentBuilderFactory),
+        arguments(
+            new FixtureAccessor("simple"), new SimpleNamespaceContext(), documentBuilderFactory),
+        arguments(
+            new FixtureAccessor("ns-simple"),
+            new SimpleNamespaceContext(),
+            nsAwareDocumentBuilderFactory),
+        arguments(new FixtureAccessor("attr"), null, documentBuilderFactory),
+        arguments(
+            new FixtureAccessor("attr"), new SimpleNamespaceContext(), documentBuilderFactory),
+        arguments(new FixtureAccessor("special"), null, documentBuilderFactory),
+        arguments(
+            new FixtureAccessor("special"), new SimpleNamespaceContext(), documentBuilderFactory));
+  }
+
+  @ParameterizedTest
+  @MethodSource("data")
+  void shouldBuildDocumentFromSetOfXPaths(
+      FixtureAccessor fixtureAccessor,
+      NamespaceContext namespaceContext,
+      DocumentBuilderFactory documentBuilderFactory)
+      throws XPathExpressionException, TransformerException, ParserConfigurationException {
+    DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
+    Document document = documentBuilder.newDocument();
+    document.setXmlStandalone(true);
+    Document builtDocument =
+        new XmlBuilder(namespaceContext).putAll(xmlProperties.keySet()).build(document);
+
+    for (String xpathString : xmlProperties.keySet()) {
+      XPath xpath = xpathFactory.newXPath();
+      if (null != namespaceContext) {
+        xpath.setNamespaceContext(namespaceContext);
+      }
+      assertThat(xpath.evaluate(xpathString, builtDocument)).isNotNull();
     }
+    assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutXml());
+  }
 
-    @ParameterizedTest
-    @MethodSource("data")
-    void shouldBuildDocumentFromSetOfXPaths(FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext,
-                                            DocumentBuilderFactory documentBuilderFactory)
-            throws XPathExpressionException, TransformerException, ParserConfigurationException {
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-        Document document = documentBuilder.newDocument();
-        document.setXmlStandalone(true);
-        Document builtDocument = new XmlBuilder(namespaceContext)
-                .putAll(xmlProperties.keySet())
-                .build(document);
+  @ParameterizedTest
+  @MethodSource("data")
+  void shouldBuildDocumentFromSetOfXPathsAndSetValues(
+      FixtureAccessor fixtureAccessor,
+      NamespaceContext namespaceContext,
+      DocumentBuilderFactory documentBuilderFactory)
+      throws XPathExpressionException, TransformerException, ParserConfigurationException {
+    DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
+    Document document = documentBuilder.newDocument();
+    document.setXmlStandalone(true);
+    Document builtDocument = new XmlBuilder(namespaceContext).putAll(xmlProperties).build(document);
 
-        for (String xpathString : xmlProperties.keySet()) {
-            XPath xpath = xpathFactory.newXPath();
-            if (null != namespaceContext) {
-                xpath.setNamespaceContext(namespaceContext);
-            }
-            assertThat(xpath.evaluate(xpathString, builtDocument)).isNotNull();
-        }
-        assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutXml());
+    for (Map.Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
+      XPath xpath = xpathFactory.newXPath();
+      if (null != namespaceContext) {
+        xpath.setNamespaceContext(namespaceContext);
+      }
+      assertThat(xpath.evaluate(xpathToValuePair.getKey(), builtDocument, XPathConstants.STRING))
+          .isEqualTo(xpathToValuePair.getValue());
     }
+    assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
+  }
 
-    @ParameterizedTest
-    @MethodSource("data")
-    void shouldBuildDocumentFromSetOfXPathsAndSetValues(FixtureAccessor fixtureAccessor,
-                                                        NamespaceContext namespaceContext,
-                                                        DocumentBuilderFactory documentBuilderFactory)
-            throws XPathExpressionException, TransformerException, ParserConfigurationException {
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-        Document document = documentBuilder.newDocument();
-        document.setXmlStandalone(true);
-        Document builtDocument = new XmlBuilder(namespaceContext)
-                .putAll(xmlProperties)
-                .build(document);
+  @ParameterizedTest
+  @MethodSource("data")
+  void shouldModifyDocumentWhenXPathsAreNotTraversable(
+      FixtureAccessor fixtureAccessor,
+      NamespaceContext namespaceContext,
+      DocumentBuilderFactory documentBuilderFactory)
+      throws XPathExpressionException, TransformerException, IOException, SAXException,
+          ParserConfigurationException {
+    DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
+    String xml = fixtureAccessor.getPutXml();
+    Document oldDocument = stringToXml(documentBuilder, xml);
+    Document builtDocument =
+        new XmlBuilder(namespaceContext).putAll(xmlProperties).build(oldDocument);
 
-        for (Map.Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
-            XPath xpath = xpathFactory.newXPath();
-            if (null != namespaceContext) {
-                xpath.setNamespaceContext(namespaceContext);
-            }
-            assertThat(xpath.evaluate(xpathToValuePair.getKey(), builtDocument, XPathConstants.STRING))
-                    .isEqualTo(xpathToValuePair.getValue());
-        }
-        assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
+    assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
+  }
+
+  @ParameterizedTest
+  @MethodSource("data")
+  void shouldNotModifyDocumentWhenAllXPathsTraversable(
+      FixtureAccessor fixtureAccessor,
+      NamespaceContext namespaceContext,
+      DocumentBuilderFactory documentBuilderFactory)
+      throws XPathExpressionException, TransformerException, IOException, SAXException,
+          ParserConfigurationException {
+    DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
+    String xml = fixtureAccessor.getPutValueXml();
+    Document oldDocument = stringToXml(documentBuilder, xml);
+    Document builtDocument =
+        new XmlBuilder(namespaceContext).putAll(xmlProperties).build(oldDocument);
+
+    assertThat(xmlToString(builtDocument)).isEqualTo(xml);
+
+    builtDocument =
+        new XmlBuilder(namespaceContext).putAll(xmlProperties.keySet()).build(oldDocument);
+
+    assertThat(xmlToString(builtDocument)).isEqualTo(xml);
+  }
+
+  @ParameterizedTest
+  @MethodSource("data")
+  void shouldRemovePathsFromExistingXml(
+      FixtureAccessor fixtureAccessor,
+      NamespaceContext namespaceContext,
+      DocumentBuilderFactory documentBuilderFactory)
+      throws XPathExpressionException, TransformerException, IOException, SAXException,
+          ParserConfigurationException {
+    DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
+    String xml = fixtureAccessor.getPutValueXml();
+    Document oldDocument = stringToXml(documentBuilder, xml);
+    Document builtDocument =
+        new XmlBuilder(namespaceContext).removeAll(xmlProperties.keySet()).build(oldDocument);
+
+    for (Map.Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
+      XPath xpath = xpathFactory.newXPath();
+      if (null != namespaceContext) {
+        xpath.setNamespaceContext(namespaceContext);
+      }
+      assertThat(xpath.evaluate(xpathToValuePair.getKey(), builtDocument, XPathConstants.NODE))
+          .isNull();
     }
+    assertThat(xmlToString(builtDocument)).isNotEqualTo(fixtureAccessor.getPutValueXml());
+  }
 
-    @ParameterizedTest
-    @MethodSource("data")
-    void shouldModifyDocumentWhenXPathsAreNotTraversable(FixtureAccessor fixtureAccessor,
-                                                         NamespaceContext namespaceContext,
-                                                         DocumentBuilderFactory documentBuilderFactory)
-            throws XPathExpressionException, TransformerException, IOException, SAXException,
-            ParserConfigurationException {
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-        String xml = fixtureAccessor.getPutXml();
-        Document oldDocument = stringToXml(documentBuilder, xml);
-        Document builtDocument = new XmlBuilder(namespaceContext)
-                .putAll(xmlProperties)
-                .build(oldDocument);
+  private Document stringToXml(DocumentBuilder documentBuilder, String xml)
+      throws IOException, SAXException {
+    Document document =
+        documentBuilder.parse(new ByteArrayInputStream(xml.getBytes(Charset.forName("UTF-8"))));
+    document.setXmlStandalone(true);
+    return document;
+  }
 
-        assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
-    }
-
-    @ParameterizedTest
-    @MethodSource("data")
-    void shouldNotModifyDocumentWhenAllXPathsTraversable(FixtureAccessor fixtureAccessor,
-                                                         NamespaceContext namespaceContext,
-                                                         DocumentBuilderFactory documentBuilderFactory)
-            throws XPathExpressionException, TransformerException, IOException, SAXException,
-            ParserConfigurationException {
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-        String xml = fixtureAccessor.getPutValueXml();
-        Document oldDocument = stringToXml(documentBuilder, xml);
-        Document builtDocument = new XmlBuilder(namespaceContext)
-                .putAll(xmlProperties)
-                .build(oldDocument);
-
-        assertThat(xmlToString(builtDocument)).isEqualTo(xml);
-
-        builtDocument = new XmlBuilder(namespaceContext)
-                .putAll(xmlProperties.keySet())
-                .build(oldDocument);
-
-        assertThat(xmlToString(builtDocument)).isEqualTo(xml);
-    }
-
-    @ParameterizedTest
-    @MethodSource("data")
-    void shouldRemovePathsFromExistingXml(FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext,
-                                          DocumentBuilderFactory documentBuilderFactory)
-            throws XPathExpressionException, TransformerException, IOException, SAXException,
-            ParserConfigurationException {
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-        String xml = fixtureAccessor.getPutValueXml();
-        Document oldDocument = stringToXml(documentBuilder, xml);
-        Document builtDocument = new XmlBuilder(namespaceContext)
-                .removeAll(xmlProperties.keySet())
-                .build(oldDocument);
-
-        for (Map.Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
-            XPath xpath = xpathFactory.newXPath();
-            if (null != namespaceContext) {
-                xpath.setNamespaceContext(namespaceContext);
-            }
-            assertThat(xpath.evaluate(xpathToValuePair.getKey(), builtDocument, XPathConstants.NODE)).isNull();
-        }
-        assertThat(xmlToString(builtDocument)).isNotEqualTo(fixtureAccessor.getPutValueXml());
-    }
-
-    private Document stringToXml(DocumentBuilder documentBuilder, String xml) throws IOException, SAXException {
-        Document document = documentBuilder.parse(new ByteArrayInputStream(xml.getBytes(Charset.forName("UTF-8"))));
-        document.setXmlStandalone(true);
-        return document;
-    }
-
-    private String xmlToString(Document xml) throws TransformerException {
-        Transformer transformer = transformerFactory.newTransformer();
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty(OutputKeys.VERSION, "1.0");
-        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-        StringWriter out = new StringWriter();
-        transformer.transform(new DOMSource(xml), new StreamResult(out));
-        return out.toString().replaceAll("\n\\p{Space}*\n", "\n"); //JDK 9 fix
-    }
-
+  private String xmlToString(Document xml) throws TransformerException {
+    Transformer transformer = transformerFactory.newTransformer();
+    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+    transformer.setOutputProperty(OutputKeys.VERSION, "1.0");
+    transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+    transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+    StringWriter out = new StringWriter();
+    transformer.transform(new DOMSource(xml), new StreamResult(out));
+    return out.toString().replaceAll("\n\\p{Space}*\n", "\n"); // JDK 9 fix
+  }
 }

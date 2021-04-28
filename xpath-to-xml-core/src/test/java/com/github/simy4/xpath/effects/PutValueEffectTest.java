@@ -28,52 +28,51 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class PutValueEffectTest {
 
-    @Mock private Navigator<TestNode> navigator;
-    @Mock private Expr expr;
+  @Mock private Navigator<TestNode> navigator;
+  @Mock private Expr expr;
 
-    private Effect putValueEffect;
+  private Effect putValueEffect;
 
-    @BeforeEach
-    void setUp() {
-        putValueEffect = new PutValueEffect(expr, "value");
-    }
+  @BeforeEach
+  void setUp() {
+    putValueEffect = new PutValueEffect(expr, "value");
+  }
 
-    @Test
-    @DisplayName("Should put value to all resolved nodes")
-    void shouldPutValueToAllResolvedNodes() {
-        // given
-        when(expr.resolve(any(), any(), anyBoolean())).thenReturn(new NodeView<>(node("node")));
+  @Test
+  @DisplayName("Should put value to all resolved nodes")
+  void shouldPutValueToAllResolvedNodes() {
+    // given
+    when(expr.resolve(any(), any(), anyBoolean())).thenReturn(new NodeView<>(node("node")));
 
-        // when
-        putValueEffect.perform(navigator, node("xml"));
+    // when
+    putValueEffect.perform(navigator, node("xml"));
 
-        // then
-        verify(expr).resolve(eq(navigator), refEq(new NodeView<>(node("xml"))), eq(true));
-        verify(navigator).setText(node("node"), "value");
-    }
+    // then
+    verify(expr).resolve(eq(navigator), refEq(new NodeView<>(node("xml"))), eq(true));
+    verify(navigator).setText(node("node"), "value");
+  }
 
-    @Test
-    @DisplayName("Should throw if resolved to a literal expr")
-    void shouldThrowWhenResolvedToALiteralExpr() {
-        // given
-        LiteralView<Node> literal = new LiteralView<>("literal");
-        when(expr.resolve(any(), any(), anyBoolean())).thenReturn(literal);
+  @Test
+  @DisplayName("Should throw if resolved to a literal expr")
+  void shouldThrowWhenResolvedToALiteralExpr() {
+    // given
+    LiteralView<Node> literal = new LiteralView<>("literal");
+    when(expr.resolve(any(), any(), anyBoolean())).thenReturn(literal);
 
-        // when
-        assertThatThrownBy(() -> putValueEffect.perform(navigator, node("xml")))
-                .hasMessage("Failed to put value into XML. Read-only view was resolved: " + literal);
-    }
+    // when
+    assertThatThrownBy(() -> putValueEffect.perform(navigator, node("xml")))
+        .hasMessage("Failed to put value into XML. Read-only view was resolved: " + literal);
+  }
 
-    @Test
-    @DisplayName("When exception should propagate")
-    void shouldPropagateOnException() {
-        // given
-        when(expr.resolve(any(), any(), anyBoolean())).thenReturn(new NodeView<>(node("node")));
-        XmlBuilderException failure = new XmlBuilderException("Failure");
-        doThrow(failure).when(navigator).setText(node("node"), "value");
+  @Test
+  @DisplayName("When exception should propagate")
+  void shouldPropagateOnException() {
+    // given
+    when(expr.resolve(any(), any(), anyBoolean())).thenReturn(new NodeView<>(node("node")));
+    XmlBuilderException failure = new XmlBuilderException("Failure");
+    doThrow(failure).when(navigator).setText(node("node"), "value");
 
-        // when
-        assertThatThrownBy(() -> putValueEffect.perform(navigator, node("xml"))).isSameAs(failure);
-    }
-
+    // when
+    assertThatThrownBy(() -> putValueEffect.perform(navigator, node("xml"))).isSameAs(failure);
+  }
 }
