@@ -7,11 +7,3 @@ updates:
     time: "19:00"
   open-pull-requests-limit: 10
   target-branch: java6
-  ignore:
-  - dependency-name: org.mockito:mockito-junit-jupiter
-    versions:
-    - 3.7.7
-    - 3.8.0
-  - dependency-name: org.junit.jupiter:junit-jupiter
-    versions:
-    - 5.7.1
