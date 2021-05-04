@@ -9,23 +9,23 @@ import java.io.Serializable;
 
 public class NumberExpr implements Expr, Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private final NumberView<?> number;
+  private final NumberView<?> number;
 
-    public NumberExpr(double number) {
-        this.number = new NumberView<>(number);
-    }
+  public NumberExpr(double number) {
+    this.number = new NumberView<>(number);
+  }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public <N extends Node> NumberView<N> resolve(Navigator<N> navigator, NodeView<N> view, boolean greedy) {
-        return (NumberView<N>) number;
-    }
+  @Override
+  @SuppressWarnings("unchecked")
+  public <N extends Node> NumberView<N> resolve(
+      Navigator<N> navigator, NodeView<N> view, boolean greedy) {
+    return (NumberView<N>) number;
+  }
 
-    @Override
-    public String toString() {
-        return number.toString();
-    }
-
+  @Override
+  public String toString() {
+    return number.toString();
+  }
 }

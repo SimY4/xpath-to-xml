@@ -15,13 +15,12 @@ import com.github.simy4.xpath.view.NodeView;
 @FunctionalInterface
 public interface StepExpr extends Expr {
 
-    /**
-     * {@inheritDoc}
-     *
-     * @return evaluated XML node views
-     */
-    @Override
-    <N extends Node> IterableNodeView<N> resolve(Navigator<N> navigator, NodeView<N> view, boolean greedy)
-            throws XmlBuilderException;
-
+  /**
+   * {@inheritDoc}
+   *
+   * @return evaluated XML node views
+   */
+  @Override
+  <N extends Node> IterableNodeView<N> resolve(
+      Navigator<N> navigator, NodeView<N> view, boolean greedy) throws XmlBuilderException;
 }

@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
+
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,50 +19,52 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class DomNodeTest {
 
-    @Mock(serializable = true) private org.w3c.dom.Node node;
+  @Mock(serializable = true)
+  private org.w3c.dom.Node node;
 
-    private Node nodeView;
+  private Node nodeView;
 
-    @BeforeEach
-    void setUp() {
-        nodeView = new DomNode(node);
-    }
+  @BeforeEach
+  void setUp() {
+    nodeView = new DomNode(node);
+  }
 
-    @Test
-    void shouldReturnNodeNameForNamespaceUnawareNode() {
-        when(node.getNodeName()).thenReturn("node");
-        QName result = nodeView.getName();
-        assertThat(result).extracting("namespaceURI", "localPart", "prefix")
-                .containsExactly(XMLConstants.NULL_NS_URI, "node", XMLConstants.DEFAULT_NS_PREFIX);
-    }
+  @Test
+  void shouldReturnNodeNameForNamespaceUnawareNode() {
+    when(node.getNodeName()).thenReturn("node");
+    QName result = nodeView.getName();
+    assertThat(result)
+        .extracting("namespaceURI", "localPart", "prefix")
+        .containsExactly(XMLConstants.NULL_NS_URI, "node", XMLConstants.DEFAULT_NS_PREFIX);
+  }
 
-    @Test
-    void shouldReturnNodeNameForNamespaceAwareNode() {
-        when(node.getNamespaceURI()).thenReturn("http://www.example.com/my");
-        when(node.getLocalName()).thenReturn("node");
-        when(node.getPrefix()).thenReturn("my");
-        QName result = nodeView.getName();
-        assertThat(result).extracting("namespaceURI", "localPart", "prefix")
-                .containsExactly("http://www.example.com/my", "node", "my");
-    }
+  @Test
+  void shouldReturnNodeNameForNamespaceAwareNode() {
+    when(node.getNamespaceURI()).thenReturn("http://www.example.com/my");
+    when(node.getLocalName()).thenReturn("node");
+    when(node.getPrefix()).thenReturn("my");
+    QName result = nodeView.getName();
+    assertThat(result)
+        .extracting("namespaceURI", "localPart", "prefix")
+        .containsExactly("http://www.example.com/my", "node", "my");
+  }
 
-    @Test
-    void shouldReturnNodeTextContent() {
-        when(node.getTextContent()).thenReturn("text");
+  @Test
+  void shouldReturnNodeTextContent() {
+    when(node.getTextContent()).thenReturn("text");
 
-        assertThat(nodeView.getText()).isEqualTo("text");
-    }
+    assertThat(nodeView.getText()).isEqualTo("text");
+  }
 
-    @Test
-    void shouldSerializeAndDeserialize() throws IOException, ClassNotFoundException {
-        // given
-        when(node.getNodeName()).thenReturn("node");
+  @Test
+  void shouldSerializeAndDeserialize() throws IOException, ClassNotFoundException {
+    // given
+    when(node.getNodeName()).thenReturn("node");
 
-        // when
-        Node deserializedNode = SerializationHelper.serializeAndDeserializeBack(nodeView);
+    // when
+    Node deserializedNode = SerializationHelper.serializeAndDeserializeBack(nodeView);
 
-        // then
-        assertThat(deserializedNode.getName()).isEqualTo(nodeView.getName());
-    }
-
+    // then
+    assertThat(deserializedNode.getName()).isEqualTo(nodeView.getName());
+  }
 }

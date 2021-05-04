@@ -12,16 +12,15 @@ import com.google.gson.JsonElement;
  */
 public interface GsonNode extends Node {
 
-    GsonNode getParent();
+  GsonNode getParent();
 
-    void setParent(GsonNode parent);
+  void setParent(GsonNode parent);
 
-    JsonElement get();
+  JsonElement get();
 
-    void set(JsonElement jsonElement) throws XmlBuilderException;
+  void set(JsonElement jsonElement) throws XmlBuilderException;
 
-    Iterable<? extends GsonNode> elements();
+  Iterable<? extends GsonNode> elements();
 
-    Iterable<? extends GsonNode> attributes();
-
+  Iterable<? extends GsonNode> attributes();
 }

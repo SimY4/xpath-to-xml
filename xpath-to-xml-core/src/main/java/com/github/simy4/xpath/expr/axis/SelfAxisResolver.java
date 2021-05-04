@@ -6,30 +6,30 @@ import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.view.NodeView;
 
 import javax.xml.namespace.QName;
+
 import java.util.Collections;
 
 public class SelfAxisResolver extends AbstractAxisResolver {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public SelfAxisResolver(QName name) {
-        super(name);
-    }
+  public SelfAxisResolver(QName name) {
+    super(name);
+  }
 
-    @Override
-    protected <N extends Node> Iterable<N> traverseAxis(Navigator<N> navigator, NodeView<N> view) {
-        return Collections.singletonList(view.getNode());
-    }
+  @Override
+  protected <N extends Node> Iterable<N> traverseAxis(Navigator<N> navigator, NodeView<N> view) {
+    return Collections.singletonList(view.getNode());
+  }
 
-    @Override
-    public <N extends Node> NodeView<N> createAxisNode(Navigator<N> navigator, NodeView<N> view, int position)
-            throws XmlBuilderException {
-        throw new XmlBuilderException("Self axis cannot modify XML model");
-    }
+  @Override
+  public <N extends Node> NodeView<N> createAxisNode(
+      Navigator<N> navigator, NodeView<N> view, int position) throws XmlBuilderException {
+    throw new XmlBuilderException("Self axis cannot modify XML model");
+  }
 
-    @Override
-    public String toString() {
-        return "self::" + super.toString();
-    }
-
+  @Override
+  public String toString() {
+    return "self::" + super.toString();
+  }
 }

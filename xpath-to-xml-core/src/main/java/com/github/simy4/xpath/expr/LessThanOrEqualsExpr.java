@@ -8,25 +8,25 @@ import com.github.simy4.xpath.view.View;
 
 public class LessThanOrEqualsExpr extends AbstractOperationExpr {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public LessThanOrEqualsExpr(Expr leftExpr, Expr rightExpr) {
-        super(leftExpr, rightExpr);
+  public LessThanOrEqualsExpr(Expr leftExpr, Expr rightExpr) {
+    super(leftExpr, rightExpr);
+  }
+
+  @Override
+  public <N extends Node> View<N> resolve(
+      Navigator<N> navigator, View<N> left, View<N> right, boolean greedy)
+      throws XmlBuilderException {
+    boolean le = 0 >= Double.compare(left.toNumber(), right.toNumber());
+    if (!le && greedy) {
+      le = left.visit(new EqualsExpr.EqualsVisitor<>(navigator, right));
     }
+    return BooleanView.of(le);
+  }
 
-    @Override
-    public <N extends Node> View<N> resolve(Navigator<N> navigator, View<N> left, View<N> right, boolean greedy)
-            throws XmlBuilderException {
-        boolean le = 0 >= Double.compare(left.toNumber(), right.toNumber());
-        if (!le && greedy) {
-            le = left.visit(new EqualsExpr.EqualsVisitor<>(navigator, right));
-        }
-        return BooleanView.of(le);
-    }
-
-    @Override
-    protected String operator() {
-        return "<=";
-    }
-
+  @Override
+  protected String operator() {
+    return "<=";
+  }
 }

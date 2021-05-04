@@ -16,22 +16,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(MockitoExtension.class)
 class LiteralExprTest {
 
-    private static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));
+  private static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));
 
-    @Mock private Navigator<TestNode> navigator;
+  @Mock private Navigator<TestNode> navigator;
 
-    private final Expr literalExpr = new LiteralExpr("value");
+  private final Expr literalExpr = new LiteralExpr("value");
 
-    @Test
-    @DisplayName("Should always return single literal node")
-    void shouldAlwaysReturnSingleLiteralNode() {
-        View<TestNode> result = literalExpr.resolve(navigator, parentNode, false);
-        assertThat(result).extracting("literal").isEqualTo("value");
-    }
+  @Test
+  @DisplayName("Should always return single literal node")
+  void shouldAlwaysReturnSingleLiteralNode() {
+    View<TestNode> result = literalExpr.resolve(navigator, parentNode, false);
+    assertThat(result).extracting("literal").isEqualTo("value");
+  }
 
-    @Test
-    void testToString() {
-        assertThat(literalExpr).hasToString("'value'");
-    }
-
+  @Test
+  void testToString() {
+    assertThat(literalExpr).hasToString("'value'");
+  }
 }

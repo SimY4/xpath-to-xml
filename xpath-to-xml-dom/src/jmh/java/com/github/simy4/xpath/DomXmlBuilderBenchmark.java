@@ -17,6 +17,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,42 +26,40 @@ import java.util.Map;
 @State(Scope.Benchmark)
 public class DomXmlBuilderBenchmark {
 
-    private static final Map<String, NamespaceContext> NAMESPACE_CONTEXT_MAP;
+  private static final Map<String, NamespaceContext> NAMESPACE_CONTEXT_MAP;
 
-    static {
-        Map<String, NamespaceContext> namespaceContextMap = new HashMap<>();
-        namespaceContextMap.put("null", null);
-        namespaceContextMap.put("simple", new SimpleNamespaceContext());
-        NAMESPACE_CONTEXT_MAP = Collections.unmodifiableMap(namespaceContextMap);
-    }
+  static {
+    Map<String, NamespaceContext> namespaceContextMap = new HashMap<>();
+    namespaceContextMap.put("null", null);
+    namespaceContextMap.put("simple", new SimpleNamespaceContext());
+    NAMESPACE_CONTEXT_MAP = Collections.unmodifiableMap(namespaceContextMap);
+  }
 
-    @Param({ "simple", "ns-simple", "attr", "special" })
-    public String fixtureName;
+  @Param({"simple", "ns-simple", "attr", "special"})
+  public String fixtureName;
 
-    @Param({ "null" })
-    public String nsContext;
+  @Param({"null"})
+  public String nsContext;
 
-    private DocumentBuilder documentBuilder;
-    private FixtureAccessor fixtureAccessor;
-    private NamespaceContext namespaceContext;
+  private DocumentBuilder documentBuilder;
+  private FixtureAccessor fixtureAccessor;
+  private NamespaceContext namespaceContext;
 
-    @Setup
-    public void setUp() throws ParserConfigurationException {
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        fixtureAccessor = new FixtureAccessor(fixtureName);
-        documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        namespaceContext = NAMESPACE_CONTEXT_MAP.get(nsContext);
-    }
+  @Setup
+  public void setUp() throws ParserConfigurationException {
+    DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+    fixtureAccessor = new FixtureAccessor(fixtureName);
+    documentBuilder = documentBuilderFactory.newDocumentBuilder();
+    namespaceContext = NAMESPACE_CONTEXT_MAP.get(nsContext);
+  }
 
-    @Benchmark
-    public void shouldBuildDocumentFromSetOfXPaths(Blackhole blackhole)
-            throws XPathExpressionException {
-        Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-        Document document = documentBuilder.newDocument();
-        document.setXmlStandalone(true);
-        blackhole.consume(new XmlBuilder(namespaceContext)
-                .putAll(xmlProperties.keySet())
-                .build(document));
-    }
-
+  @Benchmark
+  public void shouldBuildDocumentFromSetOfXPaths(Blackhole blackhole)
+      throws XPathExpressionException {
+    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
+    Document document = documentBuilder.newDocument();
+    document.setXmlStandalone(true);
+    blackhole.consume(
+        new XmlBuilder(namespaceContext).putAll(xmlProperties.keySet()).build(document));
+  }
 }

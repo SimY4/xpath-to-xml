@@ -1,7 +1,7 @@
 apply plugin: 'me.champeau.gradle.jmh'
 
 jmh {
-    jmhVersion = '1.27'
+    jmhVersion = '1.29'
 }
 
 [configurations.jmhCompileClasspath, configurations.jmhRuntimeClasspath].each {

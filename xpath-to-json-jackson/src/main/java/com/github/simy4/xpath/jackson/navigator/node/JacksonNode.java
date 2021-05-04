@@ -12,16 +12,15 @@ import com.github.simy4.xpath.navigator.Node;
  */
 public interface JacksonNode extends Node {
 
-    JacksonNode getParent();
+  JacksonNode getParent();
 
-    void setParent(JacksonNode parent);
+  void setParent(JacksonNode parent);
 
-    JsonNode get();
+  JsonNode get();
 
-    void set(JsonNode jsonNode) throws XmlBuilderException;
+  void set(JsonNode jsonNode) throws XmlBuilderException;
 
-    Iterable<? extends JacksonNode> elements();
+  Iterable<? extends JacksonNode> elements();
 
-    Iterable<? extends JacksonNode> attributes();
-
+  Iterable<? extends JacksonNode> attributes();
 }

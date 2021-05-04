@@ -1,0 +1,49 @@
+ext.moduleName = 'com.github.simych.xpath.scala'
+
+apply plugin: 'scala'
+apply plugin: 'cz.alenkacz.gradle.scalafmt'
+apply plugin: 'cz.augi.gradle.wartremover'
+apply from: rootProject.file('gradle/benchmark-jmh.gradle')
+
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        def module = details.requested.module
+        if (module.name.endsWith('_%%')) {
+            details.useTarget "${module.group}:${module.name.replace('_%%', "_${scalaCompiler}" as CharSequence)}:${details.requested.version}"
+            details.because "Scala compiler resolution"
+        }
+    }
+}
+
+dependencies {
+    api project(':xpath-to-xml-core')
+
+    implementation libraries.scalaLibrary('2.11.12')
+    implementation libraries.scalaReflect('2.11.12')
+    implementation libraries.scalaXml
+
+    testImplementation project(':xpath-to-xml-test')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.assertj:assertj-core'
+}
+
+javadocJar {
+    dependsOn scaladoc
+    from scaladoc
+}
+
+scaladoc {
+    scalaDocOptions.with {
+        additionalParameters = [
+                '-language:experimental.macros',     // Allow macro definition (besides implementation and application)
+                '-language:implicitConversions',     // Allow definition of implicit functions called views
+        ]
+    }
+}
+
+wartremover {
+    warningWarts -= ['DefaultArguments', 'IsInstanceOf', 'Null', 'Throw', 'Var']
+    test {
+        warningWarts -= ['NonUnitStatements', 'TraversableOps']
+    }
+}

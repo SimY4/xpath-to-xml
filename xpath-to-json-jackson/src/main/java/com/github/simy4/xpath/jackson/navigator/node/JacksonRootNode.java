@@ -7,29 +7,28 @@ import javax.xml.namespace.QName;
 
 public final class JacksonRootNode extends AbstractJacksonNode {
 
-    private JsonNode root;
+  private JsonNode root;
 
-    public JacksonRootNode(JsonNode root) {
-        super(null);
-        this.root = root;
+  public JacksonRootNode(JsonNode root) {
+    super(null);
+    this.root = root;
+  }
+
+  @Override
+  public QName getName() {
+    return new QName(DOCUMENT);
+  }
+
+  @Override
+  public JsonNode get() {
+    return root;
+  }
+
+  @Override
+  public void set(JsonNode jsonElement) throws XmlBuilderException {
+    if (null == jsonElement) {
+      throw new XmlBuilderException("Unable to remove from root element");
     }
-
-    @Override
-    public QName getName() {
-        return new QName(DOCUMENT);
-    }
-
-    @Override
-    public JsonNode get() {
-        return root;
-    }
-
-    @Override
-    public void set(JsonNode jsonElement) throws XmlBuilderException {
-        if (null == jsonElement) {
-            throw new XmlBuilderException("Unable to remove from root element");
-        }
-        root = jsonElement;
-    }
-
+    root = jsonElement;
+  }
 }

@@ -9,28 +9,25 @@ import com.github.simy4.xpath.spi.Effect;
 import com.github.simy4.xpath.spi.NavigatorSpi;
 import com.google.gson.JsonElement;
 
-/**
- * Gson model navigator extension SPI.
- */
+/** Gson model navigator extension SPI. */
 public class GsonNavigatorSpi implements NavigatorSpi {
 
-    @Override
-    public boolean canHandle(Object o) {
-        return o instanceof JsonElement;
-    }
+  @Override
+  public boolean canHandle(Object o) {
+    return o instanceof JsonElement;
+  }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> T process(T json, Iterable<Effect> effects) throws XmlBuilderException {
-        if (!canHandle(json)) {
-            throw new IllegalArgumentException("JSON model is not supported");
-        }
-        final GsonNode root = new GsonRootNode((JsonElement) json);
-        final Navigator<GsonNode> navigator = new GsonNavigator(root);
-        for (Effect effect : effects) {
-            effect.perform(navigator, root);
-        }
-        return (T) root.get();
+  @Override
+  @SuppressWarnings("unchecked")
+  public <T> T process(T json, Iterable<Effect> effects) throws XmlBuilderException {
+    if (!canHandle(json)) {
+      throw new IllegalArgumentException("JSON model is not supported");
     }
-
+    final GsonNode root = new GsonRootNode((JsonElement) json);
+    final Navigator<GsonNode> navigator = new GsonNavigator(root);
+    for (Effect effect : effects) {
+      effect.perform(navigator, root);
+    }
+    return (T) root.get();
+  }
 }

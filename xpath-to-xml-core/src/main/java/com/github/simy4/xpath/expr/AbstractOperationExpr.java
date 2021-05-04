@@ -10,33 +10,33 @@ import java.io.Serializable;
 
 abstract class AbstractOperationExpr implements Expr, Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private final Expr leftExpr;
-    private final Expr rightExpr;
+  private final Expr leftExpr;
+  private final Expr rightExpr;
 
-    protected AbstractOperationExpr(Expr leftExpr, Expr rightExpr) {
-        this.leftExpr = leftExpr;
-        this.rightExpr = rightExpr;
-    }
+  protected AbstractOperationExpr(Expr leftExpr, Expr rightExpr) {
+    this.leftExpr = leftExpr;
+    this.rightExpr = rightExpr;
+  }
 
-    @Override
-    public final <N extends Node> View<N> resolve(Navigator<N> navigator, NodeView<N> view, boolean greedy)
-            throws XmlBuilderException {
-        final boolean newGreedy = !view.hasNext() && greedy;
-        final View<N> leftView = leftExpr.resolve(navigator, view, newGreedy);
-        final View<N> rightView = rightExpr.resolve(navigator, view, newGreedy);
-        return resolve(navigator, leftView, rightView, newGreedy);
-    }
+  @Override
+  public final <N extends Node> View<N> resolve(
+      Navigator<N> navigator, NodeView<N> view, boolean greedy) throws XmlBuilderException {
+    final boolean newGreedy = !view.hasNext() && greedy;
+    final View<N> leftView = leftExpr.resolve(navigator, view, newGreedy);
+    final View<N> rightView = rightExpr.resolve(navigator, view, newGreedy);
+    return resolve(navigator, leftView, rightView, newGreedy);
+  }
 
-    protected abstract <N extends Node> View<N> resolve(Navigator<N> navigator, View<N> left, View<N> right,
-                                                        boolean greedy) throws XmlBuilderException;
+  protected abstract <N extends Node> View<N> resolve(
+      Navigator<N> navigator, View<N> left, View<N> right, boolean greedy)
+      throws XmlBuilderException;
 
-    protected abstract String operator();
+  protected abstract String operator();
 
-    @Override
-    public final String toString() {
-        return leftExpr.toString() + operator() + rightExpr.toString();
-    }
-
+  @Override
+  public final String toString() {
+    return leftExpr.toString() + operator() + rightExpr.toString();
+  }
 }

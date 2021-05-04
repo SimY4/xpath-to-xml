@@ -26,61 +26,60 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 abstract class AbstractAxisResolverTest {
 
-    static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));
-    static final QName name = new QName("name");
+  static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));
+  static final QName name = new QName("name");
 
-    @Mock Navigator<TestNode> navigator;
+  @Mock Navigator<TestNode> navigator;
 
-    AxisResolver axisResolver;
+  AxisResolver axisResolver;
 
-    @Test
-    @DisplayName("When axis traversable should return traversed nodes")
-    void shouldReturnTraversedNodesIfAxisIsTraversable() {
-        // given
-        setUpResolvableAxis();
+  @Test
+  @DisplayName("When axis traversable should return traversed nodes")
+  void shouldReturnTraversedNodesIfAxisIsTraversable() {
+    // given
+    setUpResolvableAxis();
 
-        // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, false);
+    // when
+    IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, false);
 
-        // then
-        assertThat(result).extracting("node").containsExactly(node(name));
-    }
+    // then
+    assertThat(result).extracting("node").containsExactly(node(name));
+  }
 
-    @Test
-    @DisplayName("When axis traversable should not call to create")
-    void shouldNotCallToCreateIfAxisIsTraversable() {
-        // given
-        setUpResolvableAxis();
-        axisResolver = spy(axisResolver);
+  @Test
+  @DisplayName("When axis traversable should not call to create")
+  void shouldNotCallToCreateIfAxisIsTraversable() {
+    // given
+    setUpResolvableAxis();
+    axisResolver = spy(axisResolver);
 
-        // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, true);
+    // when
+    IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, true);
 
-        // then
-        assertThat(result).isNotEmpty();
-        verify(axisResolver, never()).createAxisNode(any(), any(), anyInt());
-    }
+    // then
+    assertThat(result).isNotEmpty();
+    verify(axisResolver, never()).createAxisNode(any(), any(), anyInt());
+  }
 
-    @Test
-    @DisplayName("When axis is not traversable return empty")
-    void shouldReturnEmptyIfAxisIsNotTraversable() {
-        // when
-        IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, false);
+  @Test
+  @DisplayName("When axis is not traversable return empty")
+  void shouldReturnEmptyIfAxisIsNotTraversable() {
+    // when
+    IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, false);
 
-        // then
-        assertThat(result).isEmpty();
-    }
+    // then
+    assertThat(result).isEmpty();
+  }
 
-    @Test
-    @DisplayName("Should serialize and deserialize axis")
-    void shouldSerializeAndDeserializeAxis() throws IOException, ClassNotFoundException {
-        // when
-        AxisResolver deserializedAxis = SerializationHelper.serializeAndDeserializeBack(axisResolver);
+  @Test
+  @DisplayName("Should serialize and deserialize axis")
+  void shouldSerializeAndDeserializeAxis() throws IOException, ClassNotFoundException {
+    // when
+    AxisResolver deserializedAxis = SerializationHelper.serializeAndDeserializeBack(axisResolver);
 
-        // then
-        assertThat(deserializedAxis).usingRecursiveComparison().isEqualTo(axisResolver);
-    }
+    // then
+    assertThat(deserializedAxis).usingRecursiveComparison().isEqualTo(axisResolver);
+  }
 
-    abstract void setUpResolvableAxis();
-
+  abstract void setUpResolvableAxis();
 }

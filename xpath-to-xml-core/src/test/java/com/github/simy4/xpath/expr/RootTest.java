@@ -21,30 +21,29 @@ import static org.mockito.Mockito.when;
 @MockitoSettings(strictness = Strictness.LENIENT)
 class RootTest {
 
-    private static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));
+  private static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));
 
-    @Mock private Navigator<TestNode> navigator;
+  @Mock private Navigator<TestNode> navigator;
 
-    private final StepExpr root = new Root();
+  private final StepExpr root = new Root();
 
-    @BeforeEach
-    void setUp() {
-        when(navigator.root()).thenReturn(node("root"));
-    }
+  @BeforeEach
+  void setUp() {
+    when(navigator.root()).thenReturn(node("root"));
+  }
 
-    @Test
-    @DisplayName("Should return single root node")
-    void shouldReturnSingleRootNodeOnTraverse() {
-        // when
-        IterableNodeView<TestNode> result = root.resolve(navigator, parentNode, false);
+  @Test
+  @DisplayName("Should return single root node")
+  void shouldReturnSingleRootNodeOnTraverse() {
+    // when
+    IterableNodeView<TestNode> result = root.resolve(navigator, parentNode, false);
 
-        // then
-        assertThat(result).extracting("node").containsExactly(node("root"));
-    }
+    // then
+    assertThat(result).extracting("node").containsExactly(node("root"));
+  }
 
-    @Test
-    void testToString() {
-        assertThat(root).hasToString("");
-    }
-
+  @Test
+  void testToString() {
+    assertThat(root).hasToString("");
+  }
 }

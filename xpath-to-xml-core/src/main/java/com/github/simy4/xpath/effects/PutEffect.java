@@ -15,38 +15,36 @@ import java.io.Serializable;
 
 public class PutEffect implements Effect, Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private static final ViewVisitor<Node, Void> eagerVisitor = new EagerVisitor();
+  private static final ViewVisitor<Node, Void> eagerVisitor = new EagerVisitor();
 
-    private final Expr expr;
+  private final Expr expr;
 
-    public PutEffect(Expr expr) {
-        this.expr = expr;
+  public PutEffect(Expr expr) {
+    this.expr = expr;
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public <N extends Node> void perform(Navigator<N> navigator, N xml) throws XmlBuilderException {
+    expr.resolve(navigator, new NodeView<>(xml), true).visit((ViewVisitor<N, Void>) eagerVisitor);
+  }
+
+  private static final class EagerVisitor extends AbstractViewVisitor<Node, Void> {
+
+    @Override
+    @SuppressWarnings({"StatementWithEmptyBody", "UnusedVariable"})
+    public Void visit(IterableNodeView<Node> nodeSet) throws XmlBuilderException {
+      for (NodeView<Node> ignored : nodeSet) {
+        // eagerly consume resolved iterable
+      }
+      return null;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <N extends Node> void perform(Navigator<N> navigator, N xml) throws XmlBuilderException {
-        expr.resolve(navigator, new NodeView<>(xml), true).visit((ViewVisitor<N, Void>) eagerVisitor);
+    protected Void returnDefault(View<Node> view) {
+      return null;
     }
-
-    private static final class EagerVisitor extends AbstractViewVisitor<Node, Void> {
-
-        @Override
-        @SuppressWarnings({"StatementWithEmptyBody", "UnusedVariable"})
-        public Void visit(IterableNodeView<Node> nodeSet) throws XmlBuilderException {
-            for (NodeView<Node> ignored : nodeSet) {
-                // eagerly consume resolved iterable
-            }
-            return null;
-        }
-
-        @Override
-        protected Void returnDefault(View<Node> view) {
-            return null;
-        }
-
-    }
-
+  }
 }

@@ -13,12 +13,11 @@ import com.github.simy4.xpath.navigator.Node;
  */
 public interface ViewVisitor<N extends Node, T> {
 
-    T visit(BooleanView<N> bool) throws XmlBuilderException;
+  T visit(BooleanView<N> bool) throws XmlBuilderException;
 
-    T visit(IterableNodeView<N> nodeSet) throws XmlBuilderException;
+  T visit(IterableNodeView<N> nodeSet) throws XmlBuilderException;
 
-    T visit(LiteralView<N> literal) throws XmlBuilderException;
+  T visit(LiteralView<N> literal) throws XmlBuilderException;
 
-    T visit(NumberView<N> number) throws XmlBuilderException;
-
+  T visit(NumberView<N> number) throws XmlBuilderException;
 }

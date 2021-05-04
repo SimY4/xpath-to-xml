@@ -11,24 +11,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 abstract class AbstractOperationExprTest {
 
-    @Mock(serializable = true) Expr leftExpr;
-    @Mock(serializable = true) Expr rightExpr;
+  @Mock(serializable = true)
+  Expr leftExpr;
 
-    AbstractOperationExpr operationExpr;
+  @Mock(serializable = true)
+  Expr rightExpr;
 
-    @Test
-    @DisplayName("Should serialize and deserialize expr")
-    void shouldSerializeAndDeserializeExpr() throws IOException, ClassNotFoundException {
-        // when
-        Expr deserializedAxis = SerializationHelper.serializeAndDeserializeBack(operationExpr);
+  AbstractOperationExpr operationExpr;
 
-        // then
-        assertThat(deserializedAxis).hasToString(operationExpr.toString());
-    }
+  @Test
+  @DisplayName("Should serialize and deserialize expr")
+  void shouldSerializeAndDeserializeExpr() throws IOException, ClassNotFoundException {
+    // when
+    Expr deserializedAxis = SerializationHelper.serializeAndDeserializeBack(operationExpr);
 
-    @Test
-    void testToString() {
-        assertThat(operationExpr).hasToString(leftExpr.toString() + operationExpr.operator() + rightExpr.toString());
-    }
+    // then
+    assertThat(deserializedAxis).hasToString(operationExpr.toString());
+  }
 
+  @Test
+  void testToString() {
+    assertThat(operationExpr)
+        .hasToString(leftExpr.toString() + operationExpr.operator() + rightExpr.toString());
+  }
 }

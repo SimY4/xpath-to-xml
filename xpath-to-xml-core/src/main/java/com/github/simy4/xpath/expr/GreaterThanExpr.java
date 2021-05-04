@@ -8,25 +8,26 @@ import com.github.simy4.xpath.view.View;
 
 public class GreaterThanExpr extends AbstractOperationExpr {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public GreaterThanExpr(Expr leftExpr, Expr rightExpr) {
-        super(leftExpr, rightExpr);
+  public GreaterThanExpr(Expr leftExpr, Expr rightExpr) {
+    super(leftExpr, rightExpr);
+  }
+
+  @Override
+  public <N extends Node> View<N> resolve(
+      Navigator<N> navigator, View<N> left, View<N> right, boolean greedy)
+      throws XmlBuilderException {
+    final boolean gt = 0 < Double.compare(left.toNumber(), right.toNumber());
+    if (!gt && greedy) {
+      throw new XmlBuilderException(
+          "Can not apply a 'greater than' operator to: " + left + " and: " + right);
     }
+    return BooleanView.of(gt);
+  }
 
-    @Override
-    public <N extends Node> View<N> resolve(Navigator<N> navigator, View<N> left, View<N> right, boolean greedy)
-            throws XmlBuilderException {
-        final boolean gt = 0 < Double.compare(left.toNumber(), right.toNumber());
-        if (!gt && greedy) {
-            throw new XmlBuilderException("Can not apply a 'greater than' operator to: " + left + " and: " + right);
-        }
-        return BooleanView.of(gt);
-    }
-
-    @Override
-    protected String operator() {
-        return ">";
-    }
-
+  @Override
+  protected String operator() {
+    return ">";
+  }
 }
