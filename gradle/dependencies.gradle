@@ -4,7 +4,6 @@ ext {
 
 def versions = [:]
 
-versions.scala3 = '3.0.0'
 versions.scalaXml = '2.0.0'
 
 libraries.scalaLibrary = { version -> "org.scala-lang:scala-library:${version}" }
