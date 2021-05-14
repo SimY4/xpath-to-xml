@@ -11,6 +11,18 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 - Core
   - preceding and preceding-sibling axises support.
 
+### 2.3.0 Scala 3
+
+Features:
+
+- Support for Scala 3
+- Support for Scala 2.11 discontinued
+
+Improvements:
+
+- scala XML:
+  - Bump scala-xml version to 2.0.0
+
 ### 2.2.3
 
 Improvements:

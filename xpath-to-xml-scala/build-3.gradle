@@ -24,11 +24,11 @@ sourceSets {
 dependencies {
     api project(':xpath-to-xml-core')
 
-    implementation libraries.scala3Library
-    implementation libraries.scalaXml('2.13')
+    implementation 'org.scala-lang:scala3-library_3:3.0.0'
+    implementation libraries.scalaXml('3')
 
-    dotc libraries.scala3Compiler
-    dotc libraries.scala3Doc
+    dotc 'org.scala-lang:scala3-compiler_3:3.0.0'
+    dotc 'org.scala-lang:scaladoc_3:3.0.0'
 
     testImplementation project(':xpath-to-xml-test')
     testImplementation 'org.junit.jupiter:junit-jupiter'
