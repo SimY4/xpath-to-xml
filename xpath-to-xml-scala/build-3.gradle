@@ -40,7 +40,6 @@ def dottyCompilerOptions = [
         '-project-url',     projectUrl,
         '-project-version', project.version,
         '-encoding',        'UTF-8',
-        '-release',         '8',
         '-deprecation',
         '-explain',                             // Explain errors in more detail.
         '-explain-types',                       // Explain type errors in more detail.
