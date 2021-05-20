@@ -35,15 +35,12 @@ dependencies {
     testImplementation 'org.assertj:assertj-core'
 }
 
-jar {
-    from classesDir
-}
-
 def dottyCompilerOptions = [
         '-project',         project.name,
         '-project-url',     projectUrl,
         '-project-version', project.version,
         '-encoding',        'UTF-8',
+        '-release',         '8',
         '-deprecation',
         '-explain',                             // Explain errors in more detail.
         '-explain-types',                       // Explain type errors in more detail.
@@ -64,6 +61,11 @@ task compileScala(type: JavaExec) {
     main 'dotty.tools.dotc.Main'
     jvmArgs '-Dscala.usejavacp=true'
     args dottyCompilerOptions + ['-d', classesDir] + sourceSets.main.allSource.filter { it.name.endsWith('.scala') }.files
+}
+
+jar {
+    dependsOn compileScala
+    from classesDir
 }
 
 task compileTestScala(type: JavaExec) {
@@ -102,5 +104,5 @@ test {
 
 javadocJar {
     dependsOn scaladoc
-    from scaladoc
+    from scaladocDir
 }
