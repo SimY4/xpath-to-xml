@@ -1,12 +1,12 @@
 package com.github.simy4.xpath.jackson;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.util.DefaultIndenter;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.github.simy4.xpath.XmlBuilder;
 import com.github.simy4.xpath.fixtures.FixtureAccessor;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,20 +22,25 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-class XmlBuilderTest {
+class YamlBuilderTest {
 
-  private final ObjectMapper objectMapper = new ObjectMapper();
+  private final ObjectMapper objectMapper =
+      new ObjectMapper(
+          YAMLFactory.builder()
+              .disable(
+                  YAMLGenerator.Feature.WRITE_DOC_START_MARKER, YAMLGenerator.Feature.SPLIT_LINES)
+              .build());
 
   static Stream<Arguments> data() {
     return Stream.of(
-        arguments(new FixtureAccessor("attr", "json")),
-        arguments(new FixtureAccessor("simple", "json")),
-        arguments(new FixtureAccessor("special", "json")));
+        arguments(new FixtureAccessor("attr", "yaml")),
+        arguments(new FixtureAccessor("simple", "yaml")),
+        arguments(new FixtureAccessor("special", "yaml")));
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  void shouldBuildJsonFromSetOfXPaths(FixtureAccessor fixtureAccessor)
+  void shouldBuildYamlFromSetOfXPaths(FixtureAccessor fixtureAccessor)
       throws XPathExpressionException, IOException {
     Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
     ObjectNode builtDocument =
@@ -43,79 +48,65 @@ class XmlBuilderTest {
             .putAll(xmlProperties.keySet())
             .build(new ObjectNode(JsonNodeFactory.instance));
 
-    assertThat(jsonToString(builtDocument)).isEqualTo(fixtureAccessor.getPutXml());
+    assertThat(yamlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutXml());
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  void shouldBuildJsonFromSetOfXPathsAndSetValues(FixtureAccessor fixtureAccessor)
+  void shouldBuildYamlFromSetOfXPathsAndSetValues(FixtureAccessor fixtureAccessor)
       throws XPathExpressionException, IOException {
     Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
     ObjectNode builtDocument =
         new XmlBuilder().putAll(xmlProperties).build(new ObjectNode(JsonNodeFactory.instance));
 
-    assertThat(jsonToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
+    assertThat(yamlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  void shouldModifyJsonWhenXPathsAreNotTraversable(FixtureAccessor fixtureAccessor)
+  void shouldModifyYamlWhenXPathsAreNotTraversable(FixtureAccessor fixtureAccessor)
       throws XPathExpressionException, IOException {
     Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
     String json = fixtureAccessor.getPutXml();
-    JsonNode oldDocument = stringToJson(json);
+    JsonNode oldDocument = stringToYaml(json);
     JsonNode builtDocument = new XmlBuilder().putAll(xmlProperties).build(oldDocument);
 
-    assertThat(jsonToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
+    assertThat(yamlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  void shouldNotModifyJsonWhenAllXPathsTraversable(FixtureAccessor fixtureAccessor)
+  void shouldNotModifyYamlWhenAllXPathsTraversable(FixtureAccessor fixtureAccessor)
       throws XPathExpressionException, IOException {
     Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-    String json = fixtureAccessor.getPutValueXml();
-    JsonNode oldDocument = stringToJson(json);
+    String yaml = fixtureAccessor.getPutValueXml();
+    JsonNode oldDocument = stringToYaml(yaml);
     JsonNode builtDocument = new XmlBuilder().putAll(xmlProperties).build(oldDocument);
 
-    assertThat(jsonToString(builtDocument)).isEqualTo(json);
+    assertThat(yamlToString(builtDocument)).isEqualTo(yaml);
 
     builtDocument = new XmlBuilder().putAll(xmlProperties.keySet()).build(oldDocument);
 
-    assertThat(jsonToString(builtDocument)).isEqualTo(json);
+    assertThat(yamlToString(builtDocument)).isEqualTo(yaml);
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  void shouldRemovePathsFromExistingXml(FixtureAccessor fixtureAccessor)
+  void shouldRemovePathsFromExistingYaml(FixtureAccessor fixtureAccessor)
       throws XPathExpressionException, IOException {
     Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-    String json = fixtureAccessor.getPutValueXml();
-    JsonNode oldDocument = stringToJson(json);
+    String yaml = fixtureAccessor.getPutValueXml();
+    JsonNode oldDocument = stringToYaml(yaml);
     JsonNode builtDocument = new XmlBuilder().removeAll(xmlProperties.keySet()).build(oldDocument);
 
-    assertThat(jsonToString(builtDocument)).isNotEqualTo(fixtureAccessor.getPutValueXml());
+    assertThat(yamlToString(builtDocument)).isNotEqualTo(fixtureAccessor.getPutValueXml());
   }
 
-  private JsonNode stringToJson(String xml) throws IOException {
+  private JsonNode stringToYaml(String xml) throws IOException {
     return objectMapper.readTree(xml);
   }
 
-  private String jsonToString(JsonNode json) throws JsonProcessingException {
-    return objectMapper
-        .writer(
-            new DefaultPrettyPrinter(
-                new DefaultPrettyPrinter() {
-                  private static final long serialVersionUID = 1;
-
-                  {
-                    _objectFieldValueSeparatorWithSpaces =
-                        _separators.getObjectFieldValueSeparator() + " ";
-                    _arrayIndenter = new DefaultIndenter();
-                    _objectIndenter = new DefaultIndenter();
-                  }
-                }))
-        .writeValueAsString(json)
-        .replaceAll("\\{ }", "{}");
+  private String yamlToString(JsonNode json) throws JsonProcessingException {
+    return objectMapper.writeValueAsString(json);
   }
 }

@@ -1,0 +1,33 @@
+breakfast_menu:
+- food:
+    name:
+      text: "Belgian Waffles"
+    price: {}
+    description: {}
+    calories: {}
+- food:
+    name:
+      text: "Strawberry Belgian Waffles"
+    price: {}
+    description: {}
+    calories: {}
+- food:
+    name:
+      text: "Berry-Berry Belgian Waffles"
+    price: {}
+    description: {}
+    calories: {}
+- food:
+    name:
+      text: "French Toast"
+    price: {}
+    description: {}
+    calories: {}
+- food:
+    name:
+      text: "Homestyle Breakfast"
+    price:
+      text: "$6.95"
+    description:
+      text: "Two eggs, bacon or sausage, toast, and our ever-popular hash browns"
+    calories: {}
