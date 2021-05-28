@@ -24,19 +24,15 @@ sourceSets {
 dependencies {
     api project(':xpath-to-xml-core')
 
-    implementation libraries.scala3Library
-    implementation libraries.scalaXml('2.13')
+    implementation 'org.scala-lang:scala3-library_3:3.0.0'
+    implementation libraries.scalaXml('3')
 
-    dotc libraries.scala3Compiler
-    dotc libraries.scala3Doc
+    dotc 'org.scala-lang:scala3-compiler_3:3.0.0'
+    dotc 'org.scala-lang:scaladoc_3:3.0.0'
 
     testImplementation project(':xpath-to-xml-test')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'org.assertj:assertj-core'
-}
-
-jar {
-    from classesDir
 }
 
 def dottyCompilerOptions = [
@@ -64,6 +60,11 @@ task compileScala(type: JavaExec) {
     main 'dotty.tools.dotc.Main'
     jvmArgs '-Dscala.usejavacp=true'
     args dottyCompilerOptions + ['-d', classesDir] + sourceSets.main.allSource.filter { it.name.endsWith('.scala') }.files
+}
+
+jar {
+    dependsOn compileScala
+    from classesDir
 }
 
 task compileTestScala(type: JavaExec) {
@@ -102,5 +103,5 @@ test {
 
 javadocJar {
     dependsOn scaladoc
-    from scaladoc
+    from scaladocDir
 }
