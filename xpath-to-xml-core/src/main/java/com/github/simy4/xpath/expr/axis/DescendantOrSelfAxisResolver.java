@@ -50,17 +50,17 @@ public class DescendantOrSelfAxisResolver extends AbstractAxisResolver {
     };
   }
 
-    @Override
-    public <N extends Node> NodeView<N> createAxisNode(Navigator<N> navigator, NodeView<N> parent, int position)
-            throws XmlBuilderException {
-        if (isWildcard()) {
-            throw new XmlBuilderException("Wildcard elements cannot be created");
-        }
-        final N parentNode = parent.getNode();
-        final N newElement = navigator.createElement(parentNode, name);
-        navigator.appendChild(parentNode, newElement);
-        return new NodeView<>(newElement, position);
+  @Override
+  public <N extends Node> NodeView<N> createAxisNode(
+      Navigator<N> navigator, NodeView<N> parent, int position) throws XmlBuilderException {
+    if (isWildcard()) {
+      throw new XmlBuilderException("Wildcard elements cannot be created");
     }
+    final N parentNode = parent.getNode();
+    final N newElement = navigator.createElement(parentNode, name);
+    navigator.appendChild(parentNode, newElement);
+    return new NodeView<>(newElement, position);
+  }
 
   @Override
   public String toString() {

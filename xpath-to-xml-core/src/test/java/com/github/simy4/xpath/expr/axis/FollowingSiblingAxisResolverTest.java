@@ -122,11 +122,11 @@ class FollowingSiblingAxisResolverTest extends AbstractAxisResolverTest {
     // when
     IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, true);
 
-        // then
-        assertThat((Object) result).extracting("node", "position").containsExactly(node("name"), 1);
-        verify(navigator).createElement(parentParent, name);
-        verify(navigator).appendNext(parentNode.getNode(), node("name"));
-    }
+    // then
+    assertThat((Object) result).extracting("node", "position").containsExactly(node("name"), 1);
+    verify(navigator).createElement(parentParent, name);
+    verify(navigator).appendNext(parentNode.getNode(), node("name"));
+  }
 
   @Test
   @DisplayName("When wildcard namespace should throw")
@@ -163,13 +163,15 @@ class FollowingSiblingAxisResolverTest extends AbstractAxisResolverTest {
         .isInstanceOf(XmlBuilderException.class);
   }
 
-    @Test
-    @DisplayName("Should throw on append node")
-    @SuppressWarnings("ReturnValueIgnored")
-    void shouldThrowOnAppendNode() {
-        // given
-        when(navigator.parentOf(parentNode.getNode())).thenReturn(parentParent);
-        doThrow(XmlBuilderException.class).when(navigator).appendNext(any(TestNode.class), any(TestNode.class));
+  @Test
+  @DisplayName("Should throw on append node")
+  @SuppressWarnings("ReturnValueIgnored")
+  void shouldThrowOnAppendNode() {
+    // given
+    when(navigator.parentOf(parentNode.getNode())).thenReturn(parentParent);
+    doThrow(XmlBuilderException.class)
+        .when(navigator)
+        .appendNext(any(TestNode.class), any(TestNode.class));
 
     // when
     assertThatThrownBy(
@@ -179,13 +181,14 @@ class FollowingSiblingAxisResolverTest extends AbstractAxisResolverTest {
         .isInstanceOf(XmlBuilderException.class);
   }
 
-    @Test
-    @DisplayName("When error should propagate")
-    @SuppressWarnings("ReturnValueIgnored")
-    void shouldPropagateIfFailedToCreateElement() {
-        // given
-        when(navigator.parentOf(parentNode.getNode())).thenReturn(parentParent);
-        when(navigator.createElement(any(TestNode.class), any(QName.class))).thenThrow(XmlBuilderException.class);
+  @Test
+  @DisplayName("When error should propagate")
+  @SuppressWarnings("ReturnValueIgnored")
+  void shouldPropagateIfFailedToCreateElement() {
+    // given
+    when(navigator.parentOf(parentNode.getNode())).thenReturn(parentParent);
+    when(navigator.createElement(any(TestNode.class), any(QName.class)))
+        .thenThrow(XmlBuilderException.class);
 
     // when
     assertThatThrownBy(

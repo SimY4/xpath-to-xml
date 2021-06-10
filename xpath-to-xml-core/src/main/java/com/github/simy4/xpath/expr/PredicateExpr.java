@@ -62,25 +62,25 @@ public class PredicateExpr implements Expr, Serializable {
       this.greedy = greedy;
     }
 
-        @Override
-        public BooleanView<T> visit(NumberView<T> numberView) throws XmlBuilderException {
-            final double number = numberView.toNumber();
-            if (0 == Double.compare(number, view.getPosition())) {
-                view.mark();
-                return BooleanView.of(true);
-            } else if (greedy && number > view.getPosition()) {
-                final T nodeToCopy = view.getNode();
-                final T parent = navigator.parentOf(nodeToCopy);
-                long numberOfNodesToCreate = (long) number - view.getPosition();
-                do {
-                    final T copy = navigator.createElement(parent, nodeToCopy.getName());
-                    navigator.appendPrev(nodeToCopy, copy);
-                } while (--numberOfNodesToCreate > 0);
-                return BooleanView.of(true);
-            } else {
-                return BooleanView.of(false);
-            }
-        }
+    @Override
+    public BooleanView<T> visit(NumberView<T> numberView) throws XmlBuilderException {
+      final double number = numberView.toNumber();
+      if (0 == Double.compare(number, view.getPosition())) {
+        view.mark();
+        return BooleanView.of(true);
+      } else if (greedy && number > view.getPosition()) {
+        final T nodeToCopy = view.getNode();
+        final T parent = navigator.parentOf(nodeToCopy);
+        long numberOfNodesToCreate = (long) number - view.getPosition();
+        do {
+          final T copy = navigator.createElement(parent, nodeToCopy.getName());
+          navigator.appendPrev(nodeToCopy, copy);
+        } while (--numberOfNodesToCreate > 0);
+        return BooleanView.of(true);
+      } else {
+        return BooleanView.of(false);
+      }
+    }
 
     @Override
     protected BooleanView<T> returnDefault(View<T> view) throws XmlBuilderException {

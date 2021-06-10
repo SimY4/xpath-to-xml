@@ -88,22 +88,25 @@ class PredicateExprTest {
     assertThat(result).isEqualTo(false);
   }
 
-    @Test
-    @DisplayName("When greedy context, falsy predicate and new node should prepend missing nodes and return true")
-    void shouldPrependMissingNodesAndReturnTrueOnGreedyFalsePredicateAndNewNode() {
-        //given
-        when(navigator.parentOf(node("node"))).thenReturn(node("parent"));
-        when(navigator.createElement(node("parent"), new QName("node"))).thenReturn(node("node"));
+  @Test
+  @DisplayName(
+      "When greedy context, falsy predicate and new node should prepend missing nodes and return true")
+  void shouldPrependMissingNodesAndReturnTrueOnGreedyFalsePredicateAndNewNode() {
+    // given
+    when(navigator.parentOf(node("node"))).thenReturn(node("parent"));
+    when(navigator.createElement(node("parent"), new QName("node"))).thenReturn(node("node"));
 
-        // when
-        boolean result = new PredicateExpr(new NumberExpr(3.0)).resolve(navigator, new NodeView<>(node("node"), 1),
-                true).toBoolean();
+    // when
+    boolean result =
+        new PredicateExpr(new NumberExpr(3.0))
+            .resolve(navigator, new NodeView<>(node("node"), 1), true)
+            .toBoolean();
 
-        // then
-        assertThat(result).isEqualTo(true);
-        verify(navigator, times(2)).createElement(node("parent"), new QName("node"));
-        verify(navigator, times(2)).appendPrev(node("node"), node("node"));
-    }
+    // then
+    assertThat(result).isEqualTo(true);
+    verify(navigator, times(2)).createElement(node("parent"), new QName("node"));
+    verify(navigator, times(2)).appendPrev(node("node"), node("node"));
+  }
 
   @Test
   void testToString() {

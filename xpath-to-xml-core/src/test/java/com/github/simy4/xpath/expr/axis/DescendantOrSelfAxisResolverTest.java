@@ -133,11 +133,11 @@ class DescendantOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     // when
     IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, true);
 
-        // then
-        assertThat((Object) result).extracting("node", "position").containsExactly(node("name"), 1);
-        verify(navigator).createElement(parentNode.getNode(), name);
-        verify(navigator).appendChild(parentNode.getNode(), node("name"));
-    }
+    // then
+    assertThat((Object) result).extracting("node", "position").containsExactly(node("name"), 1);
+    verify(navigator).createElement(parentNode.getNode(), name);
+    verify(navigator).appendChild(parentNode.getNode(), node("name"));
+  }
 
   @Test
   @DisplayName("When wildcard namespace should throw")

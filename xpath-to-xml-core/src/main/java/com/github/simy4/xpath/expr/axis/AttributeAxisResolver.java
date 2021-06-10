@@ -36,17 +36,17 @@ public class AttributeAxisResolver extends AbstractAxisResolver {
     return navigator.attributesOf(parent.getNode());
   }
 
-    @Override
-    public <N extends Node> NodeView<N> createAxisNode(Navigator<N> navigator, NodeView<N> parent, int position)
-            throws XmlBuilderException {
-        if (isWildcard()) {
-            throw new XmlBuilderException("Wildcard attribute cannot be created");
-        }
-        final N parentNode = parent.getNode();
-        final N newAttribute = navigator.createAttribute(parentNode, name);
-        navigator.appendChild(parentNode, newAttribute);
-        return new NodeView<>(newAttribute, position);
+  @Override
+  public <N extends Node> NodeView<N> createAxisNode(
+      Navigator<N> navigator, NodeView<N> parent, int position) throws XmlBuilderException {
+    if (isWildcard()) {
+      throw new XmlBuilderException("Wildcard attribute cannot be created");
     }
+    final N parentNode = parent.getNode();
+    final N newAttribute = navigator.createAttribute(parentNode, name);
+    navigator.appendChild(parentNode, newAttribute);
+    return new NodeView<>(newAttribute, position);
+  }
 
   @Override
   public String toString() {

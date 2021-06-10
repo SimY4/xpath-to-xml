@@ -67,37 +67,37 @@ public final class DomNavigator implements Navigator<DomNode> {
             .iterator();
   }
 
-    @Override
-    public DomNode createAttribute(DomNode parent, QName attribute) throws XmlBuilderException {
-        try {
-            Attr attr;
-            if (XMLConstants.NULL_NS_URI.equals(attribute.getNamespaceURI())) {
-                attr = document.createAttribute(attribute.getLocalPart());
-            } else {
-                attr = document.createAttributeNS(attribute.getNamespaceURI(), attribute.getLocalPart());
-                attr.setPrefix(attribute.getPrefix());
-            }
-            return new DomNode(attr);
-        } catch (DOMException de) {
-            throw new XmlBuilderException("Unable to create attribute: " + attribute, de);
-        }
+  @Override
+  public DomNode createAttribute(DomNode parent, QName attribute) throws XmlBuilderException {
+    try {
+      Attr attr;
+      if (XMLConstants.NULL_NS_URI.equals(attribute.getNamespaceURI())) {
+        attr = document.createAttribute(attribute.getLocalPart());
+      } else {
+        attr = document.createAttributeNS(attribute.getNamespaceURI(), attribute.getLocalPart());
+        attr.setPrefix(attribute.getPrefix());
+      }
+      return new DomNode(attr);
+    } catch (DOMException de) {
+      throw new XmlBuilderException("Unable to create attribute: " + attribute, de);
     }
+  }
 
-    @Override
-    public DomNode createElement(DomNode parent, QName element) throws XmlBuilderException {
-        try {
-            final Element elem;
-            if (XMLConstants.NULL_NS_URI.equals(element.getNamespaceURI())) {
-                elem = document.createElement(element.getLocalPart());
-            } else {
-                elem = document.createElementNS(element.getNamespaceURI(), element.getLocalPart());
-                elem.setPrefix(element.getPrefix());
-            }
-            return new DomNode(elem);
-        } catch (DOMException de) {
-            throw new XmlBuilderException("Unable to create element: " + element, de);
-        }
+  @Override
+  public DomNode createElement(DomNode parent, QName element) throws XmlBuilderException {
+    try {
+      final Element elem;
+      if (XMLConstants.NULL_NS_URI.equals(element.getNamespaceURI())) {
+        elem = document.createElement(element.getLocalPart());
+      } else {
+        elem = document.createElementNS(element.getNamespaceURI(), element.getLocalPart());
+        elem.setPrefix(element.getPrefix());
+      }
+      return new DomNode(elem);
+    } catch (DOMException de) {
+      throw new XmlBuilderException("Unable to create element: " + element, de);
     }
+  }
 
   @Override
   public void setText(DomNode node, String text) {
@@ -108,67 +108,68 @@ public final class DomNavigator implements Navigator<DomNode> {
     }
   }
 
-    @Override
-    public void appendChild(DomNode parent, DomNode node) throws XmlBuilderException {
-        final Node parentNode = parent.getNode();
-        try {
-            Node nodeNode = node.getNode();
-            switch (nodeNode.getNodeType()) {
-                case Node.ATTRIBUTE_NODE:
-                    if (Node.ELEMENT_NODE != parentNode.getNodeType()) {
-                        throw new XmlBuilderException("Unable to append attribute to a non-element node " + parent);
-                    }
-                    ((Element) parentNode).setAttributeNode((Attr) nodeNode);
-                    break;
-                case Node.ELEMENT_NODE:
-                    parentNode.appendChild(nodeNode);
-                    break;
-                default:
-                    throw new XmlBuilderException("Unable to append child to " + parent);
-            }
-        } catch (DOMException de) {
-            throw new XmlBuilderException("Unable to append child: " + node, de);
-        }
+  @Override
+  public void appendChild(DomNode parent, DomNode node) throws XmlBuilderException {
+    final Node parentNode = parent.getNode();
+    try {
+      Node nodeNode = node.getNode();
+      switch (nodeNode.getNodeType()) {
+        case Node.ATTRIBUTE_NODE:
+          if (Node.ELEMENT_NODE != parentNode.getNodeType()) {
+            throw new XmlBuilderException(
+                "Unable to append attribute to a non-element node " + parent);
+          }
+          ((Element) parentNode).setAttributeNode((Attr) nodeNode);
+          break;
+        case Node.ELEMENT_NODE:
+          parentNode.appendChild(nodeNode);
+          break;
+        default:
+          throw new XmlBuilderException("Unable to append child to " + parent);
+      }
+    } catch (DOMException de) {
+      throw new XmlBuilderException("Unable to append child: " + node, de);
     }
+  }
 
-    @Override
-    public void appendNext(DomNode node, DomNode append) throws XmlBuilderException {
-        final Node refNode = node.getNode();
-        if (Node.ELEMENT_NODE != refNode.getNodeType()) {
-            throw new XmlBuilderException("Unable to append to a non-element node " + refNode);
-        }
-        final Node parent = refNode.getParentNode();
-        if (null == parent) {
-            throw new XmlBuilderException("Unable to prepend - no parent found of " + refNode);
-        }
-        try {
-            final Node nextNode = refNode.getNextSibling();
-            if (null == nextNode) {
-                parent.appendChild(append.getNode());
-            } else {
-                parent.insertBefore(append.getNode(), nextNode);
-            }
-        } catch (DOMException de) {
-            throw new XmlBuilderException("Unable to append next: " + node, de);
-        }
+  @Override
+  public void appendNext(DomNode node, DomNode append) throws XmlBuilderException {
+    final Node refNode = node.getNode();
+    if (Node.ELEMENT_NODE != refNode.getNodeType()) {
+      throw new XmlBuilderException("Unable to append to a non-element node " + refNode);
     }
+    final Node parent = refNode.getParentNode();
+    if (null == parent) {
+      throw new XmlBuilderException("Unable to prepend - no parent found of " + refNode);
+    }
+    try {
+      final Node nextNode = refNode.getNextSibling();
+      if (null == nextNode) {
+        parent.appendChild(append.getNode());
+      } else {
+        parent.insertBefore(append.getNode(), nextNode);
+      }
+    } catch (DOMException de) {
+      throw new XmlBuilderException("Unable to append next: " + node, de);
+    }
+  }
 
-    @Override
-    public void appendPrev(DomNode node, DomNode prepend) throws XmlBuilderException {
-        final Node refNode = node.getNode();
-        if (Node.ELEMENT_NODE != refNode.getNodeType()) {
-            throw new XmlBuilderException("Unable to prepend to a non-element node " + refNode);
-        }
-        final Node parent = refNode.getParentNode();
-        if (null == parent) {
-            throw new XmlBuilderException("Unable to prepend - no parent found of " + refNode);
-        }
-        try {
-            parent.insertBefore(prepend.getNode(), refNode);
-        } catch (DOMException de) {
-            throw new XmlBuilderException("Unable to append prev: " + node, de);
-        }
+  @Override
+  public void appendPrev(DomNode node, DomNode prepend) throws XmlBuilderException {
+    final Node refNode = node.getNode();
+    if (Node.ELEMENT_NODE != refNode.getNodeType()) {
+      throw new XmlBuilderException("Unable to prepend to a non-element node " + refNode);
     }
+    final Node parent = refNode.getParentNode();
+    if (null == parent) {
+      throw new XmlBuilderException("Unable to prepend - no parent found of " + refNode);
+    }
+    try {
+      parent.insertBefore(prepend.getNode(), refNode);
+    } catch (DOMException de) {
+      throw new XmlBuilderException("Unable to append prev: " + node, de);
+    }
+  }
 
   @Override
   public void remove(DomNode node) {
