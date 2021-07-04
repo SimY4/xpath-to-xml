@@ -57,7 +57,7 @@ task compileScala(type: JavaExec) {
     }
     description 'Compile Scala source files'
     classpath configurations.dotc, configurations.compileClasspath
-    main 'dotty.tools.dotc.Main'
+    mainClass = 'dotty.tools.dotc.Main'
     jvmArgs '-Dscala.usejavacp=true'
     args dottyCompilerOptions + ['-d', classesDir] + sourceSets.main.allSource.filter { it.name.endsWith('.scala') }.files
 }
@@ -74,7 +74,7 @@ task compileTestScala(type: JavaExec) {
     }
     description 'Compile Scala test source files'
     classpath configurations.dotc, configurations.testCompileClasspath, classesDir
-    main 'dotty.tools.dotc.Main'
+    mainClass = 'dotty.tools.dotc.Main'
     jvmArgs '-Dscala.usejavacp=true'
     args dottyCompilerOptions + ['-d', testClassesDir] + sourceSets.test.allSource.filter { it.name.endsWith('.scala') }.files
 }
@@ -86,7 +86,7 @@ task scaladoc(type: JavaExec) {
     }
     description 'Generate docs'
     classpath configurations.dotc, configurations.compileClasspath, classesDir
-    main 'dotty.tools.scaladoc.Main'
+    mainClass = 'dotty.tools.scaladoc.Main'
     jvmArgs '-Dscala.usejavacp=true'
     args '-d', scaladocDir, classesDir
 }
