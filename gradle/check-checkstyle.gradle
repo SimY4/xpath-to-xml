@@ -5,6 +5,7 @@ spotless {
         googleJavaFormat()
         trimTrailingWhitespace()
         removeUnusedImports()
+        licenseHeaderFile rootProject.file('gradle/license.header')
 
         importOrder '', 'javax', 'java', '\\#', '\\#javax', '\\#java'
     }

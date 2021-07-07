@@ -34,6 +34,7 @@ javadocJar {
 spotless {
     scala {
         scalafmt('2.7.5').configFile('.scalafmt.conf')
+        licenseHeaderFile rootProject.file('gradle/license.header'), "package "
     }
 }
 
