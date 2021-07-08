@@ -13,7 +13,9 @@ subprojects {
     apply plugin: 'java-library'
     apply from: rootProject.file('gradle/dependencies.gradle')
     apply from: rootProject.file('gradle/animal-sniffer.gradle')
-    apply from: rootProject.file('gradle/check-checkstyle.gradle')
+    if (!JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_16)) {
+        apply from: rootProject.file('gradle/check-checkstyle.gradle')
+    }
     apply from: rootProject.file('gradle/check-codecoverage.gradle')
     apply from: rootProject.file('gradle/check-errorprone.gradle')
     apply from: rootProject.file('gradle/publish-jar.gradle')
