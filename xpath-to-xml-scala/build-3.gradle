@@ -24,11 +24,11 @@ sourceSets {
 dependencies {
     api project(':xpath-to-xml-core')
 
-    implementation 'org.scala-lang:scala3-library_3:3.0.0'
+    implementation 'org.scala-lang:scala3-library_3:3.0.1'
     implementation libraries.scalaXml('3')
 
-    dotc 'org.scala-lang:scala3-compiler_3:3.0.0'
-    dotc 'org.scala-lang:scaladoc_3:3.0.0'
+    dotc 'org.scala-lang:scala3-compiler_3:3.0.1'
+    dotc 'org.scala-lang:scaladoc_3:3.0.1'
 
     testImplementation project(':xpath-to-xml-test')
     testImplementation 'org.junit.jupiter:junit-jupiter'
@@ -36,9 +36,7 @@ dependencies {
 }
 
 def dottyCompilerOptions = [
-        '-project',         project.name,
         '-project-url',     projectUrl,
-        '-project-version', project.version,
         '-encoding',        'UTF-8',
         '-deprecation',
         '-explain',                             // Explain errors in more detail.
