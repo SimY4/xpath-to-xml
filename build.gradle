@@ -95,7 +95,7 @@ dependencies {
 
 release {
     git {
-        requireBranch = 'java6'
+        requireBranch = '2.x'
     }
 }
 
