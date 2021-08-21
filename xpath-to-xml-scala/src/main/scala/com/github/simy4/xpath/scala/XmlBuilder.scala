@@ -23,8 +23,10 @@ import xml.Elem
 /**
  * XML model modifier that works via XPath expressions processing.
  *
- * @see com.github.simy4.xpath.XmlBuilder
- * @author Alex Simkin
+ * @see
+ *   com.github.simy4.xpath.XmlBuilder
+ * @author
+ *   Alex Simkin
  * @since 2.2
  */
 object XmlBuilder {
