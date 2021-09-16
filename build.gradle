@@ -59,6 +59,9 @@ subprojects {
     }
 
     tasks.withType(JavaCompile) {
+        if (JavaVersion.current().isJava9Compatible()) {
+            options.release = 8
+        }
         options.compilerArgs << '-Xlint:all' << '-Xlint:-options' << '-Werror'
     }
 
