@@ -31,7 +31,7 @@ dependencies {
     dotc 'org.scala-lang:scaladoc_3:3.0.2'
 
     testImplementation project(':xpath-to-xml-test')
-    implementation libraries.scalatest('3')
+    testImplementation libraries.scalatest('3')
     testImplementation 'co.helmethair:scalatest-junit-runner'
     testImplementation 'org.junit.platform:junit-platform-engine'
 }

@@ -22,7 +22,7 @@ dependencies {
     implementation libraries.scalaXml('2.13')
 
     testImplementation project(':xpath-to-xml-test')
-    implementation libraries.scalatest('2.13')
+    testImplementation libraries.scalatest('2.13')
     testImplementation 'co.helmethair:scalatest-junit-runner'
     testImplementation 'org.junit.platform:junit-platform-engine'
 }
