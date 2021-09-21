@@ -22,8 +22,9 @@ dependencies {
     implementation libraries.scalaXml('2.12')
 
     testImplementation project(':xpath-to-xml-test')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation 'org.assertj:assertj-core'
+    implementation libraries.scalatest('2.12')
+    testImplementation 'co.helmethair:scalatest-junit-runner'
+    testImplementation 'org.junit.platform:junit-platform-engine'
 }
 
 javadocJar {
@@ -50,7 +51,7 @@ scaladoc {
 wartremover {
     warningWarts -= ['DefaultArguments', 'IsInstanceOf', 'Null', 'Throw', 'Var']
     test {
-        warningWarts -= ['NonUnitStatements', 'TraversableOps']
+        warningWarts -= ['TraversableOps']
     }
 }
 
