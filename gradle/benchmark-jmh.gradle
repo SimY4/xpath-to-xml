@@ -1,7 +1,7 @@
 apply plugin: 'me.champeau.jmh'
 
 jmh {
-    jmhVersion = '1.32'
+    jmhVersion = '1.33'
 }
 
 [configurations.jmhCompileClasspath, configurations.jmhRuntimeClasspath].each {

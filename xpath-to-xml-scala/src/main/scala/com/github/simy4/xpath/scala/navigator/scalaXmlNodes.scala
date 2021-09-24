@@ -19,12 +19,13 @@ package scala.navigator
 import javax.xml.namespace.QName
 import navigator.{ Node => NavigatorNode }
 
-import xml.{ Elem, Text, Attribute => XmlAttribute }
+import xml.{ Attribute => XmlAttribute, Elem, Text }
 
 /**
  * Scala XML node contract.
  *
- * @author Alex Simkin
+ * @author
+ *   Alex Simkin
  * @since 2.0
  */
 sealed trait ScalaXmlNode extends NavigatorNode with Equals {

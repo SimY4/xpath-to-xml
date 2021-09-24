@@ -19,7 +19,7 @@ package scala.navigator
 import javax.xml.namespace.QName
 import navigator.Navigator
 
-import xml.{ Elem, Null, Text, Attribute => XmlAttribute }
+import xml.{ Attribute => XmlAttribute, Elem, Null, Text }
 
 class ScalaXmlNavigator(override val root: Root) extends Navigator[ScalaXmlNode] {
   import scala.compat.Converters._
@@ -45,7 +45,7 @@ class ScalaXmlNavigator(override val root: Root) extends Navigator[ScalaXmlNode]
         val node     = e.node
         val children = node.child
         val pre      = element.getPrefix
-        val elem     = Elem(if (pre.nonEmpty) pre else null, element.getLocalPart, Null, node.scope, minimizeEmpty = true)
+        val elem = Elem(if (pre.nonEmpty) pre else null, element.getLocalPart, Null, node.scope, minimizeEmpty = true)
         e.node = node.copy(child = children :+ elem)
         new Element(elem, children.size, e)
       case _ =>

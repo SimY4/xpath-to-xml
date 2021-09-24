@@ -17,13 +17,14 @@ sourceSets {
 dependencies {
     api project(':xpath-to-xml-core')
 
-    implementation libraries.scalaLibrary('2.12.13')
-    implementation libraries.scalaReflect('2.12.13')
+    implementation libraries.scalaLibrary('2.12.15')
+    implementation libraries.scalaReflect('2.12.15')
     implementation libraries.scalaXml('2.12')
 
     testImplementation project(':xpath-to-xml-test')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation 'org.assertj:assertj-core'
+    testImplementation libraries.scalatest('2.12')
+    testImplementation 'co.helmethair:scalatest-junit-runner'
+    testImplementation 'org.junit.platform:junit-platform-engine'
 }
 
 javadocJar {
@@ -33,7 +34,7 @@ javadocJar {
 
 spotless {
     scala {
-        scalafmt('2.7.5').configFile('.scalafmt.conf')
+        scalafmt('3.0.4').configFile('.scalafmt.conf')
         licenseHeaderFile rootProject.file('gradle/license.header'), "package "
     }
 }
@@ -50,7 +51,7 @@ scaladoc {
 wartremover {
     warningWarts -= ['DefaultArguments', 'IsInstanceOf', 'Null', 'Throw', 'Var']
     test {
-        warningWarts -= ['NonUnitStatements', 'TraversableOps']
+        warningWarts -= ['TraversableOps']
     }
 }
 
@@ -87,6 +88,7 @@ tasks.withType(ScalaCompile) {
                 '-Ywarn-numeric-widen',              // Warn when numerics are widened.
                 '-Xfuture',                          // Turn on future language features.
                 '-Yno-adapted-args',                 // Do not adapt an argument list (either by inserting () or creating a tuple) to match the receiver.
+                '-Xsource:3',                        // Turn on future language features.
         ]
         if (!JavaVersion.current().isJava12Compatible()) {
             additionalParameters += [

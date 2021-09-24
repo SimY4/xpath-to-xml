@@ -22,8 +22,9 @@ dependencies {
     implementation libraries.scalaXml('2.13')
 
     testImplementation project(':xpath-to-xml-test')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation 'org.assertj:assertj-core'
+    testImplementation libraries.scalatest('2.13')
+    testImplementation 'co.helmethair:scalatest-junit-runner'
+    testImplementation 'org.junit.platform:junit-platform-engine'
 }
 
 javadocJar {
@@ -33,7 +34,7 @@ javadocJar {
 
 spotless {
     scala {
-        scalafmt('2.7.5').configFile('.scalafmt.conf')
+        scalafmt('3.0.4').configFile('.scalafmt.conf')
         licenseHeaderFile rootProject.file('gradle/license.header'), "package "
     }
 }
@@ -50,7 +51,7 @@ scaladoc {
 wartremover {
     warningWarts -= ['DefaultArguments', 'IsInstanceOf', 'Null', 'Throw', 'Var']
     test {
-        warningWarts -= ['NonUnitStatements', 'TraversableOps']
+        warningWarts -= ['TraversableOps']
     }
 }
 

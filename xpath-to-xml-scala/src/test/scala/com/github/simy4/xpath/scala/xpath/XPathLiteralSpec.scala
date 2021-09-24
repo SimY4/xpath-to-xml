@@ -16,18 +16,21 @@
 package com.github.simy4.xpath
 package scala.xpath
 
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 import parser.XPathParser
 
-class XPathLiteralTest {
+class XPathLiteralSpec extends AnyFunSpec with Matchers {
   import scala.implicits._
 
-  @Test
-  def xpathLiteralShouldCompileStringIntoExpr(): Unit = {
-    val expr = xpath"ancestor::author[parent::book][1]"
+  describe("xpathLiteral") {
+    it("should compile")(assertCompiles("""val expr = xpath"ancestor::author[parent::book][1]""""))
+    describe("when compile") {
+      val expr = xpath"ancestor::author[parent::book][1]"
 
-    assertThat(expr).hasToString(new XPathParser(null).parse("ancestor::author[parent::book][1]").toString)
+      it("should match expr") {
+        expr.toString should ===(new XPathParser(null).parse("ancestor::author[parent::book][1]").toString)
+      }
+    }
   }
-
 }
