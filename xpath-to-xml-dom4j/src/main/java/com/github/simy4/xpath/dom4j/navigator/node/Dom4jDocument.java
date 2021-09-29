@@ -18,6 +18,7 @@ package com.github.simy4.xpath.dom4j.navigator.node;
 import com.github.simy4.xpath.XmlBuilderException;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.IllegalAddException;
 
 import javax.xml.namespace.QName;
 
@@ -55,16 +56,11 @@ public final class Dom4jDocument extends AbstractDom4jNode<Document> {
   }
 
   @Override
-  public Dom4jNode createAttribute(org.dom4j.QName attribute) throws XmlBuilderException {
-    throw new XmlBuilderException("Unable to append attribute to a document node " + getNode());
-  }
-
-  @Override
-  public Dom4jNode createElement(org.dom4j.QName element) throws XmlBuilderException {
-    if (null != getNode().getRootElement()) {
-      throw new XmlBuilderException(
-          "Unable to create element " + element + " . Root element already exist");
+  public void appendChild(Dom4jNode child) throws XmlBuilderException {
+    try {
+      getNode().add(child.getNode());
+    } catch (IllegalAddException iae) {
+      throw new XmlBuilderException("Unable to append child to node " + getNode(), iae);
     }
-    return new Dom4jElement(getNode().addElement(element));
   }
 }

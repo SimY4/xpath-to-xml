@@ -55,12 +55,7 @@ public final class Dom4jAttribute extends AbstractDom4jNode<Attribute> {
   }
 
   @Override
-  public Dom4jNode createAttribute(org.dom4j.QName attribute) throws XmlBuilderException {
-    throw new XmlBuilderException("Unable to append attribute to a non-element node " + getNode());
-  }
-
-  @Override
-  public Dom4jNode createElement(org.dom4j.QName element) throws XmlBuilderException {
-    throw new XmlBuilderException("Unable to append element to an attribute " + getNode());
+  public void appendChild(Dom4jNode child) throws XmlBuilderException {
+    throw new XmlBuilderException("Unable to append child to attribute node " + getNode());
   }
 }

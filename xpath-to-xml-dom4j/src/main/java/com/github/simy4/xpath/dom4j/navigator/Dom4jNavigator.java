@@ -16,7 +16,9 @@
 package com.github.simy4.xpath.dom4j.navigator;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.dom4j.navigator.node.Dom4jAttribute;
 import com.github.simy4.xpath.dom4j.navigator.node.Dom4jDocument;
+import com.github.simy4.xpath.dom4j.navigator.node.Dom4jElement;
 import com.github.simy4.xpath.dom4j.navigator.node.Dom4jNode;
 import com.github.simy4.xpath.navigator.Navigator;
 import org.dom4j.DocumentHelper;
@@ -56,11 +58,16 @@ public final class Dom4jNavigator implements Navigator<Dom4jNode> {
 
   @Override
   public Dom4jNode createAttribute(Dom4jNode parent, QName attribute) throws XmlBuilderException {
+    Node wrappedNode = parent.getNode();
+    if (Node.ELEMENT_NODE != wrappedNode.getNodeType()) {
+      throw new XmlBuilderException("Unable to create attribute to a non-element node " + parent);
+    }
     final org.dom4j.QName attributeName =
         DocumentHelper.createQName(
             attribute.getLocalPart(),
             new Namespace(attribute.getPrefix(), attribute.getNamespaceURI()));
-    return parent.createAttribute(attributeName);
+    return new Dom4jAttribute(
+        DocumentHelper.createAttribute((Element) wrappedNode, attributeName, ""));
   }
 
   @Override
@@ -68,7 +75,7 @@ public final class Dom4jNavigator implements Navigator<Dom4jNode> {
     final org.dom4j.QName elementName =
         DocumentHelper.createQName(
             element.getLocalPart(), new Namespace(element.getPrefix(), element.getNamespaceURI()));
-    return parent.createElement(elementName);
+    return new Dom4jElement(DocumentHelper.createElement(elementName));
   }
 
   @Override
@@ -81,18 +88,37 @@ public final class Dom4jNavigator implements Navigator<Dom4jNode> {
   }
 
   @Override
-  public void prependCopy(Dom4jNode node) throws XmlBuilderException {
+  public void appendPrev(Dom4jNode node, Dom4jNode prepend) throws XmlBuilderException {
     final Node wrappedNode = node.getNode();
-    if (Node.ELEMENT_NODE != wrappedNode.getNodeType()) {
-      throw new XmlBuilderException("Unable to copy non-element node " + node);
+    final Node nodeToPrepend = prepend.getNode();
+    if (Node.ELEMENT_NODE != nodeToPrepend.getNodeType()) {
+      throw new XmlBuilderException("Unable to append prev a non-element node " + prepend);
     }
     final Element parent = wrappedNode.getParent();
     if (null == parent) {
       throw new XmlBuilderException("Unable to prepend - no parent found of " + node);
     }
     final int prependIndex = parent.indexOf(wrappedNode);
-    final Element copiedNode = ((Element) wrappedNode).createCopy();
-    parent.elements().add(prependIndex, copiedNode);
+    parent.elements().add(prependIndex, (Element) nodeToPrepend);
+  }
+
+  @Override
+  public void appendChild(Dom4jNode parent, Dom4jNode node) throws XmlBuilderException {
+    parent.appendChild(node);
+  }
+
+  @Override
+  public void appendNext(Dom4jNode node, Dom4jNode append) throws XmlBuilderException {
+    final Node wrappedNode = node.getNode();
+    final Node nodeToAppend = append.getNode();
+    if (Node.ELEMENT_NODE != nodeToAppend.getNodeType()) {
+      throw new XmlBuilderException("Unable to append next a non-element node " + append);
+    }
+    final Element parent = wrappedNode.getParent();
+    if (null == parent) {
+      throw new XmlBuilderException("Unable to append - no parent found of " + node);
+    }
+    parent.elements().add((Element) nodeToAppend);
   }
 
   @Override

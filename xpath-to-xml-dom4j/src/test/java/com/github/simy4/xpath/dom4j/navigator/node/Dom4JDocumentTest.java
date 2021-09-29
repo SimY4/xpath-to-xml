@@ -62,24 +62,35 @@ class Dom4JDocumentTest {
   }
 
   @Test
-  void shouldThrowExceptionWhenCreateAttribute() {
-    assertThatThrownBy(() -> node.createAttribute(new org.dom4j.QName("attr")))
+  void shouldThrowExceptionWhenAppendAttribute() {
+    assertThatThrownBy(
+            () ->
+                node.appendChild(
+                    new Dom4jAttribute(
+                        DocumentHelper.createAttribute(
+                            DocumentHelper.createElement(new org.dom4j.QName("attr")),
+                            new org.dom4j.QName("attr"),
+                            ""))))
         .isInstanceOf(XmlBuilderException.class);
   }
 
   @Test
-  void shouldSetRootNodeWhenCreateElement() {
+  void shouldSetRootNodeWhenAppendElement() {
     document = DocumentHelper.createDocument();
     node = new Dom4jDocument(document);
 
-    Dom4jNode newRoot = node.createElement(new org.dom4j.QName("elem"));
+    Dom4jNode newRoot = new Dom4jElement(DocumentHelper.createElement(new org.dom4j.QName("elem")));
+    node.appendChild(newRoot);
 
     assertThat(newRoot).extracting("name").isEqualTo(new QName("elem"));
   }
 
   @Test
   void shouldThrowExceptionWhenRootElementAlreadyExist() {
-    assertThatThrownBy(() -> node.createElement(new org.dom4j.QName("elem")))
+    assertThatThrownBy(
+            () ->
+                node.appendChild(
+                    new Dom4jElement(DocumentHelper.createElement(new org.dom4j.QName("elem")))))
         .isInstanceOf(XmlBuilderException.class);
   }
 

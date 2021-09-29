@@ -15,9 +15,10 @@
  */
 package com.github.simy4.xpath.dom4j.navigator.node;
 
+import com.github.simy4.xpath.XmlBuilderException;
 import org.dom4j.Attribute;
-import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.dom4j.IllegalAddException;
 import org.dom4j.Namespace;
 
 import javax.xml.namespace.QName;
@@ -58,15 +59,12 @@ public final class Dom4jElement extends AbstractDom4jNode<Element> {
   }
 
   @Override
-  public Dom4jNode createAttribute(org.dom4j.QName attribute) {
-    final Attribute attr = DocumentHelper.createAttribute(getNode(), attribute, "");
-    getNode().attributes().add(attr);
-    return new Dom4jAttribute(attr);
-  }
-
-  @Override
-  public Dom4jNode createElement(org.dom4j.QName element) {
-    return new Dom4jElement(getNode().addElement(element));
+  public void appendChild(Dom4jNode child) throws XmlBuilderException {
+    try {
+      getNode().add(child.getNode());
+    } catch (IllegalAddException iae) {
+      throw new XmlBuilderException("Unable to append child to node " + getNode(), iae);
+    }
   }
 
   private static final class Dom4jAttributeIterator implements Iterator<Dom4jAttribute> {

@@ -143,27 +143,56 @@ class Dom4jNavigatorTest {
   }
 
   @Test
-  void testCreateElementFailure() {
-    assertThatThrownBy(() -> navigator.createElement(new Dom4jAttribute(attr), new QName("elem")))
-        .isInstanceOf(XmlBuilderException.class);
-  }
-
-  @Test
-  void testPrependCopySuccess() {
-    navigator.prependCopy(new Dom4jElement(xml));
+  void testPrependSuccess() {
+    navigator.appendPrev(new Dom4jElement(xml), new Dom4jElement(xml.createCopy()));
     assertThat(parent.elements()).extracting("name").containsExactly(xml.getName(), xml.getName());
   }
 
   @Test
-  void testPrependCopyNoParent() {
+  void testPrependNoParent() {
     assertThatThrownBy(
-            () -> navigator.prependCopy(new Dom4jElement(DocumentHelper.createElement("elem"))))
+            () ->
+                navigator.appendPrev(
+                    new Dom4jElement(DocumentHelper.createElement("elem")), new Dom4jElement(xml)))
         .isInstanceOf(XmlBuilderException.class);
   }
 
   @Test
-  void testPrependCopyFailure() {
-    assertThatThrownBy(() -> navigator.prependCopy(new Dom4jDocument(root)))
+  void testPrependFailure() {
+    assertThatThrownBy(() -> navigator.appendPrev(new Dom4jDocument(root), new Dom4jElement(xml)))
+        .isInstanceOf(XmlBuilderException.class);
+  }
+
+  @Test
+  void testAppendChildSuccess() {
+    navigator.appendChild(new Dom4jElement(xml), new Dom4jElement(xml.createCopy()));
+    assertThat(xml.elements()).extracting("name").contains(xml.getName());
+  }
+
+  @Test
+  void testAppendChildFailure() {
+    assertThatThrownBy(() -> navigator.appendChild(new Dom4jAttribute(attr), new Dom4jElement(xml)))
+        .isInstanceOf(XmlBuilderException.class);
+  }
+
+  @Test
+  void testAppendSuccess() {
+    navigator.appendNext(new Dom4jElement(xml), new Dom4jElement(xml.createCopy()));
+    assertThat(parent.elements()).extracting("name").containsExactly(xml.getName(), xml.getName());
+  }
+
+  @Test
+  void testAppendNoParent() {
+    assertThatThrownBy(
+            () ->
+                navigator.appendNext(
+                    new Dom4jElement(DocumentHelper.createElement("elem")), new Dom4jElement(xml)))
+        .isInstanceOf(XmlBuilderException.class);
+  }
+
+  @Test
+  void testAppendFailure() {
+    assertThatThrownBy(() -> navigator.appendNext(new Dom4jDocument(root), new Dom4jElement(xml)))
         .isInstanceOf(XmlBuilderException.class);
   }
 

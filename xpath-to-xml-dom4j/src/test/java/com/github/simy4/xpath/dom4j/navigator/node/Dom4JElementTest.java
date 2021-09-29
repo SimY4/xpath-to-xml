@@ -66,14 +66,17 @@ class Dom4JElementTest {
   }
 
   @Test
-  void shouldAppendNewAttributeWhenCreateAttribute() {
-    assertThat(node.createAttribute(new org.dom4j.QName("attr"))).isNotNull();
+  void shouldAppendNewAttribute() {
+    Attribute attr = DocumentHelper.createAttribute(element, new org.dom4j.QName("attr"), "");
+    node.appendChild(new Dom4jAttribute(attr));
+    assertThat(element.attributes()).contains(attr);
   }
 
   @Test
-  void shouldAppendNewElementWhenCreateElement() {
-    Dom4jNode elem = node.createElement(new org.dom4j.QName("elem"));
-    assertThat(elem).extracting("name").isEqualTo(new QName("elem"));
+  void shouldAppendNewElement() {
+    Element elem = DocumentHelper.createElement(new org.dom4j.QName("elem"));
+    node.appendChild(new Dom4jElement(elem));
+    assertThat(element.elements()).contains(elem);
   }
 
   @Test

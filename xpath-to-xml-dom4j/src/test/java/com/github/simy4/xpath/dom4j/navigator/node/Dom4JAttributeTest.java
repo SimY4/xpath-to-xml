@@ -58,14 +58,11 @@ class Dom4JAttributeTest {
   }
 
   @Test
-  void shouldThrowExceptionWhenCreateAttribute() {
-    assertThatThrownBy(() -> node.createAttribute(new org.dom4j.QName("attr")))
-        .isInstanceOf(XmlBuilderException.class);
-  }
-
-  @Test
-  void shouldThrowExceptionWhenCreateElement() {
-    assertThatThrownBy(() -> node.createElement(new org.dom4j.QName("elem")))
+  void shouldThrowExceptionWhenAppendChild() {
+    assertThatThrownBy(
+            () ->
+                node.appendChild(
+                    new Dom4jElement(DocumentHelper.createElement(new org.dom4j.QName("attr")))))
         .isInstanceOf(XmlBuilderException.class);
   }
 
