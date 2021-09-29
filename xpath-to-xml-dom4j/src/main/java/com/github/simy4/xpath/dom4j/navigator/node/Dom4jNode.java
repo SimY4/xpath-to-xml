@@ -53,7 +53,7 @@ public interface Dom4jNode extends Node {
    * Appends XML node to ths node.
    *
    * @param child new XML node
-   * @throws XmlBuilderException if failure occur during XML element creation
+   * @throws XmlBuilderException if failure occur during XML element append
    */
   void appendChild(Dom4jNode child) throws XmlBuilderException;
 }

@@ -16,9 +16,7 @@
 package com.github.simy4.xpath.xom.navigator.node;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import nu.xom.Attribute;
 import nu.xom.Document;
-import nu.xom.Element;
 
 import javax.xml.namespace.QName;
 
@@ -51,12 +49,7 @@ public final class XomDocument extends AbstractXomNode<Document> {
   }
 
   @Override
-  public XomNode appendAttribute(Attribute attribute) throws XmlBuilderException {
-    throw new XmlBuilderException("Unable to append attribute to a document node " + getNode());
-  }
-
-  @Override
-  public XomNode appendElement(Element element) throws XmlBuilderException {
+  public void appendChild(XomNode node) throws XmlBuilderException {
     throw new XmlBuilderException(
         "Unable to append element. Document has root: " + getNode().getRootElement());
   }

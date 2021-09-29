@@ -65,22 +65,16 @@ public final class XomElement extends AbstractXomNode<Element> {
   }
 
   @Override
-  public XomNode appendAttribute(Attribute attribute) throws XmlBuilderException {
+  public void appendChild(XomNode node) throws XmlBuilderException {
     try {
-      getNode().addAttribute(attribute);
-      return new XomAttribute(attribute);
+      final Node wrappedNode = node.getNode();
+      if (wrappedNode instanceof Attribute) {
+        getNode().addAttribute((Attribute) wrappedNode);
+        return;
+      }
+      getNode().appendChild(wrappedNode);
     } catch (IllegalAddException iae) {
-      throw new XmlBuilderException("Unable to append an attribute to " + getNode(), iae);
-    }
-  }
-
-  @Override
-  public XomNode appendElement(Element element) throws XmlBuilderException {
-    try {
-      getNode().appendChild(element);
-      return new XomElement(element);
-    } catch (IllegalAddException iae) {
-      throw new XmlBuilderException("Unable to append an element to " + getNode(), iae);
+      throw new XmlBuilderException("Unable to append an node to " + getNode(), iae);
     }
   }
 

@@ -17,7 +17,6 @@ package com.github.simy4.xpath.xom.navigator.node;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import nu.xom.Attribute;
-import nu.xom.Element;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -48,14 +47,8 @@ class XomAttributeTest {
   }
 
   @Test
-  void shouldThrowExceptionWhenAppendAttribute() {
-    assertThatThrownBy(() -> node.appendAttribute(new Attribute("attr", "")))
-        .isInstanceOf(XmlBuilderException.class);
-  }
-
-  @Test
-  void shouldThrowExceptionWhenAppendElement() {
-    assertThatThrownBy(() -> node.appendElement(new Element("elem")))
+  void shouldThrowExceptionWhenAppendChild() {
+    assertThatThrownBy(() -> node.appendChild(new XomAttribute(new Attribute("attr", ""))))
         .isInstanceOf(XmlBuilderException.class);
   }
 

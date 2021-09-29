@@ -34,11 +34,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 class Dom4JElementTest {
 
   private Element element = DocumentHelper.createElement(new org.dom4j.QName("node"));
-  private Element child1 = DocumentHelper.createElement(new org.dom4j.QName("child1"));
-  private Element child2 = DocumentHelper.createElement(new org.dom4j.QName("child2"));
-  private Attribute attr1 =
+  private final Element child1 = DocumentHelper.createElement(new org.dom4j.QName("child1"));
+  private final Element child2 = DocumentHelper.createElement(new org.dom4j.QName("child2"));
+  private final Attribute attr1 =
       DocumentHelper.createAttribute(element, new org.dom4j.QName("attr1"), "");
-  private Attribute attr2 =
+  private final Attribute attr2 =
       DocumentHelper.createAttribute(element, new org.dom4j.QName("attr2"), "");
 
   private Dom4jNode node;

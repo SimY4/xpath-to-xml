@@ -17,8 +17,6 @@ package com.github.simy4.xpath.xom.navigator.node;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
-import nu.xom.Attribute;
-import nu.xom.Element;
 
 /**
  * XOM node contract.
@@ -45,22 +43,12 @@ public interface XomNode extends Node {
   Iterable<? extends XomNode> attributes();
 
   /**
-   * Creates XML attribute node and appends to ths node.
+   * Appends XML node to ths node.
    *
-   * @param attribute new XML attribute's name
-   * @return new attribute node
-   * @throws XmlBuilderException if failure occur during XML attribute creation
+   * @param node new XML node
+   * @throws XmlBuilderException if failure occur during XML attribute append
    */
-  XomNode appendAttribute(Attribute attribute) throws XmlBuilderException;
-
-  /**
-   * Creates XML element node and appends to ths node.
-   *
-   * @param element new XML element's name
-   * @return new element node
-   * @throws XmlBuilderException if failure occur during XML element creation
-   */
-  XomNode appendElement(Element element) throws XmlBuilderException;
+  void appendChild(XomNode node) throws XmlBuilderException;
 
   /**
    * Sets the given text content to this node.

@@ -51,14 +51,14 @@ class XomDocumentTest {
   }
 
   @Test
-  void shouldThrowExceptionWhenCreateAttribute() {
-    assertThatThrownBy(() -> node.appendAttribute(new Attribute("attr", "")))
+  void shouldThrowExceptionWhenAppendAttribute() {
+    assertThatThrownBy(() -> node.appendChild(new XomAttribute(new Attribute("attr", ""))))
         .isInstanceOf(XmlBuilderException.class);
   }
 
   @Test
   void shouldThrowBecauseRootElementShouldAlwaysBePresent() {
-    assertThatThrownBy(() -> node.appendElement(new Element("elem")))
+    assertThatThrownBy(() -> node.appendChild(new XomElement(new Element("elem"))))
         .isInstanceOf(XmlBuilderException.class);
   }
 

@@ -71,7 +71,7 @@ public final class Dom4jNavigator implements Navigator<Dom4jNode> {
   }
 
   @Override
-  public Dom4jNode createElement(Dom4jNode parent, QName element) throws XmlBuilderException {
+  public Dom4jNode createElement(Dom4jNode parent, QName element) {
     final org.dom4j.QName elementName =
         DocumentHelper.createQName(
             element.getLocalPart(), new Namespace(element.getPrefix(), element.getNamespaceURI()));

@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class Dom4JDocumentTest {
 
-  private Element root = DocumentHelper.createElement(new org.dom4j.QName("elem"));
+  private final Element root = DocumentHelper.createElement(new org.dom4j.QName("elem"));
   private Document document = DocumentHelper.createDocument(root);
 
   private Dom4jNode node;

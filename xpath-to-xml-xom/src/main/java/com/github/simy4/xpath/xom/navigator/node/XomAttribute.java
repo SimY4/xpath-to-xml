@@ -17,7 +17,6 @@ package com.github.simy4.xpath.xom.navigator.node;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import nu.xom.Attribute;
-import nu.xom.Element;
 import nu.xom.IllegalDataException;
 
 import javax.xml.namespace.QName;
@@ -52,13 +51,8 @@ public final class XomAttribute extends AbstractXomNode<Attribute> {
   }
 
   @Override
-  public XomNode appendAttribute(Attribute attribute) throws XmlBuilderException {
+  public void appendChild(XomNode node) throws XmlBuilderException {
     throw new XmlBuilderException("Unable to append attribute to a non-element node " + getNode());
-  }
-
-  @Override
-  public XomNode appendElement(Element element) throws XmlBuilderException {
-    throw new XmlBuilderException("Unable to append element to an attribute " + getNode());
   }
 
   @Override

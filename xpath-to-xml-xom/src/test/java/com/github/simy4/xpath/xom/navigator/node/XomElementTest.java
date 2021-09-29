@@ -65,13 +65,18 @@ class XomElementTest {
 
   @Test
   void shouldAppendNewAttributeWhenAppendAttribute() {
-    assertThat(node.appendAttribute(new Attribute("attr", ""))).isNotNull();
+    XomNode attr = new XomAttribute(new Attribute("attr", ""));
+    node.appendChild(attr);
+    assertThat(node.attributes())
+        .anySatisfy(at -> assertThat(at.getName()).isEqualTo(attr.getName()));
   }
 
   @Test
-  void shouldThrowExceptionWhenAppendElement() {
-    Element elem = new Element("elem");
-    assertThat(node.appendElement(elem)).isEqualTo(new XomElement(elem));
+  void shouldAppendNewElementWhenAppendElement() {
+    XomNode elem = new XomElement(new Element("elem"));
+    node.appendChild(elem);
+    assertThat(node.elements())
+        .anySatisfy(el -> assertThat(el.getName()).isEqualTo(elem.getName()));
   }
 
   @Test

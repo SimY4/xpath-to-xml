@@ -112,47 +112,51 @@ class XomNavigatorTest {
   void testCreateAttributeSuccess() {
     assertThat(xml.getAttribute("attr")).isNull();
     assertThat(navigator.createAttribute(new XomElement(xml), new QName("attr"))).isNotNull();
-    assertThat(xml.getAttribute("attr")).isNotNull();
-  }
-
-  @Test
-  void testCreateAttributeFailure() {
-    assertThatThrownBy(() -> navigator.createAttribute(new XomDocument(root), new QName("attr")))
-        .isInstanceOf(XmlBuilderException.class);
   }
 
   @Test
   void testCreateElementSuccess() {
     assertThat(xml.getFirstChildElement("elem")).isNull();
     assertThat(navigator.createElement(new XomElement(xml), new QName("elem"))).isNotNull();
-    assertThat(xml.getFirstChildElement("elem")).isNotNull();
   }
 
   @Test
-  void testCreateElementFailure() {
-    assertThatThrownBy(
-            () ->
-                navigator.createElement(
-                    new XomAttribute(new Attribute("attr", "")), new QName("elem")))
-        .isInstanceOf(XmlBuilderException.class);
-  }
-
-  @Test
-  void testPrependCopySuccess() {
-    navigator.prependCopy(new XomElement(xml));
+  void testPrependSuccess() {
+    navigator.appendPrev(new XomElement(xml), new XomElement(xml.copy()));
     Elements childElements = parent.getChildElements();
     assertThat(childElements.size()).isEqualTo(2);
   }
 
   @Test
-  void testPrependCopyNoParent() {
-    assertThatThrownBy(() -> navigator.prependCopy(new XomElement(new Element("elem"))))
+  void testPrependNoParent() {
+    assertThatThrownBy(
+            () -> navigator.appendPrev(new XomElement(new Element("elem")), new XomElement(xml)))
         .isInstanceOf(XmlBuilderException.class);
   }
 
   @Test
-  void testPrependCopyNotAnElement() {
-    assertThatThrownBy(() -> navigator.prependCopy(new XomDocument(root)))
+  void testPrependNotAnElement() {
+    assertThatThrownBy(() -> navigator.appendPrev(new XomElement(xml), new XomDocument(root)))
+        .isInstanceOf(XmlBuilderException.class);
+  }
+
+  @Test
+  void testAppendSuccess() {
+    navigator.appendNext(new XomElement(xml), new XomElement(xml.copy()));
+    Elements childElements = parent.getChildElements();
+    assertThat(childElements.size()).isEqualTo(2);
+  }
+
+  @Test
+  void testAppendNoParent() {
+    assertThatThrownBy(
+            () -> navigator.appendNext(new XomElement(new Element("elem")), new XomElement(xml)))
+        .isInstanceOf(XmlBuilderException.class);
+  }
+
+  @Test
+  void testAppendNotAnElement() {
+    assertThatThrownBy(() -> navigator.appendNext(new XomElement(xml), new XomDocument(root)))
         .isInstanceOf(XmlBuilderException.class);
   }
 

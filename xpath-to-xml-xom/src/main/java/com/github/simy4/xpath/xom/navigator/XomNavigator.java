@@ -17,6 +17,7 @@ package com.github.simy4.xpath.xom.navigator;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.xom.navigator.node.XomAttribute;
 import com.github.simy4.xpath.xom.navigator.node.XomDocument;
 import com.github.simy4.xpath.xom.navigator.node.XomElement;
 import com.github.simy4.xpath.xom.navigator.node.XomNode;
@@ -65,19 +66,19 @@ public final class XomNavigator implements Navigator<XomNode> {
   }
 
   @Override
-  public XomNode createAttribute(XomNode parent, QName attribute) throws XmlBuilderException {
+  public XomNode createAttribute(XomNode parent, QName attribute) {
     final Attribute attr = new Attribute(attribute.getLocalPart(), "");
     if (!XMLConstants.NULL_NS_URI.equals(attribute.getNamespaceURI())) {
       attr.setNamespace(attribute.getPrefix(), attribute.getNamespaceURI());
     }
-    return parent.appendAttribute(attr);
+    return new XomAttribute(attr);
   }
 
   @Override
-  public XomNode createElement(XomNode parent, QName element) throws XmlBuilderException {
+  public XomNode createElement(XomNode parent, QName element) {
     final Element elem = new Element(element.getLocalPart(), element.getNamespaceURI());
     elem.setNamespacePrefix(element.getPrefix());
-    return parent.appendElement(elem);
+    return new XomElement(elem);
   }
 
   @Override
@@ -90,19 +91,37 @@ public final class XomNavigator implements Navigator<XomNode> {
   }
 
   @Override
-  public void prependCopy(XomNode node) throws XmlBuilderException {
+  public void appendPrev(XomNode node, XomNode prepend) throws XmlBuilderException {
     final Node wrappedNode = node.getNode();
-    if (!(wrappedNode instanceof Element)) {
-      throw new XmlBuilderException("Unable to copy non-element node " + node);
-    }
+    final Node nodeToPrepend = prepend.getNode();
     final ParentNode parent = wrappedNode.getParent();
     if (null == parent) {
       throw new XmlBuilderException("Unable to prepend - no parent found of " + node);
     }
     try {
       final int prependIndex = parent.indexOf(wrappedNode);
-      final Node copiedNode = wrappedNode.copy();
-      parent.insertChild(copiedNode, prependIndex);
+      parent.insertChild(nodeToPrepend, prependIndex);
+    } catch (IllegalAddException iae) {
+      throw new XmlBuilderException("Unable to append an copied element to " + parent, iae);
+    }
+  }
+
+  @Override
+  public void appendChild(XomNode parent, XomNode node) throws XmlBuilderException {
+    parent.appendChild(node);
+  }
+
+  @Override
+  public void appendNext(XomNode node, XomNode append) throws XmlBuilderException {
+    final Node wrappedNode = node.getNode();
+    final Node nodeToAppend = append.getNode();
+    final ParentNode parent = wrappedNode.getParent();
+    if (null == parent) {
+      throw new XmlBuilderException("Unable to append - no parent found of " + node);
+    }
+    try {
+      final int prependIndex = parent.indexOf(wrappedNode);
+      parent.insertChild(nodeToAppend, prependIndex);
     } catch (IllegalAddException iae) {
       throw new XmlBuilderException("Unable to append an copied element to " + parent, iae);
     }
