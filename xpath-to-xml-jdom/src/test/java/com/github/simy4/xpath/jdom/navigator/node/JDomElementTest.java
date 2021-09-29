@@ -15,6 +15,7 @@
  */
 package com.github.simy4.xpath.jdom.navigator.node;
 
+import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.helpers.SerializationHelper;
 import com.github.simy4.xpath.navigator.Node;
 import org.jdom2.Attribute;
@@ -28,9 +29,11 @@ import javax.xml.namespace.QName;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class JDomElementTest {
 
+  private JDomNode parent;
   private JDomNode node;
   private final Attribute attr1 = new Attribute("attr1", "text");
   private final Attribute attr2 = new Attribute("attr2", "text");
@@ -41,6 +44,8 @@ class JDomElementTest {
 
   @BeforeEach
   void setUp() {
+    Element parent = new Element("parent", "http://www.example.com/my");
+    parent.setNamespace(Namespace.getNamespace("my", "http://www.example.com/my"));
     Element element = new Element("elem", "http://www.example.com/my");
     element.setNamespace(Namespace.getNamespace("my", "http://www.example.com/my"));
     element.setAttribute(attr1);
@@ -50,8 +55,10 @@ class JDomElementTest {
     element.addContent(child1);
     element.addContent(child2);
     element.addContent(child3);
+    parent.addContent(element);
 
-    node = new JDomElement(element);
+    this.parent = new JDomElement(parent);
+    this.node = new JDomElement(element);
   }
 
   @Test
@@ -70,14 +77,44 @@ class JDomElementTest {
   }
 
   @Test
-  void shouldAppendNewAttributeWhenAppendAttribute() {
-    assertThat(node.appendAttribute(new Attribute("attr", ""))).isNotNull();
+  void shouldThrowExceptionWhenAppendPrevAttribute() {
+    assertThatThrownBy(() -> node.appendPrev(new JDomAttribute(new Attribute("elem", ""))))
+        .isInstanceOf(XmlBuilderException.class);
   }
 
   @Test
-  void shouldThrowExceptionWhenAppendElement() {
+  void shouldAppendNewElementWhenAppendPrevElement() {
     Element elem = new Element("elem");
-    assertThat(node.appendElement(elem)).isEqualTo(new JDomElement(elem));
+    node.appendPrev(new JDomElement(elem));
+    assertThat(parent.elements()).anySatisfy(el -> assertThat(el).isEqualTo(new JDomElement(elem)));
+  }
+
+  @Test
+  void shouldAppendNewAttributeWhenAppendAttribute() {
+    Attribute attr = new Attribute("attr", "");
+    node.appendChild(new JDomAttribute(attr));
+    assertThat(node.attributes())
+        .anySatisfy(at -> assertThat(at).isEqualTo(new JDomAttribute(attr)));
+  }
+
+  @Test
+  void shouldAppendNewElementWhenAppendElement() {
+    Element elem = new Element("elem");
+    node.appendChild(new JDomElement(elem));
+    assertThat(node.elements()).anySatisfy(el -> assertThat(el).isEqualTo(new JDomElement(elem)));
+  }
+
+  @Test
+  void shouldThrowExceptionWhenAppendNextAttribute() {
+    assertThatThrownBy(() -> node.appendPrev(new JDomAttribute(new Attribute("elem", ""))))
+        .isInstanceOf(XmlBuilderException.class);
+  }
+
+  @Test
+  void shouldAppendNewElementWhenAppendNextElement() {
+    Element elem = new Element("elem");
+    node.appendNext(new JDomElement(elem));
+    assertThat(parent.elements()).anySatisfy(el -> assertThat(el).isEqualTo(new JDomElement(elem)));
   }
 
   @Test

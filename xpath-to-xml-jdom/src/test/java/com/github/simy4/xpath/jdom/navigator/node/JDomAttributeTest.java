@@ -19,7 +19,6 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.helpers.SerializationHelper;
 import com.github.simy4.xpath.navigator.Node;
 import org.jdom2.Attribute;
-import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,14 +52,20 @@ class JDomAttributeTest {
   }
 
   @Test
-  void shouldThrowExceptionWhenAppendAttribute() {
-    assertThatThrownBy(() -> node.appendAttribute(new Attribute("attr", "")))
+  void shouldThrowExceptionWhenAppendPrev() {
+    assertThatThrownBy(() -> node.appendPrev(new JDomAttribute(new Attribute("attr", ""))))
         .isInstanceOf(XmlBuilderException.class);
   }
 
   @Test
-  void shouldThrowExceptionWhenAppendElement() {
-    assertThatThrownBy(() -> node.appendElement(new Element("elem")))
+  void shouldThrowExceptionWhenAppendChild() {
+    assertThatThrownBy(() -> node.appendChild(new JDomAttribute(new Attribute("attr", ""))))
+        .isInstanceOf(XmlBuilderException.class);
+  }
+
+  @Test
+  void shouldThrowExceptionWhenAppendNext() {
+    assertThatThrownBy(() -> node.appendNext(new JDomAttribute(new Attribute("attr", ""))))
         .isInstanceOf(XmlBuilderException.class);
   }
 

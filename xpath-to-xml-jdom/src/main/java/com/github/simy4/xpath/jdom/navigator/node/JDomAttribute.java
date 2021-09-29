@@ -18,7 +18,6 @@ package com.github.simy4.xpath.jdom.navigator.node;
 import com.github.simy4.xpath.XmlBuilderException;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
-import org.jdom2.IllegalDataException;
 
 import javax.xml.namespace.QName;
 
@@ -65,31 +64,22 @@ public final class JDomAttribute extends AbstractJDomNode<Attribute> {
   }
 
   @Override
-  public JDomNode appendAttribute(Attribute attribute) throws XmlBuilderException {
-    throw new XmlBuilderException("Unable to append attribute to a non-element node " + getNode());
+  public void appendPrev(JDomNode prepend) throws XmlBuilderException {
+    throw new XmlBuilderException("Unable to append node to a non-element node " + getNode());
   }
 
   @Override
-  public JDomNode appendElement(Element element) throws XmlBuilderException {
-    throw new XmlBuilderException("Unable to append element to an attribute " + getNode());
+  public void appendChild(JDomNode node) throws XmlBuilderException {
+    throw new XmlBuilderException("Unable to append node to a non-element node " + getNode());
   }
 
   @Override
-  public void prependCopy() throws XmlBuilderException {
-    throw new XmlBuilderException("Unable to prepend copy of an attribute " + getNode());
+  public void appendNext(JDomNode append) throws XmlBuilderException {
+    throw new XmlBuilderException("Unable to append node to a non-element node " + getNode());
   }
 
   @Override
-  public void setText(String text) throws XmlBuilderException {
-    try {
-      getNode().setValue(text);
-    } catch (IllegalDataException ide) {
-      throw new XmlBuilderException("Unable to set value to " + getNode(), ide);
-    }
-  }
-
-  @Override
-  public void remove() {
-    getNode().detach();
+  public void visit(Visitor visitor) throws XmlBuilderException {
+    visitor.visit(this);
   }
 }

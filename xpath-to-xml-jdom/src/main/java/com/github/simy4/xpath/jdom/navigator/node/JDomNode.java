@@ -17,8 +17,6 @@ package com.github.simy4.xpath.jdom.navigator.node;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
-import org.jdom2.Attribute;
-import org.jdom2.Element;
 
 /**
  * JDOM node contract.
@@ -57,37 +55,41 @@ public interface JDomNode extends Node {
   Iterable<? extends JDomNode> attributes();
 
   /**
-   * Creates XML attribute node and appends to ths node.
+   * Prepends XML node to ths node.
    *
-   * @param attribute new XML attribute's name
-   * @return new attribute node
-   * @throws XmlBuilderException if failure occur during XML attribute creation
+   * @param prepend new XML node
+   * @throws XmlBuilderException if failure occur during XML element append
    */
-  JDomNode appendAttribute(Attribute attribute) throws XmlBuilderException;
+  void appendPrev(JDomNode prepend) throws XmlBuilderException;
 
   /**
-   * Creates XML element node and appends to ths node.
+   * Appends XML node to ths node.
    *
-   * @param element new XML element's name
-   * @return new element node
-   * @throws XmlBuilderException if failure occur during XML element creation
+   * @param node new XML node
+   * @throws XmlBuilderException if failure occur during XML element append
    */
-  JDomNode appendElement(Element element) throws XmlBuilderException;
-
-  void prependCopy() throws XmlBuilderException;
+  void appendChild(JDomNode node) throws XmlBuilderException;
 
   /**
-   * Sets the given text content to this node.
+   * Appends XML node to ths node as a successor node.
    *
-   * @param text text content to set
-   * @throws XmlBuilderException if failure occur during setting the text content
+   * @param append new XML node
+   * @throws XmlBuilderException if failure occur during XML element append
    */
-  void setText(String text) throws XmlBuilderException;
+  void appendNext(JDomNode append) throws XmlBuilderException;
 
   /**
-   * Detach this node from the DOM.
+   * JSON node visitor.
    *
-   * @throws XmlBuilderException if failure occur during node detaching
+   * @param visitor visitor instance
    */
-  void remove() throws XmlBuilderException;
+  void visit(Visitor visitor) throws XmlBuilderException;
+
+  interface Visitor {
+    void visit(JDomAttribute attribute) throws XmlBuilderException;
+
+    void visit(JDomDocument document) throws XmlBuilderException;
+
+    void visit(JDomElement element) throws XmlBuilderException;
+  }
 }

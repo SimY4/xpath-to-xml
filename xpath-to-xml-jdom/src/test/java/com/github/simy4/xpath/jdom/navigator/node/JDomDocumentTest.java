@@ -55,14 +55,26 @@ class JDomDocumentTest {
   }
 
   @Test
-  void shouldThrowExceptionWhenCreateAttribute() {
-    assertThatThrownBy(() -> node.appendAttribute(new Attribute("attr", "")))
+  void shouldThrowExceptionWhenAppendPrev() {
+    assertThatThrownBy(() -> node.appendPrev(new JDomElement(new Element("elem"))))
+        .isInstanceOf(XmlBuilderException.class);
+  }
+
+  @Test
+  void shouldThrowExceptionWhenAppendAttribute() {
+    assertThatThrownBy(() -> node.appendChild(new JDomAttribute(new Attribute("attr", ""))))
         .isInstanceOf(XmlBuilderException.class);
   }
 
   @Test
   void shouldThrowBecauseRootElementShouldAlwaysBePresent() {
-    assertThatThrownBy(() -> node.appendElement(new Element("elem")))
+    assertThatThrownBy(() -> node.appendChild(new JDomElement(new Element("elem"))))
+        .isInstanceOf(XmlBuilderException.class);
+  }
+
+  @Test
+  void shouldThrowExceptionWhenAppendNext() {
+    assertThatThrownBy(() -> node.appendNext(new JDomElement(new Element("elem"))))
         .isInstanceOf(XmlBuilderException.class);
   }
 

@@ -27,7 +27,7 @@ abstract class AbstractJDomNode<N extends Serializable> implements JDomNode, Ser
     this.node = node;
   }
 
-  protected final N getNode() {
+  public final N getNode() {
     return node;
   }
 

@@ -16,9 +16,7 @@
 package com.github.simy4.xpath.jdom.navigator.node;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import org.jdom2.Attribute;
 import org.jdom2.Document;
-import org.jdom2.Element;
 import org.jdom2.IllegalAddException;
 
 import javax.xml.namespace.QName;
@@ -40,7 +38,8 @@ public final class JDomDocument extends AbstractJDomNode<Document> {
 
   @Override
   public String getText() {
-    return getNode().hasRootElement() ? getNode().getRootElement().getText() : "";
+    final Document wrappedNode = getNode();
+    return wrappedNode.hasRootElement() ? wrappedNode.getRootElement().getText() : "";
   }
 
   @Override
@@ -55,8 +54,9 @@ public final class JDomDocument extends AbstractJDomNode<Document> {
 
   @Override
   public Iterable<? extends JDomNode> elements() {
-    return getNode().hasRootElement()
-        ? Collections.singletonList(new JDomElement(getNode().getRootElement()))
+    final Document wrappedNode = getNode();
+    return wrappedNode.hasRootElement()
+        ? Collections.singletonList(new JDomElement(wrappedNode.getRootElement()))
         : Collections.emptyList();
   }
 
@@ -66,36 +66,55 @@ public final class JDomDocument extends AbstractJDomNode<Document> {
   }
 
   @Override
-  public JDomNode appendAttribute(Attribute attribute) throws XmlBuilderException {
-    throw new XmlBuilderException("Unable to append attribute to a document node " + getNode());
+  public void appendPrev(JDomNode prepend) throws XmlBuilderException {
+    throw new XmlBuilderException("Unable to append node to a document node " + getNode());
   }
 
   @Override
-  public JDomNode appendElement(Element element) throws XmlBuilderException {
+  public void appendChild(JDomNode node) throws XmlBuilderException {
     if (getNode().hasRootElement()) {
       throw new XmlBuilderException(
-          "Unable to append element " + element + " . Root element already exist");
+          "Unable to append node " + node + " . Root element already exist");
     }
-    try {
-      getNode().setRootElement(element);
-      return new JDomElement(element);
-    } catch (IllegalAddException iae) {
-      throw new XmlBuilderException("Unable to append element " + element, iae);
+    node.visit(new AppendChild(getNode()));
+  }
+
+  @Override
+  public void appendNext(JDomNode append) throws XmlBuilderException {
+    throw new XmlBuilderException("Unable to append node to a document node " + getNode());
+  }
+
+  @Override
+  public void visit(Visitor visitor) throws XmlBuilderException {
+    visitor.visit(this);
+  }
+
+  private static final class AppendChild implements JDomNode.Visitor {
+    private final Document document;
+
+    private AppendChild(Document document) {
+      this.document = document;
     }
-  }
 
-  @Override
-  public void prependCopy() throws XmlBuilderException {
-    throw new XmlBuilderException("Unable to prepend copy of a document " + getNode());
-  }
+    @Override
+    public void visit(JDomAttribute attribute) throws XmlBuilderException {
+      throw new XmlBuilderException(
+          "Unable to append non-element node to a document node " + attribute);
+    }
 
-  @Override
-  public void setText(String text) throws XmlBuilderException {
-    throw new XmlBuilderException("Unable to set value to a document node " + getNode());
-  }
+    @Override
+    public void visit(JDomDocument document) throws XmlBuilderException {
+      throw new XmlBuilderException(
+          "Unable to append non-element node to a document node " + document);
+    }
 
-  @Override
-  public void remove() throws XmlBuilderException {
-    throw new XmlBuilderException("Unable to remove document node " + getNode());
+    @Override
+    public void visit(JDomElement element) throws XmlBuilderException {
+      try {
+        document.setRootElement(element.getNode());
+      } catch (IllegalAddException iae) {
+        throw new XmlBuilderException("Unable to append element " + element, iae);
+      }
+    }
   }
 }

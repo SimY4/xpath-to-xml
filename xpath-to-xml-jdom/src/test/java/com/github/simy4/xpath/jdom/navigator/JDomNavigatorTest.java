@@ -114,47 +114,59 @@ class JDomNavigatorTest {
   void testCreateAttributeSuccess() {
     assertThat(xml.getAttribute("attr")).isNull();
     assertThat(navigator.createAttribute(new JDomElement(xml), new QName("attr"))).isNotNull();
-    assertThat(xml.getAttribute("attr")).isNotNull();
-  }
-
-  @Test
-  void testCreateAttributeFailure() {
-    assertThatThrownBy(() -> navigator.createAttribute(new JDomDocument(root), new QName("attr")))
-        .isInstanceOf(XmlBuilderException.class);
   }
 
   @Test
   void testCreateElementSuccess() {
     assertThat(xml.getChildren("elem")).isEmpty();
     assertThat(navigator.createElement(new JDomElement(xml), new QName("elem"))).isNotNull();
-    assertThat(xml.getChildren("elem")).isNotEmpty();
   }
 
   @Test
-  void testCreateElementFailure() {
-    assertThatThrownBy(
-            () ->
-                navigator.createElement(
-                    new JDomAttribute(new Attribute("attr", "")), new QName("elem")))
-        .isInstanceOf(XmlBuilderException.class);
-  }
-
-  @Test
-  void testPrependCopySuccess() {
-    navigator.prependCopy(new JDomElement(xml));
+  void testPrependSuccess() {
+    navigator.appendPrev(new JDomElement(xml), new JDomElement(xml.clone()));
     List<Element> childElements = parent.getChildren();
     assertThat(childElements).hasSize(2);
   }
 
   @Test
-  void testPrependCopyNoParent() {
-    assertThatThrownBy(() -> navigator.prependCopy(new JDomElement(new Element("elem"))))
+  void testPrependNoParent() {
+    assertThatThrownBy(
+            () -> navigator.appendPrev(new JDomElement(new Element("elem")), new JDomElement(xml)))
         .isInstanceOf(XmlBuilderException.class);
   }
 
   @Test
-  void testPrependCopyNotAnElement() {
-    assertThatThrownBy(() -> navigator.prependCopy(new JDomDocument(root)))
+  void testPrependNotAnElement() {
+    assertThatThrownBy(() -> navigator.appendPrev(new JDomDocument(root), new JDomElement(xml)))
+        .isInstanceOf(XmlBuilderException.class);
+  }
+
+  @Test
+  void testAppendChildSuccess() {
+    Element elem = new Element("elem");
+    navigator.appendChild(new JDomElement(xml), new JDomElement(elem));
+    List<Element> childElements = xml.getChildren();
+    assertThat(childElements).contains(elem);
+  }
+
+  @Test
+  void testAppendNextSuccess() {
+    navigator.appendNext(new JDomElement(xml), new JDomElement(xml.clone()));
+    List<Element> childElements = parent.getChildren();
+    assertThat(childElements).hasSize(2);
+  }
+
+  @Test
+  void testAppendNextNoParent() {
+    assertThatThrownBy(
+        () -> navigator.appendNext(new JDomElement(new Element("elem")), new JDomElement(xml)))
+        .isInstanceOf(XmlBuilderException.class);
+  }
+
+  @Test
+  void testAppendNextNotAnElement() {
+    assertThatThrownBy(() -> navigator.appendNext(new JDomDocument(root), new JDomElement(xml)))
         .isInstanceOf(XmlBuilderException.class);
   }
 

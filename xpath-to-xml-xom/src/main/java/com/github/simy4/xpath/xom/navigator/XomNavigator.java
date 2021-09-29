@@ -120,8 +120,7 @@ public final class XomNavigator implements Navigator<XomNode> {
       throw new XmlBuilderException("Unable to append - no parent found of " + node);
     }
     try {
-      final int prependIndex = parent.indexOf(wrappedNode);
-      parent.insertChild(nodeToAppend, prependIndex);
+      parent.appendChild(nodeToAppend);
     } catch (IllegalAddException iae) {
       throw new XmlBuilderException("Unable to append an copied element to " + parent, iae);
     }
