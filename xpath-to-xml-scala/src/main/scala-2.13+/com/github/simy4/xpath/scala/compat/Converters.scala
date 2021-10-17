@@ -15,7 +15,7 @@
  */
 package com.github.simy4.xpath.scala.compat
 
-private[scala] object Converters {
+private[scala] trait Converters {
 
   import scala.jdk.CollectionConverters._
 

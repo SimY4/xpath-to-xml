@@ -1,24 +1,16 @@
 ext.moduleName = 'com.github.simych.xpath.scala'
 
-buildDir = 'build-3'
+apply plugin: 'scala'
+apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 
-ext {
-    classesDir = file("/${buildDir}/classes/scala/main")
-    testClassesDir = file("/${buildDir}/classes/scala/test")
-    scaladocDir = file("/${buildDir}/docs/scaladoc")
-}
+buildDir = 'build-3'
 
 clean {
     delete 'build-3'
 }
 
-configurations {
-    dotc
-}
-
 sourceSets {
-    main.java.srcDirs = [file('src/main/scala'), file('src/main/scala-2.13+'), file('src/main/scala-3+')]
-    test.java.srcDirs = [file('src/test/scala'), file('src/test/scala-2.13+'), file('src/test/scala-3+')]
+    main.scala.srcDirs += [file('src/main/scala-2.13+'), file('src/main/scala-3+')]
 }
 
 dependencies {
@@ -27,80 +19,41 @@ dependencies {
     implementation 'org.scala-lang:scala3-library_3:3.0.2'
     implementation libraries.scalaXml('3')
 
-    dotc 'org.scala-lang:scala3-compiler_3:3.0.2'
-    dotc 'org.scala-lang:scaladoc_3:3.0.2'
-
     testImplementation project(':xpath-to-xml-test')
     testImplementation libraries.scalatest('3')
     testImplementation 'co.helmethair:scalatest-junit-runner'
     testImplementation 'org.junit.platform:junit-platform-engine'
 }
 
-def dottyCompilerOptions = [
-        '-project-url',     projectUrl,
-        '-encoding',        'UTF-8',
-        '-deprecation',
-        '-explain',                             // Explain errors in more detail.
-        '-explain-types',                       // Explain type errors in more detail.
-        '-feature',                             // Emit warning and location for usages of features that should be imported explicitly.
-        '-language:macros,implicitConversions',
-        '-unchecked',                           // Enable additional warnings where generated code depends on assumptions.
-        '-indent',                              // Allow significant indentation.
-        '-Xfatal-warnings',                     // Fail the compilation if there are any warnings.
-]
-
-task compileScala(type: JavaExec) {
-    dependsOn compileJava
-    doFirst {
-        if (!classesDir.exists()) classesDir.mkdirs()
-    }
-    description 'Compile Scala source files'
-    classpath configurations.dotc, configurations.compileClasspath
-    mainClass = 'dotty.tools.dotc.Main'
-    jvmArgs '-Dscala.usejavacp=true'
-    args dottyCompilerOptions + ['-d', classesDir] + sourceSets.main.allSource.filter { it.name.endsWith('.scala') }.files
-}
-
-jar {
-    dependsOn compileScala
-    from classesDir
-}
-
-task compileTestScala(type: JavaExec) {
-    dependsOn compileScala, compileTestJava
-    doFirst {
-        if (!testClassesDir.exists()) testClassesDir.mkdirs()
-    }
-    description 'Compile Scala test source files'
-    classpath configurations.dotc, configurations.testCompileClasspath, classesDir
-    mainClass = 'dotty.tools.dotc.Main'
-    jvmArgs '-Dscala.usejavacp=true'
-    args dottyCompilerOptions + ['-d', testClassesDir] + sourceSets.test.allSource.filter { it.name.endsWith('.scala') }.files
-}
-
-task scaladoc(type: JavaExec) {
-    dependsOn compileScala
-    doFirst {
-        if (!scaladocDir.exists()) scaladocDir.mkdirs()
-    }
-    description 'Generate docs'
-    classpath configurations.dotc, configurations.compileClasspath, classesDir
-    mainClass = 'dotty.tools.scaladoc.Main'
-    jvmArgs '-Dscala.usejavacp=true'
-    args '-d', scaladocDir, classesDir
-}
-
-build {
-    dependsOn compileScala
-}
-
-test {
-    dependsOn compileTestScala
-    classpath += configurations.testRuntimeClasspath + files(classesDir, testClassesDir)
-    testClassesDirs += files(testClassesDir)
-}
-
 javadocJar {
     dependsOn scaladoc
-    from scaladocDir
+    from scaladoc
+}
+
+scaladoc {
+    scalaDocOptions.with {
+        additionalParameters = [
+                '-language:macros,implicitConversions'
+        ]
+    }
+}
+
+tasks.withType(ScalaCompile) {
+    scalaCompileOptions.with {
+        deprecation = true
+        encoding = 'UTF-8'
+        additionalParameters = [
+                '-project-url',     projectUrl,
+                '-explain',                             // Explain errors in more detail.
+                '-explain-types',                       // Explain type errors in more detail.
+                '-feature',                             // Emit warning and location for usages of features that should be imported explicitly.
+                '-language:macros,implicitConversions',
+                '-Xfatal-warnings',                     // Fail the compilation if there are any warnings.
+                '-source:3.0',                          // Turn on future language features.
+        ]
+    }
+}
+
+compileTestScala {
+    scalaCompileOptions.additionalParameters << '-Xtarget:8'
 }

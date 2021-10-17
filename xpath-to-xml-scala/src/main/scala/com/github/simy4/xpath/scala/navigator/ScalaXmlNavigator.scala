@@ -21,9 +21,7 @@ import navigator.Navigator
 
 import xml.{ Attribute => XmlAttribute, Elem, Null, Text }
 
-class ScalaXmlNavigator(override val root: Root) extends Navigator[ScalaXmlNode] {
-  import scala.compat.Converters._
-
+class ScalaXmlNavigator(override val root: Root) extends Navigator[ScalaXmlNode] with scala.compat.Converters {
   override def parentOf(node: ScalaXmlNode): ScalaXmlNode                                = node.parent
   override def elementsOf(parent: ScalaXmlNode): java.lang.Iterable[_ <: ScalaXmlNode]   = parent.elements
   override def attributesOf(parent: ScalaXmlNode): java.lang.Iterable[_ <: ScalaXmlNode] = parent.attributes

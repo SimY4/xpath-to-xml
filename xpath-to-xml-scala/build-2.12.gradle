@@ -2,7 +2,6 @@ ext.moduleName = 'com.github.simych.xpath.scala'
 
 apply plugin: 'scala'
 apply plugin: 'cz.augi.gradle.wartremover'
-apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 
 buildDir = 'build-2.12'
 
