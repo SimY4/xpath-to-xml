@@ -88,6 +88,7 @@ tasks.withType(ScalaCompile) {
                 '-Xfuture',                          // Turn on future language features.
                 '-Yno-adapted-args',                 // Do not adapt an argument list (either by inserting () or creating a tuple) to match the receiver.
                 '-Xsource:3',                        // Turn on future language features.
+                '-target:jvm-1.8',
         ]
         if (!JavaVersion.current().isJava12Compatible()) {
             additionalParameters += [
@@ -97,8 +98,4 @@ tasks.withType(ScalaCompile) {
             ]
         }
     }
-}
-
-compileTestScala {
-    scalaCompileOptions.additionalParameters << '-target:jvm-1.8'
 }

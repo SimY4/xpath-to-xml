@@ -86,6 +86,7 @@ tasks.withType(ScalaCompile) {
                 '-Wdead-code',                       // Warn when dead code is identified.
                 '-Wnumeric-widen',                   // Warn when numerics are widened.
                 '-Xsource:3',                        // Turn on future language features.
+                '-target:jvm-1.8',
         ]
         if (!JavaVersion.current().isJava12Compatible()) {
             additionalParameters += [
@@ -95,8 +96,4 @@ tasks.withType(ScalaCompile) {
             ]
         }
     }
-}
-
-compileTestScala {
-    scalaCompileOptions.additionalParameters << '-target:jvm-1.8'
 }

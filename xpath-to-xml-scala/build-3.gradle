@@ -50,10 +50,7 @@ tasks.withType(ScalaCompile) {
                 '-language:macros,implicitConversions',
                 '-Xfatal-warnings',                     // Fail the compilation if there are any warnings.
                 '-source:3.0',                          // Turn on future language features.
+                '-Xtarget:8',
         ]
     }
-}
-
-compileTestScala {
-    scalaCompileOptions.additionalParameters << '-Xtarget:8'
 }
