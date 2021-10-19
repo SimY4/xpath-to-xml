@@ -17,6 +17,6 @@ object XPathLiteral:
           '{new XPathParser(null).parse(${Expr(const)})}
         } catch {
           case xpee: XPathExpressionException =>
-            report.throwError(s"Illegal XPath expression: ${xpee.getMessage}", sc)
+            report.errorAndAbort(s"Illegal XPath expression: ${xpee.getMessage}", sc)
         }
-      case _ => report.throwError("xpath can only be used on string literals", sc)
+      case _ => report.errorAndAbort("xpath can only be used on string literals", sc)
