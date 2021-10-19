@@ -89,13 +89,12 @@ tasks.withType(ScalaCompile) {
                 '-Yno-adapted-args',                 // Do not adapt an argument list (either by inserting () or creating a tuple) to match the receiver.
                 '-Xsource:3',                        // Turn on future language features.
                 '-target:jvm-1.8',
+                '-opt:l:method',
+                '-opt:l:inline',
+                '-opt-inline-from:com.github.simy4.xpath.scala.navigator.**,com.github.simy4.xpath.scala.syntax.**',
         ]
-        if (!JavaVersion.current().isJava12Compatible()) {
-            additionalParameters += [
-                    '-opt:l:method',
-                    '-opt:l:inline',
-                    '-opt-inline-from:com.github.simy4.xpath.scala.navigator.**,com.github.simy4.xpath.scala.syntax.**',
-            ]
+        if (JavaVersion.current().isJava9Compatible()) {
+            additionalParameters << '-release' << '8'
         }
     }
 }

@@ -30,14 +30,6 @@ javadocJar {
     from scaladoc
 }
 
-scaladoc {
-    scalaDocOptions.with {
-        additionalParameters = [
-                '-language:macros,implicitConversions'
-        ]
-    }
-}
-
 tasks.withType(ScalaCompile) {
     scalaCompileOptions.with {
         deprecation = true
@@ -50,7 +42,11 @@ tasks.withType(ScalaCompile) {
                 '-language:macros,implicitConversions',
                 '-Xfatal-warnings',                     // Fail the compilation if there are any warnings.
                 '-source:3.1',                          // Turn on future language features.
-                '-Xtarget:8',
         ]
+        if (JavaVersion.current().isJava9Compatible()) {
+            additionalParameters << '-release' << '8'
+        } else {
+            additionalParameters << '-Xtarget:8'
+        }
     }
 }
