@@ -7,11 +7,13 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 ## 2.x Series
 
 ### Upcoming
-
 - Core
   - preceding and preceding-sibling axises support.
+
+### 2.3.3
 - 🧰 [Gson] Bump Gson version to 2.8.8
 - 🧰 [scala XML] Bump scala-xml version to 2.0.1
+- 🧰 [scala XML] scala 3.1
 - 🧰 [Jackson] Bump Jackson version to 2.13.0
 
 ### 2.3.2
