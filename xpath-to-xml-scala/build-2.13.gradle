@@ -16,8 +16,8 @@ sourceSets {
 dependencies {
     api project(':xpath-to-xml-core')
 
-    implementation libraries.scalaLibrary('2.13.6')
-    implementation libraries.scalaReflect('2.13.6')
+    implementation libraries.scalaLibrary('2.13.7')
+    implementation libraries.scalaReflect('2.13.7')
     implementation libraries.scalaXml('2.13')
 
     testImplementation project(':xpath-to-xml-test')
