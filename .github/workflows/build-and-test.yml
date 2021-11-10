@@ -21,7 +21,9 @@ jobs:
         java-version: ${{ matrix.java }}
         cache: gradle
     - name: Build with Gradle
-      run: ./gradlew build --no-daemon
+      uses: gradle/gradle-build-action@v1
+      with:
+        arguments: build --no-daemon --scan
     - name: Code Coverage
       uses: codecov/codecov-action@v1
       with:
