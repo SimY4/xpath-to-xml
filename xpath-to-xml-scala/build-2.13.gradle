@@ -16,8 +16,8 @@ sourceSets {
 dependencies {
     api project(':xpath-to-xml-core')
 
-    implementation libraries.scalaLibrary('2.13.7')
-    implementation libraries.scalaReflect('2.13.7')
+    implementation libraries.scalaLibrary('2.13.8')
+    implementation libraries.scalaReflect('2.13.8')
     implementation libraries.scalaXml('2.13')
 
     testImplementation project(':xpath-to-xml-test')
@@ -33,7 +33,7 @@ javadocJar {
 
 spotless {
     scala {
-        scalafmt('3.3.1').configFile('.scalafmt.conf')
+        scalafmt('3.3.3').configFile('.scalafmt.conf')
         licenseHeaderFile rootProject.file('gradle/license.header'), "package "
     }
 }
