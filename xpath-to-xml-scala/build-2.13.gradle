@@ -2,7 +2,6 @@ ext.moduleName = 'com.github.simych.xpath.scala'
 
 apply plugin: 'scala'
 apply plugin: 'cz.augi.gradle.wartremover'
-apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 
 buildDir = 'build-2.13'
 
@@ -17,8 +16,8 @@ sourceSets {
 dependencies {
     api project(':xpath-to-xml-core')
 
-    implementation libraries.scalaLibrary('2.13.6')
-    implementation libraries.scalaReflect('2.13.6')
+    implementation libraries.scalaLibrary('2.13.8')
+    implementation libraries.scalaReflect('2.13.8')
     implementation libraries.scalaXml('2.13')
 
     testImplementation project(':xpath-to-xml-test')
@@ -34,7 +33,7 @@ javadocJar {
 
 spotless {
     scala {
-        scalafmt('3.0.4').configFile('.scalafmt.conf')
+        scalafmt('3.3.3').configFile('.scalafmt.conf')
         licenseHeaderFile rootProject.file('gradle/license.header'), "package "
     }
 }
@@ -87,17 +86,13 @@ tasks.withType(ScalaCompile) {
                 '-Wdead-code',                       // Warn when dead code is identified.
                 '-Wnumeric-widen',                   // Warn when numerics are widened.
                 '-Xsource:3',                        // Turn on future language features.
+                '-target:jvm-1.8',
+                '-opt:l:method',
+                '-opt:l:inline',
+                '-opt-inline-from:com.github.simy4.xpath.scala.navigator.**,com.github.simy4.xpath.scala.syntax.**',
         ]
-        if (!JavaVersion.current().isJava12Compatible()) {
-            additionalParameters += [
-                    '-opt:l:method',
-                    '-opt:l:inline',
-                    '-opt-inline-from:com.github.simy4.xpath.scala.navigator.**,com.github.simy4.xpath.scala.syntax.**',
-            ]
+        if (!JavaVersion.current().isJava9Compatible()) {
+            additionalParameters << '-release' << '8'
         }
     }
-}
-
-compileTestScala {
-    scalaCompileOptions.additionalParameters << '-target:jvm-1.8'
 }

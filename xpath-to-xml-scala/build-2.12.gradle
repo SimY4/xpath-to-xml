@@ -2,7 +2,6 @@ ext.moduleName = 'com.github.simych.xpath.scala'
 
 apply plugin: 'scala'
 apply plugin: 'cz.augi.gradle.wartremover'
-apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 
 buildDir = 'build-2.12'
 
@@ -34,7 +33,7 @@ javadocJar {
 
 spotless {
     scala {
-        scalafmt('3.0.4').configFile('.scalafmt.conf')
+        scalafmt('3.3.3').configFile('.scalafmt.conf')
         licenseHeaderFile rootProject.file('gradle/license.header'), "package "
     }
 }
@@ -89,13 +88,13 @@ tasks.withType(ScalaCompile) {
                 '-Xfuture',                          // Turn on future language features.
                 '-Yno-adapted-args',                 // Do not adapt an argument list (either by inserting () or creating a tuple) to match the receiver.
                 '-Xsource:3',                        // Turn on future language features.
+                '-target:jvm-1.8',
+                '-opt:l:method',
+                '-opt:l:inline',
+                '-opt-inline-from:com.github.simy4.xpath.scala.navigator.**,com.github.simy4.xpath.scala.syntax.**',
         ]
-        if (!JavaVersion.current().isJava12Compatible()) {
-            additionalParameters += [
-                    '-opt:l:method',
-                    '-opt:l:inline',
-                    '-opt-inline-from:com.github.simy4.xpath.scala.navigator.**,com.github.simy4.xpath.scala.syntax.**',
-            ]
+        if (JavaVersion.current().isJava9Compatible()) {
+            additionalParameters << '-release' << '8'
         }
     }
 }

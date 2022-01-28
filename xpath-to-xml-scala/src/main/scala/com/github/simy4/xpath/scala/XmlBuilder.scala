@@ -29,8 +29,7 @@ import xml.Elem
  *   Alex Simkin
  * @since 2.2
  */
-object XmlBuilder {
-  import compat.Converters._
+object XmlBuilder extends compat.Converters {
 
   def apply(effects: Effect*) = new BuilderPartiallyApplied(effects)
 

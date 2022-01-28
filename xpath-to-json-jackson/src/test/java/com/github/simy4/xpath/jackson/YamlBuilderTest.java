@@ -122,6 +122,6 @@ class YamlBuilderTest {
   }
 
   private String yamlToString(JsonNode json) throws JsonProcessingException {
-    return objectMapper.writeValueAsString(json);
+    return objectMapper.writeValueAsString(json).replace("\n", System.lineSeparator());
   }
 }
