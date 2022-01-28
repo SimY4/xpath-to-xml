@@ -3,6 +3,7 @@ ext.moduleName = 'com.github.simych.xpath.dom4j'
 apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 
 sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
     api project(':xpath-to-xml-core')
@@ -13,4 +14,10 @@ dependencies {
     testImplementation 'jaxen:jaxen'
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'org.assertj:assertj-core'
+}
+
+compileJava {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.release = 8
+    }
 }

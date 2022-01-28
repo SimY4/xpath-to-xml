@@ -9,8 +9,8 @@ versions.scalaXml = '2.0.1'
 libraries.scalaLibrary = { version -> "org.scala-lang:scala-library:${version}" }
 libraries.scalaReflect = { version -> "org.scala-lang:scala-reflect:${version}" }
 libraries.scalatest = { compilerVersion -> [
-        "org.scalatest:scalatest-funspec_$compilerVersion:3.2.10",
-        "org.scalatest:scalatest-shouldmatchers_$compilerVersion:3.2.10",
+        "org.scalatest:scalatest-funspec_$compilerVersion:3.2.11",
+        "org.scalatest:scalatest-shouldmatchers_$compilerVersion:3.2.11",
     ]
 }
 libraries.scalaXml = { compilerVersion -> "org.scala-lang.modules:scala-xml_$compilerVersion:${versions.scalaXml}" }

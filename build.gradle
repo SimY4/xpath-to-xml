@@ -20,6 +20,7 @@ subprojects {
     apply from: rootProject.file('gradle/publish-maven.gradle')
 
     sourceCompatibility = JavaVersion.VERSION_1_6
+    targetCompatibility = JavaVersion.VERSION_1_6
 
     repositories {
         mavenCentral()
@@ -53,16 +54,20 @@ subprojects {
         }
     }
 
+    compileJava {
+        if (JavaVersion.current().isJava9Compatible()) {
+            options.release = 6
+        }
+        options.compilerArgs << '-Xlint:all,-options' << '-Werror'
+    }
+
     compileTestJava {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
-    }
 
-    tasks.withType(JavaCompile) {
         if (JavaVersion.current().isJava9Compatible()) {
             options.release = 8
         }
-        options.compilerArgs << '-Xlint:all' << '-Xlint:-options' << '-Werror'
     }
 
     test {
@@ -74,7 +79,6 @@ subprojects {
 
         if (JavaVersion.current().isJava9Compatible()) {
             options.addBooleanOption('html5', true)
-            options.addStringOption('-release', '8') // workaround javadoc issues in Java 9+
         }
     }
 }
