@@ -8,12 +8,11 @@ targetCompatibility = JavaVersion.VERSION_1_8
 dependencies {
     api project(':xpath-to-xml-core')
 
-    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation libs.jackson.databind
 
     testImplementation project(':xpath-to-xml-test')
     testImplementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation 'org.assertj:assertj-core'
+    testImplementation libs.bundles.junit
 }
 
 compileJava {

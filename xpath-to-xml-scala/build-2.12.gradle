@@ -16,14 +16,12 @@ sourceSets {
 dependencies {
     api project(':xpath-to-xml-core')
 
-    implementation libraries.scalaLibrary('2.12.15')
-    implementation libraries.scalaReflect('2.12.15')
-    implementation libraries.scalaXml('2.12')
+    implementation libs.scala.library.v212
+    implementation libs.scala.reflect.v212
+    implementation libs.scala.xml.v212
 
     testImplementation project(':xpath-to-xml-test')
-    testImplementation libraries.scalatest('2.12')
-    testImplementation 'co.helmethair:scalatest-junit-runner'
-    testImplementation 'org.junit.platform:junit-platform-engine'
+    testImplementation libs.bundles.scalatest.v212
 }
 
 javadocJar {

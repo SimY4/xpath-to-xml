@@ -2,7 +2,6 @@ plugins {
     id 'com.diffplug.spotless' version '6.2.2' apply false
     id 'cz.augi.gradle.wartremover' version '0.14.2' apply false
     id 'info.solidsoft.pitest' version '1.7.0' apply false
-    id 'java-platform'
     id 'me.champeau.jmh' version '0.6.6' apply false
     id 'net.ltgt.errorprone' version '2.0.2' apply false
     id 'net.researchgate.release' version '2.8.1'
@@ -11,7 +10,6 @@ plugins {
 
 subprojects {
     apply plugin: 'java-library'
-    apply from: rootProject.file('gradle/dependencies.gradle')
     apply from: rootProject.file('gradle/animal-sniffer.gradle')
     apply from: rootProject.file('gradle/check-checkstyle.gradle')
     apply from: rootProject.file('gradle/check-codecoverage.gradle')
@@ -24,22 +22,6 @@ subprojects {
 
     repositories {
         mavenCentral()
-    }
-
-    configurations {
-        internal {
-            visible = false
-            canBeConsumed = false
-            canBeResolved = false
-        }
-        compileClasspath.extendsFrom internal
-        runtimeClasspath.extendsFrom internal
-        testCompileClasspath.extendsFrom internal
-        testRuntimeClasspath.extendsFrom internal
-    }
-
-    dependencies {
-        internal platform(rootProject)
     }
 
     java {
@@ -83,23 +65,9 @@ subprojects {
     }
 }
 
-dependencies {
-    constraints {
-        api 'org.assertj:assertj-core:3.22.0'
-        api 'org.dom4j:dom4j:2.1.3'
-        api 'co.helmethair:scalatest-junit-runner:0.1.10'
-        api 'com.google.code.gson:gson:2.8.9'
-        api 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
-        api 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.1'
-        api 'jakarta.json:jakarta.json-api:2.0.1'
-        api 'org.glassfish:jakarta.json:2.0.1'
-        api 'jaxen:jaxen:1.2.0'
-        api 'org.jdom:jdom2:2.0.6.1'
-        api 'org.junit.jupiter:junit-jupiter:5.8.2'
-        api 'org.junit.platform:junit-platform-engine:1.8.2'
-        api 'org.mockito:mockito-junit-jupiter:4.3.1'
-        api 'xom:xom:1.3.7'
-    }
+task build {
+    group = 'build'
+    description = 'Build All'
 }
 
 release {
