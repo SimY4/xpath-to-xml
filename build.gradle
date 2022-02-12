@@ -71,7 +71,6 @@ task build {
 }
 
 release {
-    preCommitText = '[skip ci]'
     git {
         requireBranch = '2.x'
     }
