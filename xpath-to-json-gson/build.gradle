@@ -2,6 +2,9 @@ ext.moduleName = 'com.github.simych.xpath.gson'
 
 apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
+
 dependencies {
     api project(':xpath-to-xml-core')
 
@@ -9,4 +12,10 @@ dependencies {
 
     testImplementation project(':xpath-to-xml-test')
     testImplementation libs.bundles.junit
+}
+
+compileJava {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.release = 7
+    }
 }
