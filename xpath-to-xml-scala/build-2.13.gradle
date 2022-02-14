@@ -31,7 +31,7 @@ javadocJar {
 
 spotless {
     scala {
-        scalafmt('3.4.2').configFile('.scalafmt.conf')
+        scalafmt('3.4.3').configFile('.scalafmt.conf')
         licenseHeaderFile rootProject.file('gradle/license.header'), "package "
     }
 }
@@ -46,10 +46,7 @@ scaladoc {
 }
 
 wartremover {
-    warningWarts -= ['DefaultArguments', 'IsInstanceOf', 'Null', 'Throw', 'Var']
-    test {
-        warningWarts -= ['TraversableOps']
-    }
+    warningWarts -= ['IsInstanceOf', 'Null', 'Throw', 'Var']
 }
 
 tasks.withType(ScalaCompile) {

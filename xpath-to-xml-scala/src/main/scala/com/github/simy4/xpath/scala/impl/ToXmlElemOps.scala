@@ -23,6 +23,7 @@ import _root_.scala.collection.{ Iterable, Map }
 import _root_.scala.xml.Elem
 
 trait ToXmlElemOps {
+  @SuppressWarnings(Array("org.wartremover.warts.DefaultArguments"))
   implicit def toXmlElemOps(elem: Elem)(implicit namespaceContext: NamespaceContext = null): XmlElemOps =
     new XmlElemOps(elem, namespaceContext)
 }
