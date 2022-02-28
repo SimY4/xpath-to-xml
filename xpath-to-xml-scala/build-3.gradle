@@ -28,6 +28,12 @@ javadocJar {
     from scaladoc
 }
 
+spotless {
+    scala {
+        licenseHeaderFile rootProject.file('gradle/license.header'), "package "
+    }
+}
+
 tasks.withType(ScalaCompile) {
     scalaCompileOptions.with {
         deprecation = true
