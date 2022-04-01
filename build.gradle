@@ -1,5 +1,5 @@
 plugins {
-    id 'com.diffplug.spotless' version '6.4.0' apply false
+    id 'com.diffplug.spotless' version '6.4.1' apply false
     id 'cz.augi.gradle.wartremover' version '0.15.1' apply false
     id 'info.solidsoft.pitest' version '1.7.4' apply false
     id 'me.champeau.jmh' version '0.6.6' apply false
@@ -78,5 +78,5 @@ release {
 }
 
 wrapper {
-    gradleVersion = '7.4.1'
+    gradleVersion = '7.4.2'
 }

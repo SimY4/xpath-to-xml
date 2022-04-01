@@ -3,7 +3,7 @@ errorprone = '2.10.0'
 jackson = '2.13.1'
 scala212 = '2.12.15'
 scala213 = '2.13.8'
-scala3 = '3.1.1'
+scala3 = '3.1.2'
 scalatest = '3.2.11'
 scalaxml = '2.0.1'
 
