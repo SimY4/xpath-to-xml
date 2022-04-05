@@ -16,14 +16,12 @@ sourceSets {
 dependencies {
     api project(':xpath-to-xml-core')
 
-    implementation libraries.scalaLibrary('2.13.8')
-    implementation libraries.scalaReflect('2.13.8')
-    implementation libraries.scalaXml('2.13')
+    implementation libs.scala.library.v213
+    implementation libs.scala.reflect.v213
+    implementation libs.scala.xml.v213
 
     testImplementation project(':xpath-to-xml-test')
-    testImplementation libraries.scalatest('2.13')
-    testImplementation 'co.helmethair:scalatest-junit-runner'
-    testImplementation 'org.junit.platform:junit-platform-engine'
+    testImplementation libs.bundles.scalatest.v213
 }
 
 javadocJar {
@@ -33,7 +31,7 @@ javadocJar {
 
 spotless {
     scala {
-        scalafmt('3.3.3').configFile('.scalafmt.conf')
+        scalafmt('3.5.0').configFile('.scalafmt.conf')
         licenseHeaderFile rootProject.file('gradle/license.header'), "package "
     }
 }
@@ -48,10 +46,7 @@ scaladoc {
 }
 
 wartremover {
-    warningWarts -= ['DefaultArguments', 'IsInstanceOf', 'Null', 'Throw', 'Var']
-    test {
-        warningWarts -= ['TraversableOps']
-    }
+    warningWarts -= ['IsInstanceOf', 'Null', 'Throw', 'Var']
 }
 
 tasks.withType(ScalaCompile) {

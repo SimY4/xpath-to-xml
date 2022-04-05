@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Alex Simkin
+ * Copyright 2021-2022 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import org.scalatest.matchers.should.Matchers
 
 import javax.xml.namespace.QName
 
+@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 class ScalaXmlNodeSpec extends AnyFunSpec with Matchers {
   val xml = <root attr="value">text</root>
 

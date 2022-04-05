@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Alex Simkin
+ * Copyright 2017-2022 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -260,6 +260,7 @@ class XPathLexer implements Iterator<Token> {
     return token;
   }
 
+  @SuppressWarnings("NegativeCharLiteral")
   private char charAt(int i) {
     final int pos = cursor + i - 1;
     return pos >= xpath.length() ? (char) -1 : xpath.charAt(pos);

@@ -16,18 +16,22 @@ sourceSets {
 dependencies {
     api project(':xpath-to-xml-core')
 
-    implementation 'org.scala-lang:scala3-library_3:3.1.1'
-    implementation libraries.scalaXml('3')
+    implementation libs.scala.library.v3
+    implementation libs.scala.xml.v3
 
     testImplementation project(':xpath-to-xml-test')
-    testImplementation libraries.scalatest('3')
-    testImplementation 'co.helmethair:scalatest-junit-runner'
-    testImplementation 'org.junit.platform:junit-platform-engine'
+    testImplementation libs.bundles.scalatest.v3
 }
 
 javadocJar {
     dependsOn scaladoc
     from scaladoc
+}
+
+spotless {
+    scala {
+        licenseHeaderFile rootProject.file('gradle/license.header'), "package "
+    }
 }
 
 tasks.withType(ScalaCompile) {
