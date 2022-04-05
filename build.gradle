@@ -1,5 +1,5 @@
 plugins {
-    id 'com.diffplug.spotless' version '5.14.0' apply false
+    id 'com.diffplug.spotless' version '6.4.1' apply false
     id 'cz.augi.gradle.wartremover' version '0.14.1' apply false
     id 'info.solidsoft.pitest' version '1.6.0' apply false
     id 'java-platform'
@@ -12,9 +12,7 @@ plugins {
 subprojects {
     apply plugin: 'java-library'
     apply from: rootProject.file('gradle/dependencies.gradle')
-    if (!JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_16)) {
-        apply from: rootProject.file('gradle/check-checkstyle.gradle')
-    }
+    apply from: rootProject.file('gradle/check-checkstyle.gradle')
     apply from: rootProject.file('gradle/check-codecoverage.gradle')
     apply from: rootProject.file('gradle/check-errorprone.gradle')
     apply from: rootProject.file('gradle/publish-jar.gradle')
@@ -50,7 +48,7 @@ subprojects {
     }
 
     tasks.withType(JavaCompile) {
-        options.compilerArgs << '-Xlint:all' << '-Werror' << '--release' << '11'
+        options.compilerArgs << '-Xlint:all,-serial' << '-Werror' << '--release' << '11'
     }
 
     test {

@@ -260,6 +260,7 @@ class XPathLexer implements Iterator<Token> {
     return token;
   }
 
+  @SuppressWarnings("NegativeCharLiteral")
   private char charAt(int i) {
     final var pos = cursor + i - 1;
     return pos >= xpath.length() ? (char) -1 : xpath.charAt(pos);
