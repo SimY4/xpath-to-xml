@@ -1,7 +1,6 @@
 ext.moduleName = 'com.github.simych.xpath.scala'
 
 apply plugin: 'scala'
-apply plugin: 'cz.alenkacz.gradle.scalafmt'
 apply plugin: 'cz.augi.gradle.wartremover'
 apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 
@@ -18,8 +17,8 @@ sourceSets {
 dependencies {
     api project(':xpath-to-xml-core')
 
-    implementation libraries.scalaLibrary('2.13.5')
-    implementation libraries.scalaReflect('2.13.5')
+    implementation libraries.scalaLibrary('2.13.6')
+    implementation libraries.scalaReflect('2.13.6')
     implementation libraries.scalaXml('2.13')
 
     testImplementation project(':xpath-to-xml-test')
@@ -30,6 +29,13 @@ dependencies {
 javadocJar {
     dependsOn scaladoc
     from scaladoc
+}
+
+spotless {
+    scala {
+        scalafmt('2.7.5').configFile('.scalafmt.conf')
+        licenseHeaderFile rootProject.file('gradle/license.header'), "package "
+    }
 }
 
 scaladoc {

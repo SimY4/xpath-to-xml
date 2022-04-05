@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017-2021 Alex Simkin
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
@@ -10,23 +25,23 @@ import java.io.Serializable;
 
 public class UnaryExpr implements Expr, Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private final Expr valueExpr;
+  private final Expr valueExpr;
 
-    public UnaryExpr(Expr valueExpr) {
-        this.valueExpr = valueExpr;
-    }
+  public UnaryExpr(Expr valueExpr) {
+    this.valueExpr = valueExpr;
+  }
 
-    @Override
-    public <N extends Node> NumberView<N> resolve(Navigator<N> navigator, NodeView<N> view, boolean greedy)
-            throws XmlBuilderException {
-        return new NumberView<>(-valueExpr.resolve(navigator, view, !view.hasNext() && greedy).toNumber());
-    }
+  @Override
+  public <N extends Node> NumberView<N> resolve(
+      Navigator<N> navigator, NodeView<N> view, boolean greedy) throws XmlBuilderException {
+    return new NumberView<>(
+        -valueExpr.resolve(navigator, view, !view.hasNext() && greedy).toNumber());
+  }
 
-    @Override
-    public String toString() {
-        return "-(" + valueExpr + ')';
-    }
-
+  @Override
+  public String toString() {
+    return "-(" + valueExpr + ')';
+  }
 }

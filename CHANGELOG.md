@@ -11,6 +11,62 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 - Core
   - preceding and preceding-sibling axises support.
 
+Improvements:
+
+- Gson
+  - Bump Gson version to 2.8.7
+- javax.json:
+  - Bump javax.json version to 2.0.1
+
+### 2.3.1
+
+Bugfixes:
+
+- scala XML
+  - Fix scala 3 publication
+
+### 2.3.0 Scala 3
+
+Features:
+
+- Support for Scala 3
+- Support for Scala 2.11 discontinued
+
+Improvements:
+
+- scala XML:
+  - Bump scala-xml version to 2.0.0
+
+### 2.2.3
+
+Improvements:
+
+- Jackson
+  - Bump Jackson version to 2.12.3
+- scala XML:
+  - Scala 3.0.0-RC3 support
+  - Scala 3.0.0-RC3 doc publishing
+
+### 2.2.2
+
+Improvements:
+
+- Jackson
+  - Bump Jackson version to 2.12.2
+- scala XML:
+  - Scala 3.0.0-RC2 support
+- XOM
+  - Bump XOM version to 1.3.7
+
+### 2.2.1
+
+Improvements:
+
+- scala XML
+  - Scala 3.0.0-RC1 support
+- Jackson
+  - Bump Jackson version to 2.12.1
+
 ### 2.2.0: Jakarta and Dotty
 
 Features:

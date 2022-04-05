@@ -1,3 +1,18 @@
+/*
+ * Copyright 2018-2021 Alex Simkin
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.simy4.xpath.expr.axis;
 
 import com.github.simy4.xpath.helpers.SerializationHelper;
@@ -25,61 +40,60 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 abstract class AbstractAxisResolverTest {
 
-    static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));
-    static final QName name = new QName("name");
+  static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));
+  static final QName name = new QName("name");
 
-    @Mock Navigator<TestNode> navigator;
+  @Mock Navigator<TestNode> navigator;
 
-    AxisResolver axisResolver;
+  AxisResolver axisResolver;
 
-    @Test
-    @DisplayName("When axis traversable should return traversed nodes")
-    void shouldReturnTraversedNodesIfAxisIsTraversable() {
-        // given
-        setUpResolvableAxis();
+  @Test
+  @DisplayName("When axis traversable should return traversed nodes")
+  void shouldReturnTraversedNodesIfAxisIsTraversable() {
+    // given
+    setUpResolvableAxis();
 
-        // when
-        var result = axisResolver.resolveAxis(navigator, parentNode, false);
+    // when
+    var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
-        // then
-        assertThat(result).extracting("node").containsExactly(node(name));
-    }
+    // then
+    assertThat(result).extracting("node").containsExactly(node(name));
+  }
 
-    @Test
-    @DisplayName("When axis traversable should not call to create")
-    void shouldNotCallToCreateIfAxisIsTraversable() {
-        // given
-        setUpResolvableAxis();
-        axisResolver = spy(axisResolver);
+  @Test
+  @DisplayName("When axis traversable should not call to create")
+  void shouldNotCallToCreateIfAxisIsTraversable() {
+    // given
+    setUpResolvableAxis();
+    axisResolver = spy(axisResolver);
 
-        // when
-        var result = axisResolver.resolveAxis(navigator, parentNode, true);
+    // when
+    var result = axisResolver.resolveAxis(navigator, parentNode, true);
 
-        // then
-        assertThat(result).isNotEmpty();
-        verify(axisResolver, never()).createAxisNode(any(), any(), anyInt());
-    }
+    // then
+    assertThat(result).isNotEmpty();
+    verify(axisResolver, never()).createAxisNode(any(), any(), anyInt());
+  }
 
-    @Test
-    @DisplayName("When axis is not traversable return empty")
-    void shouldReturnEmptyIfAxisIsNotTraversable() {
-        // when
-        var result = axisResolver.resolveAxis(navigator, parentNode, false);
+  @Test
+  @DisplayName("When axis is not traversable return empty")
+  void shouldReturnEmptyIfAxisIsNotTraversable() {
+    // when
+    var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
-        // then
-        assertThat(result).isEmpty();
-    }
+    // then
+    assertThat(result).isEmpty();
+  }
 
-    @Test
-    @DisplayName("Should serialize and deserialize axis")
-    void shouldSerializeAndDeserializeAxis() throws IOException, ClassNotFoundException {
-        // when
-        var deserializedAxis = SerializationHelper.serializeAndDeserializeBack(axisResolver);
+  @Test
+  @DisplayName("Should serialize and deserialize axis")
+  void shouldSerializeAndDeserializeAxis() throws IOException, ClassNotFoundException {
+    // when
+    var deserializedAxis = SerializationHelper.serializeAndDeserializeBack(axisResolver);
 
-        // then
-        assertThat(deserializedAxis).usingRecursiveComparison().isEqualTo(axisResolver);
-    }
+    // then
+    assertThat(deserializedAxis).usingRecursiveComparison().isEqualTo(axisResolver);
+  }
 
-    abstract void setUpResolvableAxis();
-
+  abstract void setUpResolvableAxis();
 }

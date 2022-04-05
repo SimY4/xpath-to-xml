@@ -8,6 +8,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind'
 
     testImplementation project(':xpath-to-xml-test')
+    testImplementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'org.assertj:assertj-core'
 }

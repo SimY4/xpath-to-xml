@@ -1,3 +1,18 @@
+/*
+ * Copyright 2018-2021 Alex Simkin
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.expr.axis.SelfAxisResolver;
@@ -14,6 +29,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.xml.namespace.QName;
+
 import java.util.Collections;
 import java.util.stream.Stream;
 
@@ -27,64 +43,71 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class PredicateExprTest {
 
-    static Stream<Arguments> truthy() {
-        return Stream.of(
-                arguments(new LiteralExpr("2.0")),
-                arguments(new EqualsExpr(new NumberExpr(1.0), new NumberExpr(1.0))),
-                arguments(new AxisStepExpr(new SelfAxisResolver(new QName("*", "*")), Collections.emptySet()))
-        );
-    }
+  static Stream<Arguments> truthy() {
+    return Stream.of(
+        arguments(new LiteralExpr("2.0")),
+        arguments(new EqualsExpr(new NumberExpr(1.0), new NumberExpr(1.0))),
+        arguments(
+            new AxisStepExpr(new SelfAxisResolver(new QName("*", "*")), Collections.emptySet())));
+  }
 
-    static Stream<Arguments> falsy() {
-        return Stream.of(
-                arguments(new LiteralExpr("")),
-                arguments(new NotEqualsExpr(new NumberExpr(1.0), new NumberExpr(1.0)))
-        );
-    }
+  static Stream<Arguments> falsy() {
+    return Stream.of(
+        arguments(new LiteralExpr("")),
+        arguments(new NotEqualsExpr(new NumberExpr(1.0), new NumberExpr(1.0))));
+  }
 
-    @Mock private Navigator<TestNode> navigator;
+  @Mock private Navigator<TestNode> navigator;
 
-    @ParameterizedTest(name = "Given truthy predicate {0}")
-    @DisplayName("Should resolve to true")
-    @MethodSource("truthy")
-    void shouldReturnTrueForTruthyPredicate(Expr truthy) {
-        // when
-        var result = new PredicateExpr(truthy).resolve(navigator, new NodeView<>(node("node")), false).toBoolean();
+  @ParameterizedTest(name = "Given truthy predicate {0}")
+  @DisplayName("Should resolve to true")
+  @MethodSource("truthy")
+  void shouldReturnTrueForTruthyPredicate(Expr truthy) {
+    // when
+    var result =
+        new PredicateExpr(truthy)
+            .resolve(navigator, new NodeView<>(node("node")), false)
+            .toBoolean();
 
-        // then
-        assertThat(result).isEqualTo(true);
-    }
+    // then
+    assertThat(result).isEqualTo(true);
+  }
 
-    @ParameterizedTest(name = "Given falsy predicate {0}")
-    @DisplayName("Should resolve to false")
-    @MethodSource("falsy")
-    void shouldReturnFalseForNonGreedyFalsePredicate(Expr falsy) {
-        // when
-        var result = new PredicateExpr(falsy).resolve(navigator, new NodeView<>(node("node")), false).toBoolean();
+  @ParameterizedTest(name = "Given falsy predicate {0}")
+  @DisplayName("Should resolve to false")
+  @MethodSource("falsy")
+  void shouldReturnFalseForNonGreedyFalsePredicate(Expr falsy) {
+    // when
+    var result =
+        new PredicateExpr(falsy)
+            .resolve(navigator, new NodeView<>(node("node")), false)
+            .toBoolean();
 
-        // then
-        assertThat(result).isEqualTo(false);
-    }
+    // then
+    assertThat(result).isEqualTo(false);
+  }
 
-    @Test
-    @DisplayName("When greedy context, falsy predicate and new node should prepend missing nodes and return true")
-    void shouldPrependMissingNodesAndReturnTrueOnGreedyFalsePredicateAndNewNode() {
-        // when
-        var result = new PredicateExpr(new NumberExpr(3.0)).resolve(navigator, new NodeView<>(node("node"), 1),
-                true).toBoolean();
+  @Test
+  @DisplayName(
+      "When greedy context, falsy predicate and new node should prepend missing nodes and return true")
+  void shouldPrependMissingNodesAndReturnTrueOnGreedyFalsePredicateAndNewNode() {
+    // when
+    var result =
+        new PredicateExpr(new NumberExpr(3.0))
+            .resolve(navigator, new NodeView<>(node("node"), 1), true)
+            .toBoolean();
 
-        // then
-        assertThat(result).isEqualTo(true);
-        verify(navigator, times(2)).prependCopy(node("node"));
-    }
+    // then
+    assertThat(result).isEqualTo(true);
+    verify(navigator, times(2)).prependCopy(node("node"));
+  }
 
-    @Test
-    void testToString() {
-        // given
-        var predicate = mock(Expr.class);
+  @Test
+  void testToString() {
+    // given
+    var predicate = mock(Expr.class);
 
-        // then
-        assertThat(new PredicateExpr(predicate)).hasToString("[" + predicate + ']');
-    }
-
+    // then
+    assertThat(new PredicateExpr(predicate)).hasToString("[" + predicate + ']');
+  }
 }

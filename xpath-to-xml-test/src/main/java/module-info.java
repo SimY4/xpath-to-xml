@@ -1,6 +1,6 @@
 module com.github.simych.xpath.test {
-    requires transitive java.xml;
+  requires transitive java.xml;
 
-    exports com.github.simy4.xpath.fixtures;
-    exports com.github.simy4.xpath.helpers;
+  exports com.github.simy4.xpath.fixtures;
+  exports com.github.simy4.xpath.helpers;
 }
