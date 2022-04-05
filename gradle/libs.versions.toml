@@ -5,7 +5,7 @@ scala212 = '2.12.15'
 scala213 = '2.13.8'
 scala3 = '3.1.2'
 scalatest = '3.2.11'
-scalaxml = '2.0.1'
+scalaxml = '2.1.0'
 
 [libraries]
 assertj = 'org.assertj:assertj-core:3.22.0'
