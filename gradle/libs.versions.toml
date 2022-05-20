@@ -1,10 +1,10 @@
 [versions]
 errorprone = '2.10.0'
-jackson = '2.13.1'
+jackson = '2.13.3'
 scala212 = '2.12.15'
 scala213 = '2.13.8'
 scala3 = '3.1.2'
-scalatest = '3.2.11'
+scalatest = '3.2.12'
 scalaxml = '2.1.0'
 
 [libraries]
@@ -17,11 +17,11 @@ jackson-databind = { module = 'com.fasterxml.jackson.core:jackson-databind', ver
 jackson-dataformat-yaml = { module = 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml', version.ref = 'jackson' }
 jaxen = 'jaxen:jaxen:1.2.0'
 jdom2 = 'org.jdom:jdom2:2.0.6.1'
-json-api = 'jakarta.json:jakarta.json-api:2.0.1'
+json-api = 'jakarta.json:jakarta.json-api:2.1.0'
 json-impl = 'org.glassfish:jakarta.json:2.0.1'
 junit-jupiter = 'org.junit.jupiter:junit-jupiter:5.8.2'
 junit-platform-engine = 'org.junit.platform:junit-platform-engine:1.8.2'
-mockito = 'org.mockito:mockito-junit-jupiter:4.3.1'
+mockito = 'org.mockito:mockito-junit-jupiter:4.5.1'
 scala-library-v212 = { module = 'org.scala-lang:scala-library', version.ref = 'scala212' }
 scala-library-v213 = { module = 'org.scala-lang:scala-library', version.ref = 'scala213' }
 scala-library-v3 = { module = 'org.scala-lang:scala3-library_3', version.ref = 'scala3' }
@@ -36,7 +36,7 @@ scalatest-funspec-v3 = { module = 'org.scalatest:scalatest-funspec_3', version.r
 scalatest-shouldmatchers-v212 = { module = 'org.scalatest:scalatest-shouldmatchers_2.12', version.ref = 'scalatest' }
 scalatest-shouldmatchers-v213 = { module = 'org.scalatest:scalatest-shouldmatchers_2.13', version.ref = 'scalatest' }
 scalatest-shouldmatchers-v3 = { module = 'org.scalatest:scalatest-shouldmatchers_3', version.ref = 'scalatest' }
-scalatest-junit-runner = 'co.helmethair:scalatest-junit-runner:0.1.10'
+scalatest-junit-runner = 'co.helmethair:scalatest-junit-runner:0.1.11'
 xom = 'xom:xom:1.3.7'
 
 [bundles]
