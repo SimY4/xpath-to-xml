@@ -17,13 +17,12 @@ package com.github.simy4.xpath.scala.xpath
 
 import com.github.simy4.xpath.expr.Expr
 import com.github.simy4.xpath.parser.XPathParser
-import javax.xml.xpath.XPathExpressionException
-
 import reflect.macros.blackbox
 
+import javax.xml.xpath.XPathExpressionException
+
 final class XPathLiteral(private val sc: StringContext) extends AnyVal {
-  def xpath(args: Any*): Expr =
-    macro XPathLiteral.xpathImpl
+  def xpath(args: Any*): Expr = macro XPathLiteral.xpathImpl
 }
 
 object XPathLiteral {

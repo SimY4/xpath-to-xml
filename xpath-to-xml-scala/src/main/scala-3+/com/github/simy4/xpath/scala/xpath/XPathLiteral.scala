@@ -17,19 +17,20 @@ package com.github.simy4.xpath.scala.xpath
 
 import com.github.simy4.xpath.expr.Expr as JExpr
 import com.github.simy4.xpath.parser.XPathParser
+
 import javax.xml.xpath.XPathExpressionException
 
-import scala.quoted.{ Exprs, Expr, Quotes, Varargs, quotes }
+import scala.quoted.{ quotes, Expr, Exprs, Quotes, Varargs }
 
 object XPathLiteral:
   def xpathImpl(sc: Expr[StringContext])(using Quotes): Expr[JExpr] =
     import quotes.reflect.report
     sc match
-      case '{StringContext(${Varargs(Exprs(args))}*)} if args.size == 1 =>
+      case '{ StringContext(${ Varargs(Exprs(args)) }*) } if args.size == 1 =>
         try {
           val const = args.head
-          val _ = new XPathParser(null).parse(const)
-          '{new XPathParser(null).parse(${Expr(const)})}
+          val _     = new XPathParser(null).parse(const)
+          '{ new XPathParser(null).parse(${ Expr(const) }) }
         } catch {
           case xpee: XPathExpressionException =>
             report.errorAndAbort(s"Illegal XPath expression: ${xpee.getMessage}", sc)

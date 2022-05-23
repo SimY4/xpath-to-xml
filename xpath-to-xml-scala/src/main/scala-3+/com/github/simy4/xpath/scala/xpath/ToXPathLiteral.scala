@@ -19,4 +19,4 @@ package scala.xpath
 import expr.Expr
 
 trait ToXPathLiteral:
-  extension (inline sc: StringContext) inline def xpath(inline args: Any*): Expr = ${XPathLiteral.xpathImpl('sc)}
+  extension (inline sc: StringContext) inline def xpath(inline args: Any*): Expr = ${ XPathLiteral.xpathImpl('sc) }

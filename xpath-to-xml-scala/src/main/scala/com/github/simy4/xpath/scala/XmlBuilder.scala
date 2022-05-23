@@ -17,7 +17,6 @@ package com.github.simy4.xpath
 package scala
 
 import spi.ScalaXmlNavigatorSpi
-
 import xml.Elem
 
 /**

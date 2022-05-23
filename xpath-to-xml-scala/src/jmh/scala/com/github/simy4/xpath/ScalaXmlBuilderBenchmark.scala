@@ -17,11 +17,11 @@ package com.github.simy4.xpath
 
 import fixtures.FixtureAccessor
 import helpers.SimpleNamespaceContext
-import javax.xml.namespace.NamespaceContext
 import org.openjdk.jmh.annotations.{ Benchmark, BenchmarkMode, Mode, Param, Scope, Setup, State }
 import org.openjdk.jmh.infra.Blackhole
-
 import xml.Elem
+
+import javax.xml.namespace.NamespaceContext
 
 @BenchmarkMode(Array(Mode.Throughput))
 @State(Scope.Benchmark)
