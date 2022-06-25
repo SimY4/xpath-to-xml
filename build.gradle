@@ -4,7 +4,7 @@ plugins {
     id 'info.solidsoft.pitest' version '1.7.4' apply false
     id 'me.champeau.jmh' version '0.6.6' apply false
     id 'net.ltgt.errorprone' version '2.0.2' apply false
-    id 'net.researchgate.release' version '2.8.1'
+    id 'net.researchgate.release' version '3.0.0'
     id 'ru.vyarus.animalsniffer' version '1.5.4' apply false
 }
 
@@ -66,14 +66,9 @@ subprojects {
     }
 }
 
-task build {
-    group = 'build'
-    description = 'Build All'
-}
-
 release {
     git {
-        requireBranch = '2.x'
+        requireBranch.set('2.x')
     }
 }
 
