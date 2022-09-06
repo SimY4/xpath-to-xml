@@ -1,6 +1,6 @@
 [versions]
 errorprone = '2.10.0'
-jackson = '2.13.3'
+jackson = '2.13.4'
 scala212 = '2.12.15'
 scala213 = '2.13.8'
 scala3 = '3.2.0'
@@ -17,7 +17,7 @@ jackson-databind = { module = 'com.fasterxml.jackson.core:jackson-databind', ver
 jackson-dataformat-yaml = { module = 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml', version.ref = 'jackson' }
 jaxen = 'jaxen:jaxen:1.2.0'
 jdom2 = 'org.jdom:jdom2:2.0.6.1'
-json-api = 'jakarta.json:jakarta.json-api:2.1.0'
+json-api = 'jakarta.json:jakarta.json-api:2.1.1'
 json-impl = 'org.glassfish:jakarta.json:2.0.1'
 junit-jupiter = 'org.junit.jupiter:junit-jupiter:5.9.0'
 junit-platform-engine = 'org.junit.platform:junit-platform-engine:1.9.0'
