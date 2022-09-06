@@ -16,10 +16,10 @@
 package com.github.simy4.xpath
 package scala.navigator
 
-import javax.xml.namespace.QName
 import navigator.Navigator
-
 import xml.{ Attribute => XmlAttribute, Elem, Null, Text }
+
+import javax.xml.namespace.QName
 
 class ScalaXmlNavigator(override val root: Root) extends Navigator[ScalaXmlNode] with scala.compat.Converters {
   override def parentOf(node: ScalaXmlNode): ScalaXmlNode                                = node.parent

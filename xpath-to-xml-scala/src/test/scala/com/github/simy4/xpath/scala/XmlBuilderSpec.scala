@@ -16,17 +16,18 @@
 package com.github.simy4.xpath
 package scala
 
+import collection.{ mutable, Map }
 import fixtures.FixtureAccessor
 import helpers.SimpleNamespaceContext
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.xml.sax.InputSource
+import xml.{ Elem, NamespaceBinding, Node, Null, PrettyPrinter, TopScope, XML }
 
-import java.io.StringReader
 import javax.xml.namespace.NamespaceContext
 import javax.xml.xpath.{ XPathConstants, XPathExpression, XPathFactory }
-import collection.{ mutable, Map }
-import xml.{ Elem, NamespaceBinding, Node, Null, PrettyPrinter, TopScope, XML }
+
+import java.io.StringReader
 
 @SuppressWarnings(Array("org.wartremover.warts.Any"))
 class XmlBuilderSpec extends AnyFunSpec with Matchers {

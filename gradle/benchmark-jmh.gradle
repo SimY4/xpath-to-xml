@@ -3,3 +3,10 @@ apply plugin: 'me.champeau.jmh'
 jmh {
     jmhVersion = '1.35'
 }
+
+compileJmhJava {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.release = 8
+    }
+    options.compilerArgs << '-Xlint:all,-options' << '-Werror'
+}

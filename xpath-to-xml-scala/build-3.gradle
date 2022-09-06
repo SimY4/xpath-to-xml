@@ -45,7 +45,7 @@ tasks.withType(ScalaCompile) {
                 '-feature',                             // Emit warning and location for usages of features that should be imported explicitly.
                 '-language:macros,implicitConversions',
                 '-Xfatal-warnings',                     // Fail the compilation if there are any warnings.
-                '-source:3.1',                          // Turn on future language features.
+                '-source:3.2',                          // Turn on future language features.
         ]
         if (JavaVersion.current().isJava9Compatible()) {
             additionalParameters << '-release' << '8'

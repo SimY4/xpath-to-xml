@@ -16,10 +16,10 @@
 package com.github.simy4.xpath
 package scala.spi
 
-import scala.navigator.{ Root, ScalaXmlNavigator }
 import spi.{ Effect, NavigatorSpi }
-
 import xml.Elem
+
+import scala.navigator.{ Root, ScalaXmlNavigator }
 
 /**
  * Scala XML model navigator extension SPI.

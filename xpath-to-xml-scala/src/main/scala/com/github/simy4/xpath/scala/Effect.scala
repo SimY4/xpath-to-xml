@@ -19,9 +19,10 @@ package scala
 import com.github.simy4.xpath.spi.{ Effect => JEffect }
 import effects.{ PutEffect, PutValueEffect, RemoveEffect }
 import expr.Expr
+import parser.XPathParser
+
 import javax.xml.namespace.NamespaceContext
 import javax.xml.xpath.XPathExpressionException
-import parser.XPathParser
 
 /**
  * XML model modification effect.

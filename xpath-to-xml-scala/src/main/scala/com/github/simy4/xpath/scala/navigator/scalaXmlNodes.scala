@@ -16,10 +16,10 @@
 package com.github.simy4.xpath
 package scala.navigator
 
-import javax.xml.namespace.QName
 import navigator.{ Node => NavigatorNode }
-
 import xml.{ Attribute => XmlAttribute, Elem, Text }
+
+import javax.xml.namespace.QName
 
 /**
  * Scala XML node contract.
