@@ -4,7 +4,7 @@ jackson = '2.13.4'
 scala212 = '2.12.15'
 scala213 = '2.13.8'
 scala3 = '3.2.0'
-scalatest = '3.2.12'
+scalatest = '3.2.13'
 scalaxml = '2.1.0'
 
 [libraries]
@@ -21,7 +21,7 @@ json-api = 'jakarta.json:jakarta.json-api:2.1.1'
 json-impl = 'org.glassfish:jakarta.json:2.0.1'
 junit-jupiter = 'org.junit.jupiter:junit-jupiter:5.9.0'
 junit-platform-engine = 'org.junit.platform:junit-platform-engine:1.9.0'
-mockito = 'org.mockito:mockito-junit-jupiter:4.6.1'
+mockito = 'org.mockito:mockito-junit-jupiter:4.7.0'
 scala-library-v212 = { module = 'org.scala-lang:scala-library', version.ref = 'scala212' }
 scala-library-v213 = { module = 'org.scala-lang:scala-library', version.ref = 'scala213' }
 scala-library-v3 = { module = 'org.scala-lang:scala3-library_3', version.ref = 'scala3' }
