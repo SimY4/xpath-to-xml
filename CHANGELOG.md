@@ -10,6 +10,7 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 - ✨ [core] preceding and preceding-sibling axises support.
 - 🧰 [jakarta.json] Bump jakarta.json version to 2.1.1
 - 🧰 [Jackson] Bump Jackson version to 2.13.4
+- 🧰 [XOM] Bump XOM version to 1.3.8
 
 ### 2.3.5
 - 🧰 [Gson] Bump Gson version to 2.9.1
