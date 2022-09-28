@@ -31,6 +31,7 @@ import javax.xml.namespace.QName
 sealed trait ScalaXmlNode extends NavigatorNode with Equals {
   type N
   val parent: ScalaXmlNode
+  @SuppressWarnings(Array("org.wartremover.warts.Var"))
   private[navigator] var node: N
   def elements: Iterable[ScalaXmlNode]
   def attributes: Iterable[ScalaXmlNode]
@@ -40,6 +41,7 @@ sealed trait ScalaXmlNode extends NavigatorNode with Equals {
 abstract private[navigator] class AbstractScalaXmlNode protected (val parent: ScalaXmlNode)
     extends ScalaXmlNode
     with Serializable {
+  @SuppressWarnings(Array("org.wartremover.warts.IsInstanceOf"))
   def canEqual(that: Any): Boolean = that.isInstanceOf[ScalaXmlNode]
   override def equals(that: Any): Boolean =
     that match {
@@ -51,6 +53,7 @@ abstract private[navigator] class AbstractScalaXmlNode protected (val parent: Sc
 }
 
 @SerialVersionUID(1L)
+@SuppressWarnings(Array("org.wartremover.warts.Null", "org.wartremover.warts.Var"))
 final class Root(var node: Elem) extends AbstractScalaXmlNode(null) {
   type N = Elem
   def getName: QName                  = new QName(NavigatorNode.DOCUMENT)
@@ -60,6 +63,7 @@ final class Root(var node: Elem) extends AbstractScalaXmlNode(null) {
 }
 
 @SerialVersionUID(1L)
+@SuppressWarnings(Array("org.wartremover.warts.Var"))
 final class Element private[navigator] (
   private[this] var _node: Elem,
   var index: Int,
@@ -85,6 +89,7 @@ final class Element private[navigator] (
       else parentNode.copy(child = parentNode.child.updated(index, elem))
     _node = elem
   }
+  @SuppressWarnings(Array("org.wartremover.warts.IsInstanceOf"))
   override def canEqual(that: Any): Boolean = that.isInstanceOf[Element]
   override def equals(that: Any): Boolean =
     that match {
@@ -99,6 +104,7 @@ final class Element private[navigator] (
 }
 
 @SerialVersionUID(1L)
+@SuppressWarnings(Array("org.wartremover.warts.Var"))
 final class Attribute private[navigator] (
   private[this] var _attr: XmlAttribute,
   override val parent: ScalaXmlNode {

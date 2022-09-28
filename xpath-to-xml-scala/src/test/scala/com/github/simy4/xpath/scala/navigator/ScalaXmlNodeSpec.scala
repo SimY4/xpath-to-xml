@@ -23,7 +23,7 @@ import org.scalatest.matchers.should.Matchers
 
 import javax.xml.namespace.QName
 
-@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
+@SuppressWarnings(Array("org.wartremover.warts.IterableOps", "org.wartremover.warts.Null"))
 class ScalaXmlNodeSpec extends AnyFunSpec with Matchers {
   val xml = <root attr="value">text</root>
 

@@ -1,7 +1,6 @@
 ext.moduleName = 'com.github.simych.xpath.scala'
 
 apply plugin: 'scala'
-apply plugin: 'cz.augi.gradle.wartremover'
 
 buildDir = 'build-2.13'
 
@@ -19,6 +18,8 @@ dependencies {
     implementation libs.scala.library.v213
     implementation libs.scala.reflect.v213
     implementation libs.scala.xml.v213
+
+    scalaCompilerPlugins libs.wartremover.v213
 
     testImplementation project(':xpath-to-xml-test')
     testImplementation libs.bundles.scalatest.v213
@@ -43,10 +44,6 @@ scaladoc {
                 '-language:implicitConversions',     // Allow definition of implicit functions called views
         ]
     }
-}
-
-wartremover {
-    warningWarts -= ['IsInstanceOf', 'Null', 'Throw', 'Var']
 }
 
 tasks.withType(ScalaCompile) {
@@ -81,10 +78,10 @@ tasks.withType(ScalaCompile) {
                 '-Wdead-code',                       // Warn when dead code is identified.
                 '-Wnumeric-widen',                   // Warn when numerics are widened.
                 '-Xsource:3',                        // Turn on future language features.
-                '-target:jvm-1.8',
                 '-opt:l:method',
                 '-opt:l:inline',
                 '-opt-inline-from:com.github.simy4.xpath.scala.navigator.**,com.github.simy4.xpath.scala.syntax.**',
+                '-P:wartremover:only-warn-traverser:org.wartremover.warts.Unsafe',
         ]
         if (JavaVersion.current().isJava9Compatible()) {
             additionalParameters << '-release' << '8'

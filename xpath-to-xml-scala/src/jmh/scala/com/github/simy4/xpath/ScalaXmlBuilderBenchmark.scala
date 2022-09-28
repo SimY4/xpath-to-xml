@@ -25,6 +25,7 @@ import javax.xml.namespace.NamespaceContext
 
 @BenchmarkMode(Array(Mode.Throughput))
 @State(Scope.Benchmark)
+@SuppressWarnings(Array("org.wartremover.warts.Null", "org.wartremover.warts.Var"))
 class ScalaXmlBuilderBenchmark {
 
   @Param(Array("simple", "ns-simple", "attr", "special"))

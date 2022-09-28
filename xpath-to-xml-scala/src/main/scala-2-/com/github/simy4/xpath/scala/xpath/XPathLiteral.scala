@@ -25,6 +25,7 @@ final class XPathLiteral(private val sc: StringContext) extends AnyVal {
   def xpath(args: Any*): Expr = macro XPathLiteral.xpathImpl
 }
 
+@SuppressWarnings(Array("org.wartremover.warts.Null"))
 object XPathLiteral {
   def xpathImpl(c: blackbox.Context)(args: c.Expr[Any]*): c.Expr[Expr] = {
     import c.universe._

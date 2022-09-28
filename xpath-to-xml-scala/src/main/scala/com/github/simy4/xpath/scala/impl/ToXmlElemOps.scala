@@ -22,6 +22,7 @@ import javax.xml.namespace.NamespaceContext
 import _root_.scala.collection.{ Iterable, Map }
 import _root_.scala.xml.Elem
 
+@SuppressWarnings(Array("org.wartremover.warts.Null"))
 trait ToXmlElemOps {
   @SuppressWarnings(Array("org.wartremover.warts.DefaultArguments"))
   implicit def toXmlElemOps(elem: Elem)(implicit namespaceContext: NamespaceContext = null): XmlElemOps =
