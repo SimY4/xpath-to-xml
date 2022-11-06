@@ -19,6 +19,8 @@ dependencies {
     implementation libs.scala.library.v3
     implementation libs.scala.xml.v3
 
+    scalaCompilerPlugins libs.wartremover.v3
+
     testImplementation project(':xpath-to-xml-test')
     testImplementation libs.bundles.scalatest.v3
 }
@@ -46,6 +48,7 @@ tasks.withType(ScalaCompile) {
                 '-language:macros,implicitConversions',
                 '-Xfatal-warnings',                     // Fail the compilation if there are any warnings.
                 '-source:3.2',                          // Turn on future language features.
+                '-P:wartremover:only-warn-traverser:org.wartremover.warts.Unsafe',
         ]
         if (JavaVersion.current().isJava9Compatible()) {
             additionalParameters << '-release' << '8'

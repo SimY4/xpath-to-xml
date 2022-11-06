@@ -29,7 +29,7 @@ import javax.xml.xpath.{ XPathConstants, XPathExpression, XPathFactory }
 
 import java.io.StringReader
 
-@SuppressWarnings(Array("org.wartremover.warts.Any"))
+@SuppressWarnings(Array("org.wartremover.warts.Any", "org.wartremover.warts.Null"))
 class XmlBuilderSpec extends AnyFunSpec with Matchers {
   val namespaceContext = new SimpleNamespaceContext
   val namespaceBinding = NamespaceBinding("my", namespaceContext.getNamespaceURI("my"), TopScope)
@@ -62,7 +62,7 @@ class XmlBuilderSpec extends AnyFunSpec with Matchers {
             } yield eff :: xs
           }
           .flatMap(XmlBuilder(_)(root))
-          .fold(throw _, identity)
+          .getOrThrow
         val builtDocumentString = xmlToString(builtDocument)
 
         xmlProperties.keys.foreach { xpath =>
@@ -85,7 +85,7 @@ class XmlBuilderSpec extends AnyFunSpec with Matchers {
             } yield eff :: xs
           }
           .flatMap(XmlBuilder(_)(root))
-          .fold(throw _, identity)
+          .getOrThrow
         val builtDocumentString = xmlToString(builtDocument)
 
         xmlProperties.foreach { case (xpath, value) =>
@@ -112,7 +112,7 @@ class XmlBuilderSpec extends AnyFunSpec with Matchers {
             } yield eff :: xs
           }
           .flatMap(XmlBuilder(_)(oldDocument))
-          .fold(throw _, identity)
+          .getOrThrow
         val builtDocumentString = xmlToString(builtDocument)
 
         xmlProperties.foreach { case (xpath, value) =>
@@ -131,7 +131,7 @@ class XmlBuilderSpec extends AnyFunSpec with Matchers {
         val xmlProperties = fixtureAccessor.getXmlProperties.asScala
         val xml           = fixtureAccessor.getPutValueXml
         val oldDocument   = XML.loadString(xml)
-        var builtDocument = xmlProperties.toSeq
+        val builtDocument1 = xmlProperties.toSeq
           .foldRight(Right(Nil): Either[Throwable, List[Effect]]) { (pair, acc) =>
             for {
               xs  <- acc
@@ -139,21 +139,21 @@ class XmlBuilderSpec extends AnyFunSpec with Matchers {
             } yield eff :: xs
           }
           .flatMap(XmlBuilder(_)(oldDocument))
-          .fold(throw _, identity)
-        var builtDocumentString = xmlToString(builtDocument)
+          .getOrThrow
+        val builtDocumentString1 = xmlToString(builtDocument1)
 
         xmlProperties.foreach { case (xpath, value) =>
-          val documentSource: InputSource = builtDocumentString
+          val documentSource: InputSource = builtDocumentString1
           it(s"first: $xpath should evaluate to ${value.toString}") {
             xpath.evaluate(documentSource, XPathConstants.STRING) should equal(value)
           }
         }
         // although these cases are working fine the order of attribute is messed up
         if (!fixtureAccessor.toString.startsWith("attr")) {
-          it("first: should match exactly")(builtDocumentString should ===(fixtureAccessor.getPutValueXml))
+          it("first: should match exactly")(builtDocumentString1 should ===(fixtureAccessor.getPutValueXml))
         }
 
-        builtDocument = xmlProperties.keys
+        val builtDocument2 = xmlProperties.keys
           .foldRight(Right(Nil): Either[Throwable, List[Effect]]) { (xpath, acc) =>
             for {
               xs  <- acc
@@ -161,18 +161,18 @@ class XmlBuilderSpec extends AnyFunSpec with Matchers {
             } yield eff :: xs
           }
           .flatMap(XmlBuilder(_)(oldDocument))
-          .fold(throw _, identity)
-        builtDocumentString = xmlToString(builtDocument)
+          .getOrThrow
+        val builtDocumentString2 = xmlToString(builtDocument2)
 
         xmlProperties.foreach { case (xpath, value) =>
-          val documentSource: InputSource = builtDocumentString
+          val documentSource: InputSource = builtDocumentString2
           it(s"second: $xpath should evaluate to ${value.toString}") {
             xpath.evaluate(documentSource, XPathConstants.STRING) should equal(value)
           }
         }
         // although these cases are working fine the order of attribute is messed up
         if (!fixtureAccessor.toString.startsWith("attr")) {
-          it("second: should match exactly")(builtDocumentString should ===(fixtureAccessor.getPutValueXml))
+          it("second: should match exactly")(builtDocumentString2 should ===(fixtureAccessor.getPutValueXml))
         }
       }
 
@@ -188,7 +188,7 @@ class XmlBuilderSpec extends AnyFunSpec with Matchers {
             } yield eff :: xs
           }
           .flatMap(XmlBuilder(_)(oldDocument))
-          .fold(throw _, identity)
+          .getOrThrow
         val builtDocumentString = xmlToString(builtDocument)
 
         xmlProperties.keys.foreach { xpath =>
@@ -225,5 +225,10 @@ class XmlBuilderSpec extends AnyFunSpec with Matchers {
       }
       linkedHashMap
     }
+  }
+
+  implicit class EitherOps[L, R](either: Either[L, R]) {
+    @SuppressWarnings(Array("org.wartremover.warts.Throw"))
+    def getOrThrow(implicit ev: L <:< Throwable): R = either.fold(throw _, identity)
   }
 }

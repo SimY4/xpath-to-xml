@@ -21,6 +21,7 @@ import xml.{ Attribute => XmlAttribute, Elem, Null, Text }
 
 import javax.xml.namespace.QName
 
+@SuppressWarnings(Array("org.wartremover.warts.Throw"))
 class ScalaXmlNavigator(override val root: Root) extends Navigator[ScalaXmlNode] with scala.compat.Converters {
   override def parentOf(node: ScalaXmlNode): ScalaXmlNode                                = node.parent
   override def elementsOf(parent: ScalaXmlNode): java.lang.Iterable[_ <: ScalaXmlNode]   = parent.elements
@@ -49,6 +50,7 @@ class ScalaXmlNavigator(override val root: Root) extends Navigator[ScalaXmlNode]
       case _ =>
         throw new XmlBuilderException(s"Unable to create element for ${parent.toString}")
     }
+  @SuppressWarnings(Array("org.wartremover.warts.IsInstanceOf"))
   @throws[XmlBuilderException]("If unable to set text to given node")
   override def setText(node: ScalaXmlNode, text: String): Unit =
     node match {

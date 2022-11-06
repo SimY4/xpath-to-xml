@@ -23,6 +23,7 @@ import javax.xml.xpath.XPathExpressionException
 import scala.quoted.{ quotes, Expr, Exprs, Quotes, Varargs }
 
 object XPathLiteral:
+  @SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf", "org.wartremover.warts.Null", "org.wartremover.warts.IterableOps"))
   def xpathImpl(sc: Expr[StringContext])(using Quotes): Expr[JExpr] =
     import quotes.reflect.report
     sc match

@@ -20,6 +20,7 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import parser.XPathParser
 
+@SuppressWarnings(Array("org.wartremover.warts.Null"))
 class XPathLiteralSpec extends AnyFunSpec with Matchers {
   import scala.implicits._
 

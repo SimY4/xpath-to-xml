@@ -25,9 +25,11 @@ import scala.navigator.{ Root, ScalaXmlNavigator }
  * Scala XML model navigator extension SPI.
  */
 class ScalaXmlNavigatorSpi extends NavigatorSpi {
+  @SuppressWarnings(Array("org.wartremover.warts.IsInstanceOf"))
   override def canHandle(o: Any): Boolean = o.isInstanceOf[Elem]
 
   @throws[XmlBuilderException]("If unable process XML node")
+  @SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf", "org.wartremover.warts.Throw"))
   override def process[T](xml: T, effects: java.lang.Iterable[Effect]): T =
     xml match {
       case elem: Elem =>
