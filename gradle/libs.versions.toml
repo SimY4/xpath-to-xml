@@ -1,10 +1,10 @@
 [versions]
 errorprone = '2.10.0'
-jackson = '2.13.4'
+jackson = '2.14.0'
 scala212 = '2.12.17'
-scala213 = '2.13.9'
-scala3 = '3.2.0'
-scalatest = '3.2.13'
+scala213 = '2.13.10'
+scala3 = '3.2.1'
+scalatest = '3.2.14'
 scalaxml = '2.1.0'
 wartremover = '3.0.6'
 
@@ -12,8 +12,7 @@ wartremover = '3.0.6'
 assertj = 'org.assertj:assertj-core:3.23.1'
 dom4j = 'org.dom4j:dom4j:2.1.3'
 errorprone = { module = 'com.google.errorprone:error_prone_core', version.ref = 'errorprone' }
-errorprone-javac = 'com.google.errorprone:javac:9+181-r4173-1'
-gson = 'com.google.code.gson:gson:2.9.1'
+gson = 'com.google.code.gson:gson:2.10'
 jackson-databind = { module = 'com.fasterxml.jackson.core:jackson-databind', version.ref = 'jackson' }
 jackson-dataformat-yaml = { module = 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml', version.ref = 'jackson' }
 jaxen = 'jaxen:jaxen:1.2.0'
@@ -22,7 +21,7 @@ json-api = 'jakarta.json:jakarta.json-api:2.1.1'
 json-impl = 'org.glassfish:jakarta.json:2.0.1'
 junit-jupiter = 'org.junit.jupiter:junit-jupiter:5.9.1'
 junit-platform-engine = 'org.junit.platform:junit-platform-engine:1.9.1'
-mockito = 'org.mockito:mockito-junit-jupiter:4.8.0'
+mockito = 'org.mockito:mockito-junit-jupiter:4.8.1'
 scala-library-v212 = { module = 'org.scala-lang:scala-library', version.ref = 'scala212' }
 scala-library-v213 = { module = 'org.scala-lang:scala-library', version.ref = 'scala213' }
 scala-library-v3 = { module = 'org.scala-lang:scala3-library_3', version.ref = 'scala3' }
