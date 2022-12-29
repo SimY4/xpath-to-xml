@@ -19,10 +19,15 @@ jobs:
         java-version: ${{ matrix.java }}
         cache: gradle
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@v1
+      uses: gradle/gradle-build-action@v2
       with:
         arguments: build --no-daemon --scan
+    - name: Create test summary
+      uses: test-summary/action@v2
+      with:
+        paths: '**/build/test-results/*/*.xml'
+      if: always()
     - name: Code Coverage
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}

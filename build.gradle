@@ -54,7 +54,10 @@ subprojects {
 
     test {
         useJUnitPlatform()
-        maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+
+        reports {
+            junitXml.required = true
+        }
     }
 
     javadoc {
