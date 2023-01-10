@@ -14,7 +14,8 @@ publishing {
                     inceptionYear = '2017'
 
                     properties = [
-                            'info.releaseNotesURL': 'https://github.com/SimY4/xpath-to-xml/blob/2.x/CHANGELOG.md'
+                        'info.releaseNotesURL': 'https://github.com/SimY4/xpath-to-xml/blob/2.x/CHANGELOG.md',
+                        'info.versionScheme': 'semver-spec'
                     ]
 
                     scm {
