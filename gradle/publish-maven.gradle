@@ -13,6 +13,10 @@ publishing {
                     url = 'http://github.com/SimY4/xpath-to-xml'
                     inceptionYear = '2017'
 
+                    properties = [
+                            'info.releaseNotesURL': 'https://github.com/SimY4/xpath-to-xml/blob/2.x/CHANGELOG.md'
+                    ]
+
                     scm {
                         connection = projectScm
                         developerConnection = projectScm
