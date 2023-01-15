@@ -3,10 +3,10 @@ errorprone = '2.10.0'
 jackson = '2.14.1'
 scala212 = '2.12.17'
 scala213 = '2.13.10'
-scala3 = '3.2.1'
+scala3 = '3.2.2'
 scalatest = '3.2.15'
 scala-xml = '2.1.0'
-wartremover = '3.0.8'
+wartremover = '3.0.9'
 
 [libraries]
 assertj = 'org.assertj:assertj-core:3.23.1'
