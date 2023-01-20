@@ -114,7 +114,7 @@ abstract class AbstractGsonNode implements GsonNode {
       final JsonArray jsonArray = jsonElement.getAsJsonArray();
       return new JsonArrayIterator(jsonArray.iterator(), jsonArray, parent, attribute);
     } else {
-      return Collections.<GsonNode>emptyList().iterator();
+      return Collections.emptyIterator();
     }
   }
 
@@ -180,7 +180,7 @@ abstract class AbstractGsonNode implements GsonNode {
     private final GsonNode parent;
     private int index;
     private final boolean attribute;
-    private Iterator<GsonNode> current = Collections.<GsonNode>emptyList().iterator();
+    private Iterator<GsonNode> current = Collections.emptyIterator();
 
     private JsonArrayIterator(
         Iterator<JsonElement> arrayIterator,
