@@ -46,7 +46,21 @@ abstract class AbstractJakartaJsonNode implements JakartaJsonNode {
     final JsonValue jsonValue = get();
     switch (jsonValue.getValueType()) {
       case OBJECT:
-        return jsonValue.asJsonObject().getString("text", "null");
+        JsonValue text = jsonValue.asJsonObject().get("text");
+        if (null != text) {
+          switch (text.getValueType()) {
+            case OBJECT:
+            case ARRAY:
+              return "";
+            case NULL:
+              return "null";
+            case STRING:
+              return ((JsonString) text).getString();
+            default:
+              return text.toString();
+          }
+        }
+        return "";
       case ARRAY:
         return "";
       case STRING:
