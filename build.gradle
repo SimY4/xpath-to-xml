@@ -5,12 +5,10 @@ plugins {
     id 'me.champeau.jmh' version '0.6.8' apply false
     id 'net.ltgt.errorprone' version '3.0.1' apply false
     id 'net.researchgate.release' version '3.0.2'
-    id 'ru.vyarus.animalsniffer' version '1.6.0' apply false
 }
 
 subprojects {
     apply plugin: 'java-library'
-    apply from: rootProject.file('gradle/animal-sniffer.gradle')
     apply from: rootProject.file('gradle/check-checkstyle.gradle')
     apply from: rootProject.file('gradle/check-codecoverage.gradle')
     apply from: rootProject.file('gradle/check-errorprone.gradle')
@@ -32,24 +30,19 @@ subprojects {
     // after gradle 5.3 we need to set this attribute to mark test configuration targeting java 8
     [configurations.testCompileClasspath, configurations.testRuntimeClasspath].each {
         it.attributes {
-            attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 8)
+            attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 11)
         }
     }
 
     compileJava {
-        if (JavaVersion.current().isJava9Compatible()) {
-            options.release = 6
-        }
+        options.release = 6
         options.compilerArgs << '-Xlint:all,-options' << '-Werror'
     }
 
     compileTestJava {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-
-        if (JavaVersion.current().isJava9Compatible()) {
-            options.release = 8
-        }
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+        options.release = 11
     }
 
     test {
@@ -62,10 +55,7 @@ subprojects {
 
     javadoc {
         options.memberLevel = JavadocMemberLevel.PROTECTED
-
-        if (JavaVersion.current().isJava9Compatible()) {
-            options.addBooleanOption('html5', true)
-        }
+        options.addBooleanOption('html5', true)
     }
 }
 

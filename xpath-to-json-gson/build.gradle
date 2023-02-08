@@ -15,7 +15,5 @@ dependencies {
 }
 
 compileJava {
-    if (JavaVersion.current().isJava9Compatible()) {
-        options.release = 7
-    }
+    options.release = 7
 }

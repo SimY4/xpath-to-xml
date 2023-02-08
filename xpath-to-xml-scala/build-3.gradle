@@ -50,10 +50,6 @@ tasks.withType(ScalaCompile) {
                 '-source:3.2',                          // Turn on future language features.
                 '-P:wartremover:only-warn-traverser:org.wartremover.warts.Unsafe',
         ]
-        if (JavaVersion.current().isJava9Compatible()) {
-            additionalParameters << '-release' << '8'
-        } else {
-            additionalParameters << '-Xtarget:8'
-        }
+        additionalParameters << '-release' << '8'
     }
 }

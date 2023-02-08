@@ -1,10 +1,8 @@
 ext.moduleName = 'com.github.simych.xpath.test'
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 compileJava {
-    if (JavaVersion.current().isJava9Compatible()) {
-        options.release = 8
-    }
+    options.release = 11
 }
