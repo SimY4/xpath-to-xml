@@ -51,7 +51,7 @@ class JacksonNavigatorTest {
   @Test
   void shouldReturnParentForElementChild() {
     json.put("child", "zero");
-    JacksonNode childNode = new JacksonByNameNode(json, "child", root);
+    var childNode = new JacksonByNameNode(json, "child", root);
 
     assertThat(navigator.parentOf(childNode)).isEqualTo(root);
   }
@@ -60,9 +60,9 @@ class JacksonNavigatorTest {
   void shouldReturnParentForArrayChild() {
     var json = new ArrayNode(JsonNodeFactory.instance);
     json.add("zero");
-    JacksonNode root = new JacksonRootNode(json);
+    var root = new JacksonRootNode(json);
     var navigator = new JacksonNavigator(root);
-    JacksonNode childNode = new JacksonByIndexNode(json, 0, root);
+    var childNode = new JacksonByIndexNode(json, 0, root);
 
     assertThat(navigator.parentOf(childNode)).isEqualTo(root);
   }
@@ -73,10 +73,10 @@ class JacksonNavigatorTest {
     var child = new ArrayNode(JsonNodeFactory.instance);
     child.add("zero");
     json.add(child);
-    JacksonNode root = new JacksonRootNode(json);
+    var root = new JacksonRootNode(json);
     var navigator = new JacksonNavigator(root);
-    JacksonNode array1Node = new JacksonByIndexNode(json, 0, root);
-    JacksonNode array2Node = new JacksonByIndexNode(child, 0, array1Node);
+    var array1Node = new JacksonByIndexNode(json, 0, root);
+    var array2Node = new JacksonByIndexNode(child, 0, array1Node);
 
     assertThat(navigator.parentOf(array2Node)).isEqualTo(root);
   }
@@ -91,7 +91,7 @@ class JacksonNavigatorTest {
   @Test
   void shouldSetTextForArrayChild() {
     var json = new ArrayNode(JsonNodeFactory.instance);
-    JacksonNode root = new JacksonRootNode(json);
+    var root = new JacksonRootNode(json);
     var navigator = new JacksonNavigator(root);
 
     assertThatThrownBy(() -> navigator.setText(root, "test"))
@@ -101,7 +101,7 @@ class JacksonNavigatorTest {
   @Test
   void shouldSetTextForPrimitiveChild() {
     json.set("child", new TextNode("zero"));
-    JacksonNode childNode = new JacksonByNameNode(json, "child", root);
+    var childNode = new JacksonByNameNode(json, "child", root);
     navigator.setText(childNode, "test");
 
     assertThat(json.get("child")).isEqualTo(new TextNode("test"));
@@ -121,16 +121,16 @@ class JacksonNavigatorTest {
     var child = new ObjectNode(JsonNodeFactory.instance);
     child.set("child", new ObjectNode(JsonNodeFactory.instance));
     json.add(child);
-    JacksonNode root = new JacksonRootNode(json);
+    var root = new JacksonRootNode(json);
     var navigator = new JacksonNavigator(root);
-    JacksonNode objectNode = new JacksonByIndexNode(json, 0, root);
+    var objectNode = new JacksonByIndexNode(json, 0, root);
 
     var newChild = navigator.createElement(objectNode, new QName("child"));
 
+    assertThat(newChild.get()).isNotSameAs(child);
     var expected = new ObjectNode(JsonNodeFactory.instance);
     expected.set("child", new ObjectNode(JsonNodeFactory.instance));
     assertThat(newChild)
-        .isNotSameAs(child)
         .isEqualTo(new JacksonByNameNode(expected, "child", new JacksonByIndexNode(json, 1, root)));
     assertThat(objectNode.get()).isSameAs(child);
   }
@@ -138,7 +138,7 @@ class JacksonNavigatorTest {
   @Test
   void shouldCreateElementForArrayParent() {
     var json = new ArrayNode(JsonNodeFactory.instance);
-    JacksonNode root = new JacksonRootNode(json);
+    var root = new JacksonRootNode(json);
     var navigator = new JacksonNavigator(root);
 
     var child = navigator.createElement(root, new QName("child"));
@@ -153,7 +153,7 @@ class JacksonNavigatorTest {
   @Test
   void shouldCreateElementForPrimitiveParent() {
     json.set("child", new TextNode("zero"));
-    JacksonNode childNode = new JacksonByNameNode(json, "child", root);
+    var childNode = new JacksonByNameNode(json, "child", root);
 
     assertThatThrownBy(() -> navigator.createElement(childNode, new QName("child")))
         .isInstanceOf(XmlBuilderException.class);
@@ -173,16 +173,16 @@ class JacksonNavigatorTest {
     var child = new ObjectNode(JsonNodeFactory.instance);
     child.set("child", new TextNode(""));
     json.add(child);
-    JacksonNode root = new JacksonRootNode(json);
+    var root = new JacksonRootNode(json);
     var navigator = new JacksonNavigator(root);
-    JacksonNode objectNode = new JacksonByIndexNode(json, 0, root);
+    var objectNode = new JacksonByIndexNode(json, 0, root);
 
     var newChild = navigator.createAttribute(objectNode, new QName("child"));
 
+    assertThat(newChild.get()).isNotSameAs(child);
     var expected = new ObjectNode(JsonNodeFactory.instance);
     expected.set("child", new TextNode(""));
     assertThat(newChild)
-        .isNotSameAs(child)
         .isEqualTo(new JacksonByNameNode(expected, "child", new JacksonByIndexNode(json, 1, root)));
     assertThat(objectNode.get()).isSameAs(child);
   }
@@ -190,7 +190,7 @@ class JacksonNavigatorTest {
   @Test
   void shouldCreateAttributeForArrayParent() {
     var json = new ArrayNode(JsonNodeFactory.instance);
-    JacksonNode root = new JacksonRootNode(json);
+    var root = new JacksonRootNode(json);
     var navigator = new JacksonNavigator(root);
 
     var child = navigator.createAttribute(root, new QName("child"));
@@ -205,7 +205,7 @@ class JacksonNavigatorTest {
   @Test
   void shouldCreateAttributeForPrimitiveParent() {
     json.set("child", new TextNode("zero"));
-    JacksonNode childNode = new JacksonByNameNode(json, "child", root);
+    var childNode = new JacksonByNameNode(json, "child", root);
 
     assertThatThrownBy(() -> navigator.createAttribute(childNode, new QName("child")))
         .isInstanceOf(XmlBuilderException.class);

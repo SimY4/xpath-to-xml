@@ -18,9 +18,7 @@ package com.github.simy4.xpath.json.navigator;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.json.navigator.node.JakartaJsonByIndexNode;
 import com.github.simy4.xpath.json.navigator.node.JakartaJsonByNameNode;
-import com.github.simy4.xpath.json.navigator.node.JakartaJsonNode;
 import com.github.simy4.xpath.json.navigator.node.JakartaJsonRootNode;
-import com.github.simy4.xpath.navigator.Navigator;
 import jakarta.json.Json;
 import jakarta.json.JsonValue;
 import jakarta.json.spi.JsonProvider;
@@ -37,16 +35,16 @@ class JakartaJsonNavigatorTest {
 
   @Test
   void shouldReturnRoot() {
-    JakartaJsonNode root = new JakartaJsonRootNode(JsonValue.EMPTY_JSON_OBJECT);
-    Navigator<JakartaJsonNode> navigator = new JakartaJsonNavigator(jsonProvider, root);
+    var root = new JakartaJsonRootNode(JsonValue.EMPTY_JSON_OBJECT);
+    var navigator = new JakartaJsonNavigator(jsonProvider, root);
 
     assertThat(navigator.root()).isEqualTo(root);
   }
 
   @Test
   void shouldReturnNullParentForRoot() {
-    JakartaJsonNode root = new JakartaJsonRootNode(JsonValue.EMPTY_JSON_OBJECT);
-    Navigator<JakartaJsonNode> navigator = new JakartaJsonNavigator(jsonProvider, root);
+    var root = new JakartaJsonRootNode(JsonValue.EMPTY_JSON_OBJECT);
+    var navigator = new JakartaJsonNavigator(jsonProvider, root);
 
     assertThat(navigator.parentOf(root)).isNull();
   }
@@ -54,9 +52,9 @@ class JakartaJsonNavigatorTest {
   @Test
   void shouldReturnParentForElementChild() {
     var json = Json.createObjectBuilder().add("child", Json.createValue("zero")).build();
-    JakartaJsonNode root = new JakartaJsonRootNode(json);
-    Navigator<JakartaJsonNode> navigator = new JakartaJsonNavigator(jsonProvider, root);
-    JakartaJsonNode childNode = new JakartaJsonByNameNode("child", root);
+    var root = new JakartaJsonRootNode(json);
+    var navigator = new JakartaJsonNavigator(jsonProvider, root);
+    var childNode = new JakartaJsonByNameNode("child", root);
 
     assertThat(navigator.parentOf(childNode)).isEqualTo(root);
   }
@@ -64,9 +62,9 @@ class JakartaJsonNavigatorTest {
   @Test
   void shouldReturnParentForArrayChild() {
     var json = Json.createArrayBuilder().add("zero").build();
-    JakartaJsonNode root = new JakartaJsonRootNode(json);
+    var root = new JakartaJsonRootNode(json);
     var navigator = new JakartaJsonNavigator(jsonProvider, root);
-    JakartaJsonNode childNode = new JakartaJsonByIndexNode(0, root);
+    var childNode = new JakartaJsonByIndexNode(0, root);
 
     assertThat(navigator.parentOf(childNode)).isEqualTo(root);
   }
@@ -75,10 +73,10 @@ class JakartaJsonNavigatorTest {
   void shouldReturnParentForNestedArrayChild() {
     var child = Json.createArrayBuilder().add("zero").build();
     var json = Json.createArrayBuilder().add(child).build();
-    JakartaJsonNode root = new JakartaJsonRootNode(json);
+    var root = new JakartaJsonRootNode(json);
     var navigator = new JakartaJsonNavigator(jsonProvider, root);
-    JakartaJsonNode array1Node = new JakartaJsonByIndexNode(0, root);
-    JakartaJsonNode array2Node = new JakartaJsonByIndexNode(0, array1Node);
+    var array1Node = new JakartaJsonByIndexNode(0, root);
+    var array2Node = new JakartaJsonByIndexNode(0, array1Node);
 
     assertThat(navigator.parentOf(array2Node)).isEqualTo(root);
   }
@@ -86,8 +84,8 @@ class JakartaJsonNavigatorTest {
   @Test
   void shouldSetTextForElementChild() {
     var json = JsonValue.EMPTY_JSON_OBJECT;
-    JakartaJsonNode root = new JakartaJsonRootNode(json);
-    Navigator<JakartaJsonNode> navigator = new JakartaJsonNavigator(jsonProvider, root);
+    var root = new JakartaJsonRootNode(json);
+    var navigator = new JakartaJsonNavigator(jsonProvider, root);
 
     navigator.setText(root, "test");
 
@@ -97,7 +95,7 @@ class JakartaJsonNavigatorTest {
   @Test
   void shouldSetTextForArrayChild() {
     var json = JsonValue.EMPTY_JSON_ARRAY;
-    JakartaJsonNode root = new JakartaJsonRootNode(json);
+    var root = new JakartaJsonRootNode(json);
     var navigator = new JakartaJsonNavigator(jsonProvider, root);
 
     assertThatThrownBy(() -> navigator.setText(root, "test"))
@@ -107,9 +105,9 @@ class JakartaJsonNavigatorTest {
   @Test
   void shouldSetTextForPrimitiveChild() {
     var json = Json.createObjectBuilder().add("child", Json.createValue("zero")).build();
-    JakartaJsonNode root = new JakartaJsonRootNode(json);
-    Navigator<JakartaJsonNode> navigator = new JakartaJsonNavigator(jsonProvider, root);
-    JakartaJsonNode childNode = new JakartaJsonByNameNode("child", root);
+    var root = new JakartaJsonRootNode(json);
+    var navigator = new JakartaJsonNavigator(jsonProvider, root);
+    var childNode = new JakartaJsonByNameNode("child", root);
 
     navigator.setText(childNode, "test");
 
@@ -119,7 +117,7 @@ class JakartaJsonNavigatorTest {
   @Test
   void shouldCreateElementForElementParent() {
     var json = JsonValue.EMPTY_JSON_OBJECT;
-    JakartaJsonNode root = new JakartaJsonRootNode(json);
+    var root = new JakartaJsonRootNode(json);
     var navigator = new JakartaJsonNavigator(jsonProvider, root);
 
     var child = navigator.createElement(root, new QName("child"));
@@ -132,14 +130,14 @@ class JakartaJsonNavigatorTest {
   void shouldCreateElementForNestedObjectInArrayChild() {
     var child = Json.createObjectBuilder().add("child", JsonValue.EMPTY_JSON_OBJECT).build();
     var json = Json.createArrayBuilder().add(child).build();
-    JakartaJsonNode root = new JakartaJsonRootNode(json);
+    var root = new JakartaJsonRootNode(json);
     var navigator = new JakartaJsonNavigator(jsonProvider, root);
-    JakartaJsonNode objectNode = new JakartaJsonByIndexNode(0, root);
+    var objectNode = new JakartaJsonByIndexNode(0, root);
 
     var newChild = navigator.createElement(objectNode, new QName("child"));
 
+    assertThat(newChild.get()).isNotSameAs(child);
     assertThat(newChild)
-        .isNotSameAs(child)
         .isEqualTo(new JakartaJsonByNameNode("child", new JakartaJsonByIndexNode(1, root)));
     assertThat(objectNode.get()).isSameAs(child);
   }
@@ -147,7 +145,7 @@ class JakartaJsonNavigatorTest {
   @Test
   void shouldCreateElementForArrayParent() {
     var json = JsonValue.EMPTY_JSON_ARRAY;
-    JakartaJsonNode root = new JakartaJsonRootNode(json);
+    var root = new JakartaJsonRootNode(json);
     var navigator = new JakartaJsonNavigator(jsonProvider, root);
 
     var child = navigator.createElement(root, new QName("child"));
@@ -161,9 +159,9 @@ class JakartaJsonNavigatorTest {
   @Test
   void shouldCreateElementForPrimitiveParent() {
     var json = Json.createObjectBuilder().add("child", Json.createValue("zero")).build();
-    JakartaJsonNode root = new JakartaJsonRootNode(json);
-    Navigator<JakartaJsonNode> navigator = new JakartaJsonNavigator(jsonProvider, root);
-    JakartaJsonNode childNode = new JakartaJsonByNameNode("child", root);
+    var root = new JakartaJsonRootNode(json);
+    var navigator = new JakartaJsonNavigator(jsonProvider, root);
+    var childNode = new JakartaJsonByNameNode("child", root);
 
     assertThatThrownBy(() -> navigator.createElement(childNode, new QName("child")))
         .isInstanceOf(XmlBuilderException.class);
@@ -172,7 +170,7 @@ class JakartaJsonNavigatorTest {
   @Test
   void shouldCreateAttributeForElementParent() {
     var json = JsonValue.EMPTY_JSON_OBJECT;
-    JakartaJsonNode root = new JakartaJsonRootNode(json);
+    var root = new JakartaJsonRootNode(json);
     var navigator = new JakartaJsonNavigator(jsonProvider, root);
 
     var child = navigator.createAttribute(root, new QName("child"));
@@ -185,14 +183,14 @@ class JakartaJsonNavigatorTest {
   void shouldCreateAttributeForNestedObjectInArrayChild() {
     var child = Json.createObjectBuilder().add("child", Json.createValue("")).build();
     var json = Json.createArrayBuilder().add(child).build();
-    JakartaJsonNode root = new JakartaJsonRootNode(json);
+    var root = new JakartaJsonRootNode(json);
     var navigator = new JakartaJsonNavigator(jsonProvider, root);
-    JakartaJsonNode objectNode = new JakartaJsonByIndexNode(0, root);
+    var objectNode = new JakartaJsonByIndexNode(0, root);
 
     var newChild = navigator.createAttribute(objectNode, new QName("child"));
 
+    assertThat(newChild.get()).isNotSameAs(child);
     assertThat(newChild)
-        .isNotSameAs(child)
         .isEqualTo(new JakartaJsonByNameNode("child", new JakartaJsonByIndexNode(1, root)));
     assertThat(objectNode.get()).isSameAs(child);
   }
@@ -200,7 +198,7 @@ class JakartaJsonNavigatorTest {
   @Test
   void shouldCreateAttributeForArrayParent() {
     var json = JsonValue.EMPTY_JSON_ARRAY;
-    JakartaJsonNode root = new JakartaJsonRootNode(json);
+    var root = new JakartaJsonRootNode(json);
     var navigator = new JakartaJsonNavigator(jsonProvider, root);
 
     var child = navigator.createAttribute(root, new QName("child"));
@@ -214,10 +212,10 @@ class JakartaJsonNavigatorTest {
   @Test
   void shouldCreateAttributeForPrimitiveParent() {
     var json = Json.createObjectBuilder().add("child", Json.createValue("zero")).build();
-    JakartaJsonNode root = new JakartaJsonRootNode(json);
+    var root = new JakartaJsonRootNode(json);
     var navigator = new JakartaJsonNavigator(jsonProvider, root);
 
-    JakartaJsonNode childNode = new JakartaJsonByNameNode("child", root);
+    var childNode = new JakartaJsonByNameNode("child", root);
 
     assertThatThrownBy(() -> navigator.createAttribute(childNode, new QName("child")))
         .isInstanceOf(XmlBuilderException.class);

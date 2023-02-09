@@ -58,7 +58,7 @@ class JakartaJsonByNameNodeTest {
 
   @Test
   void shouldTraverseObjectAttributes() {
-    JakartaJsonNode parent = new JakartaJsonRootNode(jsonObject);
+    var parent = new JakartaJsonRootNode(jsonObject);
 
     assertThat(parent.attributes())
         .containsExactlyInAnyOrder(
@@ -69,7 +69,7 @@ class JakartaJsonByNameNodeTest {
 
   @Test
   void shouldTraverseObjectElements() {
-    JakartaJsonNode parent = new JakartaJsonRootNode(jsonObject);
+    var parent = new JakartaJsonRootNode(jsonObject);
 
     assertThat(parent.elements()).isEmpty();
   }
