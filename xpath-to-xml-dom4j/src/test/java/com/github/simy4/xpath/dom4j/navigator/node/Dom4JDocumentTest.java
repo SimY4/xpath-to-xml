@@ -33,10 +33,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class Dom4JDocumentTest {
 
-  private Element root = DocumentHelper.createElement(new org.dom4j.QName("elem"));
+  private final Element root = DocumentHelper.createElement(new org.dom4j.QName("elem"));
   private Document document = DocumentHelper.createDocument(root);
 
-  private Dom4jNode node;
+  private Dom4jDocument node;
 
   @BeforeEach
   void setUp() {
@@ -72,7 +72,7 @@ class Dom4JDocumentTest {
     document = DocumentHelper.createDocument();
     node = new Dom4jDocument(document);
 
-    Dom4jNode newRoot = node.createElement(new org.dom4j.QName("elem"));
+    var newRoot = node.createElement(new org.dom4j.QName("elem"));
 
     assertThat(newRoot).extracting("name").isEqualTo(new QName("elem"));
   }

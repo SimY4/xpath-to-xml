@@ -24,7 +24,6 @@ import com.github.simy4.xpath.xom.navigator.node.XomNode;
 import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
-import nu.xom.Elements;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -140,7 +139,7 @@ class XomNavigatorTest {
   @Test
   void testPrependCopySuccess() {
     navigator.prependCopy(new XomElement(xml));
-    Elements childElements = parent.getChildElements();
+    var childElements = parent.getChildElements();
     assertThat(childElements.size()).isEqualTo(2);
   }
 

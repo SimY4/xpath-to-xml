@@ -18,7 +18,6 @@ package com.github.simy4.xpath.expr.axis;
 import com.github.simy4.xpath.helpers.SerializationHelper;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
-import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeView;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,9 +28,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.xml.namespace.QName;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.never;
@@ -55,10 +56,10 @@ abstract class AbstractAxisResolverTest {
     setUpResolvableAxis();
 
     // when
-    IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, false);
+    var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
     // then
-    assertThat(result).extracting("node").containsExactly(node(name));
+    assertThat((Iterable<?>) result).extracting("node").containsExactly(node(name));
   }
 
   @Test
@@ -69,10 +70,10 @@ abstract class AbstractAxisResolverTest {
     axisResolver = spy(axisResolver);
 
     // when
-    IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, true);
+    var result = axisResolver.resolveAxis(navigator, parentNode, true);
 
     // then
-    assertThat(result).isNotEmpty();
+    assertThat((Iterable<?>) result).isNotEmpty();
     verify(axisResolver, never()).createAxisNode(any(), any(), anyInt());
   }
 
@@ -80,17 +81,21 @@ abstract class AbstractAxisResolverTest {
   @DisplayName("When axis is not traversable return empty")
   void shouldReturnEmptyIfAxisIsNotTraversable() {
     // when
-    IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, false);
+    var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
     // then
-    assertThat(result).isEmpty();
+    assertThat((Iterable<?>) result).isEmpty();
   }
 
   @Test
   @DisplayName("Should serialize and deserialize axis")
   void shouldSerializeAndDeserializeAxis() throws IOException, ClassNotFoundException {
+    // given
+    assumeThat(axisResolver).isInstanceOf(Serializable.class);
+
     // when
-    AxisResolver deserializedAxis = SerializationHelper.serializeAndDeserializeBack(axisResolver);
+    var deserializedAxis =
+        SerializationHelper.serializeAndDeserializeBack((Serializable) axisResolver);
 
     // then
     assertThat(deserializedAxis).usingRecursiveComparison().isEqualTo(axisResolver);

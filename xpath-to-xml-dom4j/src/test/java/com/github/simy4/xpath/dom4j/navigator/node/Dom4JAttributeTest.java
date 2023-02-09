@@ -25,7 +25,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
 
 import java.io.IOException;
 
@@ -40,7 +39,7 @@ class Dom4JAttributeTest {
           new org.dom4j.QName("node"),
           "text");
 
-  private Dom4jNode node;
+  private Dom4jAttribute node;
 
   @BeforeEach
   void setUp() {
@@ -71,7 +70,7 @@ class Dom4JAttributeTest {
 
   @Test
   void shouldReturnNodeNameForNamespaceUnawareAttribute() {
-    QName result = node.getName();
+    var result = node.getName();
 
     assertThat(result)
         .extracting("namespaceURI", "localPart", "prefix")
@@ -87,7 +86,7 @@ class Dom4JAttributeTest {
             "text");
     node = new Dom4jAttribute(attribute);
 
-    QName result = node.getName();
+    var result = node.getName();
 
     assertThat(result)
         .extracting("namespaceURI", "localPart", "prefix")

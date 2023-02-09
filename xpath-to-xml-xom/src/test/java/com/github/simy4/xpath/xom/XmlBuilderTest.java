@@ -21,7 +21,6 @@ import com.github.simy4.xpath.helpers.SimpleNamespaceContext;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Element;
-import nu.xom.Nodes;
 import nu.xom.ParsingException;
 import nu.xom.Serializer;
 import nu.xom.XPathContext;
@@ -36,10 +35,8 @@ import javax.xml.xpath.XPathExpressionException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,7 +45,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 class XmlBuilderTest {
 
   static Stream<Arguments> data() {
-    Element nsAwareRoot = new Element("breakfast_menu", "http://www.example.com/my");
+    var nsAwareRoot = new Element("breakfast_menu", "http://www.example.com/my");
     nsAwareRoot.setNamespacePrefix("my");
     return Stream.of(
         arguments(new FixtureAccessor("simple"), null, new Element("breakfast_menu")),
@@ -72,13 +69,13 @@ class XmlBuilderTest {
   void shouldBuildDocumentFromSetOfXPaths(
       FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext, Element root)
       throws XPathExpressionException, IOException {
-    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-    Document newDocument = new Document(root.copy());
-    Document builtDocument =
+    var xmlProperties = fixtureAccessor.getXmlProperties();
+    var newDocument = new Document(root.copy());
+    var builtDocument =
         new XmlBuilder(namespaceContext).putAll(xmlProperties.keySet()).build(newDocument);
 
-    for (String xpath : xmlProperties.keySet()) {
-      Nodes nodes =
+    for (var xpath : xmlProperties.keySet()) {
+      var nodes =
           null == namespaceContext
               ? builtDocument.query(xpath)
               : builtDocument.query(xpath, toXpathContext(namespaceContext));
@@ -99,13 +96,12 @@ class XmlBuilderTest {
   void shouldBuildDocumentFromSetOfXPathsAndSetValues(
       FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext, Element root)
       throws XPathExpressionException, IOException {
-    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-    Document newDocument = new Document(root.copy());
-    Document builtDocument =
-        new XmlBuilder(namespaceContext).putAll(xmlProperties).build(newDocument);
+    var xmlProperties = fixtureAccessor.getXmlProperties();
+    var newDocument = new Document(root.copy());
+    var builtDocument = new XmlBuilder(namespaceContext).putAll(xmlProperties).build(newDocument);
 
-    for (Map.Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
-      Nodes nodes =
+    for (var xpathToValuePair : xmlProperties.entrySet()) {
+      var nodes =
           null == namespaceContext
               ? builtDocument.query(xpathToValuePair.getKey())
               : builtDocument.query(xpathToValuePair.getKey(), toXpathContext(namespaceContext));
@@ -127,11 +123,10 @@ class XmlBuilderTest {
   void shouldModifyDocumentWhenXPathsAreNotTraversable(
       FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext)
       throws XPathExpressionException, ParsingException, IOException {
-    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-    String xml = fixtureAccessor.getPutXml();
-    Document oldDocument = stringToXml(xml);
-    Document builtDocument =
-        new XmlBuilder(namespaceContext).putAll(xmlProperties).build(oldDocument);
+    var xmlProperties = fixtureAccessor.getXmlProperties();
+    var xml = fixtureAccessor.getPutXml();
+    var oldDocument = stringToXml(xml);
+    var builtDocument = new XmlBuilder(namespaceContext).putAll(xmlProperties).build(oldDocument);
 
     assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
   }
@@ -141,11 +136,10 @@ class XmlBuilderTest {
   void shouldNotModifyDocumentWhenAllXPathsTraversable(
       FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext)
       throws XPathExpressionException, ParsingException, IOException {
-    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-    String xml = fixtureAccessor.getPutValueXml();
-    Document oldDocument = stringToXml(xml);
-    Document builtDocument =
-        new XmlBuilder(namespaceContext).putAll(xmlProperties).build(oldDocument);
+    var xmlProperties = fixtureAccessor.getXmlProperties();
+    var xml = fixtureAccessor.getPutValueXml();
+    var oldDocument = stringToXml(xml);
+    var builtDocument = new XmlBuilder(namespaceContext).putAll(xmlProperties).build(oldDocument);
 
     assertThat(xmlToString(builtDocument)).isEqualTo(xml);
 
@@ -160,14 +154,14 @@ class XmlBuilderTest {
   void shouldRemovePathsFromExistingXml(
       FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext)
       throws XPathExpressionException, ParsingException, IOException {
-    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-    String xml = fixtureAccessor.getPutValueXml();
-    Document oldDocument = stringToXml(xml);
-    Document builtDocument =
+    var xmlProperties = fixtureAccessor.getXmlProperties();
+    var xml = fixtureAccessor.getPutValueXml();
+    var oldDocument = stringToXml(xml);
+    var builtDocument =
         new XmlBuilder(namespaceContext).removeAll(xmlProperties.keySet()).build(oldDocument);
 
-    for (Map.Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
-      Nodes nodes =
+    for (var xpathToValuePair : xmlProperties.entrySet()) {
+      var nodes =
           null == namespaceContext
               ? builtDocument.query(xpathToValuePair.getKey())
               : builtDocument.query(xpathToValuePair.getKey(), toXpathContext(namespaceContext));
@@ -177,26 +171,26 @@ class XmlBuilderTest {
   }
 
   private Document stringToXml(String xml) throws ParsingException, IOException {
-    Builder builder = new Builder();
-    return builder.build(new ByteArrayInputStream(xml.getBytes(Charset.forName("UTF-8"))));
+    var builder = new Builder();
+    return builder.build(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
   }
 
   private String xmlToString(Document xml) throws IOException {
-    String lineSeparator = System.lineSeparator();
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    Serializer serializer = new Serializer(outputStream, "UTF-8");
+    var lineSeparator = System.lineSeparator();
+    var outputStream = new ByteArrayOutputStream();
+    var serializer = new Serializer(outputStream, "UTF-8");
     serializer.setIndent(4);
     serializer.setLineSeparator(lineSeparator);
     serializer.write(xml);
-    String xmlString = new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
+    var xmlString = outputStream.toString(StandardCharsets.UTF_8);
     return xmlString.substring(xmlString.indexOf(lineSeparator) + lineSeparator.length());
   }
 
   private XPathContext toXpathContext(NamespaceContext namespaceContext) {
-    XPathContext context = new XPathContext();
+    var context = new XPathContext();
     Iterator<?> prefixes = namespaceContext.getPrefixes("http://www.example.com/my");
     while (prefixes.hasNext()) {
-      String prefix = (String) prefixes.next();
+      var prefix = (String) prefixes.next();
       context.addNamespace(prefix, namespaceContext.getNamespaceURI(prefix));
     }
     return context;

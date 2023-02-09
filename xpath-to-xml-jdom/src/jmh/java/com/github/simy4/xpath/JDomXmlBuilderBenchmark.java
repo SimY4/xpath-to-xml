@@ -65,7 +65,7 @@ public class JDomXmlBuilderBenchmark {
   @Benchmark
   public void shouldBuildDocumentFromSetOfXPaths(Blackhole blackhole)
       throws XPathExpressionException {
-    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
+    var xmlProperties = fixtureAccessor.getXmlProperties();
     blackhole.consume(
         new XmlBuilder(namespaceContext).putAll(xmlProperties.keySet()).build(new Document()));
   }

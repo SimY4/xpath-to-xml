@@ -18,7 +18,6 @@ package com.github.simy4.xpath.json;
 import com.github.simy4.xpath.XmlBuilder;
 import com.github.simy4.xpath.fixtures.FixtureAccessor;
 import jakarta.json.Json;
-import jakarta.json.JsonObject;
 import jakarta.json.JsonValue;
 import jakarta.json.stream.JsonGenerator;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,7 +30,6 @@ import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,8 +48,8 @@ class XmlBuilderTest {
   @MethodSource("data")
   void shouldBuildJsonFromSetOfXPaths(FixtureAccessor fixtureAccessor)
       throws XPathExpressionException {
-    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-    JsonObject builtDocument =
+    var xmlProperties = fixtureAccessor.getXmlProperties();
+    var builtDocument =
         new XmlBuilder().putAll(xmlProperties.keySet()).build(JsonValue.EMPTY_JSON_OBJECT);
 
     assertThat(jsonToString(builtDocument)).isEqualTo(fixtureAccessor.getPutXml());
@@ -61,9 +59,8 @@ class XmlBuilderTest {
   @MethodSource("data")
   void shouldBuildJsonFromSetOfXPathsAndSetValues(FixtureAccessor fixtureAccessor)
       throws XPathExpressionException {
-    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-    JsonObject builtDocument =
-        new XmlBuilder().putAll(xmlProperties).build(JsonValue.EMPTY_JSON_OBJECT);
+    var xmlProperties = fixtureAccessor.getXmlProperties();
+    var builtDocument = new XmlBuilder().putAll(xmlProperties).build(JsonValue.EMPTY_JSON_OBJECT);
 
     assertThat(jsonToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
   }
@@ -72,10 +69,10 @@ class XmlBuilderTest {
   @MethodSource("data")
   void shouldModifyJsonWhenXPathsAreNotTraversable(FixtureAccessor fixtureAccessor)
       throws XPathExpressionException {
-    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-    String json = fixtureAccessor.getPutXml();
-    JsonValue oldDocument = stringToJson(json);
-    JsonValue builtDocument = new XmlBuilder().putAll(xmlProperties).build(oldDocument);
+    var xmlProperties = fixtureAccessor.getXmlProperties();
+    var json = fixtureAccessor.getPutXml();
+    var oldDocument = stringToJson(json);
+    var builtDocument = new XmlBuilder().putAll(xmlProperties).build(oldDocument);
 
     assertThat(jsonToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
   }
@@ -84,10 +81,10 @@ class XmlBuilderTest {
   @MethodSource("data")
   void shouldNotModifyJsonWhenAllXPathsTraversable(FixtureAccessor fixtureAccessor)
       throws XPathExpressionException {
-    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-    String json = fixtureAccessor.getPutValueXml();
-    JsonValue oldDocument = stringToJson(json);
-    JsonValue builtDocument = new XmlBuilder().putAll(xmlProperties).build(oldDocument);
+    var xmlProperties = fixtureAccessor.getXmlProperties();
+    var json = fixtureAccessor.getPutValueXml();
+    var oldDocument = stringToJson(json);
+    var builtDocument = new XmlBuilder().putAll(xmlProperties).build(oldDocument);
 
     assertThat(jsonToString(builtDocument)).isEqualTo(json);
 
@@ -100,10 +97,10 @@ class XmlBuilderTest {
   @MethodSource("data")
   void shouldRemovePathsFromExistingXml(FixtureAccessor fixtureAccessor)
       throws XPathExpressionException {
-    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-    String json = fixtureAccessor.getPutValueXml();
-    JsonValue oldDocument = stringToJson(json);
-    JsonValue builtDocument = new XmlBuilder().removeAll(xmlProperties.keySet()).build(oldDocument);
+    var xmlProperties = fixtureAccessor.getXmlProperties();
+    var json = fixtureAccessor.getPutValueXml();
+    var oldDocument = stringToJson(json);
+    var builtDocument = new XmlBuilder().removeAll(xmlProperties.keySet()).build(oldDocument);
 
     assertThat(jsonToString(builtDocument)).isNotEqualTo(fixtureAccessor.getPutValueXml());
   }
@@ -114,8 +111,8 @@ class XmlBuilderTest {
   }
 
   private String jsonToString(JsonValue json) {
-    String lineSeparator = System.lineSeparator();
-    StringWriter sw = new StringWriter();
+    var lineSeparator = System.lineSeparator();
+    var sw = new StringWriter();
     Json.createWriterFactory(Collections.singletonMap(JsonGenerator.PRETTY_PRINTING, true))
         .createWriter(sw)
         .write(json);

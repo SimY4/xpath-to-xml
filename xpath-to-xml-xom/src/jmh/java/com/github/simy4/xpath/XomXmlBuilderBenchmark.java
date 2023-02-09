@@ -42,7 +42,7 @@ public class XomXmlBuilderBenchmark {
   private static final Map<String, NamespaceContext> NAMESPACE_CONTEXT_MAP;
 
   static {
-    Map<String, NamespaceContext> namespaceContextMap = new HashMap<String, NamespaceContext>();
+    Map<String, NamespaceContext> namespaceContextMap = new HashMap<>();
     namespaceContextMap.put("null", null);
     namespaceContextMap.put("simple", new SimpleNamespaceContext());
     NAMESPACE_CONTEXT_MAP = Collections.unmodifiableMap(namespaceContextMap);
@@ -68,8 +68,8 @@ public class XomXmlBuilderBenchmark {
   @Benchmark
   public void shouldBuildDocumentFromSetOfXPaths(Blackhole blackhole)
       throws XPathExpressionException {
-    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-    Document newDocument = new Document(root.copy());
+    var xmlProperties = fixtureAccessor.getXmlProperties();
+    var newDocument = new Document(root.copy());
     blackhole.consume(
         new XmlBuilder(namespaceContext).putAll(xmlProperties.keySet()).build(newDocument));
   }

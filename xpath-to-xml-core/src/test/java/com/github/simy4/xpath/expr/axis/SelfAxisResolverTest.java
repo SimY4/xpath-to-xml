@@ -18,7 +18,6 @@ package com.github.simy4.xpath.expr.axis;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
-import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -60,10 +59,10 @@ class SelfAxisResolverTest {
   @DisplayName("When axis traversable should return traversed nodes")
   void shouldReturnTraversedNodesIfAxisIsTraversable() {
     // when
-    IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, node, false);
+    var result = axisResolver.resolveAxis(navigator, node, false);
 
     // then
-    assertThat(result).extracting("node").containsExactly(node.getNode());
+    assertThat((Iterable<?>) result).extracting("node").containsExactly(node.getNode());
   }
 
   @Test
@@ -73,10 +72,10 @@ class SelfAxisResolverTest {
     axisResolver = spy(axisResolver);
 
     // when
-    IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, node, true);
+    var result = axisResolver.resolveAxis(navigator, node, true);
 
     // then
-    assertThat(result).extracting("node").containsExactly(node.getNode());
+    assertThat((Iterable<?>) result).extracting("node").containsExactly(node.getNode());
     verify(axisResolver, never()).createAxisNode(any(), any(), anyInt());
   }
 
@@ -87,10 +86,10 @@ class SelfAxisResolverTest {
     axisResolver = new SelfAxisResolver(new QName("another-name"));
 
     // when
-    IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, node, false);
+    var result = axisResolver.resolveAxis(navigator, node, false);
 
     // then
-    assertThat(result).isEmpty();
+    assertThat((Iterable<?>) result).isEmpty();
   }
 
   @Test

@@ -16,7 +16,6 @@
 package com.github.simy4.xpath.json.navigator.node;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonValue;
 import jakarta.json.spi.JsonProvider;
@@ -46,7 +45,7 @@ class JakartaJsonRootNodeTest {
 
   @Test
   void shouldReplaceRootNodeOnSet() {
-    JsonArray array = JsonValue.EMPTY_JSON_ARRAY;
+    var array = JsonValue.EMPTY_JSON_ARRAY;
     rootNode.set(jsonProvider, array);
     assertThat(rootNode.get()).isSameAs(array);
   }

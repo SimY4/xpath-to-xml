@@ -18,7 +18,6 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.NodeView;
-import com.github.simy4.xpath.view.View;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +39,7 @@ class LiteralExprTest {
   @Test
   @DisplayName("Should always return single literal node")
   void shouldAlwaysReturnSingleLiteralNode() {
-    View<TestNode> result = literalExpr.resolve(navigator, parentNode, false);
+    var result = literalExpr.resolve(navigator, parentNode, false);
     assertThat(result).extracting("literal").isEqualTo("value");
   }
 

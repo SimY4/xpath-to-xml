@@ -58,7 +58,7 @@ public final class TestNode implements Node, Serializable {
       return false;
     }
 
-    TestNode that = (TestNode) o;
+    var that = (TestNode) o;
     return value.equals(that.value);
   }
 

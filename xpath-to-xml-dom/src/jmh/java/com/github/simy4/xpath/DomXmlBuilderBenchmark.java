@@ -25,7 +25,6 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.infra.Blackhole;
-import org.w3c.dom.Document;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
@@ -62,7 +61,7 @@ public class DomXmlBuilderBenchmark {
 
   @Setup
   public void setUp() throws ParserConfigurationException {
-    DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+    var documentBuilderFactory = DocumentBuilderFactory.newInstance();
     fixtureAccessor = new FixtureAccessor(fixtureName);
     documentBuilder = documentBuilderFactory.newDocumentBuilder();
     namespaceContext = NAMESPACE_CONTEXT_MAP.get(nsContext);
@@ -71,8 +70,8 @@ public class DomXmlBuilderBenchmark {
   @Benchmark
   public void shouldBuildDocumentFromSetOfXPaths(Blackhole blackhole)
       throws XPathExpressionException {
-    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-    Document document = documentBuilder.newDocument();
+    var xmlProperties = fixtureAccessor.getXmlProperties();
+    var document = documentBuilder.newDocument();
     document.setXmlStandalone(true);
     blackhole.consume(
         new XmlBuilder(namespaceContext).putAll(xmlProperties.keySet()).build(document));

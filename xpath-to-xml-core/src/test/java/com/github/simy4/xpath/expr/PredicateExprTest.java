@@ -64,7 +64,7 @@ class PredicateExprTest {
   @MethodSource("truthy")
   void shouldReturnTrueForTruthyPredicate(Expr truthy) {
     // when
-    boolean result =
+    var result =
         new PredicateExpr(truthy)
             .resolve(navigator, new NodeView<>(node("node")), false)
             .toBoolean();
@@ -78,7 +78,7 @@ class PredicateExprTest {
   @MethodSource("falsy")
   void shouldReturnFalseForNonGreedyFalsePredicate(Expr falsy) {
     // when
-    boolean result =
+    var result =
         new PredicateExpr(falsy)
             .resolve(navigator, new NodeView<>(node("node")), false)
             .toBoolean();
@@ -92,7 +92,7 @@ class PredicateExprTest {
       "When greedy context, falsy predicate and new node should prepend missing nodes and return true")
   void shouldPrependMissingNodesAndReturnTrueOnGreedyFalsePredicateAndNewNode() {
     // when
-    boolean result =
+    var result =
         new PredicateExpr(new NumberExpr(3.0))
             .resolve(navigator, new NodeView<>(node("node"), 1), true)
             .toBoolean();
@@ -105,7 +105,7 @@ class PredicateExprTest {
   @Test
   void testToString() {
     // given
-    Expr predicate = mock(Expr.class);
+    var predicate = mock(Expr.class);
 
     // then
     assertThat(new PredicateExpr(predicate)).hasToString("[" + predicate + ']');

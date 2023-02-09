@@ -17,7 +17,6 @@ package com.github.simy4.xpath.expr.axis;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.util.TestNode;
-import com.github.simy4.xpath.view.IterableNodeView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,7 +54,7 @@ class AttributeAxisResolverTest extends AbstractAxisResolverTest {
   @DisplayName("Should create attribute")
   void shouldCreateAttribute() {
     // when
-    IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, true);
+    var result = axisResolver.resolveAxis(navigator, parentNode, true);
 
     // then
     assertThat((Object) result).extracting("node", "position").containsExactly(node("name"), 1);

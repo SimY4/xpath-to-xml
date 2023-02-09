@@ -17,7 +17,6 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
-import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -51,10 +50,10 @@ class RootTest {
   @DisplayName("Should return single root node")
   void shouldReturnSingleRootNodeOnTraverse() {
     // when
-    IterableNodeView<TestNode> result = root.resolve(navigator, parentNode, false);
+    var result = root.resolve(navigator, parentNode, false);
 
     // then
-    assertThat(result).extracting("node").containsExactly(node("root"));
+    assertThat((Iterable<?>) result).extracting("node").containsExactly(node("root"));
   }
 
   @Test

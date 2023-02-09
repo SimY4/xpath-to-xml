@@ -16,7 +16,6 @@
 package com.github.simy4.xpath.dom.navigator;
 
 import com.github.simy4.xpath.helpers.SerializationHelper;
-import com.github.simy4.xpath.navigator.Node;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +23,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
 
 import java.io.IOException;
 
@@ -37,7 +35,7 @@ class DomNodeTest {
   @Mock(serializable = true)
   private org.w3c.dom.Node node;
 
-  private Node nodeView;
+  private DomNode nodeView;
 
   @BeforeEach
   void setUp() {
@@ -47,7 +45,7 @@ class DomNodeTest {
   @Test
   void shouldReturnNodeNameForNamespaceUnawareNode() {
     when(node.getNodeName()).thenReturn("node");
-    QName result = nodeView.getName();
+    var result = nodeView.getName();
     assertThat(result)
         .extracting("namespaceURI", "localPart", "prefix")
         .containsExactly(XMLConstants.NULL_NS_URI, "node", XMLConstants.DEFAULT_NS_PREFIX);
@@ -58,7 +56,7 @@ class DomNodeTest {
     when(node.getNamespaceURI()).thenReturn("http://www.example.com/my");
     when(node.getLocalName()).thenReturn("node");
     when(node.getPrefix()).thenReturn("my");
-    QName result = nodeView.getName();
+    var result = nodeView.getName();
     assertThat(result)
         .extracting("namespaceURI", "localPart", "prefix")
         .containsExactly("http://www.example.com/my", "node", "my");
@@ -77,7 +75,7 @@ class DomNodeTest {
     when(node.getNodeName()).thenReturn("node");
 
     // when
-    Node deserializedNode = SerializationHelper.serializeAndDeserializeBack(nodeView);
+    var deserializedNode = SerializationHelper.serializeAndDeserializeBack(nodeView);
 
     // then
     assertThat(deserializedNode.getName()).isEqualTo(nodeView.getName());

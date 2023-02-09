@@ -92,7 +92,7 @@ class GreaterThanExprTest extends AbstractOperationExprTest {
     when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(less);
 
     // when
-    View<TestNode> result = operationExpr.resolve(navigator, parentNode, false);
+    var result = operationExpr.resolve(navigator, parentNode, false);
 
     // then
     assertThat(result).isEqualTo(BooleanView.of(true));
@@ -107,7 +107,7 @@ class GreaterThanExprTest extends AbstractOperationExprTest {
     when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(greater);
 
     // when
-    View<TestNode> result = operationExpr.resolve(navigator, parentNode, false);
+    var result = operationExpr.resolve(navigator, parentNode, false);
 
     // then
     assertThat(result).isEqualTo(BooleanView.of(false));
@@ -122,7 +122,7 @@ class GreaterThanExprTest extends AbstractOperationExprTest {
     when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(right);
 
     // when
-    View<TestNode> result = operationExpr.resolve(navigator, parentNode, false);
+    var result = operationExpr.resolve(navigator, parentNode, false);
 
     // then
     assertThat(result).isEqualTo(BooleanView.of(false));

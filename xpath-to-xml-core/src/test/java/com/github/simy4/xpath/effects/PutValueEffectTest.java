@@ -71,7 +71,7 @@ class PutValueEffectTest {
   @DisplayName("Should throw if resolved to a literal expr")
   void shouldThrowWhenResolvedToALiteralExpr() {
     // given
-    LiteralView<Node> literal = new LiteralView<>("literal");
+    var literal = new LiteralView<Node>("literal");
     when(expr.resolve(any(), any(), anyBoolean())).thenReturn(literal);
 
     // when
@@ -84,7 +84,7 @@ class PutValueEffectTest {
   void shouldPropagateOnException() {
     // given
     when(expr.resolve(any(), any(), anyBoolean())).thenReturn(new NodeView<>(node("node")));
-    XmlBuilderException failure = new XmlBuilderException("Failure");
+    var failure = new XmlBuilderException("Failure");
     doThrow(failure).when(navigator).setText(node("node"), "value");
 
     // when

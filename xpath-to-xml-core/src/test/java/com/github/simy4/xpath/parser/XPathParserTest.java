@@ -403,7 +403,7 @@ class XPathParserTest {
   @MethodSource("positiveSimple")
   void shouldParseSimpleXPath(String xpath, Expr expectedExpr, NamespaceContext context)
       throws XPathExpressionException {
-    Expr actualExpr = new XPathParser(context).parse(xpath);
+    var actualExpr = new XPathParser(context).parse(xpath);
     assertThat(actualExpr).hasToString(expectedExpr.toString());
   }
 
@@ -412,7 +412,7 @@ class XPathParserTest {
   @MethodSource("positivePrefixedNoContext")
   void shouldParsePrefixedXPathWithNoContext(String xpath, Expr expectedExpr)
       throws XPathExpressionException {
-    Expr actualExpr = new XPathParser(null).parse(xpath);
+    var actualExpr = new XPathParser(null).parse(xpath);
     assertThat(actualExpr).hasToString(expectedExpr.toString());
   }
 
@@ -421,7 +421,7 @@ class XPathParserTest {
   @MethodSource("positivePrefixedWithContext")
   void shouldParsePrefixedXPathWithContext(String xpath, Expr expectedExpr)
       throws XPathExpressionException {
-    Expr actualExpr = new XPathParser(new SimpleNamespaceContext()).parse(xpath);
+    var actualExpr = new XPathParser(new SimpleNamespaceContext()).parse(xpath);
     assertThat(actualExpr).hasToString(expectedExpr.toString());
   }
 

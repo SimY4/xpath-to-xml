@@ -22,7 +22,6 @@ import org.assertj.core.api.Condition;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
-import org.dom4j.XPath;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
@@ -36,8 +35,7 @@ import javax.xml.xpath.XPathExpressionException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.nio.charset.Charset;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -61,14 +59,14 @@ class XmlBuilderTest {
   void shouldBuildDocumentFromSetOfXPaths(
       FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext)
       throws XPathExpressionException, IOException {
-    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-    Document builtDocument =
+    var xmlProperties = fixtureAccessor.getXmlProperties();
+    var builtDocument =
         new XmlBuilder(namespaceContext)
             .putAll(xmlProperties.keySet())
             .build(DocumentHelper.createDocument());
 
-    for (String xpathString : xmlProperties.keySet()) {
-      XPath xpath = builtDocument.createXPath(xpathString);
+    for (var xpathString : xmlProperties.keySet()) {
+      var xpath = builtDocument.createXPath(xpathString);
       if (null != namespaceContext) {
         xpath.setNamespaceContext(new SimpleNamespaceContextWrapper(namespaceContext));
       }
@@ -89,14 +87,14 @@ class XmlBuilderTest {
   void shouldBuildDocumentFromSetOfXPathsAndSetValues(
       FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext)
       throws XPathExpressionException, IOException {
-    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-    Document builtDocument =
+    var xmlProperties = fixtureAccessor.getXmlProperties();
+    var builtDocument =
         new XmlBuilder(namespaceContext)
             .putAll(xmlProperties)
             .build(DocumentHelper.createDocument());
 
-    for (Map.Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
-      XPath xpath = builtDocument.createXPath(xpathToValuePair.getKey());
+    for (var xpathToValuePair : xmlProperties.entrySet()) {
+      var xpath = builtDocument.createXPath(xpathToValuePair.getKey());
       if (null != namespaceContext) {
         xpath.setNamespaceContext(new SimpleNamespaceContextWrapper(namespaceContext));
       }
@@ -118,11 +116,10 @@ class XmlBuilderTest {
   void shouldModifyDocumentWhenXPathsAreNotTraversable(
       FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext)
       throws XPathExpressionException, DocumentException, IOException {
-    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-    String xml = fixtureAccessor.getPutXml();
-    Document oldDocument = stringToXml(xml);
-    Document builtDocument =
-        new XmlBuilder(namespaceContext).putAll(xmlProperties).build(oldDocument);
+    var xmlProperties = fixtureAccessor.getXmlProperties();
+    var xml = fixtureAccessor.getPutXml();
+    var oldDocument = stringToXml(xml);
+    var builtDocument = new XmlBuilder(namespaceContext).putAll(xmlProperties).build(oldDocument);
 
     assertThat(xmlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
   }
@@ -132,11 +129,10 @@ class XmlBuilderTest {
   void shouldNotModifyDocumentWhenAllXPathsTraversable(
       FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext)
       throws XPathExpressionException, DocumentException, IOException {
-    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-    String xml = fixtureAccessor.getPutValueXml();
-    Document oldDocument = stringToXml(xml);
-    Document builtDocument =
-        new XmlBuilder(namespaceContext).putAll(xmlProperties).build(oldDocument);
+    var xmlProperties = fixtureAccessor.getXmlProperties();
+    var xml = fixtureAccessor.getPutValueXml();
+    var oldDocument = stringToXml(xml);
+    var builtDocument = new XmlBuilder(namespaceContext).putAll(xmlProperties).build(oldDocument);
 
     assertThat(xmlToString(builtDocument)).isEqualTo(xml);
 
@@ -151,14 +147,14 @@ class XmlBuilderTest {
   void shouldRemovePathsFromExistingXml(
       FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext)
       throws XPathExpressionException, DocumentException, IOException {
-    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-    String xml = fixtureAccessor.getPutValueXml();
-    Document oldDocument = stringToXml(xml);
-    Document builtDocument =
+    var xmlProperties = fixtureAccessor.getXmlProperties();
+    var xml = fixtureAccessor.getPutValueXml();
+    var oldDocument = stringToXml(xml);
+    var builtDocument =
         new XmlBuilder(namespaceContext).removeAll(xmlProperties.keySet()).build(oldDocument);
 
-    for (Map.Entry<String, Object> xpathToValuePair : xmlProperties.entrySet()) {
-      XPath xpath = builtDocument.createXPath(xpathToValuePair.getKey());
+    for (var xpathToValuePair : xmlProperties.entrySet()) {
+      var xpath = builtDocument.createXPath(xpathToValuePair.getKey());
       if (null != namespaceContext) {
         xpath.setNamespaceContext(new SimpleNamespaceContextWrapper(namespaceContext));
       }
@@ -168,19 +164,19 @@ class XmlBuilderTest {
   }
 
   private Document stringToXml(String xml) throws DocumentException {
-    SAXReader saxReader = new SAXReader();
-    return saxReader.read(new ByteArrayInputStream(xml.getBytes(Charset.forName("UTF-8"))));
+    var saxReader = new SAXReader();
+    return saxReader.read(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
   }
 
   private String xmlToString(Document xml) throws IOException {
-    String lineSeparator = System.lineSeparator();
-    OutputFormat format = OutputFormat.createCompactFormat();
+    var lineSeparator = System.lineSeparator();
+    var format = OutputFormat.createCompactFormat();
     format.setIndentSize(4);
     format.setNewlines(true);
     format.setLineSeparator(lineSeparator);
     format.setSuppressDeclaration(true);
-    StringWriter result = new StringWriter();
-    XMLWriter writer = new XMLWriter(result, format);
+    var result = new StringWriter();
+    var writer = new XMLWriter(result, format);
     writer.write(xml);
     return result.toString().replaceFirst(lineSeparator, "");
   }

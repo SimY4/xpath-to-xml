@@ -34,14 +34,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 class Dom4JElementTest {
 
   private Element element = DocumentHelper.createElement(new org.dom4j.QName("node"));
-  private Element child1 = DocumentHelper.createElement(new org.dom4j.QName("child1"));
-  private Element child2 = DocumentHelper.createElement(new org.dom4j.QName("child2"));
-  private Attribute attr1 =
+  private final Element child1 = DocumentHelper.createElement(new org.dom4j.QName("child1"));
+  private final Element child2 = DocumentHelper.createElement(new org.dom4j.QName("child2"));
+  private final Attribute attr1 =
       DocumentHelper.createAttribute(element, new org.dom4j.QName("attr1"), "");
-  private Attribute attr2 =
+  private final Attribute attr2 =
       DocumentHelper.createAttribute(element, new org.dom4j.QName("attr2"), "");
 
-  private Dom4jNode node;
+  private Dom4jElement node;
 
   @BeforeEach
   void setUp() {
@@ -72,13 +72,13 @@ class Dom4JElementTest {
 
   @Test
   void shouldAppendNewElementWhenCreateElement() {
-    Dom4jNode elem = node.createElement(new org.dom4j.QName("elem"));
+    var elem = node.createElement(new org.dom4j.QName("elem"));
     assertThat(elem).extracting("name").isEqualTo(new QName("elem"));
   }
 
   @Test
   void shouldReturnNodeNameForNamespaceUnawareElement() {
-    QName result = node.getName();
+    var result = node.getName();
 
     assertThat(result)
         .extracting("namespaceURI", "localPart", "prefix")
@@ -92,7 +92,7 @@ class Dom4JElementTest {
             new org.dom4j.QName("node", new Namespace("my", "http://www.example.com/my")));
     node = new Dom4jElement(element);
 
-    QName result = node.getName();
+    var result = node.getName();
 
     assertThat(result)
         .extracting("namespaceURI", "localPart", "prefix")
