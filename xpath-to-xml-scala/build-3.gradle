@@ -36,12 +36,12 @@ spotless {
     }
 }
 
-tasks.withType(ScalaCompile) {
+tasks.withType(ScalaCompile).configureEach {
     scalaCompileOptions.with {
         deprecation = true
         encoding = 'UTF-8'
         additionalParameters = [
-                '-project-url',     projectUrl,
+                '-project-url', projectUrl,
                 '-explain',                             // Explain errors in more detail.
                 '-explain-types',                       // Explain type errors in more detail.
                 '-feature',                             // Emit warning and location for usages of features that should be imported explicitly.

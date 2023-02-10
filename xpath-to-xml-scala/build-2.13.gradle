@@ -46,7 +46,7 @@ scaladoc {
     }
 }
 
-tasks.withType(ScalaCompile) {
+tasks.withType(ScalaCompile).configureEach {
     scalaCompileOptions.with {
         deprecation = true
         encoding = 'UTF-8'
