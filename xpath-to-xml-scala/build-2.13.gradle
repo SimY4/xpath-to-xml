@@ -83,6 +83,5 @@ tasks.withType(ScalaCompile).configureEach {
                 '-opt-inline-from:com.github.simy4.xpath.scala.navigator.**,com.github.simy4.xpath.scala.syntax.**',
                 '-P:wartremover:only-warn-traverser:org.wartremover.warts.Unsafe',
         ]
-        additionalParameters << '-release' << '8'
     }
 }
