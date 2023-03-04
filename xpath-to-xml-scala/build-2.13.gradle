@@ -78,6 +78,7 @@ tasks.withType(ScalaCompile).configureEach {
                 '-Wdead-code',                       // Warn when dead code is identified.
                 '-Wnumeric-widen',                   // Warn when numerics are widened.
                 '-Xsource:3',                        // Turn on future language features.
+                '-release:8',
                 '-opt:l:method',
                 '-opt:l:inline',
                 '-opt-inline-from:com.github.simy4.xpath.scala.navigator.**,com.github.simy4.xpath.scala.syntax.**',
