@@ -10,7 +10,7 @@ wartremover = '3.0.9'
 
 [libraries]
 assertj = 'org.assertj:assertj-core:3.24.2'
-dom4j = 'org.dom4j:dom4j:2.1.3'
+dom4j = 'org.dom4j:dom4j:2.1.4'
 errorprone = { module = 'com.google.errorprone:error_prone_core', version.ref = 'errorprone' }
 gson = 'com.google.code.gson:gson:2.10.1'
 jackson-databind = { module = 'com.fasterxml.jackson.core:jackson-databind', version.ref = 'jackson' }
