@@ -10,6 +10,7 @@ plugins {
 
 subprojects {
     apply plugin: 'java-library'
+    apply plugin: 'org.beryx.jar'
     apply from: rootProject.file('gradle/check-checkstyle.gradle')
     apply from: rootProject.file('gradle/check-codecoverage.gradle')
     apply from: rootProject.file('gradle/check-errorprone.gradle')
@@ -46,15 +47,11 @@ subprojects {
         options.release = 11
     }
 
-    if (!it.name.startsWith('xpath-to-xml-scala')) {
-        apply plugin: 'org.beryx.jar'
-
-        moduleConfig {
-            moduleInfoPath = 'src/main/module/module-info.java'
-            multiReleaseVersion = 11
-            version = project.version
-            neverCompileModuleInfo = true
-        }
+    moduleConfig {
+        moduleInfoPath = 'src/main/module/module-info.java'
+        multiReleaseVersion = 11
+        version = project.version
+        neverCompileModuleInfo = true
     }
 
     test {

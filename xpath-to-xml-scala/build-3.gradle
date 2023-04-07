@@ -23,6 +23,10 @@ dependencies {
     testImplementation libs.bundles.scalatest.v3
 }
 
+moduleConfig {
+    moduleInfoPath = 'src/main/module-3/module-info.java'
+}
+
 javadocJar {
     dependsOn scaladoc
     from scaladoc
