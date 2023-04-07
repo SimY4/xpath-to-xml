@@ -78,6 +78,7 @@ nexusPublishing {
 }
 
 release {
+    preCommitText = '[skip ci]'
     git {
         requireBranch.set('2.x')
     }
