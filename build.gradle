@@ -5,6 +5,7 @@ plugins {
     id 'me.champeau.jmh' version '0.7.0' apply false
     id 'net.ltgt.errorprone' version '3.0.1' apply false
     id 'net.researchgate.release' version '3.0.2'
+    id 'org.beryx.jar' version '2.0.0' apply false
 }
 
 subprojects {
@@ -43,6 +44,17 @@ subprojects {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
         options.release = 11
+    }
+
+    if (!it.name.startsWith('xpath-to-xml-scala')) {
+        apply plugin: 'org.beryx.jar'
+
+        moduleConfig {
+            moduleInfoPath = 'src/main/module/module-info.java'
+            multiReleaseVersion = 11
+            version = project.version
+            neverCompileModuleInfo = true
+        }
     }
 
     test {

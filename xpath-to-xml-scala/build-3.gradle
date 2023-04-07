@@ -1,5 +1,3 @@
-ext.moduleName = 'com.github.simych.xpath.scala'
-
 apply plugin: 'scala'
 apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 
