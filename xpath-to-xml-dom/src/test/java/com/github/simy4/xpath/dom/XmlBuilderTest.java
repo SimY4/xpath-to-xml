@@ -125,7 +125,10 @@ class XmlBuilderTest {
       FixtureAccessor fixtureAccessor,
       NamespaceContext namespaceContext,
       DocumentBuilderFactory documentBuilderFactory)
-      throws XPathExpressionException, TransformerException, IOException, SAXException,
+      throws XPathExpressionException,
+          TransformerException,
+          IOException,
+          SAXException,
           ParserConfigurationException {
     var documentBuilder = documentBuilderFactory.newDocumentBuilder();
     var xmlProperties = fixtureAccessor.getXmlProperties();
@@ -142,7 +145,10 @@ class XmlBuilderTest {
       FixtureAccessor fixtureAccessor,
       NamespaceContext namespaceContext,
       DocumentBuilderFactory documentBuilderFactory)
-      throws XPathExpressionException, TransformerException, IOException, SAXException,
+      throws XPathExpressionException,
+          TransformerException,
+          IOException,
+          SAXException,
           ParserConfigurationException {
     var documentBuilder = documentBuilderFactory.newDocumentBuilder();
     var xmlProperties = fixtureAccessor.getXmlProperties();
@@ -164,7 +170,10 @@ class XmlBuilderTest {
       FixtureAccessor fixtureAccessor,
       NamespaceContext namespaceContext,
       DocumentBuilderFactory documentBuilderFactory)
-      throws XPathExpressionException, TransformerException, IOException, SAXException,
+      throws XPathExpressionException,
+          TransformerException,
+          IOException,
+          SAXException,
           ParserConfigurationException {
     var documentBuilder = documentBuilderFactory.newDocumentBuilder();
     var xmlProperties = fixtureAccessor.getXmlProperties();
