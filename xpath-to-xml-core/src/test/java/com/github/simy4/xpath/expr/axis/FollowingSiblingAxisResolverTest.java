@@ -17,7 +17,6 @@ package com.github.simy4.xpath.expr.axis;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.util.TestNode;
-import com.github.simy4.xpath.view.IterableNodeView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -62,10 +61,10 @@ class FollowingSiblingAxisResolverTest extends AbstractAxisResolverTest {
     axisResolver = new FollowingSiblingAxisResolver(new QName("*", "*"), true);
 
     // when
-    IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, false);
+    var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
     // then
-    assertThat(result).extracting("node").containsExactly(node(name));
+    assertThat((Iterable<?>) result).extracting("node").containsExactly(node(name));
   }
 
   @Test
@@ -76,10 +75,10 @@ class FollowingSiblingAxisResolverTest extends AbstractAxisResolverTest {
     axisResolver = new FollowingSiblingAxisResolver(new QName("*", "*"), false);
 
     // when
-    IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, false);
+    var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
     // then
-    assertThat(result)
+    assertThat((Iterable<?>) result)
         .extracting("node")
         .containsExactly(node(name), node("node1211"), node("node1212"));
   }
@@ -92,10 +91,10 @@ class FollowingSiblingAxisResolverTest extends AbstractAxisResolverTest {
     axisResolver = new FollowingSiblingAxisResolver(new QName("*", "*"), true);
 
     // when
-    IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, false);
+    var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
     // then
-    assertThat(result).isEmpty();
+    assertThat((Iterable<?>) result).isEmpty();
   }
 
   @Test
@@ -106,10 +105,10 @@ class FollowingSiblingAxisResolverTest extends AbstractAxisResolverTest {
     axisResolver = new FollowingSiblingAxisResolver(new QName("*", "*"), false);
 
     // when
-    IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, false);
+    var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
     // then
-    assertThat(result).isEmpty();
+    assertThat((Iterable<?>) result).isEmpty();
   }
 
   @Test
@@ -120,7 +119,7 @@ class FollowingSiblingAxisResolverTest extends AbstractAxisResolverTest {
     doReturn(asList(node("node11"), parentNode.getNode())).when(navigator).elementsOf(parentParent);
 
     // when
-    IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, true);
+    var result = axisResolver.resolveAxis(navigator, parentNode, true);
 
     // then
     assertThat((Object) result).extracting("node", "position").containsExactly(node("name"), 1);

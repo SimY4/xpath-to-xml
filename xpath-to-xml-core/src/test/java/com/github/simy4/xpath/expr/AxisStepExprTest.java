@@ -20,7 +20,6 @@ import com.github.simy4.xpath.expr.axis.AxisResolver;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.BooleanView;
-import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +29,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -92,14 +90,18 @@ class AxisStepExprTest {
     when(predicate2.resolve(any(), any(), anyBoolean())).thenReturn(BooleanView.of(true));
 
     // when
-    IterableNodeView<TestNode> result = stepExpr.resolve(navigator, parentNode, false);
+    var result = stepExpr.resolve(navigator, parentNode, false);
 
     // then
-    assertThat(result).isNotEmpty();
+    assertThat((Iterable<?>) result).isNotEmpty();
     verify(predicate1).resolve(eq(navigator), predicate1ViewCaptor.capture(), eq(false));
     verify(predicate2).resolve(eq(navigator), predicate2ViewCaptor.capture(), eq(false));
-    assertThat(predicate1ViewCaptor.getValue()).extracting("position").containsExactly(1);
-    assertThat(predicate2ViewCaptor.getValue()).extracting("position").containsExactly(1);
+    assertThat((Iterable<?>) predicate1ViewCaptor.getValue())
+        .extracting("position")
+        .containsExactly(1);
+    assertThat((Iterable<?>) predicate2ViewCaptor.getValue())
+        .extracting("position")
+        .containsExactly(1);
   }
 
   @Test
@@ -111,10 +113,10 @@ class AxisStepExprTest {
     stepExpr = new AxisStepExpr(axisResolver, Collections.emptyList());
 
     // when
-    IterableNodeView<TestNode> result = stepExpr.resolve(navigator, parentNode, false);
+    var result = stepExpr.resolve(navigator, parentNode, false);
 
     // then
-    assertThat(result).isNotEmpty();
+    assertThat((Iterable<?>) result).isNotEmpty();
     verify(predicate1, never()).resolve(any(), any(), anyBoolean());
     verify(predicate2, never()).resolve(any(), any(), anyBoolean());
   }
@@ -123,10 +125,10 @@ class AxisStepExprTest {
   @DisplayName("When traverse returns nothing should should short circuit resolve")
   void shouldShortCircuitWhenStepTraversalReturnsNothing() {
     // when
-    IterableNodeView<TestNode> result = stepExpr.resolve(navigator, parentNode, false);
+    var result = stepExpr.resolve(navigator, parentNode, false);
 
     // then
-    assertThat(result).isEmpty();
+    assertThat((Iterable<?>) result).isEmpty();
   }
 
   @Test
@@ -137,10 +139,10 @@ class AxisStepExprTest {
         .thenReturn(new NodeView<>(node("node")));
 
     // when
-    IterableNodeView<TestNode> result = stepExpr.resolve(navigator, parentNode, false);
+    var result = stepExpr.resolve(navigator, parentNode, false);
 
     // then
-    assertThat(result).isEmpty();
+    assertThat((Iterable<?>) result).isEmpty();
     verify(predicate2, never()).resolve(any(), any(), anyBoolean());
   }
 
@@ -153,11 +155,11 @@ class AxisStepExprTest {
     when(predicate2.resolve(any(), any(), eq(true))).thenReturn(BooleanView.of(true));
 
     // when
-    IterableNodeView<TestNode> result = stepExpr.resolve(navigator, parentNode, true);
+    var result = stepExpr.resolve(navigator, parentNode, true);
 
     // then
-    assertThat(result).isNotEmpty();
-    InOrder inOrder = inOrder(predicate1, predicate2);
+    assertThat((Iterable<?>) result).isNotEmpty();
+    var inOrder = inOrder(predicate1, predicate2);
     inOrder.verify(predicate1).resolve(eq(navigator), predicate1ViewCaptor.capture(), eq(false));
     inOrder.verify(predicate1).resolve(eq(navigator), predicate1ViewCaptor.capture(), eq(true));
     inOrder.verify(predicate2).resolve(eq(navigator), predicate2ViewCaptor.capture(), eq(false));
@@ -180,11 +182,11 @@ class AxisStepExprTest {
     when(predicate2.resolve(any(), any(), eq(true))).thenReturn(BooleanView.of(true));
 
     // when
-    IterableNodeView<TestNode> result = stepExpr.resolve(navigator, parentNode, true);
+    var result = stepExpr.resolve(navigator, parentNode, true);
 
     // then
-    assertThat(result).isNotEmpty();
-    InOrder inOrder = inOrder(predicate1, predicate2);
+    assertThat((Iterable<?>) result).isNotEmpty();
+    var inOrder = inOrder(predicate1, predicate2);
     inOrder.verify(predicate1).resolve(eq(navigator), predicate1ViewCaptor.capture(), eq(false));
     inOrder.verify(predicate2).resolve(eq(navigator), predicate2ViewCaptor.capture(), eq(false));
     inOrder.verify(predicate1).resolve(eq(navigator), predicate1ViewCaptor.capture(), eq(true));
@@ -209,6 +211,7 @@ class AxisStepExprTest {
   }
 
   @Test
+  @SuppressWarnings("DirectInvocationOnMock")
   void testToString() {
     assertThat(stepExpr).hasToString(axisResolver.toString() + predicate1 + predicate2);
   }

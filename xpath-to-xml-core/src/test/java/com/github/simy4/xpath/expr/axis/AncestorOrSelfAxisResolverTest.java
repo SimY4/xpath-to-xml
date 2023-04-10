@@ -16,8 +16,6 @@
 package com.github.simy4.xpath.expr.axis;
 
 import com.github.simy4.xpath.XmlBuilderException;
-import com.github.simy4.xpath.util.TestNode;
-import com.github.simy4.xpath.view.IterableNodeView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,10 +46,10 @@ class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     axisResolver = new AncestorOrSelfAxisResolver(new QName("*", "*"), true);
 
     // when
-    IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, false);
+    var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
     // then
-    assertThat(result)
+    assertThat((Iterable<?>) result)
         .extracting("node")
         .containsExactly(parentNode.getNode(), node("parent1"), node("parent2"), node(name));
   }
@@ -64,10 +62,10 @@ class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     axisResolver = new AncestorOrSelfAxisResolver(new QName("*", "*"), false);
 
     // when
-    IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, false);
+    var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
     // then
-    assertThat(result)
+    assertThat((Iterable<?>) result)
         .extracting("node")
         .containsExactly(node("parent1"), node("parent2"), node(name));
   }
@@ -80,10 +78,10 @@ class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     axisResolver = new AncestorOrSelfAxisResolver(new QName("*", "*"), true);
 
     // when
-    IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, false);
+    var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
     // then
-    assertThat(result).extracting("node").containsExactly(parentNode.getNode());
+    assertThat((Iterable<?>) result).extracting("node").containsExactly(parentNode.getNode());
   }
 
   @Test
@@ -94,10 +92,10 @@ class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     axisResolver = new AncestorOrSelfAxisResolver(new QName("*", "*"), false);
 
     // when
-    IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, false);
+    var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
     // then
-    assertThat(result).isEmpty();
+    assertThat((Iterable<?>) result).isEmpty();
   }
 
   @Test

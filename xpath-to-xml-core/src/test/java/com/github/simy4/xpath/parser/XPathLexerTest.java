@@ -304,12 +304,12 @@ class XPathLexerTest {
   @DisplayName("Should tokenize XPath")
   @MethodSource("data")
   void shouldTokenizeXPath(String xpath, Collection<Token> expectedTokens) {
-    Iterator<Token> expectedTokensIterator = expectedTokens.iterator();
+    var expectedTokensIterator = expectedTokens.iterator();
     Iterator<Token> actualTokensIterator = new XPathLexer(xpath);
     while (actualTokensIterator.hasNext()) {
       assertThat(expectedTokensIterator.hasNext()).as("expected to have more tokens").isTrue();
-      Token expectedToken = expectedTokensIterator.next();
-      Token actualToken = actualTokensIterator.next();
+      var expectedToken = expectedTokensIterator.next();
+      var actualToken = actualTokensIterator.next();
       assertThat(actualToken.getType()).isEqualTo(expectedToken.getType());
       assertThat(actualToken.getToken()).isEqualTo(expectedToken.getToken());
     }

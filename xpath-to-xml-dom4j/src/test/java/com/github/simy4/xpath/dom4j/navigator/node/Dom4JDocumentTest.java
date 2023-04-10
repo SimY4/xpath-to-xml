@@ -36,7 +36,7 @@ class Dom4JDocumentTest {
   private final Element root = DocumentHelper.createElement(new org.dom4j.QName("elem"));
   private Document document = DocumentHelper.createDocument(root);
 
-  private Dom4jNode node;
+  private Dom4jDocument node;
 
   @BeforeEach
   void setUp() {
@@ -79,7 +79,7 @@ class Dom4JDocumentTest {
     document = DocumentHelper.createDocument();
     node = new Dom4jDocument(document);
 
-    Dom4jNode newRoot = new Dom4jElement(DocumentHelper.createElement(new org.dom4j.QName("elem")));
+    var newRoot = new Dom4jElement(DocumentHelper.createElement(new org.dom4j.QName("elem")));
     node.appendChild(newRoot);
 
     assertThat(newRoot).extracting("name").isEqualTo(new QName("elem"));

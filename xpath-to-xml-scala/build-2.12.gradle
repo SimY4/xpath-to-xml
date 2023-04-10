@@ -1,5 +1,3 @@
-ext.moduleName = 'com.github.simych.xpath.scala'
-
 apply plugin: 'scala'
 
 buildDir = 'build-2.12'
@@ -32,7 +30,7 @@ javadocJar {
 
 spotless {
     scala {
-        scalafmt('3.5.9').configFile('.scalafmt.conf')
+        scalafmt('3.7.3').configFile('.scalafmt.conf')
         licenseHeaderFile rootProject.file('gradle/license.header'), "package "
     }
 }
@@ -46,7 +44,7 @@ scaladoc {
     }
 }
 
-tasks.withType(ScalaCompile) {
+tasks.withType(ScalaCompile).configureEach {
     scalaCompileOptions.with {
         deprecation = true
         encoding = 'UTF-8'
@@ -80,14 +78,11 @@ tasks.withType(ScalaCompile) {
                 '-Xfuture',                          // Turn on future language features.
                 '-Yno-adapted-args',                 // Do not adapt an argument list (either by inserting () or creating a tuple) to match the receiver.
                 '-Xsource:3',                        // Turn on future language features.
-                '-target:jvm-1.8',
+                '-release:8',
                 '-opt:l:method',
                 '-opt:l:inline',
                 '-opt-inline-from:com.github.simy4.xpath.scala.navigator.**,com.github.simy4.xpath.scala.syntax.**',
                 '-P:wartremover:only-warn-traverser:org.wartremover.warts.Unsafe',
         ]
-        if (JavaVersion.current().isJava9Compatible()) {
-            additionalParameters << '-release' << '8'
-        }
     }
 }

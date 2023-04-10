@@ -35,18 +35,18 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class Dom4jNavigatorTest {
 
-  private Element parent = DocumentHelper.createElement(new org.dom4j.QName("parent"));
-  private Document root = DocumentHelper.createDocument(parent);
-  private Element xml = DocumentHelper.createElement(new org.dom4j.QName("xml"));
-  private Attribute attr = DocumentHelper.createAttribute(xml, "attr", "");
+  private final Element parent = DocumentHelper.createElement(new org.dom4j.QName("parent"));
+  private final Document root = DocumentHelper.createDocument(parent);
+  private final Element xml = DocumentHelper.createElement(new org.dom4j.QName("xml"));
+  private final Attribute attr = DocumentHelper.createAttribute(xml, "attr", "");
 
-  private Element child1 = DocumentHelper.createElement(new org.dom4j.QName("child1"));
-  private Element child2 = DocumentHelper.createElement(new org.dom4j.QName("child2"));
-  private Element child3 = DocumentHelper.createElement(new org.dom4j.QName("child3"));
+  private final Element child1 = DocumentHelper.createElement(new org.dom4j.QName("child1"));
+  private final Element child2 = DocumentHelper.createElement(new org.dom4j.QName("child2"));
+  private final Element child3 = DocumentHelper.createElement(new org.dom4j.QName("child3"));
 
-  private Attribute attr1 = DocumentHelper.createAttribute(xml, "attr1", "");
-  private Attribute attr2 = DocumentHelper.createAttribute(xml, "attr2", "");
-  private Attribute attr3 = DocumentHelper.createAttribute(xml, "attr3", "");
+  private final Attribute attr1 = DocumentHelper.createAttribute(xml, "attr1", "");
+  private final Attribute attr2 = DocumentHelper.createAttribute(xml, "attr2", "");
+  private final Attribute attr3 = DocumentHelper.createAttribute(xml, "attr3", "");
 
   private Navigator<Dom4jNode> navigator;
 
@@ -130,13 +130,13 @@ class Dom4jNavigatorTest {
 
   @Test
   void testCreateElementSuccess() {
-    Dom4jNode elem = navigator.createElement(new Dom4jElement(xml), new QName("elem"));
+    var elem = navigator.createElement(new Dom4jElement(xml), new QName("elem"));
     assertThat(elem).extracting("name").isEqualTo(new QName("elem"));
   }
 
   @Test
   void testCreateNsElementSuccess() {
-    Dom4jNode elem =
+    var elem =
         navigator.createElement(
             new Dom4jElement(xml), new QName("http://example.com/my", "elem", "my"));
     assertThat(elem).extracting("name").isEqualTo(new QName("http://example.com/my", "elem", "my"));

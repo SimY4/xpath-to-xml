@@ -97,7 +97,7 @@ class NotEqualsExprTest extends AbstractOperationExprTest {
     when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(right);
 
     // when
-    View<TestNode> result = operationExpr.resolve(navigator, parentNode, false);
+    var result = operationExpr.resolve(navigator, parentNode, false);
 
     // then
     assertThat(result).isEqualTo(BooleanView.of(false));
@@ -112,7 +112,7 @@ class NotEqualsExprTest extends AbstractOperationExprTest {
     when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(right);
 
     // when
-    View<TestNode> result = operationExpr.resolve(navigator, parentNode, false);
+    var result = operationExpr.resolve(navigator, parentNode, false);
 
     // then
     assertThat(result).isEqualTo(BooleanView.of(true));
@@ -130,11 +130,11 @@ class NotEqualsExprTest extends AbstractOperationExprTest {
     when(rightExpr.resolve(any(), any(), anyBoolean())).thenReturn(right);
 
     // when
-    View<TestNode> result = operationExpr.resolve(navigator, parentNode, true);
+    var result = operationExpr.resolve(navigator, parentNode, true);
 
     // then
     assertThat(result).isEqualTo(BooleanView.of(true));
-    ArgumentCaptor<String> textCaptor = ArgumentCaptor.forClass(String.class);
+    var textCaptor = ArgumentCaptor.forClass(String.class);
     verify(navigator).setText(any(TestNode.class), textCaptor.capture());
     assertThat(textCaptor.getValue()).isNotEqualTo(right.toString());
   }

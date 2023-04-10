@@ -46,7 +46,7 @@ class XmlBuilderTest {
   @DisplayName("When no concrete SPI implementation should throw XmlBuilderException")
   void shouldThrowOnBuildWithoutConcreteSpiImplementation() {
     // given
-    Object o = new Object();
+    var o = new Object();
 
     // when
     assertThat(xmlBuilder.build(o)).isSameAs(o);
@@ -58,7 +58,7 @@ class XmlBuilderTest {
   void shouldSerializeAndDeserializeBuilder()
       throws IOException, ClassNotFoundException, XPathExpressionException {
     // given
-    XmlBuilder builder =
+    var builder =
         new XmlBuilder(new SimpleNamespaceContext())
             .put("test")
             .putAll("test", "test", "test")
@@ -70,7 +70,7 @@ class XmlBuilderTest {
             .removeAll(asList("test", "test", "test"));
 
     // when
-    XmlBuilder deserializedBuild = SerializationHelper.serializeAndDeserializeBack(builder);
+    var deserializedBuild = SerializationHelper.serializeAndDeserializeBack(builder);
 
     // then
     assertThat(deserializedBuild).usingRecursiveComparison().isEqualTo(builder);

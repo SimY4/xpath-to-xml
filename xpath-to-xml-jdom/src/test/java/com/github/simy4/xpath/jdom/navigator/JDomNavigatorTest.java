@@ -29,8 +29,6 @@ import org.junit.jupiter.api.Test;
 
 import javax.xml.namespace.QName;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -144,16 +142,16 @@ class JDomNavigatorTest {
 
   @Test
   void testAppendChildSuccess() {
-    Element elem = new Element("elem");
+    var elem = new Element("elem");
     navigator.appendChild(new JDomElement(xml), new JDomElement(elem));
-    List<Element> childElements = xml.getChildren();
+    var childElements = xml.getChildren();
     assertThat(childElements).contains(elem);
   }
 
   @Test
   void testAppendNextSuccess() {
     navigator.appendNext(new JDomElement(xml), new JDomElement(xml.clone()));
-    List<Element> childElements = parent.getChildren();
+    var childElements = parent.getChildren();
     assertThat(childElements).hasSize(2);
   }
 

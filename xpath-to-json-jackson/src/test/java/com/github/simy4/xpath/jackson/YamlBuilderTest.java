@@ -31,7 +31,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import javax.xml.xpath.XPathExpressionException;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,8 +56,8 @@ class YamlBuilderTest {
   @MethodSource("data")
   void shouldBuildYamlFromSetOfXPaths(FixtureAccessor fixtureAccessor)
       throws XPathExpressionException, IOException {
-    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-    ObjectNode builtDocument =
+    var xmlProperties = fixtureAccessor.getXmlProperties();
+    var builtDocument =
         new XmlBuilder()
             .putAll(xmlProperties.keySet())
             .build(new ObjectNode(JsonNodeFactory.instance));
@@ -70,8 +69,8 @@ class YamlBuilderTest {
   @MethodSource("data")
   void shouldBuildYamlFromSetOfXPathsAndSetValues(FixtureAccessor fixtureAccessor)
       throws XPathExpressionException, IOException {
-    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-    ObjectNode builtDocument =
+    var xmlProperties = fixtureAccessor.getXmlProperties();
+    var builtDocument =
         new XmlBuilder().putAll(xmlProperties).build(new ObjectNode(JsonNodeFactory.instance));
 
     assertThat(yamlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
@@ -81,10 +80,10 @@ class YamlBuilderTest {
   @MethodSource("data")
   void shouldModifyYamlWhenXPathsAreNotTraversable(FixtureAccessor fixtureAccessor)
       throws XPathExpressionException, IOException {
-    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-    String json = fixtureAccessor.getPutXml();
-    JsonNode oldDocument = stringToYaml(json);
-    JsonNode builtDocument = new XmlBuilder().putAll(xmlProperties).build(oldDocument);
+    var xmlProperties = fixtureAccessor.getXmlProperties();
+    var json = fixtureAccessor.getPutXml();
+    var oldDocument = stringToYaml(json);
+    var builtDocument = new XmlBuilder().putAll(xmlProperties).build(oldDocument);
 
     assertThat(yamlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
   }
@@ -93,10 +92,10 @@ class YamlBuilderTest {
   @MethodSource("data")
   void shouldNotModifyYamlWhenAllXPathsTraversable(FixtureAccessor fixtureAccessor)
       throws XPathExpressionException, IOException {
-    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-    String yaml = fixtureAccessor.getPutValueXml();
-    JsonNode oldDocument = stringToYaml(yaml);
-    JsonNode builtDocument = new XmlBuilder().putAll(xmlProperties).build(oldDocument);
+    var xmlProperties = fixtureAccessor.getXmlProperties();
+    var yaml = fixtureAccessor.getPutValueXml();
+    var oldDocument = stringToYaml(yaml);
+    var builtDocument = new XmlBuilder().putAll(xmlProperties).build(oldDocument);
 
     assertThat(yamlToString(builtDocument)).isEqualTo(yaml);
 
@@ -109,10 +108,10 @@ class YamlBuilderTest {
   @MethodSource("data")
   void shouldRemovePathsFromExistingYaml(FixtureAccessor fixtureAccessor)
       throws XPathExpressionException, IOException {
-    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
-    String yaml = fixtureAccessor.getPutValueXml();
-    JsonNode oldDocument = stringToYaml(yaml);
-    JsonNode builtDocument = new XmlBuilder().removeAll(xmlProperties.keySet()).build(oldDocument);
+    var xmlProperties = fixtureAccessor.getXmlProperties();
+    var yaml = fixtureAccessor.getPutValueXml();
+    var oldDocument = stringToYaml(yaml);
+    var builtDocument = new XmlBuilder().removeAll(xmlProperties.keySet()).build(oldDocument);
 
     assertThat(yamlToString(builtDocument)).isNotEqualTo(fixtureAccessor.getPutValueXml());
   }

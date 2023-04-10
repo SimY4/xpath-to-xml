@@ -17,7 +17,6 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
-import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,10 +72,10 @@ class PathExprTest {
         .thenReturn(new NodeView<>(node("node31")));
 
     // when
-    IterableNodeView<TestNode> result = pathExpr.resolve(navigator, parentNode, false);
+    var result = pathExpr.resolve(navigator, parentNode, false);
 
     // then
-    assertThat(result).extracting("node").containsExactly(node("node31"));
+    assertThat((Iterable<?>) result).extracting("node").containsExactly(node("node31"));
     assertThat(stepExpr1ViewCaptor.getAllValues())
         .extracting("hasNext", "position")
         .containsExactly(tuple(false, 1));
@@ -98,10 +97,10 @@ class PathExprTest {
         .thenReturn(NodeSetView.empty());
 
     // when
-    IterableNodeView<TestNode> result = pathExpr.resolve(navigator, parentNode, false);
+    var result = pathExpr.resolve(navigator, parentNode, false);
 
     // then
-    assertThat(result).isEmpty();
+    assertThat((Iterable<?>) result).isEmpty();
     assertThat(stepExpr1ViewCaptor.getAllValues())
         .extracting("hasNext", "position")
         .containsExactly(tuple(false, 1));

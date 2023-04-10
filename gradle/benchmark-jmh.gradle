@@ -1,12 +1,17 @@
 apply plugin: 'me.champeau.jmh'
 
 jmh {
-    jmhVersion = '1.35'
+    jmhVersion = '1.36'
+}
+
+// after gradle 5.3 we need to set this attribute to mark test configuration targeting java 8
+[configurations.jmhCompileClasspath, configurations.jmhRuntimeClasspath].each {
+    it.attributes {
+        attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 11)
+    }
 }
 
 compileJmhJava {
-    if (JavaVersion.current().isJava9Compatible()) {
-        options.release = 8
-    }
+    options.release = 11
     options.compilerArgs << '-Xlint:all,-options' << '-Werror'
 }

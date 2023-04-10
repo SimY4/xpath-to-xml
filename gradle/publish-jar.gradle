@@ -5,7 +5,6 @@ jar {
             'Created-By': "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
             'Implementation-Title': project.name,
             'Implementation-Version': project.version,
-            'Automatic-Module-Name': moduleName,
         ]
     }
 }

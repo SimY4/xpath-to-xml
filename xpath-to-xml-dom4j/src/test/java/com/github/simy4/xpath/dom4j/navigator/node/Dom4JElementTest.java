@@ -41,7 +41,7 @@ class Dom4JElementTest {
   private final Attribute attr2 =
       DocumentHelper.createAttribute(element, new org.dom4j.QName("attr2"), "");
 
-  private Dom4jNode node;
+  private Dom4jElement node;
 
   @BeforeEach
   void setUp() {
@@ -67,21 +67,21 @@ class Dom4JElementTest {
 
   @Test
   void shouldAppendNewAttribute() {
-    Attribute attr = DocumentHelper.createAttribute(element, new org.dom4j.QName("attr"), "");
+    var attr = DocumentHelper.createAttribute(element, new org.dom4j.QName("attr"), "");
     node.appendChild(new Dom4jAttribute(attr));
     assertThat(element.attributes()).contains(attr);
   }
 
   @Test
   void shouldAppendNewElement() {
-    Element elem = DocumentHelper.createElement(new org.dom4j.QName("elem"));
+    var elem = DocumentHelper.createElement(new org.dom4j.QName("elem"));
     node.appendChild(new Dom4jElement(elem));
     assertThat(element.elements()).contains(elem);
   }
 
   @Test
   void shouldReturnNodeNameForNamespaceUnawareElement() {
-    QName result = node.getName();
+    var result = node.getName();
 
     assertThat(result)
         .extracting("namespaceURI", "localPart", "prefix")
@@ -95,7 +95,7 @@ class Dom4JElementTest {
             new org.dom4j.QName("node", new Namespace("my", "http://www.example.com/my")));
     node = new Dom4jElement(element);
 
-    QName result = node.getName();
+    var result = node.getName();
 
     assertThat(result)
         .extracting("namespaceURI", "localPart", "prefix")

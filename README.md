@@ -52,17 +52,18 @@ and one of supported models:
 ```java
 import java.io.StringReader;
 import javax.xml.parsers.*;
+
 import org.xml.sax.InputSource;
 
-class Example0 { 
-    private static final String xmlSource = "my-xml-source";
+class Example0 {
+  private static final String xmlSource = "my-xml-source";
 
-    public static Document document(String xml) throws Exception {
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        InputSource inputSource = new InputSource(new StringReader(xml));
-        return documentBuilder.parse(inputSource);
-    }
+  public static Document document(String xml) throws Exception {
+    var documentBuilderFactory = DocumentBuilderFactory.newInstance();
+    var documentBuilder = documentBuilderFactory.newDocumentBuilder();
+    var inputSource = new InputSource(new StringReader(xml));
+    return documentBuilder.parse(inputSource);
+  }
 }
 ```
 

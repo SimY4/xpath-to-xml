@@ -18,8 +18,8 @@ package com.github.simy4.xpath.fixtures;
 import com.github.simy4.xpath.helpers.OrderedProperties;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -44,10 +44,10 @@ public final class FixtureAccessor {
    * @return ordered XPath to Value mappings
    */
   public Map<String, Object> getXmlProperties() {
-    final String resource =
+    final var resource =
         String.format("/com/github/simy4/xpath/fixtures/%1$s/%1$s.properties", fixtureName);
-    try (InputStream xpathPropertiesStream = getClass().getResourceAsStream(resource)) {
-      OrderedProperties xpathProperties = new OrderedProperties();
+    try (var xpathPropertiesStream = getClass().getResourceAsStream(resource)) {
+      var xpathProperties = new OrderedProperties();
       xpathProperties.load(xpathPropertiesStream);
       return xpathProperties.toMap();
     } catch (IOException ioe) {
@@ -64,9 +64,10 @@ public final class FixtureAccessor {
   }
 
   private String getXml(String format) {
-    final String resource = String.format(format, fixtureName, fixtureType);
-    try (InputStream xmlStream = getClass().getResourceAsStream(resource)) {
-      return new Scanner(xmlStream, "UTF-8").useDelimiter("\\A").next();
+    final var resource = String.format(format, fixtureName, fixtureType);
+    try (var xmlStream = getClass().getResourceAsStream(resource)) {
+      assert null != xmlStream;
+      return new Scanner(xmlStream, StandardCharsets.UTF_8).useDelimiter("\\A").next();
     } catch (IOException ioe) {
       throw new UncheckedIOException("Unable to fetch XML document " + resource, ioe);
     }

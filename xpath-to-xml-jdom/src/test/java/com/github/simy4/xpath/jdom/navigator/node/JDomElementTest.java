@@ -24,8 +24,6 @@ import org.jdom2.Namespace;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.namespace.QName;
-
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,8 +31,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class JDomElementTest {
 
-  private JDomNode parent;
-  private JDomNode node;
+  private JDomElement parent;
+  private JDomElement node;
   private final Attribute attr1 = new Attribute("attr1", "text");
   private final Attribute attr2 = new Attribute("attr2", "text");
   private final Attribute attr3 = new Attribute("attr3", "text");
@@ -44,9 +42,9 @@ class JDomElementTest {
 
   @BeforeEach
   void setUp() {
-    Element parent = new Element("parent", "http://www.example.com/my");
+    var parent = new Element("parent", "http://www.example.com/my");
     parent.setNamespace(Namespace.getNamespace("my", "http://www.example.com/my"));
-    Element element = new Element("elem", "http://www.example.com/my");
+    var element = new Element("elem", "http://www.example.com/my");
     element.setNamespace(Namespace.getNamespace("my", "http://www.example.com/my"));
     element.setAttribute(attr1);
     element.setAttribute(attr2);
@@ -84,14 +82,14 @@ class JDomElementTest {
 
   @Test
   void shouldAppendNewElementWhenAppendPrevElement() {
-    Element elem = new Element("elem");
+    var elem = new Element("elem");
     node.appendPrev(new JDomElement(elem));
     assertThat(parent.elements()).anySatisfy(el -> assertThat(el).isEqualTo(new JDomElement(elem)));
   }
 
   @Test
   void shouldAppendNewAttributeWhenAppendAttribute() {
-    Attribute attr = new Attribute("attr", "");
+    var attr = new Attribute("attr", "");
     node.appendChild(new JDomAttribute(attr));
     assertThat(node.attributes())
         .anySatisfy(at -> assertThat(at).isEqualTo(new JDomAttribute(attr)));
@@ -99,7 +97,7 @@ class JDomElementTest {
 
   @Test
   void shouldAppendNewElementWhenAppendElement() {
-    Element elem = new Element("elem");
+    var elem = new Element("elem");
     node.appendChild(new JDomElement(elem));
     assertThat(node.elements()).anySatisfy(el -> assertThat(el).isEqualTo(new JDomElement(elem)));
   }
@@ -112,14 +110,14 @@ class JDomElementTest {
 
   @Test
   void shouldAppendNewElementWhenAppendNextElement() {
-    Element elem = new Element("elem");
+    var elem = new Element("elem");
     node.appendNext(new JDomElement(elem));
     assertThat(parent.elements()).anySatisfy(el -> assertThat(el).isEqualTo(new JDomElement(elem)));
   }
 
   @Test
   void shouldReturnNodeNameWithNamespaceUri() {
-    QName result = node.getName();
+    var result = node.getName();
 
     assertThat(result)
         .extracting("namespaceURI", "localPart", "prefix")
@@ -134,7 +132,7 @@ class JDomElementTest {
   @Test
   void shouldSerializeAndDeserialize() throws IOException, ClassNotFoundException {
     // when
-    Node deserializedNode = SerializationHelper.serializeAndDeserializeBack(node);
+    var deserializedNode = SerializationHelper.serializeAndDeserializeBack(node);
 
     // then
     assertThat(deserializedNode).extracting("name").isEqualTo(node.getName());

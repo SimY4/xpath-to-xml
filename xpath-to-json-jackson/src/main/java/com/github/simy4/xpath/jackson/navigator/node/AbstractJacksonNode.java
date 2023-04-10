@@ -46,10 +46,16 @@ abstract class AbstractJacksonNode implements JacksonNode {
     final JsonNode jsonNode = get();
     if (jsonNode.isValueNode()) {
       return jsonNode.asText();
+    } else if (jsonNode.isNull()) {
+      return "null";
     } else if (jsonNode.isObject()) {
       final JsonNode text = jsonNode.get("text");
       if (text != null) {
-        return text.asText("");
+        if (text.isNull()) {
+          return "null";
+        } else if (text.isValueNode()) {
+          return text.asText("");
+        }
       }
     }
     return "";

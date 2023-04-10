@@ -20,8 +20,6 @@ import nu.xom.Attribute;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.namespace.QName;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -31,7 +29,7 @@ class XomAttributeTest {
 
   @BeforeEach
   void setUp() {
-    Attribute attribute = new Attribute("attr", "text");
+    var attribute = new Attribute("attr", "text");
     attribute.setNamespace("my", "http://www.example.com/my");
     node = new XomAttribute(attribute);
   }
@@ -54,7 +52,7 @@ class XomAttributeTest {
 
   @Test
   void shouldReturnNodeNameWithNamespaceUri() {
-    QName result = node.getName();
+    var result = node.getName();
 
     assertThat(result)
         .extracting("namespaceURI", "localPart", "prefix")

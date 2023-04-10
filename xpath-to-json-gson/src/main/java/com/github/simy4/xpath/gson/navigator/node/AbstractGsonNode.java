@@ -165,7 +165,7 @@ abstract class AbstractGsonNode implements GsonNode {
     private final GsonNode parent;
     private int index;
     private final boolean attribute;
-    private Iterator<GsonNode> current = Collections.<GsonNode>emptyList().iterator();
+    private Iterator<GsonNode> current = Collections.emptyIterator();
 
     private JsonArrayIterator(
         Iterator<JsonElement> arrayIterator,

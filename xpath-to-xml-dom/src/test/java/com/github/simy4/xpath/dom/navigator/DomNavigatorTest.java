@@ -203,7 +203,7 @@ class DomNavigatorTest {
 
   @Test
   void testAppendNextSuccess() {
-    final Node next = mock(Node.class);
+    var next = mock(Node.class);
     when(xml.getNextSibling()).thenReturn(next);
 
     navigator.appendNext(new DomNode(xml), new DomNode(xml));

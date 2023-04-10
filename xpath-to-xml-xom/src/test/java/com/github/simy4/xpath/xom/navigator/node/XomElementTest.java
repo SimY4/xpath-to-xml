@@ -20,8 +20,6 @@ import nu.xom.Element;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.namespace.QName;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 class XomElementTest {
@@ -36,7 +34,7 @@ class XomElementTest {
 
   @BeforeEach
   void setUp() {
-    Element element = new Element("elem", "http://www.example.com/my");
+    var element = new Element("elem", "http://www.example.com/my");
     element.setNamespacePrefix("my");
     element.addAttribute(attr1);
     element.addAttribute(attr2);
@@ -65,7 +63,7 @@ class XomElementTest {
 
   @Test
   void shouldAppendNewAttributeWhenAppendAttribute() {
-    XomNode attr = new XomAttribute(new Attribute("attr", ""));
+    var attr = new XomAttribute(new Attribute("attr", ""));
     node.appendChild(attr);
     assertThat(node.attributes())
         .anySatisfy(at -> assertThat(at.getName()).isEqualTo(attr.getName()));
@@ -73,7 +71,7 @@ class XomElementTest {
 
   @Test
   void shouldAppendNewElementWhenAppendElement() {
-    XomNode elem = new XomElement(new Element("elem"));
+    var elem = new XomElement(new Element("elem"));
     node.appendChild(elem);
     assertThat(node.elements())
         .anySatisfy(el -> assertThat(el.getName()).isEqualTo(elem.getName()));
@@ -81,7 +79,7 @@ class XomElementTest {
 
   @Test
   void shouldReturnNodeNameWithNamespaceUri() {
-    QName result = node.getName();
+    var result = node.getName();
 
     assertThat(result)
         .extracting("namespaceURI", "localPart", "prefix")

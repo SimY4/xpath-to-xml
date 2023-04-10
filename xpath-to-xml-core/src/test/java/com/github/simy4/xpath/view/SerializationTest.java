@@ -22,10 +22,12 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.stream.Stream;
 
 import static com.github.simy4.xpath.util.TestNode.node;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import static java.util.Arrays.asList;
@@ -53,8 +55,11 @@ class SerializationTest {
   @DisplayName("Should serialize it and deserialize it back")
   @MethodSource("views")
   void shouldSerializeAndDeserializeView(View<?> view) throws IOException, ClassNotFoundException {
+    // given
+    assumeThat(view).isNotInstanceOf(Serializable.class);
+
     // when
-    View<?> deserializedView = SerializationHelper.serializeAndDeserializeBack(view);
+    var deserializedView = SerializationHelper.serializeAndDeserializeBack((Serializable) view);
 
     // then
     assertThat(deserializedView)

@@ -28,8 +28,6 @@ import org.openjdk.jmh.infra.Blackhole;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import java.util.Map;
-
 @BenchmarkMode(Mode.Throughput)
 @State(Scope.Benchmark)
 public class GsonJsonBuilderBenchmark {
@@ -47,7 +45,7 @@ public class GsonJsonBuilderBenchmark {
   @Benchmark
   public void shouldBuildDocumentFromSetOfXPaths(Blackhole blackhole)
       throws XPathExpressionException {
-    Map<String, Object> xmlProperties = fixtureAccessor.getXmlProperties();
+    var xmlProperties = fixtureAccessor.getXmlProperties();
     blackhole.consume(new XmlBuilder().putAll(xmlProperties.keySet()).build(new JsonObject()));
   }
 }

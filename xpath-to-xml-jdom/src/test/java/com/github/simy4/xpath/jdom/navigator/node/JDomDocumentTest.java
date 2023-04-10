@@ -17,7 +17,6 @@ package com.github.simy4.xpath.jdom.navigator.node;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.helpers.SerializationHelper;
-import com.github.simy4.xpath.navigator.Node;
 import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -35,12 +34,12 @@ class JDomDocumentTest {
 
   private final Element root = new Element("root");
 
-  private JDomNode node;
+  private JDomDocument node;
 
   @BeforeEach
   void setUp() {
     root.addContent("text");
-    Document document = new Document(root);
+    var document = new Document(root);
     node = new JDomDocument(document);
   }
 
@@ -91,7 +90,7 @@ class JDomDocumentTest {
   @Test
   void shouldSerializeAndDeserialize() throws IOException, ClassNotFoundException {
     // when
-    Node deserializedNode = SerializationHelper.serializeAndDeserializeBack(node);
+    var deserializedNode = SerializationHelper.serializeAndDeserializeBack(node);
 
     // then
     assertThat(deserializedNode).extracting("name").isEqualTo(node.getName());

@@ -65,7 +65,7 @@ class JacksonByNameNodeTest {
   @Test
   @SuppressWarnings("unchecked")
   void shouldTraverseObjectAttributes() {
-    JacksonNode parent = new JacksonRootNode(jsonObject);
+    var parent = new JacksonRootNode(jsonObject);
 
     assertThat((Iterable<JacksonNode>) parent.attributes())
         .containsExactlyInAnyOrder(
@@ -76,8 +76,8 @@ class JacksonByNameNodeTest {
 
   @Test
   void shouldTraverseObjectElements() {
-    JacksonNode parent = new JacksonRootNode(jsonObject);
+    var parent = new JacksonRootNode(jsonObject);
 
-    assertThat((Iterable<?>) parent.elements()).isEmpty();
+    assertThat(parent.elements()).isEmpty();
   }
 }

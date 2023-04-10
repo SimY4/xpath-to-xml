@@ -20,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 /**
  * Serialization and deserialization tester.
@@ -38,10 +39,11 @@ public final class SerializationHelper {
    * @throws IOException if any exception thrown by the underlying OutputStream
    */
   @SuppressWarnings({"unchecked", "BanSerializableRead"})
-  public static <T> T serializeAndDeserializeBack(T t) throws IOException, ClassNotFoundException {
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
+  public static <T extends Serializable> T serializeAndDeserializeBack(T t)
+      throws IOException, ClassNotFoundException {
+    var out = new ByteArrayOutputStream();
     new ObjectOutputStream(out).writeObject(t);
-    ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+    var in = new ByteArrayInputStream(out.toByteArray());
     return (T) new ObjectInputStream(in).readObject();
   }
 
