@@ -8,6 +8,8 @@ xpath-to-xml uses [semver](http://semver.org/) for its versioning convention.
 
 ### Upcoming
 - ✨ [core] preceding and preceding-sibling axises support.
+- 🧰 [Jackson] Bump Jackson version to 2.15.1
+- 🧰 [XOM] Bump XOM version to 1.3.9
 
 ### 2.3.7
 - 🛠 all modules are now fully JPMS modularized.
