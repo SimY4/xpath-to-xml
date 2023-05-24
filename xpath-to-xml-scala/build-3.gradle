@@ -48,8 +48,10 @@ tasks.withType(ScalaCompile).configureEach {
                 '-explain-types',                       // Explain type errors in more detail.
                 '-feature',                             // Emit warning and location for usages of features that should be imported explicitly.
                 '-language:macros,implicitConversions',
+                '-Wvalue-discard',                      // Emit warning and location when a result of a statement is unused.
+                '-Wunused:nowarn,implicits,explicits,locals,params,privates',
                 '-Xfatal-warnings',                     // Fail the compilation if there are any warnings.
-                '-source:3.2',                          // Turn on future language features.
+                '-source:3.3',                          // Turn on future language features.
                 '-java-output-version:8',
                 '-P:wartremover:only-warn-traverser:org.wartremover.warts.Unsafe',
         ]
