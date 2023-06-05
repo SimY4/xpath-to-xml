@@ -38,6 +38,10 @@ spotless {
     }
 }
 
+scala {
+    zincVersion = '1.9.0'
+}
+
 tasks.withType(ScalaCompile).configureEach {
     scalaCompileOptions.with {
         deprecation = true

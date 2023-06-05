@@ -35,6 +35,10 @@ spotless {
     }
 }
 
+scala {
+    zincVersion = '1.9.0'
+}
+
 scaladoc {
     scalaDocOptions.with {
         additionalParameters = [
