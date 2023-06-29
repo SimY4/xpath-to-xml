@@ -48,6 +48,8 @@ public class PutEffect implements Effect, Serializable {
 
   private static final class EagerVisitor extends AbstractViewVisitor<Node, Void> {
 
+    EagerVisitor() {}
+
     @Override
     @SuppressWarnings({"StatementWithEmptyBody", "UnusedVariable"})
     public Void visit(IterableNodeView<Node> nodeSet) throws XmlBuilderException {

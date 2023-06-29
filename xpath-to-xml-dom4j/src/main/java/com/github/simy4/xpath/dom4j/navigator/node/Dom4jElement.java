@@ -73,7 +73,7 @@ public final class Dom4jElement extends AbstractDom4jNode<Element> {
 
     private final Iterator<Attribute> attributeIterator;
 
-    private Dom4jAttributeIterator(Iterator<Attribute> attributeIterator) {
+    Dom4jAttributeIterator(Iterator<Attribute> attributeIterator) {
       this.attributeIterator = attributeIterator;
     }
 
@@ -97,7 +97,7 @@ public final class Dom4jElement extends AbstractDom4jNode<Element> {
 
     private final Iterator<Element> elementIterator;
 
-    private Dom4jElementIterator(Iterator<Element> elementIterator) {
+    Dom4jElementIterator(Iterator<Element> elementIterator) {
       this.elementIterator = elementIterator;
     }
 

@@ -39,7 +39,7 @@ final class DomAttributesIterable implements Iterable<DomNode> {
     private final NamedNodeMap attributes;
     private int cursor;
 
-    private DomAttributesIterator(Node parent) {
+    DomAttributesIterator(Node parent) {
       attributes = parent.getAttributes();
     }
 

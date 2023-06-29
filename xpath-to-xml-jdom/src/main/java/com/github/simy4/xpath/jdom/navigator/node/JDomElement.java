@@ -138,7 +138,7 @@ public final class JDomElement extends AbstractJDomNode<Element> {
 
     private final Iterator<Attribute> attributeIterator;
 
-    private JDomAttributeIterator(Iterator<Attribute> attributeIterator) {
+    JDomAttributeIterator(Iterator<Attribute> attributeIterator) {
       this.attributeIterator = attributeIterator;
     }
 
@@ -162,7 +162,7 @@ public final class JDomElement extends AbstractJDomNode<Element> {
 
     private final Iterator<Element> elementIterator;
 
-    private JDomElementIterator(Iterator<Element> elementIterator) {
+    JDomElementIterator(Iterator<Element> elementIterator) {
       this.elementIterator = elementIterator;
     }
 

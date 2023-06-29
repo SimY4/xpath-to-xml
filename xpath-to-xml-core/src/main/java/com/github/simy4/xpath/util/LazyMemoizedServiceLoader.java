@@ -41,7 +41,7 @@ public final class LazyMemoizedServiceLoader<T> implements Function<Class<T>, It
   private static final class ServiceLoaderAction<T> implements PrivilegedAction<Collection<T>> {
     private final Class<T> clazz;
 
-    private ServiceLoaderAction(Class<T> clazz) {
+    ServiceLoaderAction(Class<T> clazz) {
       this.clazz = clazz;
     }
 

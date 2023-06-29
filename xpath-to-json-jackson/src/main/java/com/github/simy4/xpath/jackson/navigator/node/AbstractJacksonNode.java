@@ -95,8 +95,7 @@ abstract class AbstractJacksonNode implements JacksonNode {
     return Objects.toString(get(), "???");
   }
 
-  private static Iterator<JacksonNode> traverse(
-      JsonNode jsonNode, JacksonNode parent, boolean attribute) {
+  static Iterator<JacksonNode> traverse(JsonNode jsonNode, JacksonNode parent, boolean attribute) {
     if (jsonNode.isObject()) {
       return new JsonObjectIterator(
           jsonNode.fieldNames(), (ObjectNode) jsonNode, parent, attribute);
@@ -107,7 +106,7 @@ abstract class AbstractJacksonNode implements JacksonNode {
     }
   }
 
-  private static boolean isAttribute(JsonNode jsonNode) {
+  static boolean isAttribute(JsonNode jsonNode) {
     return jsonNode.isValueNode();
   }
 
@@ -120,7 +119,7 @@ abstract class AbstractJacksonNode implements JacksonNode {
     private String nextElement;
     private boolean hasNext;
 
-    private JsonObjectIterator(
+    JsonObjectIterator(
         Iterator<String> keysIterator,
         ObjectNode parentObject,
         JacksonNode parent,
@@ -171,7 +170,7 @@ abstract class AbstractJacksonNode implements JacksonNode {
     private int index;
     private Iterator<JacksonNode> current = Collections.emptyIterator();
 
-    private JsonArrayIterator(
+    JsonArrayIterator(
         Iterator<JsonNode> arrayIterator,
         ArrayNode parentArray,
         JacksonNode parent,

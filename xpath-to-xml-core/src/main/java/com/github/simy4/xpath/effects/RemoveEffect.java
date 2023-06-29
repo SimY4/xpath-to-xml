@@ -46,7 +46,7 @@ public class RemoveEffect implements Effect, Serializable {
 
     private final Navigator<N> navigator;
 
-    private RemoveVisitor(Navigator<N> navigator) {
+    RemoveVisitor(Navigator<N> navigator) {
       this.navigator = navigator;
     }
 

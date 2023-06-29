@@ -56,7 +56,7 @@ public class PredicateExpr implements Expr, Serializable {
     private final NodeView<T> view;
     private final boolean greedy;
 
-    private PredicateVisitor(Navigator<T> navigator, NodeView<T> view, boolean greedy) {
+    PredicateVisitor(Navigator<T> navigator, NodeView<T> view, boolean greedy) {
       this.navigator = navigator;
       this.view = view;
       this.greedy = greedy;

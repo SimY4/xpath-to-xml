@@ -84,8 +84,7 @@ public class AxisStepExpr implements StepExpr, Serializable {
     private final AxisResolver axisResolver;
     private final NodeView<T> parent;
 
-    private AxisNodeSupplier(
-        Navigator<T> navigator, AxisResolver axisResolver, NodeView<T> parent) {
+    AxisNodeSupplier(Navigator<T> navigator, AxisResolver axisResolver, NodeView<T> parent) {
       this.navigator = navigator;
       this.axisResolver = axisResolver;
       this.parent = parent;
@@ -106,7 +105,7 @@ public class AxisStepExpr implements StepExpr, Serializable {
     private final boolean greedy;
     private boolean resolved;
 
-    private PredicateResolver(
+    PredicateResolver(
         Navigator<T> navigator,
         NodeSupplier<T> parentNodeSupplier,
         Expr predicate,

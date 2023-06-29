@@ -105,8 +105,7 @@ abstract class AbstractGsonNode implements GsonNode {
     return null == jsonElement ? "???" : jsonElement.toString();
   }
 
-  private static Iterator<GsonNode> traverse(
-      JsonElement jsonElement, GsonNode parent, boolean attribute) {
+  static Iterator<GsonNode> traverse(JsonElement jsonElement, GsonNode parent, boolean attribute) {
     if (jsonElement.isJsonObject()) {
       final JsonObject jsonObject = jsonElement.getAsJsonObject();
       return new JsonObjectIterator(jsonObject.keySet().iterator(), jsonObject, parent, attribute);
@@ -118,7 +117,7 @@ abstract class AbstractGsonNode implements GsonNode {
     }
   }
 
-  private static boolean isAttribute(JsonElement jsonElement) {
+  static boolean isAttribute(JsonElement jsonElement) {
     return jsonElement.isJsonPrimitive() || jsonElement.isJsonNull();
   }
 
@@ -131,7 +130,7 @@ abstract class AbstractGsonNode implements GsonNode {
     private String nextElement;
     private boolean hasNext;
 
-    private JsonObjectIterator(
+    JsonObjectIterator(
         Iterator<String> keysIterator,
         JsonObject parentObject,
         GsonNode parent,
@@ -182,7 +181,7 @@ abstract class AbstractGsonNode implements GsonNode {
     private final boolean attribute;
     private Iterator<GsonNode> current = Collections.emptyIterator();
 
-    private JsonArrayIterator(
+    JsonArrayIterator(
         Iterator<JsonElement> arrayIterator,
         JsonArray parentArray,
         GsonNode parent,

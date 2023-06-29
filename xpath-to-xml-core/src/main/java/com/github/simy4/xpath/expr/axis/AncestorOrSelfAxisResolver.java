@@ -63,7 +63,7 @@ public class AncestorOrSelfAxisResolver extends AbstractAxisResolver {
     private final T node;
     private final boolean self;
 
-    private AncestorOrSelfIterable(Navigator<T> navigator, T node, boolean self) {
+    AncestorOrSelfIterable(Navigator<T> navigator, T node, boolean self) {
       this.navigator = navigator;
       this.node = node;
       this.self = self;
@@ -80,7 +80,7 @@ public class AncestorOrSelfAxisResolver extends AbstractAxisResolver {
     private final Navigator<T> navigator;
     private T current;
 
-    private AncestorOrSelf(Navigator<T> navigator, T current, boolean self) {
+    AncestorOrSelf(Navigator<T> navigator, T current, boolean self) {
       this.navigator = navigator;
       this.current = self ? current : navigator.parentOf(current);
     }

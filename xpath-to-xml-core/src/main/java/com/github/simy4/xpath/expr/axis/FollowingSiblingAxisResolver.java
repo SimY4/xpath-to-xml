@@ -73,7 +73,7 @@ public class FollowingSiblingAxisResolver extends AbstractAxisResolver {
     private final T current;
     private final boolean sibling;
 
-    private FollowingSiblingIterable(Navigator<T> navigator, T parent, T current, boolean sibling) {
+    FollowingSiblingIterable(Navigator<T> navigator, T parent, T current, boolean sibling) {
       this.navigator = navigator;
       this.parent = parent;
       this.current = current;

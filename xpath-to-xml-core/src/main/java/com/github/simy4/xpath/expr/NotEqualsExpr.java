@@ -59,7 +59,7 @@ public class NotEqualsExpr extends AbstractOperationExpr {
     private final Navigator<N> navigator;
     private final View<N> right;
 
-    private NotEqualsVisitor(Navigator<N> navigator, View<N> right) {
+    NotEqualsVisitor(Navigator<N> navigator, View<N> right) {
       this.navigator = navigator;
       this.right = right;
     }
@@ -84,6 +84,8 @@ public class NotEqualsExpr extends AbstractOperationExpr {
   }
 
   private static final class ViewNegator<N extends Node> implements ViewVisitor<N, View<N>> {
+
+    ViewNegator() {}
 
     @Override
     public View<N> visit(BooleanView<N> bool) {

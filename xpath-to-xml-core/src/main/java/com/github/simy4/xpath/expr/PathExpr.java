@@ -67,7 +67,7 @@ public class PathExpr implements Expr, Serializable {
     private final StepExpr stepExpr;
     private final boolean greedy;
 
-    private StepResolver(Navigator<T> navigator, StepExpr stepExpr, boolean greedy) {
+    StepResolver(Navigator<T> navigator, StepExpr stepExpr, boolean greedy) {
       this.navigator = navigator;
       this.stepExpr = stepExpr;
       this.greedy = greedy;

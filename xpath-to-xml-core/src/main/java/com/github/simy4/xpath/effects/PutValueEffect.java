@@ -50,7 +50,7 @@ public class PutValueEffect implements Effect, Serializable {
     private final Navigator<N> navigator;
     private final String value;
 
-    private PutValueVisitor(Navigator<N> navigator, String value) {
+    PutValueVisitor(Navigator<N> navigator, String value) {
       this.navigator = navigator;
       this.value = value;
     }

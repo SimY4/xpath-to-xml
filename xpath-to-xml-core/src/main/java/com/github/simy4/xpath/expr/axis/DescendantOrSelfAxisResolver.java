@@ -64,7 +64,7 @@ public class DescendantOrSelfAxisResolver extends AbstractAxisResolver {
     private final T node;
     private final boolean self;
 
-    private DescendantOrSelfIterable(Navigator<T> navigator, T node, boolean self) {
+    DescendantOrSelfIterable(Navigator<T> navigator, T node, boolean self) {
       this.navigator = navigator;
       this.node = node;
       this.self = self;
@@ -87,7 +87,7 @@ public class DescendantOrSelfAxisResolver extends AbstractAxisResolver {
     private final Queue<Iterable<? extends T>> stack = new ArrayDeque<Iterable<? extends T>>();
     private Iterator<? extends T> current;
 
-    private DescendantOrSelf(Navigator<T> navigator, Iterable<? extends T> current) {
+    DescendantOrSelf(Navigator<T> navigator, Iterable<? extends T> current) {
       this(navigator, current.iterator());
     }
 
