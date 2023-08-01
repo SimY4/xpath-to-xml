@@ -122,7 +122,7 @@ class XomNavigatorTest {
   @Test
   void testPrependSuccess() {
     navigator.appendPrev(new XomElement(xml), new XomElement(xml.copy()));
-    Elements childElements = parent.getChildElements();
+    var childElements = parent.getChildElements();
     assertThat(childElements.size()).isEqualTo(2);
   }
 

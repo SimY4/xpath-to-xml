@@ -73,7 +73,7 @@ public class DescendantOrSelfAxisResolver extends AbstractAxisResolver {
     private final Queue<Iterable<? extends T>> stack = new ArrayDeque<>();
     private Iterator<? extends T> current;
 
-    private DescendantOrSelf(Navigator<T> navigator, Iterable<? extends T> current) {
+    DescendantOrSelf(Navigator<T> navigator, Iterable<? extends T> current) {
       this(navigator, current.iterator());
     }
 

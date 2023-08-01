@@ -85,7 +85,7 @@ public class AxisStepExpr implements StepExpr, Serializable {
     private final boolean greedy;
     private boolean resolved;
 
-    private PredicateResolver(
+    PredicateResolver(
         Navigator<T> navigator,
         IntFunction<NodeView<T>> parentNodeSupplier,
         Expr predicate,

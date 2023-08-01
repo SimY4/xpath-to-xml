@@ -84,8 +84,9 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
   }
 
   private static final class EmptyNodeSet<T extends Node> extends NodeSetView<T> {
-
     private static final long serialVersionUID = 1L;
+
+    EmptyNodeSet() {}
 
     @Override
     public Iterator<NodeView<T>> iterator() {
@@ -97,12 +98,12 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
     private static final long serialVersionUID = 2L;
 
-    private final Set<T> cache = new LinkedHashSet<>();
-    private final transient Iterable<? extends T> nodeSet;
-    private final transient Predicate<? super T> filter;
-    private volatile boolean exhausted;
+    final Set<T> cache = new LinkedHashSet<>();
+    final transient Iterable<? extends T> nodeSet;
+    final transient Predicate<? super T> filter;
+    volatile boolean exhausted;
 
-    private IterableNodeSet(Iterable<? extends T> nodeSet, Predicate<? super T> filter) {
+    IterableNodeSet(Iterable<? extends T> nodeSet, Predicate<? super T> filter) {
       this.nodeSet = nodeSet;
       this.filter = filter;
     }
@@ -124,6 +125,8 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
       private Iterator<? extends T> current = cache.iterator();
       private boolean swapped;
+
+      IteratorImpl() {}
 
       @Override
       public boolean hasNext() {
@@ -148,7 +151,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
       private T nextElement;
       private boolean hasNext;
 
-      private NodeSetIterator() {
+      NodeSetIterator() {
         nextMatch();
       }
 
@@ -187,12 +190,12 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
     private static final long serialVersionUID = 2L;
 
-    private final Set<T> cache = new LinkedHashSet<>();
-    private final transient NodeSetView<T> nodeSetView;
-    private final transient Function<? super NodeView<T>, ? extends IterableNodeView<T>> fmap;
-    private volatile boolean exhausted;
+    final Set<T> cache = new LinkedHashSet<>();
+    final transient NodeSetView<T> nodeSetView;
+    final transient Function<? super NodeView<T>, ? extends IterableNodeView<T>> fmap;
+    volatile boolean exhausted;
 
-    private FlatMapNodeSet(
+    FlatMapNodeSet(
         NodeSetView<T> nodeSetView,
         Function<? super NodeView<T>, ? extends IterableNodeView<T>> fmap) {
       this.nodeSetView = nodeSetView;
@@ -216,6 +219,8 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
       private Iterator<?> current = cache.iterator();
       private boolean swapped;
+
+      IteratorImpl() {}
 
       @Override
       public boolean hasNext() {
@@ -245,7 +250,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
       private NodeView<T> nextElement;
       private boolean hasNext;
 
-      private FlatMapIterator() {
+      FlatMapIterator() {
         nextMatch();
       }
 

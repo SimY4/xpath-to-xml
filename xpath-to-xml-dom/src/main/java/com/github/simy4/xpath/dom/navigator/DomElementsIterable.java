@@ -37,7 +37,7 @@ final class DomElementsIterable implements Iterable<DomNode> {
 
     private Node child;
 
-    private DomElementsIterator(Node parent) {
+    DomElementsIterator(Node parent) {
       this.child = nextElement(parent.getFirstChild());
     }
 

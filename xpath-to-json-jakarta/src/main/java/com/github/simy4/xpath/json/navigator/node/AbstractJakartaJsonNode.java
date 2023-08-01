@@ -106,7 +106,7 @@ abstract class AbstractJakartaJsonNode implements JakartaJsonNode {
     return Objects.toString(get(), "???");
   }
 
-  private static Stream<JakartaJsonNode> traverse(
+  static Stream<JakartaJsonNode> traverse(
       JsonValue jsonValue, JakartaJsonNode parent, boolean attribute) {
     switch (jsonValue.getValueType()) {
       case OBJECT:
@@ -121,7 +121,7 @@ abstract class AbstractJakartaJsonNode implements JakartaJsonNode {
     }
   }
 
-  private static boolean isAttribute(JsonValue jsonValue) {
+  static boolean isAttribute(JsonValue jsonValue) {
     return JsonValue.ValueType.OBJECT != jsonValue.getValueType()
         && JsonValue.ValueType.ARRAY != jsonValue.getValueType();
   }
@@ -133,7 +133,7 @@ abstract class AbstractJakartaJsonNode implements JakartaJsonNode {
     private final boolean attribute;
     private int index;
 
-    private JsonArrayWrapper(JakartaJsonNode parent, boolean attribute) {
+    JsonArrayWrapper(JakartaJsonNode parent, boolean attribute) {
       this.parent = parent;
       this.attribute = attribute;
     }

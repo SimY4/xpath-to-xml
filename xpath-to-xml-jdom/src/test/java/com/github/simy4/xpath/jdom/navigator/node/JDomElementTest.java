@@ -17,7 +17,6 @@ package com.github.simy4.xpath.jdom.navigator.node;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.helpers.SerializationHelper;
-import com.github.simy4.xpath.navigator.Node;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
 import org.jdom2.Namespace;

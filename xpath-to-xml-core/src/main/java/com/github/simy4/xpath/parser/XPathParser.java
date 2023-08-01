@@ -396,15 +396,15 @@ public class XPathParser implements Serializable {
     private final XPathLexer lexer;
     private final List<Token> tokens = new ArrayList<>(4);
 
-    private Context(String xpath) {
+    Context(String xpath) {
       this.lexer = new XPathLexer(xpath);
     }
 
-    private boolean hasMoreElements() {
+    boolean hasMoreElements() {
       return tokenAt(1).getType() != Type.EOF;
     }
 
-    private Token tokenAt(int i) {
+    Token tokenAt(int i) {
       if (tokens.size() <= i - 1) {
         for (int j = 0; j < i; ++j) {
           tokens.add(lexer.next());
@@ -413,7 +413,7 @@ public class XPathParser implements Serializable {
       return tokens.get(i - 1);
     }
 
-    private Token match(short type) throws XPathExpressionException {
+    Token match(short type) throws XPathExpressionException {
       final Token token = tokenAt(1);
       if (token.getType() == type) {
         tokens.remove(0);

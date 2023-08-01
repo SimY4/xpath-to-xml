@@ -123,7 +123,7 @@ class JDomNavigatorTest {
   @Test
   void testPrependSuccess() {
     navigator.appendPrev(new JDomElement(xml), new JDomElement(xml.clone()));
-    List<Element> childElements = parent.getChildren();
+    var childElements = parent.getChildren();
     assertThat(childElements).hasSize(2);
   }
 
@@ -158,7 +158,7 @@ class JDomNavigatorTest {
   @Test
   void testAppendNextNoParent() {
     assertThatThrownBy(
-        () -> navigator.appendNext(new JDomElement(new Element("elem")), new JDomElement(xml)))
+            () -> navigator.appendNext(new JDomElement(new Element("elem")), new JDomElement(xml)))
         .isInstanceOf(XmlBuilderException.class);
   }
 
