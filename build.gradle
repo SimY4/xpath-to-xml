@@ -17,9 +17,6 @@ subprojects {
     apply from: rootProject.file('gradle/publish-jar.gradle')
     apply from: rootProject.file('gradle/publish-maven.gradle')
 
-    sourceCompatibility = JavaVersion.VERSION_1_6
-    targetCompatibility = JavaVersion.VERSION_1_6
-
     repositories {
         mavenCentral()
     }
@@ -27,6 +24,9 @@ subprojects {
     java {
         withJavadocJar()
         withSourcesJar()
+
+        sourceCompatibility = JavaVersion.VERSION_1_6
+        targetCompatibility = JavaVersion.VERSION_1_6
     }
 
     // after gradle 5.3 we need to set this attribute to mark test configuration targeting java 8

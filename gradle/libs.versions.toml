@@ -1,6 +1,7 @@
 [versions]
 errorprone = '2.21.1'
 jackson = '2.15.2'
+junit-platform = '1.10.0'
 scala212 = '2.12.18'
 scala213 = '2.13.11'
 scala3 = '3.3.0'
@@ -19,8 +20,9 @@ jaxen = 'jaxen:jaxen:2.0.0'
 jdom2 = 'org.jdom:jdom2:2.0.6.1'
 json-api = 'jakarta.json:jakarta.json-api:2.1.2'
 json-impl = 'org.glassfish:jakarta.json:2.0.1'
-junit-jupiter = 'org.junit.jupiter:junit-jupiter:5.9.3'
-junit-platform-engine = 'org.junit.platform:junit-platform-engine:1.9.3'
+junit-jupiter = 'org.junit.jupiter:junit-jupiter:5.10.0'
+junit-platform-engine = { module = 'org.junit.platform:junit-platform-engine', version.ref = 'junit-platform' }
+junit-platform-launcher = { module = 'org.junit.platform:junit-platform-launcher', version.ref = 'junit-platform' }
 mockito = 'org.mockito:mockito-junit-jupiter:5.4.0'
 scala-library-v212 = { module = 'org.scala-lang:scala-library', version.ref = 'scala212' }
 scala-library-v213 = { module = 'org.scala-lang:scala-library', version.ref = 'scala213' }
