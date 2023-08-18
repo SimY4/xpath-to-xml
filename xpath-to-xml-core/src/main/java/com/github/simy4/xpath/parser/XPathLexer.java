@@ -90,23 +90,11 @@ class XPathLexer extends ReadOnlyIterator<Token> {
           cursor += 1;
           break;
         case '.':
-          switch (charAt(2)) {
-            case '0':
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-            case '8':
-            case '9':
-              token = number();
-              break;
-            default:
-              token = token2('.', Type.DOT, Type.DOUBLE_DOT);
-              break;
-          }
+          final char next = charAt(2);
+          token =
+              ((next - '0') | ('9' - next)) >= 0
+                  ? number()
+                  : token2('.', Type.DOT, Type.DOUBLE_DOT);
           break;
         case '0':
         case '1':
@@ -172,31 +160,15 @@ class XPathLexer extends ReadOnlyIterator<Token> {
   private Token number() {
     final int start = cursor;
     boolean periodAllowed = true;
-    loop:
     while (true) {
-      switch (charAt(1)) {
-        case '.':
-          if (periodAllowed) {
-            periodAllowed = false;
-            cursor += 1;
-          } else {
-            break loop;
-          }
-          break;
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-          cursor += 1;
-          break;
-        default:
-          break loop;
+      final char ch = charAt(1);
+      if ('.' == ch && periodAllowed) {
+        periodAllowed = false;
+        cursor += 1;
+      } else if (((ch - '0') | ('9' - ch)) >= 0) {
+        cursor += 1;
+      } else {
+        break;
       }
     }
     return new Token(Type.DOUBLE, xpath, start, cursor);
