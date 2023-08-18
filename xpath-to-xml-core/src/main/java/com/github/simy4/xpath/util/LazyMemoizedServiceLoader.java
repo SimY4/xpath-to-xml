@@ -47,7 +47,8 @@ public final class LazyMemoizedServiceLoader<T> implements Function<Class<T>, It
 
     @Override
     public Collection<T> run() {
-      final ServiceLoader<T> serviceLoader = ServiceLoader.load(clazz);
+      final ClassLoader classLoader = clazz.getClassLoader();
+      final ServiceLoader<T> serviceLoader = ServiceLoader.load(clazz, classLoader);
       final Collection<T> services = new ArrayList<T>();
       for (T service : serviceLoader) {
         services.add(service);
