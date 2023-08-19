@@ -1,6 +1,6 @@
 # XPath-to-XML
 [![Build Status](https://github.com/SimY4/xpath-to-xml/workflows/Build%20and%20Test/badge.svg?branch=2.x)](https://github.com/SimY4/xpath-to-xml/actions?query=workflow%3A"Build+and+Test")
-[![codecov](https://codecov.io/gh/SimY4/xpath-to-xml/branch/master/graph/badge.svg)](https://codecov.io/gh/SimY4/xpath-to-xml)
+[![codecov](https://codecov.io/gh/SimY4/xpath-to-xml/branch/2.x/graph/badge.svg)](https://codecov.io/gh/SimY4/xpath-to-xml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.simy4.xpath/xpath-to-xml-core.svg)](https://search.maven.org/search?q=g:com.github.simy4.xpath)
