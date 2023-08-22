@@ -23,7 +23,7 @@ json-impl = 'org.glassfish:jakarta.json:2.0.1'
 junit-jupiter = 'org.junit.jupiter:junit-jupiter:5.10.0'
 junit-platform-engine = { module = 'org.junit.platform:junit-platform-engine', version.ref = 'junit-platform' }
 junit-platform-launcher = { module = 'org.junit.platform:junit-platform-launcher', version.ref = 'junit-platform' }
-mockito = 'org.mockito:mockito-junit-jupiter:5.4.0'
+mockito = 'org.mockito:mockito-junit-jupiter:5.5.0'
 scala-library-v212 = { module = 'org.scala-lang:scala-library', version.ref = 'scala212' }
 scala-library-v213 = { module = 'org.scala-lang:scala-library', version.ref = 'scala213' }
 scala-library-v3 = { module = 'org.scala-lang:scala3-library_3', version.ref = 'scala3' }
