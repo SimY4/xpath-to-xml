@@ -1,5 +1,5 @@
 plugins {
-    id 'com.diffplug.spotless' version '6.19.0' apply false
+    id 'com.diffplug.spotless' version '6.20.0' apply false
     id 'info.solidsoft.pitest' version '1.9.11' apply false
     id 'io.github.gradle-nexus.publish-plugin' version '1.3.0'
     id 'me.champeau.jmh' version '0.7.1' apply false
@@ -17,9 +17,6 @@ subprojects {
     apply from: rootProject.file('gradle/publish-jar.gradle')
     apply from: rootProject.file('gradle/publish-maven.gradle')
 
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-
     repositories {
         mavenCentral()
     }
@@ -27,6 +24,9 @@ subprojects {
     java {
         withJavadocJar()
         withSourcesJar()
+
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     // after gradle 5.3 we need to set this attribute to mark test configuration targeting java 8
@@ -86,5 +86,5 @@ release {
 }
 
 wrapper {
-    gradleVersion = '8.2.1'
+    gradleVersion = '8.3'
 }
