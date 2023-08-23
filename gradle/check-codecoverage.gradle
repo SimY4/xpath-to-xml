@@ -8,7 +8,7 @@ jacocoTestReport {
     afterEvaluate {
         reports {
             xml.required = true
-            html.required = true
+            html.required = project.hasProperty('reports')
             html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
         }
     }

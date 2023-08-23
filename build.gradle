@@ -58,6 +58,7 @@ subprojects {
         useJUnitPlatform()
 
         reports {
+            html.required = project.hasProperty('reports')
             junitXml.required = true
         }
     }

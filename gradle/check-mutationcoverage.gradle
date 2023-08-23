@@ -5,9 +5,10 @@ pitest {
     pitestVersion = '1.14.4'
     targetClasses = ['com.github.simy4.xpath.*']
     threads = 4
-    outputFormats = ['XML', 'HTML']
+    outputFormats = project.hasProperty('reports') ? ['HTML'] : ['XML']
     mutationThreshold = 80
     coverageThreshold = 80
+    verbosity = 'QUIET'
 }
 
 dependencies {
