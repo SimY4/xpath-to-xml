@@ -2,7 +2,7 @@
 errorprone = '2.21.1'
 jackson = '2.15.2'
 junit-platform = '1.10.0'
-scala212 = '2.12.18'
+scala212 = '2.13.12'
 scala213 = '2.13.11'
 scala3 = '3.3.1'
 scalatest = '3.2.15'
