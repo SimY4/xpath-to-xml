@@ -18,7 +18,13 @@ jobs:
       uses: gradle/gradle-build-action@v2
       with:
         arguments: build --no-daemon --scan
-    - name: Create test summary
+    - name: Publish Test Report
+      uses: mikepenz/action-junit-report@v4
+      if: always()
+      with:
+        report_paths: '**/build/test-results/*/*.xml'
+        require_tests: true
+    - name: Create Test Summary
       uses: test-summary/action@v2
       with:
         paths: '**/build/test-results/*/*.xml'
