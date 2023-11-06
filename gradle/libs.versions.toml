@@ -1,7 +1,7 @@
 [versions]
 errorprone = '2.23.0'
 jackson = '2.15.3'
-junit-platform = '1.10.0'
+junit-platform = '1.10.1'
 scala212 = '2.12.18'
 scala213 = '2.13.12'
 scala3 = '3.3.1'
