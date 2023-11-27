@@ -30,13 +30,13 @@ javadocJar {
 
 spotless {
     scala {
-        scalafmt('3.7.9').configFile('.scalafmt.conf')
-        licenseHeaderFile rootProject.file('gradle/license.header'), "package "
+        scalafmt('3.7.17').configFile('.scalafmt.conf')
+        licenseHeaderFile rootProject.file('gradle/license.header'), 'package '
     }
 }
 
 scala {
-    zincVersion = '1.9.0'
+    zincVersion = '1.9.5'
 }
 
 scaladoc {
@@ -88,5 +88,11 @@ tasks.withType(ScalaCompile).configureEach {
                 '-opt-inline-from:com.github.simy4.xpath.scala.navigator.**,com.github.simy4.xpath.scala.syntax.**',
                 '-P:wartremover:only-warn-traverser:org.wartremover.warts.Unsafe',
         ]
+    }
+}
+
+test {
+    useJUnitPlatform {
+        includeEngines 'scalatest'
     }
 }
