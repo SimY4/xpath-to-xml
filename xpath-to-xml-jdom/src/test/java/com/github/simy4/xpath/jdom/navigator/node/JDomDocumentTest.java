@@ -27,6 +27,7 @@ import javax.xml.namespace.QName;
 
 import java.io.IOException;
 
+import static org.assertj.core.api.Assertions.LIST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -50,7 +51,7 @@ class JDomDocumentTest {
 
   @Test
   void shouldReturnSingleRootNodeWhenObtainElements() {
-    assertThat(node.elements()).asList().containsExactly(new JDomElement(root));
+    assertThat(node.elements()).asInstanceOf(LIST).containsExactly(new JDomElement(root));
   }
 
   @Test
