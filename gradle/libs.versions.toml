@@ -7,7 +7,7 @@ scala3 = '3.3.1'
 scalatest = '3.2.17'
 scalatestplus = '3.2.17.0'
 scala-xml = '2.2.0'
-wartremover = '3.1.5'
+wartremover = '3.1.6'
 
 [libraries]
 assertj = 'org.assertj:assertj-core:3.25.0'
