@@ -15,7 +15,7 @@ jobs:
         java-version: 11
         cache: gradle
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@v2
+      uses: gradle/gradle-build-action@v3
       with:
         arguments: build --no-daemon --scan
     - name: Publish Test Report
