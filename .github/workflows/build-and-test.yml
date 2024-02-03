@@ -13,11 +13,10 @@ jobs:
       with:
         distribution: temurin
         java-version: 11
-        cache: gradle
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@v3
-      with:
-        arguments: build --no-daemon --scan
+    - name: Set up Gradle
+      uses: gradle/actions/setup-gradle@v3
+    - name: ⚙️ Run build
+      run: ./gradlew build --no-daemon --scan
     - name: Publish Test Report
       uses: mikepenz/action-junit-report@v4
       if: always()
