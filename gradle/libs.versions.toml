@@ -20,7 +20,7 @@ jaxen = 'jaxen:jaxen:2.0.0'
 jdom2 = 'org.jdom:jdom2:2.0.6.1'
 json-api = 'jakarta.json:jakarta.json-api:2.1.3'
 json-impl = 'org.glassfish:jakarta.json:2.0.1'
-junit-jupiter = 'org.junit.jupiter:junit-jupiter:5.10.1'
+junit-jupiter = 'org.junit.jupiter:junit-jupiter:5.10.2'
 mockito = 'org.mockito:mockito-junit-jupiter:5.10.0'
 scala-library-v212 = { module = 'org.scala-lang:scala-library', version.ref = 'scala212' }
 scala-library-v213 = { module = 'org.scala-lang:scala-library', version.ref = 'scala213' }
