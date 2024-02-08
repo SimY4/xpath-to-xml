@@ -5,7 +5,7 @@ scala212 = '2.12.18'
 scala213 = '2.13.12'
 scala3 = '3.3.1'
 scalatest = '3.2.17'
-scalatestplus = '3.2.17.0'
+scalatestplus = '3.2.18.0'
 scala-xml = '2.2.0'
 wartremover = '3.1.6'
 
