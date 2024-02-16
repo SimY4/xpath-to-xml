@@ -36,7 +36,7 @@ spotless {
 }
 
 scala {
-    zincVersion = '1.9.5'
+    zincVersion = '1.9.6'
 }
 
 scaladoc {
