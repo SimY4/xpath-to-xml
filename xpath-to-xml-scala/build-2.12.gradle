@@ -44,6 +44,7 @@ scaladoc {
         additionalParameters = [
                 '-language:experimental.macros',     // Allow macro definition (besides implementation and application)
                 '-language:implicitConversions',     // Allow definition of implicit functions called views
+                '-Xsource:3',                        // Turn on future language features.
         ]
     }
 }

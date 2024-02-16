@@ -40,7 +40,7 @@ final class XmlElemOps(private val elem: Elem, private val namespaceContext: Nam
       .build(elem)
   def putAll(xpaths: String*): Elem =
     new XmlBuilder(namespaceContext)
-      .putAll(xpaths: _*)
+      .putAll(xpaths*)
       .build(elem)
   def putAll(xpaths: Iterable[String]): Elem =
     xpaths.foldLeft(new XmlBuilder(namespaceContext))(_.put(_)).build(elem)
@@ -56,7 +56,7 @@ final class XmlElemOps(private val elem: Elem, private val namespaceContext: Nam
       .build(elem)
   def removeAll(xpaths: String*): Elem =
     new XmlBuilder(namespaceContext)
-      .removeAll(xpaths: _*)
+      .removeAll(xpaths*)
       .build(elem)
   def removeAll(xpaths: Iterable[String]): Elem =
     xpaths.foldLeft(new XmlBuilder(namespaceContext))(_.remove(_)).build(elem)

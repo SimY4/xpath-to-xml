@@ -65,7 +65,7 @@ final class Root(var node: Elem) extends AbstractScalaXmlNode(null) {
 @SerialVersionUID(1L)
 @SuppressWarnings(Array("org.wartremover.warts.Var"))
 final class Element private[navigator] (
-  private[this] var _node: Elem,
+  private var _node: Elem,
   var index: Int,
   override val parent: ScalaXmlNode { type N = Elem }
 ) extends AbstractScalaXmlNode(parent) {
@@ -106,7 +106,7 @@ final class Element private[navigator] (
 @SerialVersionUID(1L)
 @SuppressWarnings(Array("org.wartremover.warts.Var"))
 final class Attribute private[navigator] (
-  private[this] var _attr: XmlAttribute,
+  private var _attr: XmlAttribute,
   override val parent: ScalaXmlNode {
     type N = Elem
   }

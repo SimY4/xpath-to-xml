@@ -24,8 +24,8 @@ import javax.xml.namespace.QName
 @SuppressWarnings(Array("org.wartremover.warts.Throw"))
 class ScalaXmlNavigator(override val root: Root) extends Navigator[ScalaXmlNode] with scala.compat.Converters {
   override def parentOf(node: ScalaXmlNode): ScalaXmlNode                                = node.parent
-  override def elementsOf(parent: ScalaXmlNode): java.lang.Iterable[_ <: ScalaXmlNode]   = parent.elements
-  override def attributesOf(parent: ScalaXmlNode): java.lang.Iterable[_ <: ScalaXmlNode] = parent.attributes
+  override def elementsOf(parent: ScalaXmlNode): java.lang.Iterable[? <: ScalaXmlNode]   = parent.elements
+  override def attributesOf(parent: ScalaXmlNode): java.lang.Iterable[? <: ScalaXmlNode] = parent.attributes
   @throws[XmlBuilderException]("If unable to create attribute for given node")
   override def createAttribute(parent: ScalaXmlNode, attribute: QName): ScalaXmlNode =
     parent match {
