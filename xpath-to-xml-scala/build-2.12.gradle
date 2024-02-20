@@ -30,7 +30,7 @@ javadocJar {
 
 spotless {
     scala {
-        scalafmt('3.7.17').configFile('.scalafmt.conf')
+        scalafmt('3.8.0').configFile('.scalafmt.conf')
         licenseHeaderFile rootProject.file('gradle/license.header'), 'package '
     }
 }
