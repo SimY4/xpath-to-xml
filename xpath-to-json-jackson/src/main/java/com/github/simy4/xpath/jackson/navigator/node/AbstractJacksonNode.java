@@ -54,7 +54,7 @@ abstract class AbstractJacksonNode implements JacksonNode {
         if (text.isNull()) {
           return "null";
         } else if (text.isValueNode()) {
-          return text.asText("");
+          return Objects.toString(text.asText(), "");
         }
       }
     }
