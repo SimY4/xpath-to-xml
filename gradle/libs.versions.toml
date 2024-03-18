@@ -1,16 +1,16 @@
 [versions]
-errorprone = '2.21.1'
-jackson = '2.15.2'
-junit-platform = '1.10.0'
-scala212 = '2.12.18'
-scala213 = '2.13.11'
-scala3 = '3.3.0'
-scalatest = '3.2.15'
+errorprone = '2.26.1'
+jackson = '2.17.0'
+scala212 = '2.12.19'
+scala213 = '2.13.13'
+scala3 = '3.3.3'
+scalatest = '3.2.18'
+scalatestplus = '3.2.18.0'
 scala-xml = '2.2.0'
-wartremover = '3.1.3'
+wartremover = '3.1.6'
 
 [libraries]
-assertj = 'org.assertj:assertj-core:3.24.2'
+assertj = 'org.assertj:assertj-core:3.25.3'
 dom4j = 'org.dom4j:dom4j:2.1.4'
 errorprone = { module = 'com.google.errorprone:error_prone_core', version.ref = 'errorprone' }
 gson = 'com.google.code.gson:gson:2.10.1'
@@ -18,12 +18,10 @@ jackson-databind = { module = 'com.fasterxml.jackson.core:jackson-databind', ver
 jackson-dataformat-yaml = { module = 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml', version.ref = 'jackson' }
 jaxen = 'jaxen:jaxen:2.0.0'
 jdom2 = 'org.jdom:jdom2:2.0.6.1'
-json-api = 'jakarta.json:jakarta.json-api:2.1.2'
+json-api = 'jakarta.json:jakarta.json-api:2.1.3'
 json-impl = 'org.glassfish:jakarta.json:2.0.1'
-junit-jupiter = 'org.junit.jupiter:junit-jupiter:5.10.0'
-junit-platform-engine = { module = 'org.junit.platform:junit-platform-engine', version.ref = 'junit-platform' }
-junit-platform-launcher = { module = 'org.junit.platform:junit-platform-launcher', version.ref = 'junit-platform' }
-mockito = 'org.mockito:mockito-junit-jupiter:5.4.0'
+junit-jupiter = 'org.junit.jupiter:junit-jupiter:5.10.2'
+mockito = 'org.mockito:mockito-junit-jupiter:5.11.0'
 scala-library-v212 = { module = 'org.scala-lang:scala-library', version.ref = 'scala212' }
 scala-library-v213 = { module = 'org.scala-lang:scala-library', version.ref = 'scala213' }
 scala-library-v3 = { module = 'org.scala-lang:scala3-library_3', version.ref = 'scala3' }
@@ -38,7 +36,9 @@ scalatest-funspec-v3 = { module = 'org.scalatest:scalatest-funspec_3', version.r
 scalatest-shouldmatchers-v212 = { module = 'org.scalatest:scalatest-shouldmatchers_2.12', version.ref = 'scalatest' }
 scalatest-shouldmatchers-v213 = { module = 'org.scalatest:scalatest-shouldmatchers_2.13', version.ref = 'scalatest' }
 scalatest-shouldmatchers-v3 = { module = 'org.scalatest:scalatest-shouldmatchers_3', version.ref = 'scalatest' }
-scalatest-junit-runner = 'co.helmethair:scalatest-junit-runner:0.2.0'
+scalatest-junit-runner-v212 = { module = 'org.scalatestplus:junit-5-10_2.12', version.ref = 'scalatestplus' }
+scalatest-junit-runner-v213 = { module = 'org.scalatestplus:junit-5-10_2.13', version.ref = 'scalatestplus' }
+scalatest-junit-runner-v3 = { module = 'org.scalatestplus:junit-5-10_3', version.ref = 'scalatestplus' }
 wartremover-v212 = { module = 'org.wartremover:wartremover_2.12', version.ref = 'wartremover' }
 wartremover-v213 = { module = 'org.wartremover:wartremover_2.13', version.ref = 'wartremover' }
 wartremover-v3 = { module = 'org.wartremover:wartremover_3', version.ref = 'wartremover' }
@@ -46,6 +46,6 @@ xom = 'xom:xom:1.3.9'
 
 [bundles]
 junit = ["junit-jupiter", "assertj"]
-scalatest-v212 = ["scalatest-funspec-v212", "scalatest-shouldmatchers-v212", "scalatest-junit-runner", "junit-platform-engine"]
-scalatest-v213 = ["scalatest-funspec-v213", "scalatest-shouldmatchers-v213", "scalatest-junit-runner", "junit-platform-engine"]
-scalatest-v3 = ["scalatest-funspec-v3", "scalatest-shouldmatchers-v3", "scalatest-junit-runner", "junit-platform-engine"]
+scalatest-v212 = ["scalatest-funspec-v212", "scalatest-shouldmatchers-v212", "scalatest-junit-runner-v212"]
+scalatest-v213 = ["scalatest-funspec-v213", "scalatest-shouldmatchers-v213", "scalatest-junit-runner-v213"]
+scalatest-v3 = ["scalatest-funspec-v3", "scalatest-shouldmatchers-v3", "scalatest-junit-runner-v3"]

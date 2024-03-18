@@ -28,6 +28,7 @@ import javax.xml.namespace.QName;
 
 import java.io.IOException;
 
+import static org.assertj.core.api.Assertions.LIST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -58,7 +59,7 @@ class Dom4JDocumentTest {
 
   @Test
   void shouldReturnSingleRootNodeWhenObtainElements() {
-    assertThat(node.elements()).asList().containsExactly(new Dom4jElement(root));
+    assertThat(node.elements()).asInstanceOf(LIST).containsExactly(new Dom4jElement(root));
   }
 
   @Test

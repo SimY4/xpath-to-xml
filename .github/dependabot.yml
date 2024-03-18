@@ -4,6 +4,9 @@ updates:
   directory: "/"
   schedule:
     interval: daily
-    time: "19:00"
-  open-pull-requests-limit: 10
+  target-branch: "2.x"
+- package-ecosystem: github-actions
+  directory: "/"
+  schedule:
+    interval: daily
   target-branch: "2.x"

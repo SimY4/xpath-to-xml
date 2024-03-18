@@ -30,13 +30,13 @@ javadocJar {
 
 spotless {
     scala {
-        scalafmt('3.7.9').configFile('.scalafmt.conf')
-        licenseHeaderFile rootProject.file('gradle/license.header'), "package "
+        scalafmt('3.8.0').configFile('.scalafmt.conf')
+        licenseHeaderFile rootProject.file('gradle/license.header'), 'package '
     }
 }
 
 scala {
-    zincVersion = '1.9.0'
+    zincVersion = '1.9.6'
 }
 
 scaladoc {
@@ -44,6 +44,7 @@ scaladoc {
         additionalParameters = [
                 '-language:experimental.macros',     // Allow macro definition (besides implementation and application)
                 '-language:implicitConversions',     // Allow definition of implicit functions called views
+                '-Xsource:3',                        // Turn on future language features.
         ]
     }
 }
@@ -88,5 +89,11 @@ tasks.withType(ScalaCompile).configureEach {
                 '-opt-inline-from:com.github.simy4.xpath.scala.navigator.**,com.github.simy4.xpath.scala.syntax.**',
                 '-P:wartremover:only-warn-traverser:org.wartremover.warts.Unsafe',
         ]
+    }
+}
+
+test {
+    useJUnitPlatform {
+        includeEngines 'scalatest'
     }
 }

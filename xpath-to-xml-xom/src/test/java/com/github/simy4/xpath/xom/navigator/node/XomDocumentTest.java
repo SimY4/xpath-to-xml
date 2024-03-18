@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.xml.namespace.QName;
 
+import static org.assertj.core.api.Assertions.LIST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -47,7 +48,7 @@ class XomDocumentTest {
 
   @Test
   void shouldReturnSingleRootNodeWhenObtainElements() {
-    assertThat(node.elements()).asList().containsExactly(new XomElement(root));
+    assertThat(node.elements()).asInstanceOf(LIST).containsExactly(new XomElement(root));
   }
 
   @Test
