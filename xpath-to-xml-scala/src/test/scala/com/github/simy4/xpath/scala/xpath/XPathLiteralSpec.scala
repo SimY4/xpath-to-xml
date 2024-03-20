@@ -22,7 +22,7 @@ import parser.XPathParser
 
 @SuppressWarnings(Array("org.wartremover.warts.Null"))
 class XPathLiteralSpec extends AnyFunSpec with Matchers {
-  import scala.implicits._
+  import scala.implicits.*
 
   describe("xpathLiteral") {
     it("should compile")(assertCompiles("""val expr = xpath"ancestor::author[parent::book][1]""""))
