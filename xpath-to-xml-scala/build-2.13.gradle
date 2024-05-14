@@ -1,6 +1,6 @@
 apply plugin: 'scala'
 
-buildDir = 'build-2.13'
+layout.buildDirectory = file('build-2.13')
 
 clean {
     delete 'build-2.13'

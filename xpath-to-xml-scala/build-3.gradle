@@ -1,7 +1,7 @@
 apply plugin: 'scala'
 apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 
-buildDir = 'build-3'
+layout.buildDirectory = file('build-3')
 
 clean {
     delete 'build-3'
