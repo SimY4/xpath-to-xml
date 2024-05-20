@@ -1,11 +1,9 @@
-apply plugin: 'scala'
-apply from: rootProject.file('gradle/benchmark-jmh.gradle')
-
-layout.buildDirectory = file('build-3')
-
-clean {
-    delete 'build-3'
+ext {
+    scalaCompiler = '3'
 }
+
+apply from: 'shared.gradle'
+apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 
 sourceSets {
     main.scala.srcDirs += [file('src/main/scala-2.13+'), file('src/main/scala-3+')]
@@ -15,31 +13,18 @@ dependencies {
     api project(':xpath-to-xml-core')
 
     implementation libs.scala.library.v3
-    implementation libs.scala.xml.v3
-
-    scalaCompilerPlugins libs.wartremover.v3
 
     testImplementation project(':xpath-to-xml-test')
-    testImplementation libs.bundles.scalatest.v3
 }
 
 moduleConfig {
     moduleInfoPath = 'src/main/module-3/module-info.java'
 }
 
-javadocJar {
-    dependsOn scaladoc
-    from scaladoc
-}
-
 spotless {
     scala {
         licenseHeaderFile rootProject.file('gradle/license.header'), 'package '
     }
-}
-
-scala {
-    zincVersion = '1.9.6'
 }
 
 tasks.withType(ScalaCompile).configureEach {
@@ -59,11 +44,5 @@ tasks.withType(ScalaCompile).configureEach {
                 '-java-output-version:8',
                 '-P:wartremover:only-warn-traverser:org.wartremover.warts.Unsafe',
         ]
-    }
-}
-
-test {
-    useJUnitPlatform {
-        includeEngines 'scalatest'
     }
 }

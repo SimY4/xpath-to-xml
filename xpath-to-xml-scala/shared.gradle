@@ -1,0 +1,43 @@
+apply plugin: 'scala'
+
+layout.buildDirectory = file("build-${scalaCompiler}")
+
+clean {
+    delete "build-${scalaCompiler}"
+}
+
+configurations.configureEach {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        def module = details.requested.module
+        if (module.name.endsWith('_%%')) {
+            details.useTarget "${module.group}:${module.name.replace('_%%', "_${scalaCompiler}" as CharSequence)}:${details.requested.version}"
+            details.because "Scala compiler resolution"
+        }
+    }
+}
+
+dependencies {
+    api project(':xpath-to-xml-core')
+
+    implementation libs.scala.xml
+
+    scalaCompilerPlugins libs.wartremover
+
+    testImplementation project(':xpath-to-xml-test')
+    testImplementation libs.bundles.scalatest
+}
+
+javadocJar {
+    dependsOn scaladoc
+    from scaladoc
+}
+
+scala {
+    zincVersion = '1.10.0'
+}
+
+test {
+    useJUnitPlatform {
+        includeEngines 'scalatest'
+    }
+}
