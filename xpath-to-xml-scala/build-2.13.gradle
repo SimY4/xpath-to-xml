@@ -12,7 +12,7 @@ dependencies {
     api project(':xpath-to-xml-core')
 
     implementation libs.scala.library.v213
-    implementation libs.scala.reflect.v213
+    compileOnly libs.scala.reflect.v213
 
     testImplementation project(':xpath-to-xml-test')
 }

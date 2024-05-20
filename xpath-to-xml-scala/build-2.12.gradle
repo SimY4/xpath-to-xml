@@ -10,7 +10,7 @@ sourceSets {
 
 dependencies {
     implementation libs.scala.library.v212
-    implementation libs.scala.reflect.v212
+    compileOnly libs.scala.reflect.v212
 }
 
 spotless {
