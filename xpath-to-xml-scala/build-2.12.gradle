@@ -1,42 +1,23 @@
-apply plugin: 'scala'
-
-buildDir = 'build-2.12'
-
-clean {
-    delete 'build-2.12'
+ext {
+    scalaCompiler = '2.12'
 }
+
+apply from: 'shared.gradle'
 
 sourceSets {
     main.scala.srcDirs += [file('src/main/scala-2-'), file('src/main/scala-2.12-')]
 }
 
 dependencies {
-    api project(':xpath-to-xml-core')
-
     implementation libs.scala.library.v212
-    implementation libs.scala.reflect.v212
-    implementation libs.scala.xml.v212
-
-    scalaCompilerPlugins libs.wartremover.v212
-
-    testImplementation project(':xpath-to-xml-test')
-    testImplementation libs.bundles.scalatest.v212
-}
-
-javadocJar {
-    dependsOn scaladoc
-    from scaladoc
+    compileOnly libs.scala.reflect.v212
 }
 
 spotless {
     scala {
-        scalafmt('3.8.0').configFile('.scalafmt.conf')
+        scalafmt('3.8.1').configFile('.scalafmt.conf')
         licenseHeaderFile rootProject.file('gradle/license.header'), 'package '
     }
-}
-
-scala {
-    zincVersion = '1.9.6'
 }
 
 scaladoc {
@@ -89,11 +70,5 @@ tasks.withType(ScalaCompile).configureEach {
                 '-opt-inline-from:com.github.simy4.xpath.scala.navigator.**,com.github.simy4.xpath.scala.syntax.**',
                 '-P:wartremover:only-warn-traverser:org.wartremover.warts.Unsafe',
         ]
-    }
-}
-
-test {
-    useJUnitPlatform {
-        includeEngines 'scalatest'
     }
 }

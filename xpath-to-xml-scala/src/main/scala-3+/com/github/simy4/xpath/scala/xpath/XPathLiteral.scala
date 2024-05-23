@@ -18,9 +18,9 @@ package com.github.simy4.xpath.scala.xpath
 import com.github.simy4.xpath.expr.Expr as JExpr
 import com.github.simy4.xpath.parser.XPathParser
 
+import javax.xml.namespace.NamespaceContext
 import javax.xml.xpath.XPathExpressionException
-
-import scala.quoted.{ quotes, Expr, Exprs, Quotes, Varargs }
+import scala.quoted.{ Expr, Exprs, Quotes, Varargs, quotes }
 
 object XPathLiteral:
   @SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf", "org.wartremover.warts.Null", "org.wartremover.warts.IterableOps"))
@@ -30,8 +30,9 @@ object XPathLiteral:
       case '{ StringContext(${ Varargs(Exprs(args)) }*) } if args.size == 1 =>
         try {
           val const = args.head
+          val namespaceContext = Expr.summon[NamespaceContext].getOrElse('{null})
           val _     = new XPathParser(null).parse(const)
-          '{ new XPathParser(null).parse(${ Expr(const) }) }
+          '{ new XPathParser(${ namespaceContext }).parse(${ Expr(const) }) }
         } catch {
           case xpee: XPathExpressionException =>
             report.errorAndAbort(s"Illegal XPath expression: ${xpee.getMessage}", sc)

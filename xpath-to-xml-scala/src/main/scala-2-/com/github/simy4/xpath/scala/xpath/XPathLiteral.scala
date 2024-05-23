@@ -19,6 +19,7 @@ import com.github.simy4.xpath.expr.Expr
 import com.github.simy4.xpath.parser.XPathParser
 import reflect.macros.blackbox
 
+import javax.xml.namespace.NamespaceContext
 import javax.xml.xpath.XPathExpressionException
 
 final class XPathLiteral(private val sc: StringContext) extends AnyVal {
@@ -28,13 +29,14 @@ final class XPathLiteral(private val sc: StringContext) extends AnyVal {
 @SuppressWarnings(Array("org.wartremover.warts.Null"))
 object XPathLiteral {
   def xpathImpl(c: blackbox.Context)(args: c.Expr[Any]*): c.Expr[Expr] = {
-    import c.universe._
+    import c.universe.*
 
     c.prefix.tree match {
       case Apply(_, List(Apply(_, List(lit @ Literal(Constant(str: String)))))) =>
         try {
-          val _ = new XPathParser(null).parse(str)
-          reify(new XPathParser(null).parse(c.Expr[String](lit).splice))
+          val namespaceContext = c.inferImplicitValue(weakTypeOf[NamespaceContext], silent = true).orElse(q"null")
+          val _                = new XPathParser(null).parse(str)
+          reify(new XPathParser(c.Expr[NamespaceContext](namespaceContext).splice).parse(c.Expr[String](lit).splice))
         } catch {
           case xpee: XPathExpressionException =>
             c.abort(c.enclosingPosition, s"Illegal XPath expression: ${xpee.getMessage}")

@@ -5,6 +5,14 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionResult()
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
             afterEvaluate {
                 artifactId = project.name
                 pom {
