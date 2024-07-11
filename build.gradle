@@ -31,7 +31,7 @@ subprojects {
 
     // after gradle 5.3 we need to set this attribute to mark test configuration targeting java 8
     [configurations.testCompileClasspath, configurations.testRuntimeClasspath].each {
-        it.attributes {
+        it.attributes.with {
             attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 11)
         }
     }
@@ -86,5 +86,5 @@ release {
 }
 
 wrapper {
-    gradleVersion = '8.8'
+    gradleVersion = '8.9'
 }
