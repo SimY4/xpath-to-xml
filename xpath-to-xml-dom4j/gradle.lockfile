@@ -1,0 +1,12 @@
+# This is a Gradle generated file for dependency locking.
+# Manual edits can break the build and are not advised.
+# This file is expected to be part of source control.
+javax.xml.bind:jaxb-api:2.2.12=runtimeClasspath
+javax.xml.stream:stax-api:1.0-2=runtimeClasspath
+jaxen:jaxen:1.1.6=runtimeClasspath
+net.java.dev.msv:xsdlib:2013.6.1=runtimeClasspath
+org.dom4j:dom4j:2.1.4=compileClasspath,runtimeClasspath
+pull-parser:pull-parser:2.1.10=runtimeClasspath
+relaxngDatatype:relaxngDatatype:20020414=runtimeClasspath
+xpp3:xpp3:1.1.4c=runtimeClasspath
+empty=

@@ -16,6 +16,10 @@ configurations.configureEach {
     }
 }
 
+dependencyLocking {
+    lockFile = file("gradle-${scalaCompiler}.lockfile")
+}
+
 dependencies {
     api project(':xpath-to-xml-core')
 

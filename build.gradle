@@ -21,6 +21,10 @@ subprojects {
         mavenCentral()
     }
 
+    configurations {
+      [compileClasspath, runtimeClasspath]*.resolutionStrategy*.activateDependencyLocking()
+    }
+
     java {
         withJavadocJar()
         withSourcesJar()
@@ -59,6 +63,16 @@ subprojects {
     javadoc {
         options.memberLevel = JavadocMemberLevel.PROTECTED
         options.addBooleanOption('html5', true)
+    }
+    
+    tasks.register('resolveAndLock') {
+        notCompatibleWithConfigurationCache('Fitlers configurations at execution time')
+        doFirst {
+            assert gradle.startParameter.writeDependencyLocks : "$path must be run from the the command line with the `--write-locks` flag"
+        }
+        doLast {
+            [configurations.compileClasspath, configurations.runtimeClasspath].each { it.resolve() }
+        }
     }
 }
 
