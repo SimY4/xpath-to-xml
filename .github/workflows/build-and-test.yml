@@ -1,6 +1,19 @@
 name: Build and Test
 
-on: [ push, pull_request ]
+on:
+  pull_request:
+    branches:
+      - master
+      - 1.x
+      - 2.x
+      - 3.x
+  push:
+    branches:
+      - master
+      - 1.x
+      - 2.x
+      - 3.x
+      - feature/**
 
 jobs:
   build:
