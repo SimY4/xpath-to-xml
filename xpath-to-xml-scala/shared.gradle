@@ -37,7 +37,7 @@ javadocJar {
 }
 
 scala {
-    zincVersion = '1.10.2'
+    zincVersion = '1.10.3'
 }
 
 test {
