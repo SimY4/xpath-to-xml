@@ -19,7 +19,7 @@ dependencies {
 
 spotless {
     scala {
-        scalafmt('3.8.1').configFile('.scalafmt.conf')
+        scalafmt('3.8.3').configFile('.scalafmt.conf')
         licenseHeaderFile rootProject.file('gradle/license.header'), 'package '
     }
 }
