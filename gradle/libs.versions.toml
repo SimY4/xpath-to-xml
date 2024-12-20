@@ -7,7 +7,7 @@ scala3 = '3.3.4'
 scalatest = '3.2.19'
 
 [libraries]
-assertj = 'org.assertj:assertj-core:3.26.3'
+assertj = 'org.assertj:assertj-core:3.27.0'
 dom4j = 'org.dom4j:dom4j:2.1.4'
 errorprone = { module = 'com.google.errorprone:error_prone_core', version.ref = 'errorprone' }
 gson = 'com.google.code.gson:gson:2.11.0'
