@@ -358,7 +358,7 @@ public class XPathParser implements Serializable {
         } else {
           return new QName(identifier.getToken());
         }
-        // fallthrough
+      // fallthrough
       default:
         throw new XPathParserException(context.tokenAt(1), Type.lookup(Type.STAR, Type.IDENTIFIER));
     }
