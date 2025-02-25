@@ -37,6 +37,7 @@ javadocJar {
 }
 
 scala {
+    scalaVersion = project.ext.scalaVersion
     zincVersion = '1.10.3'
 }
 

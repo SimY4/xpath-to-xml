@@ -1,4 +1,5 @@
 ext {
+    scalaVersion = '3.3.5'
     scalaCompiler = '3'
 }
 
@@ -7,14 +8,6 @@ apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 
 sourceSets {
     main.scala.srcDirs += [file('src/main/scala-2.13+'), file('src/main/scala-3+')]
-}
-
-dependencies {
-    api project(':xpath-to-xml-core')
-
-    implementation libs.scala.library.v3
-
-    testImplementation project(':xpath-to-xml-test')
 }
 
 moduleConfig {
