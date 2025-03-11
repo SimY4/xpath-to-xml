@@ -6,5 +6,6 @@ dependencies {
     implementation libs.xom
 
     testImplementation project(':xpath-to-xml-test')
-    testImplementation libs.bundles.junit
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation libs.assertj
 }

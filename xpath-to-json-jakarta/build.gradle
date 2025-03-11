@@ -12,7 +12,8 @@ dependencies {
 
     testImplementation project(':xpath-to-xml-test')
     testImplementation libs.json.impl
-    testImplementation libs.bundles.junit
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation libs.assertj
 }
 
 compileJava {

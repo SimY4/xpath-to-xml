@@ -25,6 +25,12 @@ subprojects {
       [compileClasspath, runtimeClasspath]*.resolutionStrategy*.activateDependencyLocking()
     }
 
+    dependencies {
+        testImplementation platform(libs.junit.bom)
+
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+
     java {
         withJavadocJar()
         withSourcesJar()
