@@ -25,7 +25,6 @@ tasks.withType(ScalaCompile).configureEach {
         deprecation = true
         encoding = 'UTF-8'
         additionalParameters = [
-                '-project-url', projectUrl,
                 '-explain',                             // Explain errors in more detail.
                 '-explain-types',                       // Explain type errors in more detail.
                 '-feature',                             // Emit warning and location for usages of features that should be imported explicitly.

@@ -1,5 +1,7 @@
 apply plugin: 'scala'
 
+description = 'Convenient utility to build XML models by evaluating XPath expressions'
+
 layout.buildDirectory = file("build-${scalaCompiler}")
 
 clean {

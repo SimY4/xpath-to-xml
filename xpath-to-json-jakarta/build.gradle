@@ -1,5 +1,7 @@
 apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 
+description = 'Convenient utility to build JSON models by evaluating XPath expressions'
+
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8

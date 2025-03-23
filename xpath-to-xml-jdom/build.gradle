@@ -1,5 +1,7 @@
 apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 
+description = 'Convenient utility to build XML models by evaluating XPath expressions'
+
 dependencies {
     api project(':xpath-to-xml-core')
 

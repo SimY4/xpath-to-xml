@@ -1,5 +1,7 @@
 apply from: rootProject.file('gradle/check-mutationcoverage.gradle')
 
+description = 'Convenient utility to build XML models by evaluating XPath expressions'
+
 dependencies {
     testImplementation project(':xpath-to-xml-test')
     testImplementation libs.mockito

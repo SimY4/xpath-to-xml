@@ -13,11 +13,11 @@ publishing {
                     fromResolutionResult()
                 }
             }
-            afterEvaluate {
+            afterEvaluate { project ->
                 artifactId = project.name
                 pom {
                     name = project.name
-                    description = projectDescription
+                    description = project.description
                     url = 'http://github.com/SimY4/xpath-to-xml'
                     inceptionYear = '2017'
 
@@ -27,14 +27,14 @@ publishing {
                     ]
 
                     scm {
-                        connection = projectScm
-                        developerConnection = projectScm
-                        url = projectUrl
+                        connection = 'scm:git:https://github.com/SimY4/xpath-to-xml'
+                        developerConnection = 'scm:git:https://github.com/SimY4/xpath-to-xml'
+                        url = 'http://github.com/SimY4/xpath-to-xml'
                     }
 
                     issueManagement {
                         system = 'GitHub'
-                        url = projectIssues
+                        url = 'https://github.com/SimY4/xpath-to-xml/issues'
                     }
 
                     licenses {
