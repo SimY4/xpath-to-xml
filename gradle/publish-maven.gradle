@@ -4,7 +4,7 @@ apply plugin: 'signing'
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            from components.java
+            from components.find { it.name == 'java' || it.name == 'javaPlatform' }
             versionMapping {
                 usage('java-api') {
                     fromResolutionResult()

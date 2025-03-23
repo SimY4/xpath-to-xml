@@ -9,6 +9,8 @@ plugins {
 }
 
 subprojects {
+    if (name == 'xpath-to-xml-bom') return // skip empty projects
+
     apply plugin: 'java-library'
     apply plugin: 'org.beryx.jar'
     apply from: rootProject.file('gradle/check-checkstyle.gradle')
