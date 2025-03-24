@@ -21,13 +21,16 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.namespace.QName;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 
 class JacksonByNameNodeTest {
 
   private final ObjectNode jsonObject = new ObjectNode(JsonNodeFactory.instance);
-  private final JacksonNode byNameNode = new JacksonByNameNode(jsonObject, "two", null);
+  private final JacksonNode byNameNode =
+      new JacksonByNameNode(QName.valueOf("two"), new JacksonRootNode(jsonObject));
 
   @BeforeEach
   void setUp() {
@@ -45,8 +48,9 @@ class JacksonByNameNodeTest {
   void shouldSetElementByIndexOnSet() {
     byNameNode.set(new IntNode(4));
 
-    assertThat(jsonObject.fields())
+    assertThat(jsonObject.fieldNames())
         .toIterable()
+        .map(name -> entry(name, jsonObject.get(name)))
         .containsExactly(
             entry("one", new IntNode(1)),
             entry("two", new IntNode(4)),
@@ -57,21 +61,21 @@ class JacksonByNameNodeTest {
   void shouldRemoveElementByIndexOnSetNull() {
     byNameNode.set(null);
 
-    assertThat(jsonObject.fields())
+    assertThat(jsonObject.fieldNames())
         .toIterable()
+        .map(name -> entry(name, jsonObject.get(name)))
         .containsExactly(entry("one", new IntNode(1)), entry("three", new IntNode(3)));
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   void shouldTraverseObjectAttributes() {
     var parent = new JacksonRootNode(jsonObject);
 
-    assertThat((Iterable<JacksonNode>) parent.attributes())
+    assertThat(parent.attributes())
         .containsExactlyInAnyOrder(
-            new JacksonByNameNode(jsonObject, "one", parent),
-            new JacksonByNameNode(jsonObject, "two", parent),
-            new JacksonByNameNode(jsonObject, "three", parent));
+            new JacksonByNameNode(QName.valueOf("one"), parent),
+            new JacksonByNameNode(QName.valueOf("two"), parent),
+            new JacksonByNameNode(QName.valueOf("three"), parent));
   }
 
   @Test

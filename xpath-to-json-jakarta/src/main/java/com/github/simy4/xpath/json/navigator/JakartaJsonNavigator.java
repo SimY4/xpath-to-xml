@@ -64,13 +64,13 @@ public class JakartaJsonNavigator implements Navigator<JakartaJsonNode> {
   @Override
   public JakartaJsonNode createAttribute(JakartaJsonNode parent, QName attribute)
       throws XmlBuilderException {
-    return appendElement(parent, attribute.getLocalPart(), jsonProvider.createValue(""));
+    return appendElement(parent, attribute, jsonProvider.createValue(""));
   }
 
   @Override
   public JakartaJsonNode createElement(JakartaJsonNode parent, QName element)
       throws XmlBuilderException {
-    return appendElement(parent, element.getLocalPart(), JsonValue.EMPTY_JSON_OBJECT);
+    return appendElement(parent, element, JsonValue.EMPTY_JSON_OBJECT);
   }
 
   @Override
@@ -108,7 +108,7 @@ public class JakartaJsonNavigator implements Navigator<JakartaJsonNode> {
     switch (parentValue.getValueType()) {
       case OBJECT:
         final JakartaJsonNode parentParent = parent.getParent();
-        final String name = node.getName().getLocalPart();
+        final QName name = node.getName();
         final JsonObject jsonObject = JsonValue.EMPTY_JSON_OBJECT;
         if (parentParent != null) {
           final JsonValue parentParentValue = parentParent.get();
@@ -117,11 +117,16 @@ public class JakartaJsonNavigator implements Navigator<JakartaJsonNode> {
             copyNode = prependToArray(parentParent, parentValue, jsonArray);
             node.setParent(new JakartaJsonByIndexNode(copyNode.getIndex() + 1, parentParent));
           } else {
-            copyNode = prependToNewArray(parent, parentValue);
-            node.setParent(new JakartaJsonByIndexNode(copyNode.getIndex() + 1, parent));
+            final JsonArray jsonArray = jsonProvider.createArrayBuilder().add(parentValue).build();
+            parent.set(jsonProvider, jsonArray);
+            copyNode = prependToArray(parent, parentValue, jsonArray);
+            node.setParent(new JakartaJsonByIndexNode(1, parent));
           }
         } else {
-          copyNode = prependToNewArray(parent, parentValue);
+          final JsonArray jsonArray = jsonProvider.createArrayBuilder().add(parentValue).build();
+          parent.set(jsonProvider, jsonArray);
+          copyNode = prependToArray(parent, parentValue, jsonArray);
+          node.setParent(new JakartaJsonByIndexNode(1, parent));
         }
         elementNode = new JakartaJsonByNameNode(name, copyNode);
         copyNode.set(jsonProvider, jsonObject);
@@ -143,13 +148,13 @@ public class JakartaJsonNavigator implements Navigator<JakartaJsonNode> {
     node.set(jsonProvider, null);
   }
 
-  private JakartaJsonNode appendElement(JakartaJsonNode parent, String name, JsonValue newValue) {
+  private JakartaJsonNode appendElement(JakartaJsonNode parent, QName name, JsonValue newValue) {
     final JsonValue parentValue = parent.get();
     final JakartaJsonNode elementNode;
     switch (parentValue.getValueType()) {
       case OBJECT:
         final JsonObject parentObject = parentValue.asJsonObject();
-        if (!parentObject.containsKey(name)) {
+        if (!parentObject.containsKey(name.getLocalPart())) {
           elementNode = new JakartaJsonByNameNode(name, parent);
         } else {
           final JakartaJsonNode parentParent = parent.getParent();
@@ -158,10 +163,15 @@ public class JakartaJsonNavigator implements Navigator<JakartaJsonNode> {
             if (JsonValue.ValueType.ARRAY == parentParentValue.getValueType()) {
               elementNode = appendToArray(parentParent, name, parentParentValue.asJsonArray());
             } else {
-              elementNode = appendToNewArray(parent, name, parentObject);
+              final JsonArray jsonArray =
+                  jsonProvider.createArrayBuilder().add(parentValue).build();
+              parent.set(jsonProvider, jsonArray);
+              elementNode = appendToArray(parent, name, jsonArray);
             }
           } else {
-            elementNode = appendToNewArray(parent, name, parentObject);
+            final JsonArray jsonArray = jsonProvider.createArrayBuilder().add(parentValue).build();
+            parent.set(jsonProvider, jsonArray);
+            elementNode = appendToArray(parent, name, jsonArray);
           }
         }
         break;
@@ -176,24 +186,12 @@ public class JakartaJsonNavigator implements Navigator<JakartaJsonNode> {
     return elementNode;
   }
 
-  private JakartaJsonNode appendToNewArray(
-      JakartaJsonNode parent, String name, JsonObject parentObject) {
-    final JsonArray jsonArray = jsonProvider.createArrayBuilder().add(parentObject).build();
-    return appendToArray(parent, name, jsonArray);
-  }
-
-  private JakartaJsonNode appendToArray(
-      JakartaJsonNode parent, String name, JsonArray parentArray) {
+  private JakartaJsonNode appendToArray(JakartaJsonNode parent, QName name, JsonArray parentArray) {
     final int index = parentArray.size();
     parentArray =
         jsonProvider.createArrayBuilder(parentArray).add(JsonValue.EMPTY_JSON_OBJECT).build();
     parent.set(jsonProvider, parentArray);
     return new JakartaJsonByNameNode(name, new JakartaJsonByIndexNode(index, parent));
-  }
-
-  private JakartaJsonByIndexNode prependToNewArray(JakartaJsonNode parent, JsonValue valueToCopy) {
-    final JsonArray jsonArray = jsonProvider.createArrayBuilder().add(valueToCopy).build();
-    return prependToArray(parent, valueToCopy, jsonArray);
   }
 
   private JakartaJsonByIndexNode prependToArray(

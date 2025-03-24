@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class JacksonByIndexNodeTest {
 
   private final ArrayNode jsonArray = new ArrayNode(JsonNodeFactory.instance);
-  private final JacksonNode byIndexNode = new JacksonByIndexNode(jsonArray, 1, null);
+  private final JacksonNode byIndexNode = new JacksonByIndexNode(1, new JacksonRootNode(jsonArray));
 
   @BeforeEach
   void setUp() {
@@ -55,15 +55,14 @@ class JacksonByIndexNodeTest {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   void shouldTraverseArrayAttributes() {
     var parent = new JacksonRootNode(jsonArray);
 
-    assertThat((Iterable<JacksonNode>) parent.attributes())
+    assertThat(parent.attributes())
         .containsExactlyInAnyOrder(
-            new JacksonByIndexNode(jsonArray, 0, parent),
-            new JacksonByIndexNode(jsonArray, 1, parent),
-            new JacksonByIndexNode(jsonArray, 2, parent));
+            new JacksonByIndexNode(0, parent),
+            new JacksonByIndexNode(1, parent),
+            new JacksonByIndexNode(2, parent));
   }
 
   @Test

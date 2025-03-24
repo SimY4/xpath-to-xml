@@ -6,6 +6,7 @@ dependencies {
         api project(':xpath-to-json-gson')
         api project(':xpath-to-json-jackson')
         api project(':xpath-to-json-jakarta')
+        api project(':xpath-to-json-json')
         api project(':xpath-to-xml-core')
         api project(':xpath-to-xml-dom')
         api project(':xpath-to-xml-dom4j')

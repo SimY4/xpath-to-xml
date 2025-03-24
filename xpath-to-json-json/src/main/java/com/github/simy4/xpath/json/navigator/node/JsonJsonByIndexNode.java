@@ -1,0 +1,81 @@
+/*
+ * Copyright 2018-2021 Alex Simkin
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.github.simy4.xpath.json.navigator.node;
+
+import org.json.JSONArray;
+
+import javax.xml.namespace.QName;
+
+public final class JsonJsonByIndexNode extends AbstractJsonJsonNode {
+
+  private final int index;
+
+  /**
+   * Constructor.
+   *
+   * @param index json array index
+   * @param parent parent node
+   */
+  public JsonJsonByIndexNode(int index, JsonJsonNode parent) {
+    super(parent);
+    this.index = index;
+  }
+
+  @Override
+  public QName getName() {
+    return QName.valueOf("array[" + index + ']');
+  }
+
+  @Override
+  public Object get() {
+    return getParentArray().get(index);
+  }
+
+  @Override
+  public void set(Object jsonValue) {
+    final JSONArray array = getParentArray();
+    if (null == jsonValue) {
+      array.remove(index);
+    } else {
+      array.put(index, jsonValue);
+    }
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!super.equals(o)) {
+      return false;
+    }
+
+    JsonJsonByIndexNode javaxJsonNodes = (JsonJsonByIndexNode) o;
+    return index == javaxJsonNodes.index;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = super.hashCode();
+    result = 31 * result + index;
+    return result;
+  }
+
+  public int getIndex() {
+    return index;
+  }
+
+  private JSONArray getParentArray() {
+    return (JSONArray) getParent().get();
+  }
+}
