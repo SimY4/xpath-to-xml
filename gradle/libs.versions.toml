@@ -1,5 +1,5 @@
 [versions]
-errorprone = '2.31.0'
+errorprone = '2.37.0'
 jackson = '2.18.3'
 scalatest = '3.2.19'
 
