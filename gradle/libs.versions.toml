@@ -1,6 +1,6 @@
 [versions]
 errorprone = '2.31.0'
-jackson = '2.18.3'
+jackson = '2.19.0'
 scalatest = '3.2.19'
 
 [libraries]
