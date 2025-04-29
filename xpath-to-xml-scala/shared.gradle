@@ -33,6 +33,13 @@ dependencies {
     testImplementation libs.bundles.scalatest
 }
 
+spotless {
+    scala {
+        scalafmt('3.8.3').configFile('.scalafmt.conf')
+        licenseHeaderFile rootProject.file('gradle/license.header'), 'package '
+    }
+}
+
 javadocJar {
     dependsOn scaladoc
     from scaladoc

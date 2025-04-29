@@ -13,13 +13,6 @@ dependencies {
     compileOnly "org.scala-lang:scala-reflect:${project.ext.scalaVersion}"
 }
 
-spotless {
-    scala {
-        scalafmt('3.8.3').configFile('.scalafmt.conf')
-        licenseHeaderFile rootProject.file('gradle/license.header'), 'package '
-    }
-}
-
 scaladoc {
     scalaDocOptions.with {
         additionalParameters = [
