@@ -20,7 +20,6 @@ import collection.{ mutable, Map }
 import fixtures.FixtureAccessor
 import helpers.SimpleNamespaceContext
 import org.scalatest.funspec.AnyFunSpec
-import org.scalatest.matchers.should.Matchers
 import org.xml.sax.InputSource
 import xml.{ Elem, NamespaceBinding, Node, Null, PrettyPrinter, TopScope, XML }
 
@@ -30,7 +29,7 @@ import javax.xml.xpath.{ XPathConstants, XPathExpression, XPathFactory }
 import java.io.StringReader
 
 @SuppressWarnings(Array("org.wartremover.warts.Any", "org.wartremover.warts.Null"))
-class XmlBuilderSpec extends AnyFunSpec with Matchers {
+class XmlBuilderSpec extends AnyFunSpec {
   val namespaceContext = new SimpleNamespaceContext
   val namespaceBinding = NamespaceBinding("my", namespaceContext.getNamespaceURI("my"), TopScope)
 
@@ -67,11 +66,11 @@ class XmlBuilderSpec extends AnyFunSpec with Matchers {
 
         xmlProperties.keys.foreach { xpath =>
           val documentSource: InputSource = builtDocumentString
-          it(s"$xpath should evaluate")(xpath.evaluate(documentSource, XPathConstants.NODE) shouldNot be(null))
+          it(s"$xpath should evaluate")(assert(xpath.evaluate(documentSource, XPathConstants.NODE) !== null))
         }
         // although these cases are working fine the order of attribute is messed up
         if (!fixtureAccessor.toString.startsWith("attr")) {
-          it("should match exactly")(builtDocumentString should ===(fixtureAccessor.getPutXml))
+          it("should match exactly")(assert(builtDocumentString === fixtureAccessor.getPutXml))
         }
       }
 
@@ -91,12 +90,12 @@ class XmlBuilderSpec extends AnyFunSpec with Matchers {
         xmlProperties.foreach { case (xpath, value) =>
           val documentSource: InputSource = builtDocumentString
           it(s"$xpath should evaluate to ${value.toString}") {
-            xpath.evaluate(documentSource, XPathConstants.STRING) should equal(value)
+            assert(xpath.evaluate(documentSource, XPathConstants.STRING) === value)
           }
         }
         // although these cases are working fine the order of attribute is messed up
         if (!fixtureAccessor.toString.startsWith("attr")) {
-          it("should match exactly")(builtDocumentString should ===(fixtureAccessor.getPutValueXml))
+          it("should match exactly")(assert(builtDocumentString === fixtureAccessor.getPutValueXml))
         }
       }
 
@@ -118,12 +117,12 @@ class XmlBuilderSpec extends AnyFunSpec with Matchers {
         xmlProperties.foreach { case (xpath, value) =>
           val documentSource: InputSource = builtDocumentString
           it(s"$xpath should evaluate to ${value.toString}") {
-            xpath.evaluate(documentSource, XPathConstants.STRING) should equal(value)
+            assert(xpath.evaluate(documentSource, XPathConstants.STRING) === value)
           }
         }
         // although these cases are working fine the order of attribute is messed up
         if (!fixtureAccessor.toString.startsWith("attr")) {
-          it("should match exactly")(builtDocumentString should ===(fixtureAccessor.getPutValueXml))
+          it("should match exactly")(assert(builtDocumentString === fixtureAccessor.getPutValueXml))
         }
       }
 
@@ -145,12 +144,12 @@ class XmlBuilderSpec extends AnyFunSpec with Matchers {
         xmlProperties.foreach { case (xpath, value) =>
           val documentSource: InputSource = builtDocumentString1
           it(s"first: $xpath should evaluate to ${value.toString}") {
-            xpath.evaluate(documentSource, XPathConstants.STRING) should equal(value)
+            assert(xpath.evaluate(documentSource, XPathConstants.STRING) === value)
           }
         }
         // although these cases are working fine the order of attribute is messed up
         if (!fixtureAccessor.toString.startsWith("attr")) {
-          it("first: should match exactly")(builtDocumentString1 should ===(fixtureAccessor.getPutValueXml))
+          it("first: should match exactly")(assert(builtDocumentString1 === fixtureAccessor.getPutValueXml))
         }
 
         val builtDocument2 = xmlProperties.keys
@@ -167,12 +166,12 @@ class XmlBuilderSpec extends AnyFunSpec with Matchers {
         xmlProperties.foreach { case (xpath, value) =>
           val documentSource: InputSource = builtDocumentString2
           it(s"second: $xpath should evaluate to ${value.toString}") {
-            xpath.evaluate(documentSource, XPathConstants.STRING) should equal(value)
+            assert(xpath.evaluate(documentSource, XPathConstants.STRING) === value)
           }
         }
         // although these cases are working fine the order of attribute is messed up
         if (!fixtureAccessor.toString.startsWith("attr")) {
-          it("second: should match exactly")(builtDocumentString2 should ===(fixtureAccessor.getPutValueXml))
+          it("second: should match exactly")(assert(builtDocumentString2 === fixtureAccessor.getPutValueXml))
         }
       }
 
@@ -193,9 +192,9 @@ class XmlBuilderSpec extends AnyFunSpec with Matchers {
 
         xmlProperties.keys.foreach { xpath =>
           val documentSource: InputSource = builtDocumentString
-          it(s"$xpath should not evaluate")(xpath.evaluate(documentSource, XPathConstants.NODE) shouldBe null)
+          it(s"$xpath should not evaluate")(assert(xpath.evaluate(documentSource, XPathConstants.NODE) === null))
         }
-        it("second: should not match")(builtDocumentString shouldNot equal(fixtureAccessor.getPutValueXml))
+        it("second: should not match")(assert(builtDocumentString !== fixtureAccessor.getPutValueXml))
       }
     }
   }

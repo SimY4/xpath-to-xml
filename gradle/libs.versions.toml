@@ -1,7 +1,6 @@
 [versions]
 errorprone = '2.31.0'
 jackson = '2.19.0'
-scalatest = '3.2.19'
 
 [libraries]
 assertj = 'org.assertj:assertj-core:3.27.3'
@@ -16,12 +15,11 @@ json-api = 'jakarta.json:jakarta.json-api:2.1.3'
 json-impl = 'org.glassfish:jakarta.json:2.0.1'
 junit-bom = 'org.junit:junit-bom:5.12.2'
 mockito = 'org.mockito:mockito-junit-jupiter:5.18.0'
-scala-xml = 'org.scala-lang.modules:scala-xml_%%:2.3.0'
-scalatest-funspec = { module = 'org.scalatest:scalatest-funspec_%%', version.ref = 'scalatest' }
-scalatest-shouldmatchers = { module = 'org.scalatest:scalatest-shouldmatchers_%%', version.ref = 'scalatest' }
+scala-xml = 'org.scala-lang.modules:scala-xml_%%:2.4.0'
+scalatest-funspec = 'org.scalatest:scalatest-funspec_%%:3.2.19'
 scalatest-junit-runner = 'org.scalatestplus:junit-5-12_%%:3.2.19.0'
-wartremover = 'org.wartremover:wartremover_%%:3.3.0'
+wartremover = 'org.wartremover:wartremover_%%:3.3.4'
 xom = 'xom:xom:1.3.9'
 
 [bundles]
-scalatest = ["scalatest-funspec", "scalatest-shouldmatchers", "scalatest-junit-runner"]
+scalatest = ["scalatest-funspec", "scalatest-junit-runner"]

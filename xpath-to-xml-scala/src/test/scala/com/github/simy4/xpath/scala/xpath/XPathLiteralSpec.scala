@@ -17,11 +17,10 @@ package com.github.simy4.xpath
 package scala.xpath
 
 import org.scalatest.funspec.AnyFunSpec
-import org.scalatest.matchers.should.Matchers
 import parser.XPathParser
 
 @SuppressWarnings(Array("org.wartremover.warts.Null"))
-class XPathLiteralSpec extends AnyFunSpec with Matchers {
+class XPathLiteralSpec extends AnyFunSpec {
   import scala.implicits.*
 
   describe("xpathLiteral") {
@@ -30,7 +29,7 @@ class XPathLiteralSpec extends AnyFunSpec with Matchers {
       val expr = xpath"ancestor::author[parent::book][1]"
 
       it("should match expr") {
-        expr.toString should ===(new XPathParser(null).parse("ancestor::author[parent::book][1]").toString)
+        assert(expr.toString === new XPathParser(null).parse("ancestor::author[parent::book][1]").toString)
       }
     }
   }
