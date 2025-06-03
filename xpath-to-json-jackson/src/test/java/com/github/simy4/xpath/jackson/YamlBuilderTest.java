@@ -30,7 +30,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import java.io.IOException;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,72 +54,68 @@ class YamlBuilderTest {
   @ParameterizedTest
   @MethodSource("data")
   void shouldBuildYamlFromSetOfXPaths(FixtureAccessor fixtureAccessor)
-      throws XPathExpressionException, IOException {
+      throws XPathExpressionException, JsonProcessingException {
     var xmlProperties = fixtureAccessor.getXmlProperties();
     var builtDocument =
         new XmlBuilder()
             .putAll(xmlProperties.keySet())
             .build(new ObjectNode(JsonNodeFactory.instance));
 
-    assertThat(yamlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutXml());
+    assertThat(builtDocument).isEqualTo(stringToYaml(fixtureAccessor.getPutXml()));
   }
 
   @ParameterizedTest
   @MethodSource("data")
   void shouldBuildYamlFromSetOfXPathsAndSetValues(FixtureAccessor fixtureAccessor)
-      throws XPathExpressionException, IOException {
+      throws XPathExpressionException, JsonProcessingException {
     var xmlProperties = fixtureAccessor.getXmlProperties();
     var builtDocument =
         new XmlBuilder().putAll(xmlProperties).build(new ObjectNode(JsonNodeFactory.instance));
 
-    assertThat(yamlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
+    assertThat(builtDocument).isEqualTo(stringToYaml(fixtureAccessor.getPutValueXml()));
   }
 
   @ParameterizedTest
   @MethodSource("data")
   void shouldModifyYamlWhenXPathsAreNotTraversable(FixtureAccessor fixtureAccessor)
-      throws XPathExpressionException, IOException {
+      throws XPathExpressionException, JsonProcessingException {
     var xmlProperties = fixtureAccessor.getXmlProperties();
     var json = fixtureAccessor.getPutXml();
     var oldDocument = stringToYaml(json);
     var builtDocument = new XmlBuilder().putAll(xmlProperties).build(oldDocument);
 
-    assertThat(yamlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
+    assertThat(builtDocument).isEqualTo(stringToYaml(fixtureAccessor.getPutValueXml()));
   }
 
   @ParameterizedTest
   @MethodSource("data")
   void shouldNotModifyYamlWhenAllXPathsTraversable(FixtureAccessor fixtureAccessor)
-      throws XPathExpressionException, IOException {
+      throws XPathExpressionException, JsonProcessingException {
     var xmlProperties = fixtureAccessor.getXmlProperties();
     var yaml = fixtureAccessor.getPutValueXml();
     var oldDocument = stringToYaml(yaml);
     var builtDocument = new XmlBuilder().putAll(xmlProperties).build(oldDocument);
 
-    assertThat(yamlToString(builtDocument)).isEqualTo(yaml);
+    assertThat(builtDocument).isEqualTo(stringToYaml(yaml));
 
     builtDocument = new XmlBuilder().putAll(xmlProperties.keySet()).build(oldDocument);
 
-    assertThat(yamlToString(builtDocument)).isEqualTo(yaml);
+    assertThat(builtDocument).isEqualTo(stringToYaml(yaml));
   }
 
   @ParameterizedTest
   @MethodSource("data")
   void shouldRemovePathsFromExistingYaml(FixtureAccessor fixtureAccessor)
-      throws XPathExpressionException, IOException {
+      throws XPathExpressionException, JsonProcessingException {
     var xmlProperties = fixtureAccessor.getXmlProperties();
     var yaml = fixtureAccessor.getPutValueXml();
     var oldDocument = stringToYaml(yaml);
     var builtDocument = new XmlBuilder().removeAll(xmlProperties.keySet()).build(oldDocument);
 
-    assertThat(yamlToString(builtDocument)).isNotEqualTo(fixtureAccessor.getPutValueXml());
+    assertThat(builtDocument).isNotEqualTo(stringToYaml(fixtureAccessor.getPutValueXml()));
   }
 
-  private JsonNode stringToYaml(String xml) throws IOException {
+  private JsonNode stringToYaml(String xml) throws JsonProcessingException {
     return objectMapper.readTree(xml);
-  }
-
-  private String yamlToString(JsonNode json) throws JsonProcessingException {
-    return objectMapper.writeValueAsString(json).replace("\n", System.lineSeparator());
   }
 }

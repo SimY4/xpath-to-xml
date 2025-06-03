@@ -50,7 +50,7 @@ class XmlBuilderTest {
     var xmlProperties = fixtureAccessor.getXmlProperties();
     var builtDocument = new XmlBuilder().putAll(xmlProperties.keySet()).build(new JsonObject());
 
-    assertThat(jsonToString(builtDocument)).isEqualTo(fixtureAccessor.getPutXml());
+    assertThat(builtDocument).isEqualTo(stringToJson(fixtureAccessor.getPutXml()));
   }
 
   @ParameterizedTest
@@ -60,7 +60,7 @@ class XmlBuilderTest {
     var xmlProperties = fixtureAccessor.getXmlProperties();
     var builtDocument = new XmlBuilder().putAll(xmlProperties).build(new JsonObject());
 
-    assertThat(jsonToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
+    assertThat(builtDocument).isEqualTo(stringToJson(fixtureAccessor.getPutValueXml()));
   }
 
   @ParameterizedTest
@@ -72,7 +72,7 @@ class XmlBuilderTest {
     var oldDocument = stringToJson(json);
     var builtDocument = new XmlBuilder().putAll(xmlProperties).build(oldDocument);
 
-    assertThat(jsonToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
+    assertThat(builtDocument).isEqualTo(stringToJson(fixtureAccessor.getPutValueXml()));
   }
 
   @ParameterizedTest
@@ -84,11 +84,11 @@ class XmlBuilderTest {
     var oldDocument = stringToJson(json);
     var builtDocument = new XmlBuilder().putAll(xmlProperties).build(oldDocument);
 
-    assertThat(jsonToString(builtDocument)).isEqualTo(json);
+    assertThat(builtDocument).isEqualTo(stringToJson(json));
 
     builtDocument = new XmlBuilder().putAll(xmlProperties.keySet()).build(oldDocument);
 
-    assertThat(jsonToString(builtDocument)).isEqualTo(json);
+    assertThat(builtDocument).isEqualTo(stringToJson(json));
   }
 
   @ParameterizedTest
@@ -100,14 +100,10 @@ class XmlBuilderTest {
     var oldDocument = stringToJson(json);
     var builtDocument = new XmlBuilder().removeAll(xmlProperties.keySet()).build(oldDocument);
 
-    assertThat(jsonToString(builtDocument)).isNotEqualTo(fixtureAccessor.getPutValueXml());
+    assertThat(builtDocument).isNotEqualTo(stringToJson(fixtureAccessor.getPutValueXml()));
   }
 
   private JsonElement stringToJson(String xml) {
     return gson.fromJson(xml, JsonElement.class);
-  }
-
-  private String jsonToString(JsonElement json) {
-    return gson.toJson(json).replaceAll("\n", System.lineSeparator());
   }
 }
