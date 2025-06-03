@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
 public final class JakartaJsonByNameNode extends AbstractJakartaJsonNode {
 
   private final String name;
+  private final QName qName;
 
   /**
    * Constructor.
@@ -35,11 +36,12 @@ public final class JakartaJsonByNameNode extends AbstractJakartaJsonNode {
   public JakartaJsonByNameNode(String name, JakartaJsonNode parent) {
     super(parent);
     this.name = name;
+    this.qName = QName.valueOf(name);
   }
 
   @Override
   public QName getName() {
-    return new QName(name);
+    return qName;
   }
 
   @Override

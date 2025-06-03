@@ -24,6 +24,7 @@ public final class JacksonByNameNode extends AbstractJacksonNode {
 
   private final ObjectNode parentObject;
   private final String name;
+  private final QName qName;
 
   /**
    * Constructor.
@@ -36,11 +37,12 @@ public final class JacksonByNameNode extends AbstractJacksonNode {
     super(parent);
     this.parentObject = parentObject;
     this.name = name;
+    this.qName = QName.valueOf(name);
   }
 
   @Override
   public QName getName() {
-    return new QName(name);
+    return qName;
   }
 
   @Override
