@@ -35,7 +35,7 @@ dependencies {
 
 spotless {
     scala {
-        scalafmt('3.8.3').configFile('.scalafmt.conf')
+        scalafmt('3.9.6').configFile('.scalafmt.conf')
         licenseHeaderFile rootProject.file('gradle/license.header'), 'package '
     }
 }
@@ -47,7 +47,7 @@ javadocJar {
 
 scala {
     scalaVersion = project.ext.scalaVersion
-    zincVersion = '1.10.7'
+    zincVersion = '1.10.8'
 }
 
 test {
