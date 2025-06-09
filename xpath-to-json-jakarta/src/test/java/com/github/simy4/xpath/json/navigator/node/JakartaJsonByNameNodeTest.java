@@ -19,6 +19,8 @@ import jakarta.json.JsonObject;
 import jakarta.json.spi.JsonProvider;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.namespace.QName;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 
@@ -29,7 +31,8 @@ class JakartaJsonByNameNodeTest {
   private final JsonObject jsonObject =
       jsonProvider.createObjectBuilder().add("one", 1).add("two", 2).add("three", 3).build();
   private final JakartaJsonNode rootNode = new JakartaJsonRootNode(jsonObject);
-  private final JakartaJsonNode byNameNode = new JakartaJsonByNameNode("two", rootNode);
+  private final JakartaJsonNode byNameNode =
+      new JakartaJsonByNameNode(QName.valueOf("two"), rootNode);
 
   @Test
   void shouldRetrieveElementByIndexOnGet() {
@@ -62,9 +65,9 @@ class JakartaJsonByNameNodeTest {
 
     assertThat(parent.attributes())
         .containsExactlyInAnyOrder(
-            new JakartaJsonByNameNode("one", parent),
-            new JakartaJsonByNameNode("two", parent),
-            new JakartaJsonByNameNode("three", parent));
+            new JakartaJsonByNameNode(QName.valueOf("one"), parent),
+            new JakartaJsonByNameNode(QName.valueOf("two"), parent),
+            new JakartaJsonByNameNode(QName.valueOf("three"), parent));
   }
 
   @Test

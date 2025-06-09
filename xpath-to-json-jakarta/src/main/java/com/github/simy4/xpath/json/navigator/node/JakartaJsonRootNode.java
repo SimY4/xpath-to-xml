@@ -32,7 +32,7 @@ public final class JakartaJsonRootNode extends AbstractJakartaJsonNode {
 
   @Override
   public QName getName() {
-    return new QName(DOCUMENT);
+    return QName.valueOf(DOCUMENT);
   }
 
   @Override

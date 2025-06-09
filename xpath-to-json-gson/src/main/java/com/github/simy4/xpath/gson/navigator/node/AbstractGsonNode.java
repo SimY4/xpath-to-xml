@@ -19,6 +19,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import javax.xml.namespace.QName;
+
 import java.util.Collections;
 import java.util.Iterator;
 
@@ -111,7 +113,7 @@ abstract class AbstractGsonNode implements GsonNode {
       return new JsonObjectIterator(jsonObject.keySet().iterator(), jsonObject, parent, attribute);
     } else if (jsonElement.isJsonArray()) {
       final JsonArray jsonArray = jsonElement.getAsJsonArray();
-      return new JsonArrayIterator(jsonArray.iterator(), jsonArray, parent, attribute);
+      return new JsonArrayIterator(jsonArray.iterator(), parent, attribute);
     } else {
       return Collections.emptyIterator();
     }
@@ -149,7 +151,7 @@ abstract class AbstractGsonNode implements GsonNode {
 
     @Override
     public GsonNode next() {
-      return new GsonByNameNode(parentObject, nextMatch(), parent);
+      return new GsonByNameNode(QName.valueOf(nextMatch()), parent);
     }
 
     @Override
@@ -175,19 +177,13 @@ abstract class AbstractGsonNode implements GsonNode {
   private static final class JsonArrayIterator implements Iterator<GsonNode> {
 
     private final Iterator<JsonElement> arrayIterator;
-    private final JsonArray parentArray;
     private final GsonNode parent;
     private int index;
     private final boolean attribute;
     private Iterator<GsonNode> current = Collections.emptyIterator();
 
-    JsonArrayIterator(
-        Iterator<JsonElement> arrayIterator,
-        JsonArray parentArray,
-        GsonNode parent,
-        boolean attribute) {
+    JsonArrayIterator(Iterator<JsonElement> arrayIterator, GsonNode parent, boolean attribute) {
       this.arrayIterator = arrayIterator;
-      this.parentArray = parentArray;
       this.parent = parent;
       this.attribute = attribute;
     }
@@ -197,7 +193,7 @@ abstract class AbstractGsonNode implements GsonNode {
       boolean currentHasNext;
       while (!(currentHasNext = current.hasNext()) && arrayIterator.hasNext()) {
         final JsonElement jsonElement = arrayIterator.next();
-        final GsonNode arrayElemNode = new GsonByIndexNode(parentArray, index++, parent);
+        final GsonNode arrayElemNode = new GsonByIndexNode(index++, parent);
         current =
             isAttribute(jsonElement)
                 ? traverseAttributeNode(arrayElemNode)

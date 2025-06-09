@@ -19,6 +19,8 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonString;
 import jakarta.json.JsonValue;
 
+import javax.xml.namespace.QName;
+
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -113,7 +115,7 @@ abstract class AbstractJakartaJsonNode implements JakartaJsonNode {
         final JsonObject jsonObject = jsonValue.asJsonObject();
         return jsonObject.keySet().stream()
             .filter(name -> attribute == isAttribute(jsonObject.get(name)))
-            .map(name -> new JakartaJsonByNameNode(name, parent));
+            .map(name -> new JakartaJsonByNameNode(QName.valueOf(name), parent));
       case ARRAY:
         return jsonValue.asJsonArray().stream().flatMap(new JsonArrayWrapper(parent, attribute));
       default:

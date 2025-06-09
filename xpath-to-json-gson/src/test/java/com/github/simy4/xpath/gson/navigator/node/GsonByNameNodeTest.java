@@ -20,13 +20,16 @@ import com.google.gson.JsonPrimitive;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.namespace.QName;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 
 class GsonByNameNodeTest {
 
   private final JsonObject jsonObject = new JsonObject();
-  private final GsonNode byNameNode = new GsonByNameNode(jsonObject, "two", null);
+  private final GsonNode byNameNode =
+      new GsonByNameNode(QName.valueOf("two"), new GsonRootNode(jsonObject));
 
   @BeforeEach
   void setUp() {
@@ -66,9 +69,9 @@ class GsonByNameNodeTest {
 
     assertThat((Iterable<GsonNode>) parent.attributes())
         .containsExactlyInAnyOrder(
-            new GsonByNameNode(jsonObject, "one", parent),
-            new GsonByNameNode(jsonObject, "two", parent),
-            new GsonByNameNode(jsonObject, "three", parent));
+            new GsonByNameNode(QName.valueOf("one"), parent),
+            new GsonByNameNode(QName.valueOf("two"), parent),
+            new GsonByNameNode(QName.valueOf("three"), parent));
   }
 
   @Test

@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class GsonByIndexNodeTest {
 
   private final JsonArray jsonArray = new JsonArray();
-  private final GsonNode byIndexNode = new GsonByIndexNode(jsonArray, 1, null);
+  private final GsonNode byIndexNode = new GsonByIndexNode(1, new GsonRootNode(jsonArray));
 
   @BeforeEach
   void setUp() {
@@ -61,9 +61,9 @@ class GsonByIndexNodeTest {
 
     assertThat((Iterable<GsonNode>) parent.attributes())
         .containsExactlyInAnyOrder(
-            new GsonByIndexNode(jsonArray, 0, parent),
-            new GsonByIndexNode(jsonArray, 1, parent),
-            new GsonByIndexNode(jsonArray, 2, parent));
+            new GsonByIndexNode(0, parent),
+            new GsonByIndexNode(1, parent),
+            new GsonByIndexNode(2, parent));
   }
 
   @Test

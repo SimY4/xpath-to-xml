@@ -39,7 +39,7 @@ public final class JakartaJsonByIndexNode extends AbstractJakartaJsonNode {
 
   @Override
   public QName getName() {
-    return new QName("array[" + index + ']');
+    return QName.valueOf("array[" + index + ']');
   }
 
   @Override

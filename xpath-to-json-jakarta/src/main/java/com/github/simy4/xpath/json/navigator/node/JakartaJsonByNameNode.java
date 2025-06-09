@@ -24,8 +24,7 @@ import javax.xml.namespace.QName;
 
 public final class JakartaJsonByNameNode extends AbstractJakartaJsonNode {
 
-  private final String name;
-  private final QName qName;
+  private final QName name;
 
   /**
    * Constructor.
@@ -33,20 +32,19 @@ public final class JakartaJsonByNameNode extends AbstractJakartaJsonNode {
    * @param name json object key
    * @param parent parent node
    */
-  public JakartaJsonByNameNode(String name, JakartaJsonNode parent) {
+  public JakartaJsonByNameNode(QName name, JakartaJsonNode parent) {
     super(parent);
     this.name = name;
-    this.qName = QName.valueOf(name);
   }
 
   @Override
   public QName getName() {
-    return qName;
+    return name;
   }
 
   @Override
   public JsonValue get() {
-    return getParentObject().get(name);
+    return getParentObject().get(name.getLocalPart());
   }
 
   @Override
@@ -54,8 +52,8 @@ public final class JakartaJsonByNameNode extends AbstractJakartaJsonNode {
     final JsonObjectBuilder objectBuilder = jsonProvider.createObjectBuilder(getParentObject());
     final JsonObject newJsonObject =
         null == jsonValue
-            ? objectBuilder.remove(name).build()
-            : objectBuilder.add(name, jsonValue).build();
+            ? objectBuilder.remove(name.getLocalPart()).build()
+            : objectBuilder.add(name.getLocalPart(), jsonValue).build();
     getParent().set(jsonProvider, newJsonObject);
   }
 

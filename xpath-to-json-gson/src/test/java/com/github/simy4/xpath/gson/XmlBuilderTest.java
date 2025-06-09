@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.assertj.core.presentation.StandardRepresentation;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -57,7 +58,9 @@ class XmlBuilderTest {
     var builtDocument =
         new XmlBuilder(namespaceContext).putAll(xmlProperties.keySet()).build(new JsonObject());
 
-    assertThat(builtDocument).isEqualTo(stringToJson(fixtureAccessor.getPutXml()));
+    assertThat(builtDocument)
+        .withRepresentation(new JSONRepresentation())
+        .isEqualTo(stringToJson(fixtureAccessor.getPutXml()));
   }
 
   @ParameterizedTest
@@ -69,7 +72,9 @@ class XmlBuilderTest {
     var builtDocument =
         new XmlBuilder(namespaceContext).putAll(xmlProperties).build(new JsonObject());
 
-    assertThat(builtDocument).isEqualTo(stringToJson(fixtureAccessor.getPutValueXml()));
+    assertThat(builtDocument)
+        .withRepresentation(new JSONRepresentation())
+        .isEqualTo(stringToJson(fixtureAccessor.getPutValueXml()));
   }
 
   @ParameterizedTest
@@ -82,7 +87,9 @@ class XmlBuilderTest {
     var oldDocument = stringToJson(json);
     var builtDocument = new XmlBuilder(namespaceContext).putAll(xmlProperties).build(oldDocument);
 
-    assertThat(builtDocument).isEqualTo(stringToJson(fixtureAccessor.getPutValueXml()));
+    assertThat(builtDocument)
+        .withRepresentation(new JSONRepresentation())
+        .isEqualTo(stringToJson(fixtureAccessor.getPutValueXml()));
   }
 
   @ParameterizedTest
@@ -95,12 +102,16 @@ class XmlBuilderTest {
     var oldDocument = stringToJson(json);
     var builtDocument = new XmlBuilder(namespaceContext).putAll(xmlProperties).build(oldDocument);
 
-    assertThat(builtDocument).isEqualTo(stringToJson(json));
+    assertThat(builtDocument)
+        .withRepresentation(new JSONRepresentation())
+        .isEqualTo(stringToJson(json));
 
     builtDocument =
         new XmlBuilder(namespaceContext).putAll(xmlProperties.keySet()).build(oldDocument);
 
-    assertThat(builtDocument).isEqualTo(stringToJson(json));
+    assertThat(builtDocument)
+        .withRepresentation(new JSONRepresentation())
+        .isEqualTo(stringToJson(json));
   }
 
   @ParameterizedTest
@@ -114,10 +125,21 @@ class XmlBuilderTest {
     var builtDocument =
         new XmlBuilder(namespaceContext).removeAll(xmlProperties.keySet()).build(oldDocument);
 
-    assertThat(builtDocument).isNotEqualTo(stringToJson(fixtureAccessor.getPutValueXml()));
+    assertThat(builtDocument)
+        .withRepresentation(new JSONRepresentation())
+        .isNotEqualTo(stringToJson(fixtureAccessor.getPutValueXml()));
   }
 
   private JsonElement stringToJson(String xml) {
     return gson.fromJson(xml, JsonElement.class);
+  }
+
+  final class JSONRepresentation extends StandardRepresentation {
+    @Override
+    protected String fallbackToStringOf(Object object) {
+      return object instanceof JsonElement
+          ? gson.toJson((JsonElement) object)
+          : super.fallbackToStringOf(object);
+    }
   }
 }
