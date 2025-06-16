@@ -1,6 +1,6 @@
 [versions]
 errorprone = '2.31.0'
-jackson = '2.19.0'
+jackson = '2.19.1'
 
 [libraries]
 assertj = 'org.assertj:assertj-core:3.27.3'
