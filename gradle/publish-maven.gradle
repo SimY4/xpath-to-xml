@@ -13,43 +13,40 @@ publishing {
                     fromResolutionResult()
                 }
             }
-            afterEvaluate { project ->
-                artifactId = project.name
-                pom {
-                    name = project.name
-                    description = project.description
+            pom {
+                name = project.name
+                description = project.description
+                url = 'http://github.com/SimY4/xpath-to-xml'
+                inceptionYear = '2017'
+
+                properties = [
+                    'info.releaseNotesURL': 'https://github.com/SimY4/xpath-to-xml/releases',
+                    'info.versionScheme': 'semver-spec'
+                ]
+
+                scm {
+                    connection = 'scm:git:https://github.com/SimY4/xpath-to-xml'
+                    developerConnection = 'scm:git:https://github.com/SimY4/xpath-to-xml'
                     url = 'http://github.com/SimY4/xpath-to-xml'
-                    inceptionYear = '2017'
+                }
 
-                    properties = [
-                        'info.releaseNotesURL': 'https://github.com/SimY4/xpath-to-xml/releases',
-                        'info.versionScheme': 'semver-spec'
-                    ]
+                issueManagement {
+                    system = 'GitHub'
+                    url = 'https://github.com/SimY4/xpath-to-xml/issues'
+                }
 
-                    scm {
-                        connection = 'scm:git:https://github.com/SimY4/xpath-to-xml'
-                        developerConnection = 'scm:git:https://github.com/SimY4/xpath-to-xml'
-                        url = 'http://github.com/SimY4/xpath-to-xml'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
                     }
+                }
 
-                    issueManagement {
-                        system = 'GitHub'
-                        url = 'https://github.com/SimY4/xpath-to-xml/issues'
-                    }
-
-                    licenses {
-                        license {
-                            name = 'The Apache License, Version 2.0'
-                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        }
-                    }
-
-                    developers {
-                        developer {
-                            id = 'SimY4'
-                            name = 'Alex Simkin'
-                            url = 'http://github.com/SimY4'
-                        }
+                developers {
+                    developer {
+                        id = 'SimY4'
+                        name = 'Alex Simkin'
+                        url = 'http://github.com/SimY4'
                     }
                 }
             }
