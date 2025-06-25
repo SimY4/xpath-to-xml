@@ -1,6 +1,8 @@
 apply plugin: 'java-platform'
 apply from: rootProject.file('gradle/publish-maven.gradle')
 
+description = 'XPath to XML Bill of Materials (BOM)'
+
 dependencies {
     constraints {
         api project(':xpath-to-json-gson')
