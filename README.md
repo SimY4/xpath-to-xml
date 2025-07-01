@@ -18,9 +18,10 @@ Convenient utility to build XML models by evaluating XPath expressions.
  
 ## Additionally supported models
 
- - jakarta.json
  - Gson
  - Jackson
+ - jakarta.json
+ - org.json
 
 # Usage
 
