@@ -4,7 +4,7 @@ jackson = '2.19.1'
 
 [libraries]
 assertj = 'org.assertj:assertj-core:3.27.3'
-dom4j = 'org.dom4j:dom4j:2.1.4'
+dom4j = 'org.dom4j:dom4j:2.2.0'
 errorprone = { module = 'com.google.errorprone:error_prone_core', version.ref = 'errorprone' }
 gson = 'com.google.code.gson:gson:2.13.1'
 jackson-databind = { module = 'com.fasterxml.jackson.core:jackson-databind', version.ref = 'jackson' }
