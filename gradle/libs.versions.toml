@@ -6,7 +6,7 @@ jackson = '2.20.0'
 assertj = 'org.assertj:assertj-core:3.27.4'
 dom4j = 'org.dom4j:dom4j:2.2.0'
 errorprone = { module = 'com.google.errorprone:error_prone_core', version.ref = 'errorprone' }
-gson = 'com.google.code.gson:gson:2.13.1'
+gson = 'com.google.code.gson:gson:2.13.2'
 jackson-databind = { module = 'com.fasterxml.jackson.core:jackson-databind', version.ref = 'jackson' }
 jackson-dataformat-yaml = { module = 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml', version.ref = 'jackson' }
 jaxen = 'jaxen:jaxen:2.0.0'
