@@ -3,7 +3,7 @@ errorprone = '2.31.0'
 jackson = '2.20.0'
 
 [libraries]
-assertj = 'org.assertj:assertj-core:3.27.5'
+assertj = 'org.assertj:assertj-core:3.27.6'
 dom4j = 'org.dom4j:dom4j:2.2.0'
 errorprone = { module = 'com.google.errorprone:error_prone_core', version.ref = 'errorprone' }
 gson = 'com.google.code.gson:gson:2.13.2'
