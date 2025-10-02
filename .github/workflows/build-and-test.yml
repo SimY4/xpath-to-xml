@@ -27,7 +27,7 @@ jobs:
         distribution: temurin
         java-version: 11
     - name: Set up Gradle
-      uses: gradle/actions/setup-gradle@v4
+      uses: gradle/actions/setup-gradle@v5
     - name: ⚙️ Run build
       run: ./gradlew build --no-daemon --scan --write-locks
     - name: Publish Test Report
