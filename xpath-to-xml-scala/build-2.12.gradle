@@ -1,4 +1,5 @@
 ext {
+    scalaVersion = '2.12.20'
     scalaCompiler = '2.12'
 }
 
@@ -9,15 +10,7 @@ sourceSets {
 }
 
 dependencies {
-    implementation libs.scala.library.v212
-    compileOnly libs.scala.reflect.v212
-}
-
-spotless {
-    scala {
-        scalafmt('3.8.1').configFile('.scalafmt.conf')
-        licenseHeaderFile rootProject.file('gradle/license.header'), 'package '
-    }
+    compileOnly "org.scala-lang:scala-reflect:${project.ext.scalaVersion}"
 }
 
 scaladoc {
@@ -67,7 +60,8 @@ tasks.withType(ScalaCompile).configureEach {
                 '-release:8',
                 '-opt:l:method',
                 '-opt:l:inline',
-                '-opt-inline-from:com.github.simy4.xpath.scala.navigator.**,com.github.simy4.xpath.scala.syntax.**',
+                '-opt-inline-from:scala.**,com.github.simy4.xpath.scala.navigator.**,com.github.simy4.xpath.scala.syntax.**',
+                '-Xelide-below', '2001',
                 '-P:wartremover:only-warn-traverser:org.wartremover.warts.Unsafe',
         ]
     }

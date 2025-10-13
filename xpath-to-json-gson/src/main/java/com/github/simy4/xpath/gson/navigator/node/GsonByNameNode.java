@@ -22,38 +22,36 @@ import javax.xml.namespace.QName;
 
 public final class GsonByNameNode extends AbstractGsonNode {
 
-  private final JsonObject parentObject;
-  private final String name;
+  private final QName name;
 
   /**
    * Constructor.
    *
-   * @param parentObject parent json object element
    * @param name json object key
    * @param parent parent node
    */
-  public GsonByNameNode(JsonObject parentObject, String name, GsonNode parent) {
+  public GsonByNameNode(QName name, GsonNode parent) {
     super(parent);
-    this.parentObject = parentObject;
     this.name = name;
   }
 
   @Override
   public QName getName() {
-    return new QName(name);
+    return name;
   }
 
   @Override
   public JsonElement get() {
-    return parentObject.get(name);
+    return getParent().get().getAsJsonObject().get(name.toString());
   }
 
   @Override
   public void set(JsonElement jsonElement) {
+    final JsonObject parentObject = getParent().get().getAsJsonObject();
     if (null == jsonElement) {
-      parentObject.remove(name);
+      parentObject.remove(name.getLocalPart());
     } else {
-      parentObject.add(name, jsonElement);
+      parentObject.add(name.getLocalPart(), jsonElement);
     }
   }
 

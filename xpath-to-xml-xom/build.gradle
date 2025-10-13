@@ -1,10 +1,13 @@
 apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 
+description = 'Convenient utility to build XML models by evaluating XPath expressions'
+
 dependencies {
     api project(':xpath-to-xml-core')
 
     implementation libs.xom
 
     testImplementation project(':xpath-to-xml-test')
-    testImplementation libs.bundles.junit
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation libs.assertj
 }

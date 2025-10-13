@@ -16,6 +16,7 @@
 package com.github.simy4.xpath.jackson;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -24,13 +25,15 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.github.simy4.xpath.XmlBuilder;
 import com.github.simy4.xpath.fixtures.FixtureAccessor;
+import com.github.simy4.xpath.helpers.SimpleNamespaceContext;
+import org.assertj.core.presentation.StandardRepresentation;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPathExpressionException;
 
-import java.io.IOException;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,80 +50,113 @@ class YamlBuilderTest {
 
   static Stream<Arguments> data() {
     return Stream.of(
-        arguments(new FixtureAccessor("attr", "yaml")),
-        arguments(new FixtureAccessor("simple", "yaml")),
-        arguments(new FixtureAccessor("special", "yaml")));
+        arguments(new FixtureAccessor("attr", "yaml"), null),
+        arguments(new FixtureAccessor("attr", "yaml"), new SimpleNamespaceContext()),
+        arguments(new FixtureAccessor("simple", "yaml"), null),
+        arguments(new FixtureAccessor("simple", "yaml"), new SimpleNamespaceContext()),
+        arguments(new FixtureAccessor("special", "yaml"), null),
+        arguments(new FixtureAccessor("special", "yaml"), new SimpleNamespaceContext()));
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  void shouldBuildYamlFromSetOfXPaths(FixtureAccessor fixtureAccessor)
-      throws XPathExpressionException, IOException {
+  void shouldBuildYamlFromSetOfXPaths(
+      FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext)
+      throws XPathExpressionException, JsonProcessingException {
     var xmlProperties = fixtureAccessor.getXmlProperties();
     var builtDocument =
-        new XmlBuilder()
+        new XmlBuilder(namespaceContext)
             .putAll(xmlProperties.keySet())
             .build(new ObjectNode(JsonNodeFactory.instance));
 
-    assertThat(yamlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutXml());
+    assertThat(builtDocument)
+        .withRepresentation(new JSONRepresentation())
+        .isEqualTo(stringToYaml(fixtureAccessor.getPutXml()));
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  void shouldBuildYamlFromSetOfXPathsAndSetValues(FixtureAccessor fixtureAccessor)
-      throws XPathExpressionException, IOException {
+  void shouldBuildYamlFromSetOfXPathsAndSetValues(
+      FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext)
+      throws XPathExpressionException, JsonProcessingException {
     var xmlProperties = fixtureAccessor.getXmlProperties();
     var builtDocument =
-        new XmlBuilder().putAll(xmlProperties).build(new ObjectNode(JsonNodeFactory.instance));
+        new XmlBuilder(namespaceContext)
+            .putAll(xmlProperties)
+            .build(new ObjectNode(JsonNodeFactory.instance));
 
-    assertThat(yamlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
+    assertThat(builtDocument)
+        .withRepresentation(new JSONRepresentation())
+        .isEqualTo(stringToYaml(fixtureAccessor.getPutValueXml()));
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  void shouldModifyYamlWhenXPathsAreNotTraversable(FixtureAccessor fixtureAccessor)
-      throws XPathExpressionException, IOException {
+  void shouldModifyYamlWhenXPathsAreNotTraversable(
+      FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext)
+      throws XPathExpressionException, JsonProcessingException {
     var xmlProperties = fixtureAccessor.getXmlProperties();
     var json = fixtureAccessor.getPutXml();
     var oldDocument = stringToYaml(json);
-    var builtDocument = new XmlBuilder().putAll(xmlProperties).build(oldDocument);
+    var builtDocument = new XmlBuilder(namespaceContext).putAll(xmlProperties).build(oldDocument);
 
-    assertThat(yamlToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
+    assertThat(builtDocument)
+        .withRepresentation(new JSONRepresentation())
+        .isEqualTo(stringToYaml(fixtureAccessor.getPutValueXml()));
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  void shouldNotModifyYamlWhenAllXPathsTraversable(FixtureAccessor fixtureAccessor)
-      throws XPathExpressionException, IOException {
+  void shouldNotModifyYamlWhenAllXPathsTraversable(
+      FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext)
+      throws XPathExpressionException, JsonProcessingException {
     var xmlProperties = fixtureAccessor.getXmlProperties();
     var yaml = fixtureAccessor.getPutValueXml();
     var oldDocument = stringToYaml(yaml);
-    var builtDocument = new XmlBuilder().putAll(xmlProperties).build(oldDocument);
+    var builtDocument = new XmlBuilder(namespaceContext).putAll(xmlProperties).build(oldDocument);
 
-    assertThat(yamlToString(builtDocument)).isEqualTo(yaml);
+    assertThat(builtDocument)
+        .withRepresentation(new JSONRepresentation())
+        .isEqualTo(stringToYaml(yaml));
 
-    builtDocument = new XmlBuilder().putAll(xmlProperties.keySet()).build(oldDocument);
+    builtDocument =
+        new XmlBuilder(namespaceContext).putAll(xmlProperties.keySet()).build(oldDocument);
 
-    assertThat(yamlToString(builtDocument)).isEqualTo(yaml);
+    assertThat(builtDocument)
+        .withRepresentation(new JSONRepresentation())
+        .isEqualTo(stringToYaml(yaml));
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  void shouldRemovePathsFromExistingYaml(FixtureAccessor fixtureAccessor)
-      throws XPathExpressionException, IOException {
+  void shouldRemovePathsFromExistingYaml(
+      FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext)
+      throws XPathExpressionException, JsonProcessingException {
     var xmlProperties = fixtureAccessor.getXmlProperties();
     var yaml = fixtureAccessor.getPutValueXml();
     var oldDocument = stringToYaml(yaml);
-    var builtDocument = new XmlBuilder().removeAll(xmlProperties.keySet()).build(oldDocument);
+    var builtDocument =
+        new XmlBuilder(namespaceContext).removeAll(xmlProperties.keySet()).build(oldDocument);
 
-    assertThat(yamlToString(builtDocument)).isNotEqualTo(fixtureAccessor.getPutValueXml());
+    assertThat(builtDocument)
+        .withRepresentation(new JSONRepresentation())
+        .isNotEqualTo(stringToYaml(fixtureAccessor.getPutValueXml()));
   }
 
-  private JsonNode stringToYaml(String xml) throws IOException {
+  private JsonNode stringToYaml(String xml) throws JsonProcessingException {
     return objectMapper.readTree(xml);
   }
 
-  private String yamlToString(JsonNode json) throws JsonProcessingException {
-    return objectMapper.writeValueAsString(json).replace("\n", System.lineSeparator());
+  final class JSONRepresentation extends StandardRepresentation {
+    @Override
+    protected String fallbackToStringOf(Object object) {
+      try {
+        return object instanceof JsonNode
+            ? objectMapper.writer(new DefaultPrettyPrinter()).writeValueAsString(object)
+            : super.fallbackToStringOf(object);
+      } catch (JsonProcessingException e) {
+        throw new RuntimeException(e);
+      }
+    }
   }
 }

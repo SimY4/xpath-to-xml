@@ -1,5 +1,12 @@
 apply from: rootProject.file('gradle/benchmark-jmh.gradle')
 
+description = 'Convenient utility to build XML models by evaluating XPath expressions'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
 dependencies {
     api project(':xpath-to-xml-core')
 
@@ -7,5 +14,10 @@ dependencies {
 
     testImplementation project(':xpath-to-xml-test')
     testImplementation libs.jaxen
-    testImplementation libs.bundles.junit
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation libs.assertj
+}
+
+compileJava {
+    options.release = 11
 }

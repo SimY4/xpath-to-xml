@@ -1,14 +1,16 @@
 plugins {
-    id 'com.diffplug.spotless' version '6.25.0' apply false
+    id 'com.diffplug.spotless' version '7.2.1' apply false
     id 'info.solidsoft.pitest' version '1.15.0' apply false
     id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
-    id 'me.champeau.jmh' version '0.7.2' apply false
-    id 'net.ltgt.errorprone' version '3.1.0' apply false
-    id 'net.researchgate.release' version '3.0.2'
+    id 'me.champeau.jmh' version '0.7.3' apply false
+    id 'net.ltgt.errorprone' version '4.3.0' apply false
+    id 'net.researchgate.release' version '3.1.0'
     id 'org.beryx.jar' version '2.0.0' apply false
 }
 
 subprojects {
+    if (name == 'xpath-to-xml-bom') return // skip empty projects
+
     apply plugin: 'java-library'
     apply plugin: 'org.beryx.jar'
     apply from: rootProject.file('gradle/check-checkstyle.gradle')
@@ -21,19 +23,22 @@ subprojects {
         mavenCentral()
     }
 
+    configurations {
+      [compileClasspath, runtimeClasspath]*.resolutionStrategy*.activateDependencyLocking()
+    }
+
+    dependencies {
+        testImplementation platform(libs.junit.bom)
+
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+
     java {
         withJavadocJar()
         withSourcesJar()
 
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    // after gradle 5.3 we need to set this attribute to mark test configuration targeting java 8
-    [configurations.testCompileClasspath, configurations.testRuntimeClasspath].each {
-        it.attributes {
-            attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 11)
-        }
     }
 
     compileJava {
@@ -68,11 +73,23 @@ subprojects {
         options.addBooleanOption('html5', true)
         options.addStringOption('Xdoclint:all,-missing', '-quiet')
     }
+    
+    tasks.register('resolveAndLock') {
+        notCompatibleWithConfigurationCache('Fitlers configurations at execution time')
+        doFirst {
+            assert gradle.startParameter.writeDependencyLocks : "$path must be run from the the command line with the `--write-locks` flag"
+        }
+        doLast {
+            [configurations.compileClasspath, configurations.runtimeClasspath].each { it.resolve() }
+        }
+    }
 }
 
 nexusPublishing {
     repositories {
         sonatype {
+            nexusUrl = uri("https://ossrh-staging-api.central.sonatype.com/service/local/")
+            snapshotRepositoryUrl = uri("https://central.sonatype.com/repository/maven-snapshots/")
             username = sonatypeUsername
             password = sonatypePassword
         }
@@ -87,5 +104,5 @@ release {
 }
 
 wrapper {
-    gradleVersion = '8.7'
+    gradleVersion = '8.14.3'
 }

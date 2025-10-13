@@ -17,14 +17,17 @@ package com.github.simy4.xpath.gson;
 
 import com.github.simy4.xpath.XmlBuilder;
 import com.github.simy4.xpath.fixtures.FixtureAccessor;
+import com.github.simy4.xpath.helpers.SimpleNamespaceContext;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.assertj.core.presentation.StandardRepresentation;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPathExpressionException;
 
 import java.util.stream.Stream;
@@ -38,76 +41,105 @@ class XmlBuilderTest {
 
   static Stream<Arguments> data() {
     return Stream.of(
-        arguments(new FixtureAccessor("attr", "json")),
-        arguments(new FixtureAccessor("simple", "json")),
-        arguments(new FixtureAccessor("special", "json")));
+        arguments(new FixtureAccessor("attr", "json"), null),
+        arguments(new FixtureAccessor("attr", "json"), new SimpleNamespaceContext()),
+        arguments(new FixtureAccessor("simple", "json"), null),
+        arguments(new FixtureAccessor("simple", "json"), new SimpleNamespaceContext()),
+        arguments(new FixtureAccessor("special", "json"), null),
+        arguments(new FixtureAccessor("special", "json"), new SimpleNamespaceContext()));
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  void shouldBuildJsonFromSetOfXPaths(FixtureAccessor fixtureAccessor)
+  void shouldBuildJsonFromSetOfXPaths(
+      FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext)
       throws XPathExpressionException {
     var xmlProperties = fixtureAccessor.getXmlProperties();
-    var builtDocument = new XmlBuilder().putAll(xmlProperties.keySet()).build(new JsonObject());
+    var builtDocument =
+        new XmlBuilder(namespaceContext).putAll(xmlProperties.keySet()).build(new JsonObject());
 
-    assertThat(jsonToString(builtDocument)).isEqualTo(fixtureAccessor.getPutXml());
+    assertThat(builtDocument)
+        .withRepresentation(new JSONRepresentation())
+        .isEqualTo(stringToJson(fixtureAccessor.getPutXml()));
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  void shouldBuildJsonFromSetOfXPathsAndSetValues(FixtureAccessor fixtureAccessor)
+  void shouldBuildJsonFromSetOfXPathsAndSetValues(
+      FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext)
       throws XPathExpressionException {
     var xmlProperties = fixtureAccessor.getXmlProperties();
-    var builtDocument = new XmlBuilder().putAll(xmlProperties).build(new JsonObject());
+    var builtDocument =
+        new XmlBuilder(namespaceContext).putAll(xmlProperties).build(new JsonObject());
 
-    assertThat(jsonToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
+    assertThat(builtDocument)
+        .withRepresentation(new JSONRepresentation())
+        .isEqualTo(stringToJson(fixtureAccessor.getPutValueXml()));
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  void shouldModifyJsonWhenXPathsAreNotTraversable(FixtureAccessor fixtureAccessor)
+  void shouldModifyJsonWhenXPathsAreNotTraversable(
+      FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext)
       throws XPathExpressionException {
     var xmlProperties = fixtureAccessor.getXmlProperties();
     var json = fixtureAccessor.getPutXml();
     var oldDocument = stringToJson(json);
-    var builtDocument = new XmlBuilder().putAll(xmlProperties).build(oldDocument);
+    var builtDocument = new XmlBuilder(namespaceContext).putAll(xmlProperties).build(oldDocument);
 
-    assertThat(jsonToString(builtDocument)).isEqualTo(fixtureAccessor.getPutValueXml());
+    assertThat(builtDocument)
+        .withRepresentation(new JSONRepresentation())
+        .isEqualTo(stringToJson(fixtureAccessor.getPutValueXml()));
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  void shouldNotModifyJsonWhenAllXPathsTraversable(FixtureAccessor fixtureAccessor)
+  void shouldNotModifyJsonWhenAllXPathsTraversable(
+      FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext)
       throws XPathExpressionException {
     var xmlProperties = fixtureAccessor.getXmlProperties();
     var json = fixtureAccessor.getPutValueXml();
     var oldDocument = stringToJson(json);
-    var builtDocument = new XmlBuilder().putAll(xmlProperties).build(oldDocument);
+    var builtDocument = new XmlBuilder(namespaceContext).putAll(xmlProperties).build(oldDocument);
 
-    assertThat(jsonToString(builtDocument)).isEqualTo(json);
+    assertThat(builtDocument)
+        .withRepresentation(new JSONRepresentation())
+        .isEqualTo(stringToJson(json));
 
-    builtDocument = new XmlBuilder().putAll(xmlProperties.keySet()).build(oldDocument);
+    builtDocument =
+        new XmlBuilder(namespaceContext).putAll(xmlProperties.keySet()).build(oldDocument);
 
-    assertThat(jsonToString(builtDocument)).isEqualTo(json);
+    assertThat(builtDocument)
+        .withRepresentation(new JSONRepresentation())
+        .isEqualTo(stringToJson(json));
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  void shouldRemovePathsFromExistingXml(FixtureAccessor fixtureAccessor)
+  void shouldRemovePathsFromExistingXml(
+      FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext)
       throws XPathExpressionException {
     var xmlProperties = fixtureAccessor.getXmlProperties();
     var json = fixtureAccessor.getPutValueXml();
     var oldDocument = stringToJson(json);
-    var builtDocument = new XmlBuilder().removeAll(xmlProperties.keySet()).build(oldDocument);
+    var builtDocument =
+        new XmlBuilder(namespaceContext).removeAll(xmlProperties.keySet()).build(oldDocument);
 
-    assertThat(jsonToString(builtDocument)).isNotEqualTo(fixtureAccessor.getPutValueXml());
+    assertThat(builtDocument)
+        .withRepresentation(new JSONRepresentation())
+        .isNotEqualTo(stringToJson(fixtureAccessor.getPutValueXml()));
   }
 
   private JsonElement stringToJson(String xml) {
     return gson.fromJson(xml, JsonElement.class);
   }
 
-  private String jsonToString(JsonElement json) {
-    return gson.toJson(json).replaceAll("\n", System.lineSeparator());
+  final class JSONRepresentation extends StandardRepresentation {
+    @Override
+    protected String fallbackToStringOf(Object object) {
+      return object instanceof JsonElement
+          ? gson.toJson((JsonElement) object)
+          : super.fallbackToStringOf(object);
+    }
   }
 }

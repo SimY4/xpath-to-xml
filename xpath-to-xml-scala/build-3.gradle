@@ -1,4 +1,5 @@
 ext {
+    scalaVersion = '3.3.6'
     scalaCompiler = '3'
 }
 
@@ -9,22 +10,8 @@ sourceSets {
     main.scala.srcDirs += [file('src/main/scala-2.13+'), file('src/main/scala-3+')]
 }
 
-dependencies {
-    api project(':xpath-to-xml-core')
-
-    implementation libs.scala.library.v3
-
-    testImplementation project(':xpath-to-xml-test')
-}
-
 moduleConfig {
     moduleInfoPath = 'src/main/module-3/module-info.java'
-}
-
-spotless {
-    scala {
-        licenseHeaderFile rootProject.file('gradle/license.header'), 'package '
-    }
 }
 
 tasks.withType(ScalaCompile).configureEach {
@@ -32,7 +19,6 @@ tasks.withType(ScalaCompile).configureEach {
         deprecation = true
         encoding = 'UTF-8'
         additionalParameters = [
-                '-project-url', projectUrl,
                 '-explain',                             // Explain errors in more detail.
                 '-explain-types',                       // Explain type errors in more detail.
                 '-feature',                             // Emit warning and location for usages of features that should be imported explicitly.

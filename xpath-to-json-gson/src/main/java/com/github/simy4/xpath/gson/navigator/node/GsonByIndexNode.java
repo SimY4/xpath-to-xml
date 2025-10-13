@@ -22,34 +22,32 @@ import javax.xml.namespace.QName;
 
 public final class GsonByIndexNode extends AbstractGsonNode {
 
-  private final JsonArray parentArray;
   private final int index;
 
   /**
    * Constructor.
    *
-   * @param parentArray parent json array element
    * @param index json array index
    * @param parent parent node
    */
-  public GsonByIndexNode(JsonArray parentArray, int index, GsonNode parent) {
+  public GsonByIndexNode(int index, GsonNode parent) {
     super(parent);
-    this.parentArray = parentArray;
     this.index = index;
   }
 
   @Override
   public QName getName() {
-    return new QName("array[" + index + ']');
+    return QName.valueOf("array[" + index + ']');
   }
 
   @Override
   public JsonElement get() {
-    return parentArray.get(index);
+    return getParent().get().getAsJsonArray().get(index);
   }
 
   @Override
   public void set(JsonElement jsonElement) {
+    final JsonArray parentArray = getParent().get().getAsJsonArray();
     if (null == jsonElement) {
       parentArray.remove(index);
     } else {

@@ -1,5 +1,7 @@
 apply plugin: 'scala'
 
+description = 'Convenient utility to build XML models by evaluating XPath expressions'
+
 layout.buildDirectory = file("build-${scalaCompiler}")
 
 clean {
@@ -16,6 +18,10 @@ configurations.configureEach {
     }
 }
 
+dependencyLocking {
+    lockFile = file("gradle-${scalaCompiler}.lockfile")
+}
+
 dependencies {
     api project(':xpath-to-xml-core')
 
@@ -27,13 +33,21 @@ dependencies {
     testImplementation libs.bundles.scalatest
 }
 
+spotless {
+    scala {
+        scalafmt('3.9.6').configFile('.scalafmt.conf')
+        licenseHeaderFile rootProject.file('gradle/license.header'), 'package '
+    }
+}
+
 javadocJar {
     dependsOn scaladoc
     from scaladoc
 }
 
 scala {
-    zincVersion = '1.10.0'
+    scalaVersion = project.ext.scalaVersion
+    zincVersion = '1.11.0'
 }
 
 test {

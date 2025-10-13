@@ -1,0 +1,7 @@
+# This is a Gradle generated file for dependency locking.
+# Manual edits can break the build and are not advised.
+# This file is expected to be part of source control.
+org.scala-lang.modules:scala-xml_2.12:2.4.0=compileClasspath,runtimeClasspath
+org.scala-lang:scala-library:2.12.20=compileClasspath,runtimeClasspath
+org.scala-lang:scala-reflect:2.12.20=compileClasspath
+empty=

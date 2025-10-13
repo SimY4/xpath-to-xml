@@ -19,6 +19,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
 
+import java.util.stream.Stream;
+
 /**
  * Jackson node contract.
  *
@@ -35,7 +37,7 @@ public interface JacksonNode extends Node {
 
   void set(JsonNode jsonNode) throws XmlBuilderException;
 
-  Iterable<? extends JacksonNode> elements();
+  Stream<JacksonNode> elements();
 
-  Iterable<? extends JacksonNode> attributes();
+  Stream<JacksonNode> attributes();
 }

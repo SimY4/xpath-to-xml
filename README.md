@@ -1,5 +1,5 @@
 # XPath-to-XML
-[![Build Status](https://github.com/SimY4/xpath-to-xml/workflows/Build%20and%20Test/badge.svg?branch=3.x)](https://github.com/SimY4/xpath-to-xml/actions?query=workflow%3A"Build+and+Test")
+[![Build Status](https://github.com/SimY4/xpath-to-xml/actions/workflows/build-and-test.yml/badge.svg?branch=3.x)](https://github.com/SimY4/xpath-to-xml/actions?query=workflow%3A%22Build+and+Test%22")
 [![codecov](https://codecov.io/gh/SimY4/xpath-to-xml/branch/3.x/graph/badge.svg)](https://codecov.io/gh/SimY4/xpath-to-xml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
@@ -18,9 +18,10 @@ Convenient utility to build XML models by evaluating XPath expressions.
  
 ## Additionally supported models
 
- - jakarta.json
  - Gson
  - Jackson
+ - jakarta.json
+ - org.json
 
 # Usage
 

@@ -20,18 +20,21 @@ import com.github.simy4.xpath.parser.XPathParser
 
 import javax.xml.namespace.NamespaceContext
 import javax.xml.xpath.XPathExpressionException
-import scala.quoted.{ Expr, Exprs, Quotes, Varargs, quotes }
+
+import scala.quoted.{ quotes, Expr, Exprs, Quotes, Varargs }
 
 object XPathLiteral:
-  @SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf", "org.wartremover.warts.Null", "org.wartremover.warts.IterableOps"))
+  @SuppressWarnings(
+    Array("org.wartremover.warts.AsInstanceOf", "org.wartremover.warts.Null", "org.wartremover.warts.IterableOps")
+  )
   def xpathImpl(sc: Expr[StringContext])(using Quotes): Expr[JExpr] =
     import quotes.reflect.report
     sc match
       case '{ StringContext(${ Varargs(Exprs(args)) }*) } if args.size == 1 =>
         try {
-          val const = args.head
-          val namespaceContext = Expr.summon[NamespaceContext].getOrElse('{null})
-          val _     = new XPathParser(null).parse(const)
+          val const            = args.head
+          val namespaceContext = Expr.summon[NamespaceContext].getOrElse('{ null })
+          val _                = new XPathParser(null).parse(const)
           '{ new XPathParser(${ namespaceContext }).parse(${ Expr(const) }) }
         } catch {
           case xpee: XPathExpressionException =>

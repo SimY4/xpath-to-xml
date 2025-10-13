@@ -31,7 +31,7 @@ public final class JacksonRootNode extends AbstractJacksonNode {
 
   @Override
   public QName getName() {
-    return new QName(DOCUMENT);
+    return QName.valueOf(DOCUMENT);
   }
 
   @Override

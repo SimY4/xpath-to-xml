@@ -50,7 +50,7 @@ class GsonNavigatorTest {
   @Test
   void shouldReturnParentForElementChild() {
     json.add("child", new JsonPrimitive("zero"));
-    var childNode = new GsonByNameNode(json, "child", root);
+    var childNode = new GsonByNameNode(QName.valueOf("child"), root);
 
     assertThat(navigator.parentOf(childNode)).isEqualTo(root);
   }
@@ -61,7 +61,7 @@ class GsonNavigatorTest {
     json.add("zero");
     var root = new GsonRootNode(json);
     var navigator = new GsonNavigator(root);
-    var childNode = new GsonByIndexNode(json, 0, root);
+    var childNode = new GsonByIndexNode(0, root);
 
     assertThat(navigator.parentOf(childNode)).isEqualTo(root);
   }
@@ -74,8 +74,8 @@ class GsonNavigatorTest {
     json.add(child);
     var root = new GsonRootNode(json);
     var navigator = new GsonNavigator(root);
-    var array1Node = new GsonByIndexNode(json, 0, root);
-    var array2Node = new GsonByIndexNode(child, 0, array1Node);
+    var array1Node = new GsonByIndexNode(0, root);
+    var array2Node = new GsonByIndexNode(0, array1Node);
 
     assertThat(navigator.parentOf(array2Node)).isEqualTo(root);
   }
@@ -100,7 +100,7 @@ class GsonNavigatorTest {
   @Test
   void shouldSetTextForPrimitiveChild() {
     json.add("child", new JsonPrimitive("zero"));
-    var childNode = new GsonByNameNode(json, "child", root);
+    var childNode = new GsonByNameNode(QName.valueOf("child"), root);
     navigator.setText(childNode, "test");
 
     assertThat(json.get("child")).isEqualTo(new JsonPrimitive("test"));
@@ -108,9 +108,9 @@ class GsonNavigatorTest {
 
   @Test
   void shouldCreateElementForElementParent() {
-    var child = navigator.createElement(root, new QName("child"));
+    var child = navigator.createElement(root, QName.valueOf("child"));
 
-    assertThat(child).isEqualTo(new GsonByNameNode(json, "child", root));
+    assertThat(child).isEqualTo(new GsonByNameNode(QName.valueOf("child"), root));
     assertThat(json.get("child")).isEqualTo(new JsonObject());
   }
 
@@ -122,15 +122,15 @@ class GsonNavigatorTest {
     json.add(child);
     var root = new GsonRootNode(json);
     var navigator = new GsonNavigator(root);
-    var objectNode = new GsonByIndexNode(json, 0, root);
+    var objectNode = new GsonByIndexNode(0, root);
 
-    var newChild = navigator.createElement(objectNode, new QName("child"));
+    var newChild = navigator.createElement(objectNode, QName.valueOf("child"));
 
     assertThat(newChild.get()).isNotSameAs(child);
     var expected = new JsonObject();
     expected.add("child", new JsonObject());
     assertThat(newChild)
-        .isEqualTo(new GsonByNameNode(expected, "child", new GsonByIndexNode(json, 1, root)));
+        .isEqualTo(new GsonByNameNode(QName.valueOf("child"), new GsonByIndexNode(1, root)));
     assertThat(objectNode.get()).isSameAs(child);
   }
 
@@ -140,29 +140,29 @@ class GsonNavigatorTest {
     var root = new GsonRootNode(json);
     var navigator = new GsonNavigator(root);
 
-    var child = navigator.createElement(root, new QName("child"));
+    var child = navigator.createElement(root, QName.valueOf("child"));
 
     var expected = new JsonObject();
     expected.add("child", new JsonObject());
     assertThat(child)
-        .isEqualTo(new GsonByNameNode(expected, "child", new GsonByIndexNode(json, 0, root)));
+        .isEqualTo(new GsonByNameNode(QName.valueOf("child"), new GsonByIndexNode(0, root)));
     assertThat(json.get(0)).isEqualTo(expected);
   }
 
   @Test
   void shouldCreateElementForPrimitiveParent() {
     json.add("child", new JsonPrimitive("zero"));
-    var childNode = new GsonByNameNode(json, "child", root);
+    var childNode = new GsonByNameNode(QName.valueOf("child"), root);
 
-    assertThatThrownBy(() -> navigator.createElement(childNode, new QName("child")))
+    assertThatThrownBy(() -> navigator.createElement(childNode, QName.valueOf("child")))
         .isInstanceOf(XmlBuilderException.class);
   }
 
   @Test
   void shouldCreateAttributeForElementParent() {
-    var child = navigator.createAttribute(root, new QName("child"));
+    var child = navigator.createAttribute(root, QName.valueOf("child"));
 
-    assertThat(child).isEqualTo(new GsonByNameNode(json, "child", root));
+    assertThat(child).isEqualTo(new GsonByNameNode(QName.valueOf("child"), root));
     assertThat(json.get("child")).isEqualTo(new JsonPrimitive(""));
   }
 
@@ -174,15 +174,15 @@ class GsonNavigatorTest {
     json.add(child);
     var root = new GsonRootNode(json);
     var navigator = new GsonNavigator(root);
-    var objectNode = new GsonByIndexNode(json, 0, root);
+    var objectNode = new GsonByIndexNode(0, root);
 
-    var newChild = navigator.createAttribute(objectNode, new QName("child"));
+    var newChild = navigator.createAttribute(objectNode, QName.valueOf("child"));
 
     assertThat(newChild.get()).isNotSameAs(child);
     var expected = new JsonObject();
     expected.add("child", new JsonPrimitive(""));
     assertThat(newChild)
-        .isEqualTo(new GsonByNameNode(expected, "child", new GsonByIndexNode(json, 1, root)));
+        .isEqualTo(new GsonByNameNode(QName.valueOf("child"), new GsonByIndexNode(1, root)));
     assertThat(objectNode.get()).isSameAs(child);
   }
 
@@ -192,21 +192,21 @@ class GsonNavigatorTest {
     var root = new GsonRootNode(json);
     var navigator = new GsonNavigator(root);
 
-    var child = navigator.createAttribute(root, new QName("child"));
+    var child = navigator.createAttribute(root, QName.valueOf("child"));
 
     var expected = new JsonObject();
     expected.add("child", new JsonPrimitive(""));
     assertThat(child)
-        .isEqualTo(new GsonByNameNode(expected, "child", new GsonByIndexNode(json, 0, root)));
+        .isEqualTo(new GsonByNameNode(QName.valueOf("child"), new GsonByIndexNode(0, root)));
     assertThat(json.get(0)).isEqualTo(expected);
   }
 
   @Test
   void shouldCreateAttributeForPrimitiveParent() {
     json.add("child", new JsonPrimitive("zero"));
-    var childNode = new GsonByNameNode(json, "child", root);
+    var childNode = new GsonByNameNode(QName.valueOf("child"), root);
 
-    assertThatThrownBy(() -> navigator.createAttribute(childNode, new QName("child")))
+    assertThatThrownBy(() -> navigator.createAttribute(childNode, QName.valueOf("child")))
         .isInstanceOf(XmlBuilderException.class);
   }
 }

@@ -22,38 +22,36 @@ import javax.xml.namespace.QName;
 
 public final class JacksonByNameNode extends AbstractJacksonNode {
 
-  private final ObjectNode parentObject;
-  private final String name;
+  private final QName name;
 
   /**
    * Constructor.
    *
-   * @param parentObject parent json object element
    * @param name json object key
    * @param parent parent node
    */
-  public JacksonByNameNode(ObjectNode parentObject, String name, JacksonNode parent) {
+  public JacksonByNameNode(QName name, JacksonNode parent) {
     super(parent);
-    this.parentObject = parentObject;
     this.name = name;
   }
 
   @Override
   public QName getName() {
-    return new QName(name);
+    return name;
   }
 
   @Override
   public JsonNode get() {
-    return parentObject.get(name);
+    return getParent().get().get(name.getLocalPart());
   }
 
   @Override
   public void set(JsonNode jsonElement) {
+    final ObjectNode parentObject = getParentObject();
     if (null == jsonElement) {
-      parentObject.remove(name);
+      parentObject.remove(name.getLocalPart());
     } else {
-      parentObject.set(name, jsonElement);
+      parentObject.set(name.getLocalPart(), jsonElement);
     }
   }
 
@@ -72,5 +70,9 @@ public final class JacksonByNameNode extends AbstractJacksonNode {
     int result = super.hashCode();
     result = 31 * result + getParent().hashCode();
     return result;
+  }
+
+  private ObjectNode getParentObject() {
+    return (ObjectNode) getParent().get();
   }
 }

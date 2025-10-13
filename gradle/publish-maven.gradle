@@ -4,7 +4,7 @@ apply plugin: 'signing'
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            from components.java
+            from components.find { it.name == 'java' || it.name == 'javaPlatform' }
             versionMapping {
                 usage('java-api') {
                     fromResolutionResult()
@@ -13,28 +13,27 @@ publishing {
                     fromResolutionResult()
                 }
             }
-            afterEvaluate {
-                artifactId = project.name
+            afterEvaluate { project ->
                 pom {
                     name = project.name
-                    description = projectDescription
+                    description = project.description
                     url = 'http://github.com/SimY4/xpath-to-xml'
                     inceptionYear = '2017'
 
                     properties = [
-                        'info.releaseNotesURL': 'https://github.com/SimY4/xpath-to-xml/blob/2.x/CHANGELOG.md',
+                        'info.releaseNotesURL': 'https://github.com/SimY4/xpath-to-xml/releases',
                         'info.versionScheme': 'semver-spec'
                     ]
 
                     scm {
-                        connection = projectScm
-                        developerConnection = projectScm
-                        url = projectUrl
+                        connection = 'scm:git:https://github.com/SimY4/xpath-to-xml'
+                        developerConnection = 'scm:git:https://github.com/SimY4/xpath-to-xml'
+                        url = 'http://github.com/SimY4/xpath-to-xml'
                     }
 
                     issueManagement {
                         system = 'GitHub'
-                        url = projectIssues
+                        url = 'https://github.com/SimY4/xpath-to-xml/issues'
                     }
 
                     licenses {

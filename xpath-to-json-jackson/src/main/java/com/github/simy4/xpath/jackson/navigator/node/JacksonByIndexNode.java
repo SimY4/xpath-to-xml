@@ -22,34 +22,32 @@ import javax.xml.namespace.QName;
 
 public final class JacksonByIndexNode extends AbstractJacksonNode {
 
-  private final ArrayNode parentArray;
   private final int index;
 
   /**
    * Constructor.
    *
-   * @param parentArray parent json array element
    * @param index json array index
    * @param parent parent node
    */
-  public JacksonByIndexNode(ArrayNode parentArray, int index, JacksonNode parent) {
+  public JacksonByIndexNode(int index, JacksonNode parent) {
     super(parent);
-    this.parentArray = parentArray;
     this.index = index;
   }
 
   @Override
   public QName getName() {
-    return new QName("array[" + index + ']');
+    return QName.valueOf("array[" + index + ']');
   }
 
   @Override
   public JsonNode get() {
-    return parentArray.get(index);
+    return getParent().get().get(index);
   }
 
   @Override
   public void set(JsonNode jsonElement) {
+    final ArrayNode parentArray = getParentArray();
     if (null == jsonElement) {
       parentArray.remove(index);
     } else {
@@ -76,5 +74,9 @@ public final class JacksonByIndexNode extends AbstractJacksonNode {
 
   public int getIndex() {
     return index;
+  }
+
+  private ArrayNode getParentArray() {
+    return (ArrayNode) getParent().get();
   }
 }

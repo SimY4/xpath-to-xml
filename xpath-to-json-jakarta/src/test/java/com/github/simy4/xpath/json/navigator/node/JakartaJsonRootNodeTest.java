@@ -35,7 +35,7 @@ class JakartaJsonRootNodeTest {
 
   @Test
   void shouldReturnRootName() {
-    assertThat(rootNode.getName()).isEqualTo(new QName(JakartaJsonNode.DOCUMENT));
+    assertThat(rootNode.getName()).isEqualTo(QName.valueOf(JakartaJsonNode.DOCUMENT));
   }
 
   @Test

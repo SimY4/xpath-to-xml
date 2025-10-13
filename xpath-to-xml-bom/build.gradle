@@ -1,0 +1,21 @@
+apply plugin: 'java-platform'
+apply from: rootProject.file('gradle/publish-maven.gradle')
+
+description = 'XPath to XML Bill of Materials (BOM)'
+
+dependencies {
+    constraints {
+        api project(':xpath-to-json-gson')
+        api project(':xpath-to-json-jackson')
+        api project(':xpath-to-json-jakarta')
+        api project(':xpath-to-json-json')
+        api project(':xpath-to-xml-core')
+        api project(':xpath-to-xml-dom')
+        api project(':xpath-to-xml-dom4j')
+        api project(':xpath-to-xml-jdom')
+        api project(':xpath-to-xml-scala_2.12')
+        api project(':xpath-to-xml-scala_2.13')
+        api project(':xpath-to-xml-scala_3')
+        api project(':xpath-to-xml-xom')
+    }
+}
