@@ -42,7 +42,7 @@ abstract private[navigator] class AbstractScalaXmlNode protected (val parent: Sc
     extends ScalaXmlNode
     with Serializable {
   @SuppressWarnings(Array("org.wartremover.warts.IsInstanceOf"))
-  def canEqual(that: Any): Boolean = that.isInstanceOf[ScalaXmlNode]
+  def canEqual(that: Any): Boolean        = that.isInstanceOf[ScalaXmlNode]
   override def equals(that: Any): Boolean =
     that match {
       case n: ScalaXmlNode => n.canEqual(this) && node == n.node
@@ -81,7 +81,7 @@ final class Element private[navigator] (
     _node.child.view.zipWithIndex.collect { case (e: Elem, i) => new Element(e, i, this) }
   def attributes: Iterable[Attribute] =
     _node.attributes.view.collect { case a: XmlAttribute => new Attribute(a, this) }
-  private[navigator] def node: Elem = _node
+  private[navigator] def node: Elem               = _node
   private[navigator] def node_=(elem: Elem): Unit = {
     val parentNode = parent.node
     parent.node =
@@ -91,7 +91,7 @@ final class Element private[navigator] (
   }
   @SuppressWarnings(Array("org.wartremover.warts.IsInstanceOf"))
   override def canEqual(that: Any): Boolean = that.isInstanceOf[Element]
-  override def equals(that: Any): Boolean =
+  override def equals(that: Any): Boolean   =
     that match {
       case e: Element => e.canEqual(this) && index == e.index && super.equals(that)
       case _          => false
@@ -117,10 +117,10 @@ final class Attribute private[navigator] (
     if (attr.isPrefixed) new QName(attr.getNamespace(parent.node), attr.key, attr.pre)
     else new QName(attr.key)
   }
-  def getText: String                       = _attr.value.text
-  def elements: Iterable[Element]           = Nil
-  def attributes: Iterable[Attribute]       = Nil
-  private[navigator] def node: XmlAttribute = _attr
+  def getText: String                                     = _attr.value.text
+  def elements: Iterable[Element]                         = Nil
+  def attributes: Iterable[Attribute]                     = Nil
+  private[navigator] def node: XmlAttribute               = _attr
   private[navigator] def node_=(attr: XmlAttribute): Unit = {
     parent.node = parent.node % attr
     _attr = attr

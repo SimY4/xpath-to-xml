@@ -86,7 +86,7 @@ class ScalaXmlNavigator(override val root: Root) extends Navigator[ScalaXmlNode]
       case a: Attribute =>
         val toDelete   = a.node
         val parentNode = a.parent.node
-        val newAttr =
+        val newAttr    =
           if (toDelete.isPrefixed)
             parentNode.attributes.remove(toDelete.getNamespace(parentNode), parentNode, toDelete.key)
           else parentNode.attributes.remove(toDelete.key)

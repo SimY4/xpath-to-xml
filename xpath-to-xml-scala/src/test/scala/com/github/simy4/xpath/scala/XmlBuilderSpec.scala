@@ -127,9 +127,9 @@ class XmlBuilderSpec extends AnyFunSpec {
       }
 
       describe("should not modify document when XPaths are traversable") {
-        val xmlProperties = fixtureAccessor.getXmlProperties.asScala
-        val xml           = fixtureAccessor.getPutValueXml
-        val oldDocument   = XML.loadString(xml)
+        val xmlProperties  = fixtureAccessor.getXmlProperties.asScala
+        val xml            = fixtureAccessor.getPutValueXml
+        val oldDocument    = XML.loadString(xml)
         val builtDocument1 = xmlProperties.toSeq
           .foldRight(Right(Nil): Either[Throwable, List[Effect]]) { (pair, acc) =>
             for {
