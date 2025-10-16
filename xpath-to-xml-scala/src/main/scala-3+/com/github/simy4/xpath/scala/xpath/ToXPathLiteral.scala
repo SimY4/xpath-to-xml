@@ -18,5 +18,8 @@ package scala.xpath
 
 import expr.Expr
 
+import _root_.scala.annotation.unused
+
 trait ToXPathLiteral:
-  extension (inline sc: StringContext) inline def xpath(inline args: Any*): Expr = ${ XPathLiteral.xpathImpl('sc) }
+  extension (inline sc: StringContext)
+    inline def xpath(@unused inline args: Any*): Expr = ${ XPathLiteral.xpathImpl('sc) }
