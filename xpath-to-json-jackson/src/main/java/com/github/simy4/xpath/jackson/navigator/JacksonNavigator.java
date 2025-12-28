@@ -18,6 +18,7 @@ package com.github.simy4.xpath.jackson.navigator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.github.simy4.xpath.XmlBuilderException;
@@ -183,7 +184,7 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
     parentArray.add(arrayNode);
     while (nodeToCopy != arrayNode && i > 0) {
       arrayNode = parentArray.get(i - 1);
-      parentArray.set(i, arrayNode);
+      parentArray.set(i, NullNode.instance);
       i -= 1;
     }
     return new JacksonByIndexNode(i, parent);
