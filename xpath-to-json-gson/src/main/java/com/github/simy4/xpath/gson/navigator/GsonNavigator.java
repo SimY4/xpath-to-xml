@@ -22,6 +22,7 @@ import com.github.simy4.xpath.gson.navigator.node.GsonNode;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
@@ -181,7 +182,7 @@ public class GsonNavigator implements Navigator<GsonNode> {
     parentArray.add(arrayElement);
     while (elementToCopy != arrayElement && i > 0) {
       arrayElement = parentArray.get(i - 1);
-      parentArray.set(i, arrayElement);
+      parentArray.set(i, JsonNull.INSTANCE);
       i -= 1;
     }
     return new GsonByIndexNode(i, parent);

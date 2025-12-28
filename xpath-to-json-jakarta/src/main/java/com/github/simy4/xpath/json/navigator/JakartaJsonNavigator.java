@@ -197,7 +197,7 @@ public class JakartaJsonNavigator implements Navigator<JakartaJsonNode> {
   private JakartaJsonByIndexNode prependToArray(
       JakartaJsonNode parent, JsonValue valueToCopy, JsonArray parentArray) {
     final int index = parentArray.indexOf(valueToCopy);
-    parentArray = jsonProvider.createArrayBuilder(parentArray).add(index, valueToCopy).build();
+    parentArray = jsonProvider.createArrayBuilder(parentArray).add(index, JsonValue.NULL).build();
     parent.set(jsonProvider, parentArray);
     return new JakartaJsonByIndexNode(index, parent);
   }

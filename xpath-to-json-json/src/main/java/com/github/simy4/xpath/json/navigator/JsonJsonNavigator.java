@@ -177,7 +177,7 @@ public class JsonJsonNavigator implements Navigator<JsonJsonNode> {
     parentArray.put(arrayElement);
     while (valueToCopy != arrayElement && i > 0) {
       arrayElement = parentArray.get(i - 1);
-      parentArray.put(i, arrayElement);
+      parentArray.put(i, JSONObject.NULL);
       i -= 1;
     }
     return new JsonJsonByIndexNode(i, parent);
