@@ -15,6 +15,7 @@
  */
 package com.github.simy4.xpath.helpers;
 
+import java.io.Serial;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
@@ -31,8 +32,10 @@ import java.util.Set;
 @SuppressWarnings("JdkObsolete")
 public class OrderedProperties extends Properties {
 
+  @Serial
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("serial")
   private final Set<Object> keys = new LinkedHashSet<>();
 
   /**

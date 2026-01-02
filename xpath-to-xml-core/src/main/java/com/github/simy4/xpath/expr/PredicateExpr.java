@@ -30,6 +30,7 @@ public class PredicateExpr implements Expr, Serializable {
 
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("serial")
   private final Expr predicate;
 
   public PredicateExpr(Expr predicate) {

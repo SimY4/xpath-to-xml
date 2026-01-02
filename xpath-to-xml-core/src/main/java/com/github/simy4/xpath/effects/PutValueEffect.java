@@ -31,6 +31,7 @@ public class PutValueEffect implements Effect, Serializable {
 
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("serial")
   private final Expr expr;
   private final String value;
 

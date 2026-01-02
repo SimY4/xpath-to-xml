@@ -23,6 +23,7 @@ abstract class AbstractDom4jNode<N extends Node> implements Dom4jNode, Serializa
 
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("serial")
   private final N node;
 
   protected AbstractDom4jNode(N node) {

@@ -34,6 +34,7 @@ public class PutEffect implements Effect, Serializable {
 
   private static final ViewVisitor<Node, Void> eagerVisitor = new EagerVisitor();
 
+  @SuppressWarnings("serial")
   private final Expr expr;
 
   public PutEffect(Expr expr) {

@@ -27,6 +27,7 @@ public final class NodeView<N extends Node> implements IterableNodeView<N>, Seri
 
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("serial")
   private final N node;
   private final int position;
   private final boolean hasNext;

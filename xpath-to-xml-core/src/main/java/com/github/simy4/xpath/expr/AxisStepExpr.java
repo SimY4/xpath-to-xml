@@ -33,7 +33,9 @@ public class AxisStepExpr implements StepExpr, Serializable {
 
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("serial")
   private final AxisResolver axisResolver;
+  @SuppressWarnings("serial")
   private final Collection<Expr> predicates;
 
   public AxisStepExpr(AxisResolver axisResolver, Collection<Expr> predicates) {

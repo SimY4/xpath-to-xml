@@ -98,6 +98,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
     private static final long serialVersionUID = 2L;
 
+    @SuppressWarnings("serial")
     final Set<T> cache = new LinkedHashSet<>();
     final transient Iterable<? extends T> nodeSet;
     final transient Predicate<? super T> filter;
@@ -190,6 +191,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
     private static final long serialVersionUID = 2L;
 
+    @SuppressWarnings("serial")
     final Set<T> cache = new LinkedHashSet<>();
     final transient NodeSetView<T> nodeSetView;
     final transient Function<? super NodeView<T>, ? extends IterableNodeView<T>> fmap;

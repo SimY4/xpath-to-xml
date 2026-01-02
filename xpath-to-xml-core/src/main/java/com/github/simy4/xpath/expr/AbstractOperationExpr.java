@@ -27,7 +27,9 @@ abstract class AbstractOperationExpr implements Expr, Serializable {
 
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("serial")
   private final Expr leftExpr;
+  @SuppressWarnings("serial")
   private final Expr rightExpr;
 
   protected AbstractOperationExpr(Expr leftExpr, Expr rightExpr) {

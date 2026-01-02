@@ -25,6 +25,7 @@ public final class DomNode implements Node, Serializable {
 
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("serial")
   private final org.w3c.dom.Node node;
 
   public DomNode(org.w3c.dom.Node node) {

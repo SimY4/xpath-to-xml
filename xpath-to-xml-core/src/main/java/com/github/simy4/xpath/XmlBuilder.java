@@ -63,6 +63,7 @@ public class XmlBuilder implements Serializable {
   }
 
   private final XPathParser parser;
+  @SuppressWarnings("serial")
   private final List<Effect> effects;
 
   public XmlBuilder() {

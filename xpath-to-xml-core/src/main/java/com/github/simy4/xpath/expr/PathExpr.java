@@ -29,6 +29,7 @@ public class PathExpr implements Expr, Serializable {
 
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("serial")
   private final List<StepExpr> pathExpr;
 
   public PathExpr(List<StepExpr> pathExpr) {

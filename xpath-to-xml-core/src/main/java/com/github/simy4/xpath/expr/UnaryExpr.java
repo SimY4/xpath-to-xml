@@ -27,6 +27,7 @@ public class UnaryExpr implements Expr, Serializable {
 
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("serial")
   private final Expr valueExpr;
 
   public UnaryExpr(Expr valueExpr) {
