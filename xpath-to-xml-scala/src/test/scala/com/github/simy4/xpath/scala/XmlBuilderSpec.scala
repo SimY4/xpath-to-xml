@@ -53,14 +53,12 @@ class XmlBuilderSpec extends AnyFunSpec {
 
       describe("should build document from set of XPaths: ") {
         val xmlProperties = fixtureAccessor.getXmlProperties.asScala
-        val builtDocument = xmlProperties.keys
-          .foldRight(Right(Nil): Either[Throwable, List[Effect]]) { (xpath, acc) =>
-            for {
-              xs  <- acc
-              eff <- Effect.put(xpath)
-            } yield eff :: xs
+        val builtDocument = xmlProperties.keys.toSeq
+          .traverse(Effect.put(_))
+          .flatMap {
+            case head +: tail => XmlBuilder(head, tail*)(root)
+            case _            => Right(root)
           }
-          .flatMap(XmlBuilder(_)(root))
           .getOrThrow
         val builtDocumentString = xmlToString(builtDocument)
 
@@ -76,15 +74,12 @@ class XmlBuilderSpec extends AnyFunSpec {
 
       describe("should build document from set of XPaths and set values") {
         val xmlProperties = fixtureAccessor.getXmlProperties.asScala
-        val builtDocument = xmlProperties.toSeq
-          .foldRight(Right(Nil): Either[Throwable, List[Effect]]) { (pair, acc) =>
-            for {
-              xs  <- acc
-              eff <- Effect.putValue(pair._1, pair._2)
-            } yield eff :: xs
-          }
-          .flatMap(XmlBuilder(_)(root))
-          .getOrThrow
+        val builtDocument = xmlProperties.toSeq.traverse { case (xpath, value) =>
+          Effect.putValue(xpath, value)
+        }.flatMap {
+          case head +: tail => XmlBuilder(head, tail*)(root)
+          case _            => Right(root)
+        }.getOrThrow
         val builtDocumentString = xmlToString(builtDocument)
 
         xmlProperties.foreach { case (xpath, value) =>
@@ -103,15 +98,12 @@ class XmlBuilderSpec extends AnyFunSpec {
         val xmlProperties = fixtureAccessor.getXmlProperties.asScala
         val xml           = fixtureAccessor.getPutXml
         val oldDocument   = XML.loadString(xml)
-        val builtDocument = xmlProperties.toSeq
-          .foldRight(Right(Nil): Either[Throwable, List[Effect]]) { (pair, acc) =>
-            for {
-              xs  <- acc
-              eff <- Effect.putValue(pair._1, pair._2)
-            } yield eff :: xs
-          }
-          .flatMap(XmlBuilder(_)(oldDocument))
-          .getOrThrow
+        val builtDocument = xmlProperties.toSeq.traverse { case (xpath, value) =>
+          Effect.putValue(xpath, value)
+        }.flatMap {
+          case head +: tail => XmlBuilder(head, tail*)(oldDocument)
+          case _            => Right(oldDocument)
+        }.getOrThrow
         val builtDocumentString = xmlToString(builtDocument)
 
         xmlProperties.foreach { case (xpath, value) =>
@@ -130,15 +122,12 @@ class XmlBuilderSpec extends AnyFunSpec {
         val xmlProperties = fixtureAccessor.getXmlProperties.asScala
         val xml           = fixtureAccessor.getPutValueXml
         val oldDocument   = XML.loadString(xml)
-        val builtDocument1 = xmlProperties.toSeq
-          .foldRight(Right(Nil): Either[Throwable, List[Effect]]) { (pair, acc) =>
-            for {
-              xs  <- acc
-              eff <- Effect.putValue(pair._1, pair._2)
-            } yield eff :: xs
-          }
-          .flatMap(XmlBuilder(_)(oldDocument))
-          .getOrThrow
+        val builtDocument1 = xmlProperties.toSeq.traverse { case (xpath, value) =>
+          Effect.putValue(xpath, value)
+        }.flatMap {
+          case head +: tail => XmlBuilder(head, tail*)(oldDocument)
+          case _            => Right(oldDocument)
+        }.getOrThrow
         val builtDocumentString1 = xmlToString(builtDocument1)
 
         xmlProperties.foreach { case (xpath, value) =>
@@ -152,14 +141,12 @@ class XmlBuilderSpec extends AnyFunSpec {
           it("first: should match exactly")(assert(builtDocumentString1 === fixtureAccessor.getPutValueXml))
         }
 
-        val builtDocument2 = xmlProperties.keys
-          .foldRight(Right(Nil): Either[Throwable, List[Effect]]) { (xpath, acc) =>
-            for {
-              xs  <- acc
-              eff <- Effect.put(xpath)
-            } yield eff :: xs
+        val builtDocument2 = xmlProperties.keys.toSeq
+          .traverse(Effect.put(_))
+          .flatMap {
+            case head +: tail => XmlBuilder(head, tail*)(oldDocument)
+            case _            => Right(oldDocument)
           }
-          .flatMap(XmlBuilder(_)(oldDocument))
           .getOrThrow
         val builtDocumentString2 = xmlToString(builtDocument2)
 
@@ -179,14 +166,12 @@ class XmlBuilderSpec extends AnyFunSpec {
         val xmlProperties = fixtureAccessor.getXmlProperties.asScala
         val xml           = fixtureAccessor.getPutValueXml
         val oldDocument   = XML.loadString(xml)
-        val builtDocument = xmlProperties.keys
-          .foldRight(Right(Nil): Either[Throwable, List[Effect]]) { (xpath, acc) =>
-            for {
-              xs  <- acc
-              eff <- Effect.remove(xpath)
-            } yield eff :: xs
+        val builtDocument = xmlProperties.keys.toSeq
+          .traverse(Effect.remove(_))
+          .flatMap {
+            case head +: tail => XmlBuilder(head, tail*)(oldDocument)
+            case _            => Right(oldDocument)
           }
-          .flatMap(XmlBuilder(_)(oldDocument))
           .getOrThrow
         val builtDocumentString = xmlToString(builtDocument)
 
@@ -214,7 +199,7 @@ class XmlBuilderSpec extends AnyFunSpec {
 
   implicit def toInputSource(xmlString: String): InputSource = new InputSource(new StringReader(xmlString))
 
-  implicit class JUMapOps[K, V](map: java.util.Map[K, V]) {
+  implicit class JUMapOps[K, +V](map: java.util.Map[K, V]) {
     def asScala: Map[K, V] = {
       val linkedHashMap = new mutable.LinkedHashMap[K, V]
       val iterator      = map.entrySet().iterator()
@@ -226,7 +211,20 @@ class XmlBuilderSpec extends AnyFunSpec {
     }
   }
 
-  implicit class EitherOps[L, R](either: Either[L, R]) {
+  implicit class IterableOps[+A](it: Seq[A]) {
+    def traverse[E, B](f: A => Either[E, B]): Either[E, Seq[B]] =
+      it match {
+        case head +: tail =>
+          f(head).flatMap { b =>
+            tail.traverse(f).map { bs =>
+              b +: bs
+            }
+          }
+        case _ => Right(Nil)
+      }
+  }
+
+  implicit class EitherOps[+L, +R](either: Either[L, R]) {
     @SuppressWarnings(Array("org.wartremover.warts.Throw"))
     def getOrThrow(implicit ev: L <:< Throwable): R = either.fold(throw _, identity)
   }
