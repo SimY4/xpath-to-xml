@@ -1,5 +1,5 @@
 ext {
-    scalaVersion = '2.13.17'
+    scalaVersion = '2.13.18'
     scalaCompiler = '2.13'
 }
 
