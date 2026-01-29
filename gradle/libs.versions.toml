@@ -3,7 +3,7 @@ errorprone = '2.31.0'
 jackson = '2.21.0'
 
 [plugins]
-errorprone = 'net.ltgt.errorprone:4.4.0'
+errorprone = 'net.ltgt.errorprone:5.0.0'
 jar = 'org.beryx.jar:2.0.0'
 jmh = 'me.champeau.jmh:0.7.3'
 pitest = 'info.solidsoft.pitest:1.15.0'
