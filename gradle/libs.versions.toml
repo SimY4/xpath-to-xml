@@ -18,7 +18,7 @@ errorprone = { module = 'com.google.errorprone:error_prone_core', version.ref = 
 gson = 'com.google.code.gson:gson:2.13.2'
 jackson-databind = { module = 'com.fasterxml.jackson.core:jackson-databind', version.ref = 'jackson' }
 jackson-dataformat-yaml = { module = 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml', version.ref = 'jackson' }
-jaxen = 'jaxen:jaxen:2.0.0'
+jaxen = 'jaxen:jaxen:2.0.1'
 jdom2 = 'org.jdom:jdom2:2.0.6.1'
 json = 'org.json:json:20251224'
 json-api = 'jakarta.json:jakarta.json-api:2.1.3'
