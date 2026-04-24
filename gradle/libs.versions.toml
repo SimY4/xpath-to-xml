@@ -15,7 +15,7 @@ spotless = 'com.diffplug.spotless:7.2.1'
 assertj = 'org.assertj:assertj-core:3.27.7'
 dom4j = 'org.dom4j:dom4j:2.2.0'
 errorprone = { module = 'com.google.errorprone:error_prone_core', version.ref = 'errorprone' }
-gson = 'com.google.code.gson:gson:2.13.2'
+gson = 'com.google.code.gson:gson:2.14.0'
 jackson-databind = { module = 'com.fasterxml.jackson.core:jackson-databind', version.ref = 'jackson' }
 jackson-dataformat-yaml = { module = 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml', version.ref = 'jackson' }
 jaxen = 'jaxen:jaxen:2.0.1'
