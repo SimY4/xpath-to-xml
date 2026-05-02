@@ -10,18 +10,18 @@ Convenient utility to build XML models by evaluating XPath expressions.
 
 # Supported XML models
 
- - DOM
- - DOM4J
- - JDOM
- - Scala XML
- - XOM
+ - [DOM](https://docs.oracle.com/javase/tutorial/jaxp/dom/readingXML.html)
+ - [DOM4J](https://dom4j.github.io/)
+ - [JDOM](https://www.jdom.org/)
+ - [Scala XML](https://github.com/scala/scala-xml)
+ - [XOM](https://xom.nu/)
  
 ## Additionally supported models
 
- - Gson
- - Jackson
- - jakarta.json
- - org.json
+ - [Gson](https://github.com/google/gson)
+ - [Jackson](https://github.com/FasterXML/jackson)
+ - [jakarta.json](https://jakarta.ee/learn/docs/jakartaee-tutorial/current/web/jsonp/jsonp.html)
+ - [org.json](https://github.com/stleary/JSON-java)
 
 # Usage
 
