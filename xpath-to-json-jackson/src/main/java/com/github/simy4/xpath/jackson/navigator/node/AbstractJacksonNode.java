@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2025 Alex Simkin
+ * Copyright 2018-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -106,7 +106,7 @@ abstract class AbstractJacksonNode implements JacksonNode {
                   jsonNode.fieldNames(),
                   Spliterator.IMMUTABLE | Spliterator.DISTINCT | Spliterator.NONNULL),
               false)
-          .filter(name -> attribute == isAttribute(jsonNode.get(name)))
+          .filter(name -> attribute == jsonNode.get(name).isValueNode())
           .map(name -> new JacksonByNameNode(QName.valueOf(name), parent));
     } else if (jsonNode.isArray()) {
       return IntStream.range(0, jsonNode.size())
@@ -115,10 +115,6 @@ abstract class AbstractJacksonNode implements JacksonNode {
     } else {
       return Stream.empty();
     }
-  }
-
-  static boolean isAttribute(JsonNode jsonNode) {
-    return jsonNode.isValueNode();
   }
 
   private static final class JsonArrayWrapper implements Function<JsonNode, Stream<JacksonNode>> {
@@ -135,7 +131,7 @@ abstract class AbstractJacksonNode implements JacksonNode {
     @Override
     public Stream<JacksonNode> apply(JsonNode jsonValue) {
       final JacksonNode arrayElemNode = new JacksonByIndexNode(index++, parent);
-      return isAttribute(jsonValue)
+      return jsonValue.isValueNode()
           ? attribute ? Stream.of(arrayElemNode) : Stream.empty()
           : traverse(jsonValue, arrayElemNode, attribute);
     }

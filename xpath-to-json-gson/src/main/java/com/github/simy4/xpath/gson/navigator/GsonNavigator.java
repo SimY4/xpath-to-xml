@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2025 Alex Simkin
+ * Copyright 2018-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,12 +51,12 @@ public class GsonNavigator implements Navigator<GsonNode> {
 
   @Override
   public Iterable<? extends GsonNode> elementsOf(GsonNode parent) {
-    return parent.elements();
+    return () -> parent.elements().iterator();
   }
 
   @Override
   public Iterable<? extends GsonNode> attributesOf(GsonNode parent) {
-    return parent.attributes();
+    return () -> parent.attributes().iterator();
   }
 
   @Override
