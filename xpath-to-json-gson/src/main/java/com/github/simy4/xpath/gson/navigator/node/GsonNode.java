@@ -19,6 +19,8 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
 import com.google.gson.JsonElement;
 
+import java.util.stream.Stream;
+
 /**
  * Gson node contract.
  *
@@ -35,7 +37,7 @@ public interface GsonNode extends Node {
 
   void set(JsonElement jsonElement) throws XmlBuilderException;
 
-  Iterable<? extends GsonNode> elements();
+  Stream<GsonNode> elements();
 
-  Iterable<? extends GsonNode> attributes();
+  Stream<GsonNode> attributes();
 }

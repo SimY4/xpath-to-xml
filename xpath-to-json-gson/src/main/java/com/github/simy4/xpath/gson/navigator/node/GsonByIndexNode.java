@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2025 Alex Simkin
+ * Copyright 2018-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,8 +61,8 @@ public final class GsonByIndexNode extends AbstractGsonNode {
       return false;
     }
 
-    GsonByIndexNode gsonNodes = (GsonByIndexNode) o;
-    return index == gsonNodes.index;
+    GsonByIndexNode byIndexNode = (GsonByIndexNode) o;
+    return index == byIndexNode.index;
   }
 
   @Override
