@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2025 Alex Simkin
+ * Copyright 2018-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import javax.xml.namespace.QName;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Objects;
 
 abstract class AbstractGsonNode implements GsonNode {
 
@@ -103,8 +104,7 @@ abstract class AbstractGsonNode implements GsonNode {
 
   @Override
   public String toString() {
-    final JsonElement jsonElement = get();
-    return null == jsonElement ? "???" : jsonElement.toString();
+    return Objects.toString(get(), "???");
   }
 
   static Iterator<GsonNode> traverse(JsonElement jsonElement, GsonNode parent, boolean attribute) {
