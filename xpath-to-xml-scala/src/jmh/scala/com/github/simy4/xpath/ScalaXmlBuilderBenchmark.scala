@@ -56,6 +56,7 @@ class ScalaXmlBuilderBenchmark {
   }
 }
 
+@SuppressWarnings(Array("org.wartremover.warts.Null"))
 object ScalaXmlBuilderBenchmark {
   private[ScalaXmlBuilderBenchmark] val namespaceContextMap: Map[String, NamespaceContext] = Map(
     "null"   -> null,
