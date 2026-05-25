@@ -432,7 +432,7 @@ class XPathParserTest {
       final String invalidXPath, final NamespaceContext namespaceContext) {
     assertThatThrownBy(() -> new XPathParser(namespaceContext).parse(invalidXPath))
         .isInstanceOf(XPathParserException.class)
-        .hasMessageMatching("(Expected tokens.+|Expected no more tokens but was.+)");
+        .hasMessageMatching("(?s)Unable to parse xpath:.+Expected tokens:.+Actual:.+");
   }
 
   private static Expr pathExpr(StepExpr... steps) {

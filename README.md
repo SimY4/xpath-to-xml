@@ -35,7 +35,7 @@ Include an artifact with necessary model extension into your project:
 </dependency>
 ```
 
-Now having a XML structure i.e.:
+Now having an XML structure i.e.:
 
 ```xml
 <breakfast_menu>

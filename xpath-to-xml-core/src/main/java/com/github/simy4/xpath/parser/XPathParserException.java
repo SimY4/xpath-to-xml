@@ -23,11 +23,24 @@ class XPathParserException extends XPathExpressionException {
 
   private static final long serialVersionUID = 1L;
 
-  XPathParserException(Token actual) {
-    super("Expected no more tokens but was: " + actual);
+  XPathParserException(String xpath, Token actual, short expected, short... restExpected) {
+    super(
+        "Unable to parse xpath:\n"
+            + xpath
+            + padding(actual)
+            + "Expected tokens: "
+            + Arrays.toString(Token.Type.lookup(expected, restExpected))
+            + ". Actual: "
+            + actual.getToken());
   }
 
-  XPathParserException(Token actual, String... expected) {
-    super("Expected tokens: " + Arrays.toString(expected) + " but was: " + actual);
+  private static String padding(Token token) {
+    StringBuilder padding = new StringBuilder(128);
+    padding.append('\n');
+    for (int i = 0; i < token.getBeginIndex(); i++) {
+      padding.append(' ');
+    }
+    padding.append("╰─▪ ");
+    return padding.toString();
   }
 }

@@ -244,4 +244,9 @@ class XPathLexer extends ReadOnlyIterator<Token> {
   private boolean isXmlCharacter(char ch) {
     return isXmlStartCharacter(ch) || Character.isDigit(ch) || '-' == ch || '.' == ch;
   }
+
+  @Override
+  public String toString() {
+    return xpath;
+  }
 }
