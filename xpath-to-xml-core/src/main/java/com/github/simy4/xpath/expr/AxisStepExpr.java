@@ -26,6 +26,7 @@ import com.github.simy4.xpath.view.NodeView;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
 
 public class AxisStepExpr implements StepExpr, Serializable {
 
@@ -33,6 +34,10 @@ public class AxisStepExpr implements StepExpr, Serializable {
 
   private final AxisResolver axisResolver;
   private final Collection<Expr> predicates;
+
+  public AxisStepExpr(AxisResolver axisResolver) {
+    this(axisResolver, Collections.<Expr>emptySet());
+  }
 
   public AxisStepExpr(AxisResolver axisResolver, Collection<Expr> predicates) {
     this.axisResolver = axisResolver;
