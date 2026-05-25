@@ -41,6 +41,6 @@ public class LiteralExpr implements Expr, Serializable {
 
   @Override
   public String toString() {
-    return "'" + literal.toString() + "'";
+    return "'" + literal + "'";
   }
 }

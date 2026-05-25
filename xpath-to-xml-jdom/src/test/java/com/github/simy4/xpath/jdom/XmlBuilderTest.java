@@ -187,14 +187,14 @@ class XmlBuilderTest {
     var result = new StringWriter();
     var outputter = new XMLOutputter(format);
     outputter.output(xml, result);
-    return result.toString().replaceAll(" />", "/>");
+    return result.toString().replace(" />", "/>");
   }
 
   private Namespace[] toNamespaces(NamespaceContext namespaceContext) {
     var namespaces = new ArrayList<Namespace>();
     var prefixes = namespaceContext.getPrefixes("http://www.example.com/my");
     while (prefixes.hasNext()) {
-      var prefix = (String) prefixes.next();
+      var prefix = prefixes.next();
       namespaces.add(Namespace.getNamespace(prefix, namespaceContext.getNamespaceURI(prefix)));
     }
     return namespaces.toArray(new Namespace[0]);
