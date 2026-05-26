@@ -73,7 +73,7 @@ public class AxisStepExpr implements StepExpr, Serializable {
   public String toString() {
     final StringBuilder stringBuilder = new StringBuilder(axisResolver.toString());
     for (Expr predicate : predicates) {
-      stringBuilder.append(predicate);
+      stringBuilder.append('[').append(predicate).append(']');
     }
     return stringBuilder.toString();
   }

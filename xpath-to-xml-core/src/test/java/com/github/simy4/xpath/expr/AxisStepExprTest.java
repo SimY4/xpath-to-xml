@@ -213,6 +213,7 @@ class AxisStepExprTest {
   @Test
   @SuppressWarnings("DirectInvocationOnMock")
   void testToString() {
-    assertThat(stepExpr).hasToString(axisResolver.toString() + predicate1 + predicate2);
+    assertThat(stepExpr)
+        .hasToString(axisResolver.toString() + '[' + predicate1 + "][" + predicate2 + ']');
   }
 }
