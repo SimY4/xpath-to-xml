@@ -20,9 +20,12 @@ import com.github.simy4.xpath.expr.axis.AxisResolver;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
 import com.github.simy4.xpath.util.Function;
+import com.github.simy4.xpath.view.AbstractViewVisitor;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
+import com.github.simy4.xpath.view.NumberView;
+import com.github.simy4.xpath.view.View;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -60,9 +63,8 @@ public class AxisStepExpr implements StepExpr, Serializable {
       throws XmlBuilderException {
     NodeSupplier<N> nodeSupplier = new AxisNodeSupplier<N>(navigator, axisResolver, view);
     for (Expr predicate : predicates) {
-      final PredicateExpr predicateExpr = new PredicateExpr(predicate);
       final PredicateResolver<N> predicateResolver =
-          new PredicateResolver<N>(navigator, nodeSupplier, predicateExpr, greedy);
+          new PredicateResolver<N>(navigator, nodeSupplier, predicate, greedy);
       axis = axis.flatMap(predicateResolver);
       nodeSupplier = predicateResolver;
     }
@@ -73,7 +75,7 @@ public class AxisStepExpr implements StepExpr, Serializable {
   public String toString() {
     final StringBuilder stringBuilder = new StringBuilder(axisResolver.toString());
     for (Expr predicate : predicates) {
-      stringBuilder.append(new PredicateExpr(predicate));
+      stringBuilder.append('[').append(predicate).append(']');
     }
     return stringBuilder.toString();
   }
@@ -124,7 +126,9 @@ public class AxisStepExpr implements StepExpr, Serializable {
     @Override
     public NodeView<T> apply(int position) throws XmlBuilderException {
       final NodeView<T> newNode = parentNodeSupplier.apply(position);
-      if (!predicate.resolve(navigator, newNode, true).toBoolean()) {
+      if (!predicate
+          .resolve(navigator, newNode, true)
+          .visit(new PredicateVisitor<T>(navigator, newNode, true))) {
         throw new XmlBuilderException("Unable to satisfy expression predicate: " + predicate);
       }
       return newNode;
@@ -133,11 +137,16 @@ public class AxisStepExpr implements StepExpr, Serializable {
     @Override
     public IterableNodeView<T> apply(NodeView<T> view) {
       final IterableNodeView<T> result;
-      final boolean check = predicate.resolve(navigator, view, false).toBoolean();
+      final boolean check =
+          predicate
+              .resolve(navigator, view, false)
+              .visit(new PredicateVisitor<T>(navigator, view, false));
       if (check) {
         result = view;
       } else if ((view.isNew() || view.isMarked()) && greedy) {
-        if (!predicate.resolve(navigator, view, true).toBoolean()) {
+        if (!predicate
+            .resolve(navigator, view, true)
+            .visit(new PredicateVisitor<T>(navigator, view, true))) {
           throw new XmlBuilderException("Unable to satisfy expression predicate: " + predicate);
         }
         result = view;
@@ -148,6 +157,43 @@ public class AxisStepExpr implements StepExpr, Serializable {
       }
       resolved |= check;
       return result;
+    }
+  }
+
+  private static final class PredicateVisitor<T extends Node>
+      extends AbstractViewVisitor<T, Boolean> {
+
+    private final Navigator<T> navigator;
+    private final NodeView<T> view;
+    private final boolean greedy;
+
+    PredicateVisitor(Navigator<T> navigator, NodeView<T> view, boolean greedy) {
+      this.navigator = navigator;
+      this.view = view;
+      this.greedy = greedy;
+    }
+
+    @Override
+    public Boolean visit(NumberView<T> numberView) throws XmlBuilderException {
+      final double number = numberView.toNumber();
+      if (0 == Double.compare(number, view.getPosition())) {
+        view.mark();
+        return true;
+      } else if (greedy && number > view.getPosition()) {
+        final T node = view.getNode();
+        long numberOfNodesToCreate = (long) number - view.getPosition();
+        do {
+          navigator.prependCopy(node);
+        } while (--numberOfNodesToCreate > 0);
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    @Override
+    protected Boolean returnDefault(View<T> view) {
+      return view.toBoolean();
     }
   }
 }
