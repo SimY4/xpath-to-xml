@@ -49,31 +49,31 @@ public class AxisStepExpr implements StepExpr, Serializable {
       Navigator<N> navigator, NodeView<N> view, boolean greedy) throws XmlBuilderException {
     final boolean newGreedy = !view.hasNext() && greedy;
     final IterableNodeView<N> result = axisResolver.resolveAxis(navigator, view, newGreedy);
+    if (predicates.isEmpty()) {
+      return result;
+    }
     return resolvePredicates(navigator, view, result, newGreedy);
   }
 
   private <N extends Node> IterableNodeView<N> resolvePredicates(
       Navigator<N> navigator, NodeView<N> view, IterableNodeView<N> axis, boolean greedy)
       throws XmlBuilderException {
-    IterableNodeView<N> result = axis;
-    if (!predicates.isEmpty()) {
-      NodeSupplier<N> nodeSupplier = new AxisNodeSupplier<N>(navigator, axisResolver, view);
-      for (Expr predicate : predicates) {
-        final PredicateExpr predicateExpr = new PredicateExpr(predicate);
-        final PredicateResolver<N> predicateResolver =
-            new PredicateResolver<N>(navigator, nodeSupplier, predicateExpr, greedy);
-        result = result.flatMap(predicateResolver);
-        nodeSupplier = predicateResolver;
-      }
+    NodeSupplier<N> nodeSupplier = new AxisNodeSupplier<N>(navigator, axisResolver, view);
+    for (Expr predicate : predicates) {
+      final PredicateExpr predicateExpr = new PredicateExpr(predicate);
+      final PredicateResolver<N> predicateResolver =
+          new PredicateResolver<N>(navigator, nodeSupplier, predicateExpr, greedy);
+      axis = axis.flatMap(predicateResolver);
+      nodeSupplier = predicateResolver;
     }
-    return result;
+    return axis;
   }
 
   @Override
   public String toString() {
     final StringBuilder stringBuilder = new StringBuilder(axisResolver.toString());
     for (Expr predicate : predicates) {
-      stringBuilder.append('[').append(predicate).append(']');
+      stringBuilder.append(new PredicateExpr(predicate));
     }
     return stringBuilder.toString();
   }
