@@ -143,7 +143,7 @@ public class AxisStepExpr implements StepExpr, Serializable {
               .visit(new PredicateVisitor<T>(navigator, view, false));
       if (check) {
         result = view;
-      } else if ((view.isNew() || view.isMarked()) && greedy) {
+      } else if (view.isMarked() && greedy) {
         if (!predicate
             .resolve(navigator, view, true)
             .visit(new PredicateVisitor<T>(navigator, view, true))) {
