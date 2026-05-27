@@ -137,20 +137,16 @@ public class AxisStepExpr implements StepExpr, Serializable {
     @Override
     public IterableNodeView<T> apply(NodeView<T> view) {
       final IterableNodeView<T> result;
+      final boolean greedy = view.isMarked() && this.greedy;
       final boolean check =
           predicate
-              .resolve(navigator, view, false)
-              .visit(new PredicateVisitor<T>(navigator, view, false));
+              .resolve(navigator, view, greedy)
+              .visit(new PredicateVisitor<T>(navigator, view, greedy));
       if (check) {
         result = view;
-      } else if (view.isMarked() && greedy) {
-        if (!predicate
-            .resolve(navigator, view, true)
-            .visit(new PredicateVisitor<T>(navigator, view, true))) {
-          throw new XmlBuilderException("Unable to satisfy expression predicate: " + predicate);
-        }
-        result = view;
-      } else if (!view.hasNext() && !resolved && greedy) {
+      } else if (view.isMarked() && this.greedy) {
+        throw new XmlBuilderException("Unable to satisfy expression predicate: " + predicate);
+      } else if (!view.hasNext() && !resolved && this.greedy) {
         result = apply(view.getPosition() + 1);
       } else {
         result = NodeSetView.empty();
