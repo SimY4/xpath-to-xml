@@ -130,8 +130,7 @@ abstract class AbstractJakartaJsonNode implements JakartaJsonNode {
     public Stream<JakartaJsonNode> apply(JsonValue jsonValue) {
       final JsonValue.ValueType valueType = jsonValue.getValueType();
       final JakartaJsonNode arrayElemNode = new JakartaJsonByIndexNode(index++, parent);
-      return JsonValue.ValueType.OBJECT != valueType
-              && JsonValue.ValueType.ARRAY != valueType
+      return JsonValue.ValueType.OBJECT != valueType && JsonValue.ValueType.ARRAY != valueType
           ? Stream.of(arrayElemNode)
           : traverse(jsonValue, arrayElemNode);
     }
