@@ -55,20 +55,13 @@ class JacksonByIndexNodeTest {
   }
 
   @Test
-  void shouldTraverseArrayAttributes() {
+  void shouldTraverseArray() {
     var parent = new JacksonRootNode(jsonArray);
 
-    assertThat(parent.attributes())
-        .containsExactlyInAnyOrder(
+    assertThat(parent.traverse())
+        .containsExactly(
             new JacksonByIndexNode(0, parent),
             new JacksonByIndexNode(1, parent),
             new JacksonByIndexNode(2, parent));
-  }
-
-  @Test
-  void shouldTraverseArrayElements() {
-    var parent = new JacksonRootNode(jsonArray);
-
-    assertThat(parent.elements()).isEmpty();
   }
 }

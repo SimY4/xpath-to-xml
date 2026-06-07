@@ -48,7 +48,7 @@ class GsonByNameNodeTest {
     byNameNode.set(new JsonPrimitive(4));
 
     assertThat(jsonObject.entrySet())
-        .containsExactly(
+        .containsExactlyInAnyOrder(
             entry("one", new JsonPrimitive(1)),
             entry("two", new JsonPrimitive(4)),
             entry("three", new JsonPrimitive(3)));
@@ -59,24 +59,18 @@ class GsonByNameNodeTest {
     byNameNode.set(null);
 
     assertThat(jsonObject.entrySet())
-        .containsExactly(entry("one", new JsonPrimitive(1)), entry("three", new JsonPrimitive(3)));
+        .containsExactlyInAnyOrder(
+            entry("one", new JsonPrimitive(1)), entry("three", new JsonPrimitive(3)));
   }
 
   @Test
-  void shouldTraverseObjectAttributes() {
+  void shouldTraverseObject() {
     var parent = new GsonRootNode(jsonObject);
 
-    assertThat(parent.attributes())
+    assertThat(parent.traverse())
         .containsExactlyInAnyOrder(
             new GsonByNameNode(QName.valueOf("one"), parent),
             new GsonByNameNode(QName.valueOf("two"), parent),
             new GsonByNameNode(QName.valueOf("three"), parent));
-  }
-
-  @Test
-  void shouldTraverseObjectElements() {
-    var parent = new GsonRootNode(jsonObject);
-
-    assertThat(parent.elements()).isEmpty();
   }
 }

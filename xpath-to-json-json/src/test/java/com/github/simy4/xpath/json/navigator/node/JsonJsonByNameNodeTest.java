@@ -52,20 +52,13 @@ class JsonJsonByNameNodeTest {
   }
 
   @Test
-  void shouldTraverseObjectAttributes() {
+  void shouldTraverseObject() {
     var parent = new JsonJsonRootNode(jsonObject);
 
-    assertThat(parent.attributes())
+    assertThat(parent.traverse())
         .containsExactlyInAnyOrder(
             new JsonJsonByNameNode(QName.valueOf("one"), parent),
             new JsonJsonByNameNode(QName.valueOf("two"), parent),
             new JsonJsonByNameNode(QName.valueOf("three"), parent));
-  }
-
-  @Test
-  void shouldTraverseObjectElements() {
-    var parent = new JsonJsonRootNode(jsonObject);
-
-    assertThat(parent.elements()).isEmpty();
   }
 }

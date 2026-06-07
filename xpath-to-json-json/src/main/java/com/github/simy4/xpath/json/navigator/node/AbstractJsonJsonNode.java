@@ -67,13 +67,8 @@ abstract class AbstractJsonJsonNode implements JsonJsonNode {
   }
 
   @Override
-  public Stream<JsonJsonNode> elements() {
-    return traverse(get(), this, false);
-  }
-
-  @Override
-  public Stream<JsonJsonNode> attributes() {
-    return traverse(get(), this, true);
+  public Stream<JsonJsonNode> traverse() {
+    return traverse(get(), this);
   }
 
   @Override
@@ -116,43 +111,36 @@ abstract class AbstractJsonJsonNode implements JsonJsonNode {
     return Objects.toString(get(), "???");
   }
 
-  static Stream<JsonJsonNode> traverse(Object jsonValue, JsonJsonNode parent, boolean attribute) {
+  static Stream<JsonJsonNode> traverse(Object jsonValue, JsonJsonNode parent) {
     if (jsonValue instanceof JSONObject) {
       final JSONObject jsonObject = (JSONObject) jsonValue;
       return jsonObject.keySet().stream()
-          .filter(name -> attribute == isAttribute(jsonObject.get(name)))
           .map(name -> new JsonJsonByNameNode(QName.valueOf(name), parent));
     } else if (jsonValue instanceof JSONArray) {
       final JSONArray jsonArray = (JSONArray) jsonValue;
       return IntStream.range(0, jsonArray.length())
           .mapToObj(jsonArray::get)
-          .flatMap(new JsonArrayWrapper(parent, attribute));
+          .flatMap(new JsonArrayWrapper(parent));
     } else {
       return Stream.empty();
     }
   }
 
-  static boolean isAttribute(Object jsonValue) {
-    return !(jsonValue instanceof JSONObject) && !(jsonValue instanceof JSONArray);
-  }
-
   private static final class JsonArrayWrapper implements Function<Object, Stream<JsonJsonNode>> {
 
     private final JsonJsonNode parent;
-    private final boolean attribute;
     private int index;
 
-    JsonArrayWrapper(JsonJsonNode parent, boolean attribute) {
+    JsonArrayWrapper(JsonJsonNode parent) {
       this.parent = parent;
-      this.attribute = attribute;
     }
 
     @Override
     public Stream<JsonJsonNode> apply(Object jsonValue) {
       final JsonJsonNode arrayElemNode = new JsonJsonByIndexNode(index++, parent);
-      return isAttribute(jsonValue)
-          ? attribute ? Stream.of(arrayElemNode) : Stream.empty()
-          : traverse(jsonValue, arrayElemNode, attribute);
+      return !(jsonValue instanceof JSONObject) && !(jsonValue instanceof JSONArray)
+          ? Stream.of(arrayElemNode)
+          : traverse(jsonValue, arrayElemNode);
     }
   }
 }

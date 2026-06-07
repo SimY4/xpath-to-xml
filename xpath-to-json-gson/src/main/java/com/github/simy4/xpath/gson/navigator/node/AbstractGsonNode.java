@@ -65,13 +65,8 @@ abstract class AbstractGsonNode implements GsonNode {
   }
 
   @Override
-  public final Stream<GsonNode> elements() {
-    return traverse(get(), AbstractGsonNode.this, false);
-  }
-
-  @Override
-  public final Stream<GsonNode> attributes() {
-    return traverse(get(), AbstractGsonNode.this, true);
+  public final Stream<GsonNode> traverse() {
+    return traverse(get(), this);
   }
 
   @Override
@@ -98,43 +93,36 @@ abstract class AbstractGsonNode implements GsonNode {
     return Objects.toString(get(), "???");
   }
 
-  static Stream<GsonNode> traverse(JsonElement jsonElement, GsonNode parent, boolean attribute) {
+  static Stream<GsonNode> traverse(JsonElement jsonElement, GsonNode parent) {
     if (jsonElement.isJsonObject()) {
       final JsonObject jsonObject = jsonElement.getAsJsonObject();
       return jsonObject.keySet().stream()
-          .filter(name -> attribute == isAttribute(jsonObject.get(name)))
           .map(name -> new GsonByNameNode(QName.valueOf(name), parent));
     } else if (jsonElement.isJsonArray()) {
       final JsonArray jsonArray = jsonElement.getAsJsonArray();
       return IntStream.range(0, jsonArray.size())
           .mapToObj(jsonArray::get)
-          .flatMap(new JsonArrayWrapper(parent, attribute));
+          .flatMap(new JsonArrayWrapper(parent));
     } else {
       return Stream.empty();
     }
   }
 
-  static boolean isAttribute(JsonElement jsonElement) {
-    return jsonElement.isJsonPrimitive() || jsonElement.isJsonNull();
-  }
-
   private static final class JsonArrayWrapper implements Function<JsonElement, Stream<GsonNode>> {
 
     private final GsonNode parent;
-    private final boolean attribute;
     private int index;
 
-    JsonArrayWrapper(GsonNode parent, boolean attribute) {
+    JsonArrayWrapper(GsonNode parent) {
       this.parent = parent;
-      this.attribute = attribute;
     }
 
     @Override
     public Stream<GsonNode> apply(JsonElement jsonElement) {
       final GsonNode arrayElemNode = new GsonByIndexNode(index++, parent);
-      return isAttribute(jsonElement)
-          ? attribute ? Stream.of(arrayElemNode) : Stream.empty()
-          : traverse(jsonElement, arrayElemNode, attribute);
+      return jsonElement.isJsonNull() || jsonElement.isJsonPrimitive()
+          ? Stream.of(arrayElemNode)
+          : traverse(jsonElement, arrayElemNode);
     }
   }
 }

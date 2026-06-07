@@ -75,13 +75,8 @@ abstract class AbstractJakartaJsonNode implements JakartaJsonNode {
   }
 
   @Override
-  public Stream<JakartaJsonNode> elements() {
-    return traverse(get(), this, false);
-  }
-
-  @Override
-  public Stream<JakartaJsonNode> attributes() {
-    return traverse(get(), this, true);
+  public Stream<JakartaJsonNode> traverse() {
+    return traverse(get(), this);
   }
 
   @Override
@@ -108,44 +103,37 @@ abstract class AbstractJakartaJsonNode implements JakartaJsonNode {
     return Objects.toString(get(), "???");
   }
 
-  static Stream<JakartaJsonNode> traverse(
-      JsonValue jsonValue, JakartaJsonNode parent, boolean attribute) {
+  static Stream<JakartaJsonNode> traverse(JsonValue jsonValue, JakartaJsonNode parent) {
     switch (jsonValue.getValueType()) {
       case OBJECT:
         final JsonObject jsonObject = jsonValue.asJsonObject();
         return jsonObject.keySet().stream()
-            .filter(name -> attribute == isAttribute(jsonObject.get(name)))
             .map(name -> new JakartaJsonByNameNode(QName.valueOf(name), parent));
       case ARRAY:
-        return jsonValue.asJsonArray().stream().flatMap(new JsonArrayWrapper(parent, attribute));
+        return jsonValue.asJsonArray().stream().flatMap(new JsonArrayWrapper(parent));
       default:
         return Stream.empty();
     }
-  }
-
-  static boolean isAttribute(JsonValue jsonValue) {
-    return JsonValue.ValueType.OBJECT != jsonValue.getValueType()
-        && JsonValue.ValueType.ARRAY != jsonValue.getValueType();
   }
 
   private static final class JsonArrayWrapper
       implements Function<JsonValue, Stream<JakartaJsonNode>> {
 
     private final JakartaJsonNode parent;
-    private final boolean attribute;
     private int index;
 
-    JsonArrayWrapper(JakartaJsonNode parent, boolean attribute) {
+    JsonArrayWrapper(JakartaJsonNode parent) {
       this.parent = parent;
-      this.attribute = attribute;
     }
 
     @Override
     public Stream<JakartaJsonNode> apply(JsonValue jsonValue) {
+      final JsonValue.ValueType valueType = jsonValue.getValueType();
       final JakartaJsonNode arrayElemNode = new JakartaJsonByIndexNode(index++, parent);
-      return isAttribute(jsonValue)
-          ? attribute ? Stream.of(arrayElemNode) : Stream.empty()
-          : traverse(jsonValue, arrayElemNode, attribute);
+      return JsonValue.ValueType.OBJECT != valueType
+              && JsonValue.ValueType.ARRAY != valueType
+          ? Stream.of(arrayElemNode)
+          : traverse(jsonValue, arrayElemNode);
     }
   }
 }

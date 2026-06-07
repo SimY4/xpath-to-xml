@@ -53,20 +53,13 @@ class JakartaJsonByIndexNodeTest {
   }
 
   @Test
-  void shouldTraverseArrayAttributes() {
+  void shouldTraverseArray() {
     var parent = new JakartaJsonRootNode(jsonArray);
 
-    assertThat(parent.attributes())
-        .containsExactlyInAnyOrder(
+    assertThat(parent.traverse())
+        .containsExactly(
             new JakartaJsonByIndexNode(0, parent),
             new JakartaJsonByIndexNode(1, parent),
             new JakartaJsonByIndexNode(2, parent));
-  }
-
-  @Test
-  void shouldTraverseArrayElements() {
-    var parent = new JakartaJsonRootNode(jsonArray);
-
-    assertThat(parent.elements()).isEmpty();
   }
 }

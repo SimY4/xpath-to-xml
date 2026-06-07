@@ -48,20 +48,13 @@ class JsonJsonByIndexNodeTest {
   }
 
   @Test
-  void shouldTraverseArrayAttributes() {
+  void shouldTraverseArray() {
     var parent = new JsonJsonRootNode(jsonArray);
 
-    assertThat(parent.attributes())
-        .containsExactlyInAnyOrder(
+    assertThat(parent.traverse())
+        .containsExactly(
             new JsonJsonByIndexNode(0, parent),
             new JsonJsonByIndexNode(1, parent),
             new JsonJsonByIndexNode(2, parent));
-  }
-
-  @Test
-  void shouldTraverseArrayElements() {
-    var parent = new JsonJsonRootNode(jsonArray);
-
-    assertThat(parent.elements()).isEmpty();
   }
 }

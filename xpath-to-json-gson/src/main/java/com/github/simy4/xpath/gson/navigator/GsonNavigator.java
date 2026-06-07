@@ -51,12 +51,12 @@ public class GsonNavigator implements Navigator<GsonNode> {
 
   @Override
   public Iterable<? extends GsonNode> elementsOf(GsonNode parent) {
-    return () -> parent.elements().iterator();
+    return () -> parent.traverse().iterator();
   }
 
   @Override
   public Iterable<? extends GsonNode> attributesOf(GsonNode parent) {
-    return () -> parent.attributes().iterator();
+    return elementsOf(parent);
   }
 
   @Override

@@ -38,7 +38,5 @@ public interface JakartaJsonNode extends Node {
 
   void set(JsonProvider jsonProvider, JsonValue jsonValue) throws XmlBuilderException;
 
-  Stream<JakartaJsonNode> elements();
-
-  Stream<JakartaJsonNode> attributes();
+  Stream<JakartaJsonNode> traverse();
 }

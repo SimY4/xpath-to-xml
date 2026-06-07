@@ -16,13 +16,12 @@
 package com.github.simy4.xpath.jackson;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.github.simy4.xpath.XmlBuilder;
 import com.github.simy4.xpath.fixtures.FixtureAccessor;
 import com.github.simy4.xpath.helpers.SimpleNamespaceContext;
@@ -41,12 +40,10 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class YamlBuilderTest {
 
-  private final ObjectMapper objectMapper =
-      new ObjectMapper(
-          YAMLFactory.builder()
-              .disable(
-                  YAMLGenerator.Feature.WRITE_DOC_START_MARKER, YAMLGenerator.Feature.SPLIT_LINES)
-              .build());
+  private final YAMLMapper yamlMapper =
+      YAMLMapper.builder()
+          .disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER, YAMLGenerator.Feature.SPLIT_LINES)
+          .build();
 
   static Stream<Arguments> data() {
     return Stream.of(
@@ -70,7 +67,7 @@ class YamlBuilderTest {
             .build(new ObjectNode(JsonNodeFactory.instance));
 
     assertThat(builtDocument)
-        .withRepresentation(new JSONRepresentation())
+        .withRepresentation(new YamlRepresentation())
         .isEqualTo(stringToYaml(fixtureAccessor.getPutXml()));
   }
 
@@ -86,7 +83,7 @@ class YamlBuilderTest {
             .build(new ObjectNode(JsonNodeFactory.instance));
 
     assertThat(builtDocument)
-        .withRepresentation(new JSONRepresentation())
+        .withRepresentation(new YamlRepresentation())
         .isEqualTo(stringToYaml(fixtureAccessor.getPutValueXml()));
   }
 
@@ -96,12 +93,12 @@ class YamlBuilderTest {
       FixtureAccessor fixtureAccessor, NamespaceContext namespaceContext)
       throws XPathExpressionException, JsonProcessingException {
     var xmlProperties = fixtureAccessor.getXmlProperties();
-    var json = fixtureAccessor.getPutXml();
-    var oldDocument = stringToYaml(json);
+    var yaml = fixtureAccessor.getPutXml();
+    var oldDocument = stringToYaml(yaml);
     var builtDocument = new XmlBuilder(namespaceContext).putAll(xmlProperties).build(oldDocument);
 
     assertThat(builtDocument)
-        .withRepresentation(new JSONRepresentation())
+        .withRepresentation(new YamlRepresentation())
         .isEqualTo(stringToYaml(fixtureAccessor.getPutValueXml()));
   }
 
@@ -116,14 +113,14 @@ class YamlBuilderTest {
     var builtDocument = new XmlBuilder(namespaceContext).putAll(xmlProperties).build(oldDocument);
 
     assertThat(builtDocument)
-        .withRepresentation(new JSONRepresentation())
+        .withRepresentation(new YamlRepresentation())
         .isEqualTo(stringToYaml(yaml));
 
     builtDocument =
         new XmlBuilder(namespaceContext).putAll(xmlProperties.keySet()).build(oldDocument);
 
     assertThat(builtDocument)
-        .withRepresentation(new JSONRepresentation())
+        .withRepresentation(new YamlRepresentation())
         .isEqualTo(stringToYaml(yaml));
   }
 
@@ -139,20 +136,20 @@ class YamlBuilderTest {
         new XmlBuilder(namespaceContext).removeAll(xmlProperties.keySet()).build(oldDocument);
 
     assertThat(builtDocument)
-        .withRepresentation(new JSONRepresentation())
+        .withRepresentation(new YamlRepresentation())
         .isNotEqualTo(stringToYaml(fixtureAccessor.getPutValueXml()));
   }
 
   private JsonNode stringToYaml(String xml) throws JsonProcessingException {
-    return objectMapper.readTree(xml);
+    return yamlMapper.readTree(xml);
   }
 
-  final class JSONRepresentation extends StandardRepresentation {
+  final class YamlRepresentation extends StandardRepresentation {
     @Override
     protected String fallbackToStringOf(Object object) {
       try {
         return object instanceof JsonNode
-            ? objectMapper.writer(new DefaultPrettyPrinter()).writeValueAsString(object)
+            ? yamlMapper.writer(SerializationFeature.INDENT_OUTPUT).writeValueAsString(object)
             : super.fallbackToStringOf(object);
       } catch (JsonProcessingException e) {
         throw new RuntimeException(e);

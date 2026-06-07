@@ -52,12 +52,12 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
 
   @Override
   public Iterable<? extends JacksonNode> elementsOf(JacksonNode parent) {
-    return () -> parent.elements().iterator();
+    return () -> parent.traverse().iterator();
   }
 
   @Override
   public Iterable<? extends JacksonNode> attributesOf(JacksonNode parent) {
-    return () -> parent.attributes().iterator();
+    return elementsOf(parent);
   }
 
   @Override

@@ -50,12 +50,12 @@ public class JsonJsonNavigator implements Navigator<JsonJsonNode> {
 
   @Override
   public Iterable<? extends JsonJsonNode> elementsOf(JsonJsonNode parent) {
-    return () -> parent.elements().iterator();
+    return () -> parent.traverse().iterator();
   }
 
   @Override
   public Iterable<? extends JsonJsonNode> attributesOf(JsonJsonNode parent) {
-    return () -> parent.attributes().iterator();
+    return elementsOf(parent);
   }
 
   @Override

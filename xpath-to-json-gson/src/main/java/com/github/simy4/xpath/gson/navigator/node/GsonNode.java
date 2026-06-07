@@ -37,7 +37,5 @@ public interface GsonNode extends Node {
 
   void set(JsonElement jsonElement) throws XmlBuilderException;
 
-  Stream<GsonNode> elements();
-
-  Stream<GsonNode> attributes();
+  Stream<GsonNode> traverse();
 }

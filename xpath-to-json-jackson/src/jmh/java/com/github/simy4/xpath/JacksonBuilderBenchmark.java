@@ -31,7 +31,7 @@ import javax.xml.xpath.XPathExpressionException;
 
 @BenchmarkMode(Mode.Throughput)
 @State(Scope.Benchmark)
-public class JacksonJsonBuilderBenchmark {
+public class JacksonBuilderBenchmark {
 
   @Param({"attr", "simple", "special"})
   public String fixtureName;

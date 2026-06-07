@@ -36,7 +36,5 @@ public interface JsonJsonNode extends Node {
 
   void set(Object jsonValue) throws XmlBuilderException;
 
-  Stream<JsonJsonNode> elements();
-
-  Stream<JsonJsonNode> attributes();
+  Stream<JsonJsonNode> traverse();
 }

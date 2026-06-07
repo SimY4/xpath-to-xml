@@ -16,9 +16,9 @@
 package com.github.simy4.xpath.jackson;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.simy4.xpath.XmlBuilder;
@@ -39,7 +39,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class JsonBuilderTest {
 
-  private final ObjectMapper objectMapper = new ObjectMapper();
+  private final JsonMapper jsonMapper = new JsonMapper();
 
   static Stream<Arguments> data() {
     return Stream.of(
@@ -63,7 +63,7 @@ class JsonBuilderTest {
             .build(new ObjectNode(JsonNodeFactory.instance));
 
     assertThat(builtDocument)
-        .withRepresentation(new JSONRepresentation())
+        .withRepresentation(new JsonRepresentation())
         .isEqualTo(stringToJson(fixtureAccessor.getPutXml()));
   }
 
@@ -79,7 +79,7 @@ class JsonBuilderTest {
             .build(new ObjectNode(JsonNodeFactory.instance));
 
     assertThat(builtDocument)
-        .withRepresentation(new JSONRepresentation())
+        .withRepresentation(new JsonRepresentation())
         .isEqualTo(stringToJson(fixtureAccessor.getPutValueXml()));
   }
 
@@ -94,7 +94,7 @@ class JsonBuilderTest {
     var builtDocument = new XmlBuilder(namespaceContext).putAll(xmlProperties).build(oldDocument);
 
     assertThat(builtDocument)
-        .withRepresentation(new JSONRepresentation())
+        .withRepresentation(new JsonRepresentation())
         .isEqualTo(stringToJson(fixtureAccessor.getPutValueXml()));
   }
 
@@ -109,14 +109,14 @@ class JsonBuilderTest {
     var builtDocument = new XmlBuilder(namespaceContext).putAll(xmlProperties).build(oldDocument);
 
     assertThat(builtDocument)
-        .withRepresentation(new JSONRepresentation())
+        .withRepresentation(new JsonRepresentation())
         .isEqualTo(stringToJson(json));
 
     builtDocument =
         new XmlBuilder(namespaceContext).putAll(xmlProperties.keySet()).build(oldDocument);
 
     assertThat(builtDocument)
-        .withRepresentation(new JSONRepresentation())
+        .withRepresentation(new JsonRepresentation())
         .isEqualTo(stringToJson(json));
   }
 
@@ -132,20 +132,20 @@ class JsonBuilderTest {
         new XmlBuilder(namespaceContext).removeAll(xmlProperties.keySet()).build(oldDocument);
 
     assertThat(builtDocument)
-        .withRepresentation(new JSONRepresentation())
+        .withRepresentation(new JsonRepresentation())
         .isNotEqualTo(stringToJson(fixtureAccessor.getPutValueXml()));
   }
 
   private JsonNode stringToJson(String xml) throws JsonProcessingException {
-    return objectMapper.readTree(xml);
+    return jsonMapper.readTree(xml);
   }
 
-  final class JSONRepresentation extends StandardRepresentation {
+  final class JsonRepresentation extends StandardRepresentation {
     @Override
     protected String fallbackToStringOf(Object object) {
       try {
         return object instanceof JsonNode
-            ? objectMapper.writer(new DefaultPrettyPrinter()).writeValueAsString(object)
+            ? jsonMapper.writer(SerializationFeature.INDENT_OUTPUT).writeValueAsString(object)
             : super.fallbackToStringOf(object);
       } catch (JsonProcessingException e) {
         throw new RuntimeException(e);

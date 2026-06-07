@@ -37,7 +37,5 @@ public interface JacksonNode extends Node {
 
   void set(JsonNode jsonNode) throws XmlBuilderException;
 
-  Stream<JacksonNode> elements();
-
-  Stream<JacksonNode> attributes();
+  Stream<JacksonNode> traverse();
 }

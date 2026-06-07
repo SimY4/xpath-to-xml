@@ -55,20 +55,13 @@ class GsonByIndexNodeTest {
   }
 
   @Test
-  void shouldTraverseArrayAttributes() {
+  void shouldTraverseArray() {
     var parent = new GsonRootNode(jsonArray);
 
-    assertThat(parent.attributes())
-        .containsExactlyInAnyOrder(
+    assertThat(parent.traverse())
+        .containsExactly(
             new GsonByIndexNode(0, parent),
             new GsonByIndexNode(1, parent),
             new GsonByIndexNode(2, parent));
-  }
-
-  @Test
-  void shouldTraverseArrayElements() {
-    var parent = new GsonRootNode(jsonArray);
-
-    assertThat(parent.elements()).isEmpty();
   }
 }

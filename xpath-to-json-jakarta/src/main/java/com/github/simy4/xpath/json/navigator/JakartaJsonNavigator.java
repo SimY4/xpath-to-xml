@@ -53,12 +53,12 @@ public class JakartaJsonNavigator implements Navigator<JakartaJsonNode> {
 
   @Override
   public Iterable<? extends JakartaJsonNode> elementsOf(JakartaJsonNode parent) {
-    return () -> parent.elements().iterator();
+    return () -> parent.traverse().iterator();
   }
 
   @Override
   public Iterable<? extends JakartaJsonNode> attributesOf(JakartaJsonNode parent) {
-    return () -> parent.attributes().iterator();
+    return elementsOf(parent);
   }
 
   @Override
