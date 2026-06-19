@@ -29,7 +29,7 @@ scala-xml = 'org.scala-lang.modules:scala-xml_%%:2.4.0'
 scalatest-funspec = 'org.scalatest:scalatest-funspec_%%:3.2.20'
 scalatest-junit-runner = 'org.scalatestplus:junit-5-14_%%:3.2.20.0'
 wartremover = 'org.wartremover:wartremover_%%:3.5.7'
-xom = 'xom:xom:1.4.5'
+xom = 'xom:xom:1.4.6'
 
 [bundles]
 scalatest = ["scalatest-funspec", "scalatest-junit-runner"]
