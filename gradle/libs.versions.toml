@@ -9,7 +9,7 @@ jmh = 'me.champeau.jmh:0.7.3'
 pitest = 'info.solidsoft.pitest:1.19.0'
 publish-plugin = 'io.github.gradle-nexus.publish-plugin:2.0.0'
 release = 'net.researchgate.release:3.1.0'
-spotless = 'com.diffplug.spotless:7.2.1'
+spotless = 'com.diffplug.spotless:8.8.0'
 
 [libraries]
 assertj = 'org.assertj:assertj-core:3.27.7'
