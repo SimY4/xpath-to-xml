@@ -1,5 +1,5 @@
 [versions]
-errorprone = '2.31.0'
+errorprone = '2.50.0'
 jackson = '2.22.1'
 
 [plugins]
