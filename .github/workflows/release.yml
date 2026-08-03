@@ -19,7 +19,7 @@ jobs:
         distribution: temurin
         java-version: 11
     - name: Set up Gradle
-      uses: gradle/actions/setup-gradle@v6
+      uses: gradle/actions/setup-gradle@v6.2.0
     - name: 🚀 Run release
       run: |
         echo "sonatypeUsername=$SONATYPE_USERNAME" >> gradle.properties
