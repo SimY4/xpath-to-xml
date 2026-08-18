@@ -1,5 +1,5 @@
 # This is a Gradle generated file for dependency locking.
 # Manual edits can break the build and are not advised.
 # This file is expected to be part of source control.
-xom:xom:1.4.4=compileClasspath,runtimeClasspath
+xom:xom:1.4.6=compileClasspath,runtimeClasspath
 empty=
