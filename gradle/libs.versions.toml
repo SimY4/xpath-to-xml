@@ -1,6 +1,6 @@
 [versions]
 errorprone = '2.31.0'
-jackson = '2.22.1'
+jackson = '2.22.2'
 
 [plugins]
 errorprone = 'net.ltgt.errorprone:5.1.0'
