@@ -48,6 +48,7 @@ abstract class AbstractOperationExprTest {
   @SuppressWarnings("DirectInvocationOnMock")
   void testToString() {
     assertThat(operationExpr)
-        .hasToString(leftExpr.toString() + operationExpr.operator() + rightExpr.toString());
+        .hasToString(
+            leftExpr.toString() + ' ' + operationExpr.operator() + ' ' + rightExpr.toString());
   }
 }

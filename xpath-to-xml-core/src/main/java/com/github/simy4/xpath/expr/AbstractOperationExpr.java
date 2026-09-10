@@ -52,6 +52,6 @@ abstract class AbstractOperationExpr implements Expr, Serializable {
 
   @Override
   public final String toString() {
-    return leftExpr.toString() + operator() + rightExpr.toString();
+    return leftExpr.toString() + ' ' + operator() + ' ' + rightExpr.toString();
   }
 }
