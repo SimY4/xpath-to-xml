@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import com.github.simy4.xpath.dom4j.navigator.node.Dom4jDocument;
 import com.github.simy4.xpath.dom4j.navigator.node.Dom4jElement;
 import com.github.simy4.xpath.dom4j.navigator.node.Dom4jNode;
 import com.github.simy4.xpath.navigator.Navigator;
+import com.github.simy4.xpath.navigator.Node;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -81,14 +82,14 @@ class Dom4jNavigatorTest {
   @Test
   void testElementsOfDocument() {
     assertThat(navigator.elementsOf(new Dom4jDocument(root)))
-        .extracting("node", Element.class)
+        .extracting(Dom4jNode::getNode)
         .containsExactly(parent);
   }
 
   @Test
   void testElementsOfElement() {
     assertThat(navigator.elementsOf(new Dom4jElement(xml)))
-        .extracting("node", Element.class)
+        .extracting(Dom4jNode::getNode)
         .containsExactly(child1, child2, child3);
   }
 
@@ -100,7 +101,7 @@ class Dom4jNavigatorTest {
   @Test
   void testAttributesOf() {
     assertThat(navigator.attributesOf(new Dom4jElement(xml)))
-        .extracting("node", Attribute.class)
+        .extracting(Dom4jNode::getNode)
         .containsExactly(attr1, attr2, attr3);
   }
 
@@ -131,7 +132,7 @@ class Dom4jNavigatorTest {
   @Test
   void testCreateElementSuccess() {
     var elem = navigator.createElement(new Dom4jElement(xml), new QName("elem"));
-    assertThat(elem).extracting("name").isEqualTo(new QName("elem"));
+    assertThat(elem).extracting(Node::getName).isEqualTo(new QName("elem"));
   }
 
   @Test
@@ -139,7 +140,9 @@ class Dom4jNavigatorTest {
     var elem =
         navigator.createElement(
             new Dom4jElement(xml), new QName("http://example.com/my", "elem", "my"));
-    assertThat(elem).extracting("name").isEqualTo(new QName("http://example.com/my", "elem", "my"));
+    assertThat(elem)
+        .extracting(Node::getName)
+        .isEqualTo(new QName("http://example.com/my", "elem", "my"));
   }
 
   @Test
@@ -151,7 +154,9 @@ class Dom4jNavigatorTest {
   @Test
   void testPrependCopySuccess() {
     navigator.prependCopy(new Dom4jElement(xml));
-    assertThat(parent.elements()).extracting("name").containsExactly(xml.getName(), xml.getName());
+    assertThat(parent.elements())
+        .extracting(org.dom4j.Node::getName)
+        .containsExactly(xml.getName(), xml.getName());
   }
 
   @Test

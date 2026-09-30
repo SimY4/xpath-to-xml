@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,7 +74,7 @@ class PathExprTest extends Assertions {
     var result = pathExpr.resolve(navigator, parentNode, false);
 
     // then
-    assertThatIterable(result).extracting("node").containsExactly(node("node31"));
+    assertThatIterable(result).extracting(NodeView::getNode).containsExactly(node("node31"));
     assertThat(stepExpr1ViewCaptor.getAllValues())
         .extracting(NodeView::hasNext, NodeView::getPosition)
         .containsExactly(tuple(false, 1));

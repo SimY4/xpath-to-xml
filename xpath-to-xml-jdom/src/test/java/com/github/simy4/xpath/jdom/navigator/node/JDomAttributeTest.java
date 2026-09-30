@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,14 @@ package com.github.simy4.xpath.jdom.navigator.node;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.helpers.SerializationHelper;
+import com.github.simy4.xpath.navigator.Node;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import javax.xml.namespace.QName;
 
 import java.io.IOException;
 
@@ -66,7 +69,7 @@ class JDomAttributeTest {
     var result = node.getName();
 
     assertThat(result)
-        .extracting("namespaceURI", "localPart", "prefix")
+        .extracting(QName::getNamespaceURI, QName::getLocalPart, QName::getPrefix)
         .containsExactly("http://www.example.com/my", "attr", "my");
   }
 
@@ -81,6 +84,6 @@ class JDomAttributeTest {
     var deserializedNode = SerializationHelper.serializeAndDeserializeBack(node);
 
     // then
-    assertThat(deserializedNode).extracting("name").isEqualTo(node.getName());
+    assertThat(deserializedNode).extracting(Node::getName).isEqualTo(node.getName());
   }
 }

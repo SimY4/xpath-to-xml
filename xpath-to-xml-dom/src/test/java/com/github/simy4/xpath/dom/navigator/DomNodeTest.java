@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 
 import java.io.IOException;
 
@@ -47,7 +48,7 @@ class DomNodeTest {
     when(node.getNodeName()).thenReturn("node");
     var result = nodeView.getName();
     assertThat(result)
-        .extracting("namespaceURI", "localPart", "prefix")
+        .extracting(QName::getNamespaceURI, QName::getLocalPart, QName::getPrefix)
         .containsExactly(XMLConstants.NULL_NS_URI, "node", XMLConstants.DEFAULT_NS_PREFIX);
   }
 
@@ -58,7 +59,7 @@ class DomNodeTest {
     when(node.getPrefix()).thenReturn("my");
     var result = nodeView.getName();
     assertThat(result)
-        .extracting("namespaceURI", "localPart", "prefix")
+        .extracting(QName::getNamespaceURI, QName::getLocalPart, QName::getPrefix)
         .containsExactly("http://www.example.com/my", "node", "my");
   }
 

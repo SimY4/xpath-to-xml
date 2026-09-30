@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ class Dom4JElementTest {
   @Test
   void shouldAppendNewElementWhenCreateElement() {
     var elem = node.createElement(new org.dom4j.QName("elem"));
-    assertThat(elem).extracting("name").isEqualTo(new QName("elem"));
+    assertThat(elem).extracting(Node::getName).isEqualTo(new QName("elem"));
   }
 
   @Test
@@ -81,7 +81,7 @@ class Dom4JElementTest {
     var result = node.getName();
 
     assertThat(result)
-        .extracting("namespaceURI", "localPart", "prefix")
+        .extracting(QName::getNamespaceURI, QName::getLocalPart, QName::getPrefix)
         .containsExactly(XMLConstants.NULL_NS_URI, "node", XMLConstants.DEFAULT_NS_PREFIX);
   }
 
@@ -95,7 +95,7 @@ class Dom4JElementTest {
     var result = node.getName();
 
     assertThat(result)
-        .extracting("namespaceURI", "localPart", "prefix")
+        .extracting(QName::getNamespaceURI, QName::getLocalPart, QName::getPrefix)
         .containsExactly("http://www.example.com/my", "node", "my");
   }
 
@@ -110,6 +110,6 @@ class Dom4JElementTest {
     Node deserializedNode = SerializationHelper.serializeAndDeserializeBack(node);
 
     // then
-    assertThat(deserializedNode).extracting("name").isEqualTo(node.getName());
+    assertThat(deserializedNode).extracting(Node::getName).isEqualTo(node.getName());
   }
 }

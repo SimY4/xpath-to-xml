@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 
 import java.io.IOException;
 
@@ -73,7 +74,7 @@ class Dom4JAttributeTest {
     var result = node.getName();
 
     assertThat(result)
-        .extracting("namespaceURI", "localPart", "prefix")
+        .extracting(QName::getNamespaceURI, QName::getLocalPart, QName::getPrefix)
         .containsExactly(XMLConstants.NULL_NS_URI, "node", XMLConstants.DEFAULT_NS_PREFIX);
   }
 
@@ -89,7 +90,7 @@ class Dom4JAttributeTest {
     var result = node.getName();
 
     assertThat(result)
-        .extracting("namespaceURI", "localPart", "prefix")
+        .extracting(QName::getNamespaceURI, QName::getLocalPart, QName::getPrefix)
         .containsExactly("http://www.example.com/my", "node", "my");
   }
 
@@ -101,9 +102,9 @@ class Dom4JAttributeTest {
   @Test
   void shouldSerializeAndDeserialize() throws IOException, ClassNotFoundException {
     // when
-    Node deserializedNode = SerializationHelper.serializeAndDeserializeBack(node);
+    var deserializedNode = SerializationHelper.serializeAndDeserializeBack(node);
 
     // then
-    assertThat(deserializedNode).extracting("name").isEqualTo(node.getName());
+    assertThat(deserializedNode).extracting(Node::getName).isEqualTo(node.getName());
   }
 }

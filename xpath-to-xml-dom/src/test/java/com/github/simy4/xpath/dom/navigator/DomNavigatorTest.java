@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,14 +102,14 @@ class DomNavigatorTest {
   @Test
   void testElementsOf() {
     assertThat(navigator.elementsOf(new DomNode(xml)))
-        .extracting("node", Node.class)
+        .extracting(DomNode::getNode)
         .containsExactly(child1, child2, child3);
   }
 
   @Test
   void testAttributesOf() {
     assertThat(navigator.attributesOf(new DomNode(xml)))
-        .extracting("node", Node.class)
+        .extracting(DomNode::getNode)
         .containsExactly(child1, child2, child3);
   }
 

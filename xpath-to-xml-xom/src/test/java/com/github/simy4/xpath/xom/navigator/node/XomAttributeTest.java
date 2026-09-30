@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import nu.xom.Attribute;
 import nu.xom.Element;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import javax.xml.namespace.QName;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -62,7 +64,7 @@ class XomAttributeTest {
     var result = node.getName();
 
     assertThat(result)
-        .extracting("namespaceURI", "localPart", "prefix")
+        .extracting(QName::getNamespaceURI, QName::getLocalPart, QName::getPrefix)
         .containsExactly("http://www.example.com/my", "attr", "my");
   }
 

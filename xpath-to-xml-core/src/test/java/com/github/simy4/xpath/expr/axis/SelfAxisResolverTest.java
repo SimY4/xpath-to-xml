@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,7 +74,7 @@ class SelfAxisResolverTest extends Assertions {
     var result = axisResolver.resolveAxis(navigator, node, true);
 
     // then
-    assertThatIterable(result).extracting("node").containsExactly(node.getNode());
+    assertThatIterable(result).extracting(NodeView::getNode).containsExactly(node.getNode());
     verify(axisResolver, never()).createAxisNode(any(), any(), anyInt());
   }
 
