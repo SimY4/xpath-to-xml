@@ -19,6 +19,7 @@ import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,8 +30,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.github.simy4.xpath.util.TestNode.node;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
@@ -41,7 +40,7 @@ import static org.mockito.Mockito.when;
 import static java.util.Arrays.asList;
 
 @ExtendWith(MockitoExtension.class)
-class PathExprTest {
+class PathExprTest extends Assertions {
 
   private static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));
 
@@ -75,15 +74,15 @@ class PathExprTest {
     var result = pathExpr.resolve(navigator, parentNode, false);
 
     // then
-    assertThat((Iterable<?>) result).extracting("node").containsExactly(node("node31"));
+    assertThatIterable(result).extracting("node").containsExactly(node("node31"));
     assertThat(stepExpr1ViewCaptor.getAllValues())
-        .extracting("hasNext", "position")
+        .extracting(NodeView::hasNext, NodeView::getPosition)
         .containsExactly(tuple(false, 1));
     assertThat(stepExpr2ViewCaptor.getAllValues())
-        .extracting("hasNext", "position")
+        .extracting(NodeView::hasNext, NodeView::getPosition)
         .containsExactly(tuple(false, 1));
     assertThat(stepExpr3ViewCaptor.getAllValues())
-        .extracting("hasNext", "position")
+        .extracting(NodeView::hasNext, NodeView::getPosition)
         .containsExactly(tuple(true, 1), tuple(false, 2));
   }
 
@@ -100,12 +99,12 @@ class PathExprTest {
     var result = pathExpr.resolve(navigator, parentNode, false);
 
     // then
-    assertThat((Iterable<?>) result).isEmpty();
+    assertThatIterable(result).isEmpty();
     assertThat(stepExpr1ViewCaptor.getAllValues())
-        .extracting("hasNext", "position")
+        .extracting(NodeView::hasNext, NodeView::getPosition)
         .containsExactly(tuple(false, 1));
     assertThat(stepExpr2ViewCaptor.getAllValues())
-        .extracting("hasNext", "position")
+        .extracting(NodeView::hasNext, NodeView::getPosition)
         .containsExactly(tuple(true, 1), tuple(false, 2));
     verify(stepExpr3, never()).resolve(any(), any(), anyBoolean());
   }

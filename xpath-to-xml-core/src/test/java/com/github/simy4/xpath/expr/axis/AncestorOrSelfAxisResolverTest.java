@@ -16,6 +16,7 @@
 package com.github.simy4.xpath.expr.axis;
 
 import com.github.simy4.xpath.XmlBuilderException;
+import com.github.simy4.xpath.view.NodeView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,8 +26,6 @@ import javax.xml.namespace.QName;
 import java.util.stream.Collectors;
 
 import static com.github.simy4.xpath.util.TestNode.node;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.doReturn;
 
 import static java.util.stream.StreamSupport.stream;
@@ -49,8 +48,8 @@ class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
     // then
-    assertThat((Iterable<?>) result)
-        .extracting("node")
+    assertThatIterable(result)
+        .extracting(NodeView::getNode)
         .containsExactly(parentNode.getNode(), node("parent1"), node("parent2"), node(name));
   }
 
@@ -65,8 +64,8 @@ class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
     // then
-    assertThat((Iterable<?>) result)
-        .extracting("node")
+    assertThatIterable(result)
+        .extracting(NodeView::getNode)
         .containsExactly(node("parent1"), node("parent2"), node(name));
   }
 
@@ -81,7 +80,7 @@ class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
     // then
-    assertThat((Iterable<?>) result).extracting("node").containsExactly(parentNode.getNode());
+    assertThatIterable(result).extracting(NodeView::getNode).containsExactly(parentNode.getNode());
   }
 
   @Test
@@ -95,7 +94,7 @@ class AncestorOrSelfAxisResolverTest extends AbstractAxisResolverTest {
     var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
     // then
-    assertThat((Iterable<?>) result).isEmpty();
+    assertThatIterable(result).isEmpty();
   }
 
   @Test

@@ -18,6 +18,7 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.NodeView;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,12 +29,11 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import static com.github.simy4.xpath.util.TestNode.node;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-class RootTest {
+class RootTest extends Assertions {
 
   private static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));
 
@@ -53,7 +53,7 @@ class RootTest {
     var result = root.resolve(navigator, parentNode, false);
 
     // then
-    assertThat((Iterable<?>) result).extracting("node").containsExactly(node("root"));
+    assertThatIterable(result).extracting(NodeView::getNode).containsExactly(node("root"));
   }
 
   @Test

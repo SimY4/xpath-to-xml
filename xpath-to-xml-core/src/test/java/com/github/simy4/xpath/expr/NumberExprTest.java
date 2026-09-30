@@ -18,6 +18,7 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.NodeView;
+import com.github.simy4.xpath.view.View;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +41,7 @@ class NumberExprTest {
   @DisplayName("Should always return single number node")
   void shouldAlwaysReturnSingleNumberNode() {
     var result = numberExpr.resolve(navigator, parentNode, false);
-    assertThat(result).extracting("number").isEqualTo(3.0);
+    assertThat(result).extracting(View::toNumber).isEqualTo(3.0);
   }
 
   @Test

@@ -19,6 +19,7 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.NodeView;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,8 +32,6 @@ import javax.xml.namespace.QName;
 import java.util.stream.Collectors;
 
 import static com.github.simy4.xpath.util.TestNode.node;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.never;
@@ -42,7 +41,7 @@ import static org.mockito.Mockito.verify;
 import static java.util.stream.StreamSupport.stream;
 
 @ExtendWith(MockitoExtension.class)
-class SelfAxisResolverTest {
+class SelfAxisResolverTest extends Assertions {
 
   private static final NodeView<TestNode> node = new NodeView<>(node("node"));
 
@@ -62,7 +61,7 @@ class SelfAxisResolverTest {
     var result = axisResolver.resolveAxis(navigator, node, false);
 
     // then
-    assertThat((Iterable<?>) result).extracting("node").containsExactly(node.getNode());
+    assertThatIterable(result).extracting(NodeView::getNode).containsExactly(node.getNode());
   }
 
   @Test
@@ -75,7 +74,7 @@ class SelfAxisResolverTest {
     var result = axisResolver.resolveAxis(navigator, node, true);
 
     // then
-    assertThat((Iterable<?>) result).extracting("node").containsExactly(node.getNode());
+    assertThatIterable(result).extracting("node").containsExactly(node.getNode());
     verify(axisResolver, never()).createAxisNode(any(), any(), anyInt());
   }
 
@@ -89,7 +88,7 @@ class SelfAxisResolverTest {
     var result = axisResolver.resolveAxis(navigator, node, false);
 
     // then
-    assertThat((Iterable<?>) result).isEmpty();
+    assertThatIterable(result).isEmpty();
   }
 
   @Test

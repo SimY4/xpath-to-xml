@@ -17,6 +17,7 @@ package com.github.simy4.xpath.expr.axis;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.util.TestNode;
+import com.github.simy4.xpath.view.NodeView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,8 +29,6 @@ import javax.xml.namespace.QName;
 import java.util.stream.Collectors;
 
 import static com.github.simy4.xpath.util.TestNode.node;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -57,7 +56,9 @@ class ChildAxisResolverTest extends AbstractAxisResolverTest {
     var result = axisResolver.resolveAxis(navigator, parentNode, true);
 
     // then
-    assertThat((Object) result).extracting("node", "position").containsExactly(node("name"), 1);
+    assertThatIterable(result)
+        .extracting(NodeView::getNode, NodeView::getPosition)
+        .containsExactly(tuple(node("name"), 1));
     verify(navigator).createElement(parentNode.getNode(), name);
   }
 

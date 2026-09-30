@@ -83,7 +83,7 @@ class UnaryExprTest {
 
     // when
     assertThat(unaryExpr.resolve(navigator, new NodeView<>(node("node")), false))
-        .extracting("number")
+        .extracting(View::toNumber)
         .isEqualTo(-number.toNumber());
   }
 
@@ -96,7 +96,7 @@ class UnaryExprTest {
 
     // when
     assertThat(unaryExpr.resolve(navigator, new NodeView<>(node("node")), false))
-        .extracting("number")
+        .extracting(View::toNumber)
         .isEqualTo(Double.NaN);
   }
 

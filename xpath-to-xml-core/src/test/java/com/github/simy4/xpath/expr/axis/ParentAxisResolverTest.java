@@ -23,8 +23,6 @@ import org.junit.jupiter.api.Test;
 import java.util.stream.Collectors;
 
 import static com.github.simy4.xpath.util.TestNode.node;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import static java.util.stream.StreamSupport.stream;

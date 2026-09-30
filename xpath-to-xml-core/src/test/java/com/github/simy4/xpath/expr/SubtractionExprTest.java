@@ -36,7 +36,6 @@ import java.util.stream.Stream;
 
 import static com.github.simy4.xpath.util.TestNode.node;
 import static com.github.simy4.xpath.view.NodeSetView.empty;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -88,7 +87,7 @@ class SubtractionExprTest extends AbstractOperationExprTest {
 
     // when
     assertThat(operationExpr.resolve(navigator, new NodeView<>(node("node")), false))
-        .extracting("number")
+        .extracting(View::toNumber)
         .isEqualTo(0.0);
   }
 
@@ -102,7 +101,7 @@ class SubtractionExprTest extends AbstractOperationExprTest {
 
     // when
     assertThat(operationExpr.resolve(navigator, new NodeView<>(node("node")), false))
-        .extracting("number")
+        .extracting(View::toNumber)
         .isEqualTo(Double.NaN);
   }
 }

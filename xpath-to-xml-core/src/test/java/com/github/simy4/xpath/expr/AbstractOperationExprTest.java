@@ -16,15 +16,14 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.helpers.SerializationHelper;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import java.io.IOException;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-abstract class AbstractOperationExprTest {
+abstract class AbstractOperationExprTest extends Assertions {
 
   @Mock(serializable = true)
   Expr leftExpr;
