@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ public class PutValueEffect implements Effect, Serializable {
 
   @SuppressWarnings("serial")
   private final Expr expr;
+
   private final String value;
 
   public PutValueEffect(Expr expr, Object value) {

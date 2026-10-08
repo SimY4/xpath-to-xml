@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Alex Simkin
+ * Copyright 2018-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,20 +52,13 @@ class JsonJsonByNameNodeTest {
   }
 
   @Test
-  void shouldTraverseObjectAttributes() {
+  void shouldTraverseObject() {
     var parent = new JsonJsonRootNode(jsonObject);
 
-    assertThat(parent.attributes())
+    assertThat(parent.traverse())
         .containsExactlyInAnyOrder(
             new JsonJsonByNameNode(QName.valueOf("one"), parent),
             new JsonJsonByNameNode(QName.valueOf("two"), parent),
             new JsonJsonByNameNode(QName.valueOf("three"), parent));
-  }
-
-  @Test
-  void shouldTraverseObjectElements() {
-    var parent = new JsonJsonRootNode(jsonObject);
-
-    assertThat(parent.elements()).isEmpty();
   }
 }

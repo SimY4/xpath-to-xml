@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,9 +43,12 @@ final class Token {
     return xpath.substring(beginIndex, endIndex);
   }
 
-  @Override
-  public String toString() {
-    return xpath.substring(beginIndex, endIndex);
+  int getBeginIndex() {
+    return beginIndex;
+  }
+
+  int getEndIndex() {
+    return endIndex;
   }
 
   static final class Type {
@@ -114,14 +117,15 @@ final class Token {
       LOOKUP_MAP = Collections.unmodifiableMap(lookupMap);
     }
 
-    static String lookup(short type) {
+    private static String lookup(short type) {
       return requireNonNull(LOOKUP_MAP.get(type), "Unknown token type: " + type);
     }
 
-    static String[] lookup(short... types) {
-      String[] result = new String[types.length];
-      for (int i = 0; i < types.length; i++) {
-        result[i] = lookup(types[i]);
+    static String[] lookup(short type, short... rest) {
+      String[] result = new String[rest.length + 1];
+      result[0] = lookup(type);
+      for (int i = 1; i <= rest.length; i++) {
+        result[i] = lookup(rest[i - 1]);
       }
       return result;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Alex Simkin
+ * Copyright 2018-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,20 +53,13 @@ class JakartaJsonByIndexNodeTest {
   }
 
   @Test
-  void shouldTraverseArrayAttributes() {
+  void shouldTraverseArray() {
     var parent = new JakartaJsonRootNode(jsonArray);
 
-    assertThat(parent.attributes())
-        .containsExactlyInAnyOrder(
+    assertThat(parent.traverse())
+        .containsExactly(
             new JakartaJsonByIndexNode(0, parent),
             new JakartaJsonByIndexNode(1, parent),
             new JakartaJsonByIndexNode(2, parent));
-  }
-
-  @Test
-  void shouldTraverseArrayElements() {
-    var parent = new JakartaJsonRootNode(jsonArray);
-
-    assertThat(parent.elements()).isEmpty();
   }
 }

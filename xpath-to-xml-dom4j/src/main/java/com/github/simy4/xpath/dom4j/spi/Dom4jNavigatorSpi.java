@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import com.github.simy4.xpath.dom4j.navigator.node.Dom4jAttribute;
 import com.github.simy4.xpath.dom4j.navigator.node.Dom4jDocument;
 import com.github.simy4.xpath.dom4j.navigator.node.Dom4jElement;
 import com.github.simy4.xpath.dom4j.navigator.node.Dom4jNode;
-import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.spi.Effect;
 import com.github.simy4.xpath.spi.NavigatorSpi;
 import org.dom4j.Attribute;
@@ -30,19 +29,18 @@ import org.dom4j.Element;
 import org.dom4j.Node;
 
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 /** DOM4J model navigator extension SPI. */
 public class Dom4jNavigatorSpi implements NavigatorSpi {
 
-  private static final Set<Short> SUPPORTED_NODE_TYPES =
-      new HashSet<>(Arrays.asList(Node.DOCUMENT_NODE, Node.ELEMENT_NODE, Node.ATTRIBUTE_NODE));
+  private static final short[] SUPPORTED_NODE_TYPES = {
+    Node.ELEMENT_NODE, Node.ATTRIBUTE_NODE, Node.DOCUMENT_NODE
+  };
 
   @Override
   public boolean canHandle(Object o) {
     return o instanceof Node
-        && SUPPORTED_NODE_TYPES.contains(((Node) o).getNodeType())
+        && 0 <= Arrays.binarySearch(SUPPORTED_NODE_TYPES, ((Node) o).getNodeType())
         && null != ((Node) o).getDocument();
   }
 
@@ -66,9 +64,8 @@ public class Dom4jNavigatorSpi implements NavigatorSpi {
       default:
         throw new IllegalArgumentException("XML node type is not supported");
     }
-    final Navigator<Dom4jNode> navigator =
-        new Dom4jNavigator(new Dom4jDocument(xmlNode.getDocument()));
-    for (Effect effect : effects) {
+    final var navigator = new Dom4jNavigator(new Dom4jDocument(xmlNode.getDocument()));
+    for (var effect : effects) {
       effect.perform(navigator, node);
     }
     return xml;

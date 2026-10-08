@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,6 +63,7 @@ public class XmlBuilder implements Serializable {
   }
 
   private final XPathParser parser;
+
   @SuppressWarnings("serial")
   private final List<Effect> effects;
 
@@ -156,7 +157,7 @@ public class XmlBuilder implements Serializable {
   }
 
   /**
-   * Evaluates given XPath expression and detaches all of the resulting nodes.
+   * Evaluates given XPath expression and detaches all the resulting nodes.
    *
    * @param xpath XPath to process
    * @return {@link XmlBuilder} instance
@@ -168,7 +169,7 @@ public class XmlBuilder implements Serializable {
   }
 
   /**
-   * Evaluates given XPath expressions and detaches all of the resulting nodes.
+   * Evaluates given XPath expressions and detaches all the resulting nodes.
    *
    * @param xpaths XPaths to process
    * @return {@link XmlBuilder} instance
@@ -180,7 +181,7 @@ public class XmlBuilder implements Serializable {
   }
 
   /**
-   * Evaluates given XPath expressions and detaches all of the resulting nodes.
+   * Evaluates given XPath expressions and detaches all the resulting nodes.
    *
    * @param xpaths XPaths to process
    * @return {@link XmlBuilder} instance

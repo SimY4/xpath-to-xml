@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,11 +58,11 @@ public final class Dom4jNavigator implements Navigator<Dom4jNode> {
 
   @Override
   public Dom4jNode createAttribute(Dom4jNode parent, QName attribute) throws XmlBuilderException {
-    Node wrappedNode = parent.getNode();
+    var wrappedNode = parent.getNode();
     if (Node.ELEMENT_NODE != wrappedNode.getNodeType()) {
       throw new XmlBuilderException("Unable to create attribute to a non-element node " + parent);
     }
-    final org.dom4j.QName attributeName =
+    final var attributeName =
         DocumentHelper.createQName(
             attribute.getLocalPart(),
             new Namespace(attribute.getPrefix(), attribute.getNamespaceURI()));
@@ -72,7 +72,7 @@ public final class Dom4jNavigator implements Navigator<Dom4jNode> {
 
   @Override
   public Dom4jNode createElement(Dom4jNode parent, QName element) {
-    final org.dom4j.QName elementName =
+    final var elementName =
         DocumentHelper.createQName(
             element.getLocalPart(), new Namespace(element.getPrefix(), element.getNamespaceURI()));
     return new Dom4jElement(DocumentHelper.createElement(elementName));
@@ -89,12 +89,12 @@ public final class Dom4jNavigator implements Navigator<Dom4jNode> {
 
   @Override
   public void appendPrev(Dom4jNode node, Dom4jNode prepend) throws XmlBuilderException {
-    final Node wrappedNode = node.getNode();
-    final Node nodeToPrepend = prepend.getNode();
+    final var wrappedNode = node.getNode();
+    final var nodeToPrepend = prepend.getNode();
     if (Node.ELEMENT_NODE != nodeToPrepend.getNodeType()) {
       throw new XmlBuilderException("Unable to append prev a non-element node " + prepend);
     }
-    final Element parent = wrappedNode.getParent();
+    final var parent = wrappedNode.getParent();
     if (null == parent) {
       throw new XmlBuilderException("Unable to prepend - no parent found of " + node);
     }
@@ -109,12 +109,12 @@ public final class Dom4jNavigator implements Navigator<Dom4jNode> {
 
   @Override
   public void appendNext(Dom4jNode node, Dom4jNode append) throws XmlBuilderException {
-    final Node wrappedNode = node.getNode();
-    final Node nodeToAppend = append.getNode();
+    final var wrappedNode = node.getNode();
+    final var nodeToAppend = append.getNode();
     if (Node.ELEMENT_NODE != nodeToAppend.getNodeType()) {
       throw new XmlBuilderException("Unable to append next a non-element node " + append);
     }
-    final Element parent = wrappedNode.getParent();
+    final var parent = wrappedNode.getParent();
     if (null == parent) {
       throw new XmlBuilderException("Unable to append - no parent found of " + node);
     }
@@ -123,8 +123,8 @@ public final class Dom4jNavigator implements Navigator<Dom4jNode> {
 
   @Override
   public void remove(Dom4jNode node) {
-    final Node wrappedNode = node.getNode();
-    final Element parent = wrappedNode.getParent();
+    final var wrappedNode = node.getNode();
+    final var parent = wrappedNode.getParent();
     if (parent != null) {
       parent.remove(wrappedNode);
     } else {

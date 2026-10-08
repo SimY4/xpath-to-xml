@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public class DomXmlBuilderBenchmark {
   private static final Map<String, NamespaceContext> NAMESPACE_CONTEXT_MAP;
 
   static {
-    Map<String, NamespaceContext> namespaceContextMap = new HashMap<>();
+    var namespaceContextMap = new HashMap<String, NamespaceContext>();
     namespaceContextMap.put("null", null);
     namespaceContextMap.put("simple", new SimpleNamespaceContext());
     NAMESPACE_CONTEXT_MAP = Collections.unmodifiableMap(namespaceContextMap);

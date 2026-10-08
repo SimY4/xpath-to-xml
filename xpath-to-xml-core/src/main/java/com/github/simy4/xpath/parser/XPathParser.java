@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,7 +85,7 @@ public class XPathParser implements Serializable {
     final Context context = new Context(xpath);
     final Expr expr = Expr(context);
     if (context.hasMoreElements()) {
-      throw new XPathParserException(context.tokenAt(1));
+      throw context.error(context.tokenAt(1), Type.EOF);
     }
     return expr;
   }
@@ -144,7 +144,7 @@ public class XPathParser implements Serializable {
           left = new SubtractionExpr(left, right);
           break;
         default:
-          throw new XPathParserException(context.tokenAt(1), Type.lookup(Type.PLUS, Type.MINUS));
+          throw context.error(context.tokenAt(1), Type.PLUS, Type.MINUS);
       }
       type = context.tokenAt(1).getType();
     }
@@ -163,7 +163,7 @@ public class XPathParser implements Serializable {
           left = new MultiplicationExpr(left, right);
           break;
         default:
-          throw new XPathParserException(context.tokenAt(1), Type.lookup(Type.STAR));
+          throw context.error(context.tokenAt(1), Type.STAR);
       }
       type = context.tokenAt(1).getType();
     }
@@ -214,8 +214,7 @@ public class XPathParser implements Serializable {
       case Type.DOUBLE_SLASH:
         context.match(Type.DOUBLE_SLASH);
         pathExpr.add(new Root());
-        pathExpr.add(
-            new AxisStepExpr(new DescendantOrSelfAxisResolver(ANY, true), Collections.emptySet()));
+        pathExpr.add(new AxisStepExpr(new DescendantOrSelfAxisResolver(ANY, true)));
         RelativePathExpr(context, pathExpr);
         break;
       default:
@@ -237,14 +236,11 @@ public class XPathParser implements Serializable {
           break;
         case Type.DOUBLE_SLASH:
           context.match(Type.DOUBLE_SLASH);
-          pathExpr.add(
-              new AxisStepExpr(
-                  new DescendantOrSelfAxisResolver(ANY, true), Collections.emptySet()));
+          pathExpr.add(new AxisStepExpr(new DescendantOrSelfAxisResolver(ANY, true)));
           pathExpr.add(StepExpr(context));
           break;
         default:
-          throw new XPathParserException(
-              context.tokenAt(1), Type.lookup(Type.SLASH, Type.DOUBLE_SLASH));
+          throw context.error(context.tokenAt(1), Type.SLASH, Type.DOUBLE_SLASH);
       }
       type = context.tokenAt(1).getType();
     }
@@ -275,9 +271,8 @@ public class XPathParser implements Serializable {
         }
         break;
       default:
-        throw new XPathParserException(
-            context.tokenAt(1),
-            Type.lookup(Type.DOT, Type.DOUBLE_DOT, Type.AT, Type.STAR, Type.IDENTIFIER));
+        throw context.error(
+            context.tokenAt(1), Type.DOT, Type.DOUBLE_DOT, Type.AT, Type.STAR, Type.IDENTIFIER);
     }
     predicateList = PredicateList(context);
     return new AxisStepExpr(axisResolver, predicateList);
@@ -326,7 +321,7 @@ public class XPathParser implements Serializable {
         axisResolver = new AncestorOrSelfAxisResolver(NodeTest(context), true);
         break;
       default:
-        throw new XPathParserException(axisToken, Type.lookup(Type.IDENTIFIER));
+        throw context.error(axisToken, Type.IDENTIFIER);
     }
     return axisResolver;
   }
@@ -367,7 +362,7 @@ public class XPathParser implements Serializable {
         }
       // fallthrough
       default:
-        throw new XPathParserException(context.tokenAt(1), Type.lookup(Type.STAR, Type.IDENTIFIER));
+        throw context.error(context.tokenAt(1), Type.STAR, Type.IDENTIFIER);
     }
   }
 
@@ -375,10 +370,9 @@ public class XPathParser implements Serializable {
   private List<Expr> PredicateList(Context context) throws XPathExpressionException {
     if (Type.LEFT_BRACKET == context.tokenAt(1).getType()) {
       final List<Expr> predicateList = new ArrayList<>();
-      predicateList.add(Predicate(context));
-      while (Type.LEFT_BRACKET == context.tokenAt(1).getType()) {
+      do {
         predicateList.add(Predicate(context));
-      }
+      } while (Type.LEFT_BRACKET == context.tokenAt(1).getType());
       return predicateList;
     } else {
       return Collections.emptyList();
@@ -393,9 +387,9 @@ public class XPathParser implements Serializable {
   }
 
   private static final class Context {
-
     private final XPathLexer lexer;
-    private final List<Token> tokens = new ArrayList<>(4);
+    private final Token[] tokens = new Token[4];
+    private int tokenCursor;
 
     Context(String xpath) {
       this.lexer = new XPathLexer(xpath);
@@ -406,21 +400,26 @@ public class XPathParser implements Serializable {
     }
 
     Token tokenAt(int i) {
-      if (tokens.size() <= i - 1) {
-        for (int j = 0; j < i; ++j) {
-          tokens.add(lexer.next());
-        }
+      for (; tokenCursor < i; tokenCursor++) {
+        tokens[tokenCursor] = lexer.next();
       }
-      return tokens.get(i - 1);
+      return tokens[i - 1];
     }
 
     Token match(short type) throws XPathExpressionException {
       final Token token = tokenAt(1);
       if (token.getType() == type) {
-        tokens.remove(0);
+        for (int i = 0; i < tokenCursor; i++) {
+          tokens[i] = tokens[i + 1];
+        }
+        tokenCursor--;
         return token;
       }
-      throw new XPathParserException(token, Type.lookup(type));
+      throw error(token, type);
+    }
+
+    XPathParserException error(Token actual, short expected, short... restExpected) {
+      return new XPathParserException(lexer.toString(), actual, expected, restExpected);
     }
   }
 

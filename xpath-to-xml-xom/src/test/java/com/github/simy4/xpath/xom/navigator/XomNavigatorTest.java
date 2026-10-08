@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,14 +79,14 @@ class XomNavigatorTest {
   @Test
   void testElementsOfDocument() {
     assertThat(navigator.elementsOf(new XomDocument(root)))
-        .extracting("node", Element.class)
+        .extracting(XomNode::getNode)
         .containsExactly(parent);
   }
 
   @Test
   void testElementsOfElement() {
     assertThat(navigator.elementsOf(new XomElement(xml)))
-        .extracting("node", Element.class)
+        .extracting(XomNode::getNode)
         .containsExactly(child1, child2, child3);
   }
 
@@ -98,7 +98,7 @@ class XomNavigatorTest {
   @Test
   void testAttributesOf() {
     assertThat(navigator.attributesOf(new XomElement(xml)))
-        .extracting("node", Attribute.class)
+        .extracting(XomNode::getNode)
         .containsExactly(attr1, attr2, attr3);
   }
 

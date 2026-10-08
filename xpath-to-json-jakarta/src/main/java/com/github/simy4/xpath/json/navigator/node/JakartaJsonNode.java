@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Alex Simkin
+ * Copyright 2018-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,5 @@ public interface JakartaJsonNode extends Node {
 
   void set(JsonProvider jsonProvider, JsonValue jsonValue) throws XmlBuilderException;
 
-  Stream<JakartaJsonNode> elements();
-
-  Stream<JakartaJsonNode> attributes();
+  Stream<JakartaJsonNode> traverse();
 }

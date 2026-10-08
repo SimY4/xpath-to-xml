@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 Alex Simkin
+ * Copyright 2020-2025 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,5 +18,8 @@ package scala.xpath
 
 import expr.Expr
 
+import _root_.scala.annotation.unused
+
 trait ToXPathLiteral:
-  extension (inline sc: StringContext) inline def xpath(inline args: Any*): Expr = ${ XPathLiteral.xpathImpl('sc) }
+  extension (inline sc: StringContext)
+    inline def xpath(@unused inline args: Any*): Expr = ${ XPathLiteral.xpathImpl('sc) }

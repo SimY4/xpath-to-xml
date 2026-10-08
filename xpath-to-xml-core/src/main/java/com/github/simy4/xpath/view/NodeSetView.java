@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,6 +100,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
     @SuppressWarnings("serial")
     final Set<T> cache = new LinkedHashSet<>();
+
     final transient Iterable<? extends T> nodeSet;
     final transient Predicate<? super T> filter;
     volatile boolean exhausted;
@@ -193,6 +194,7 @@ public abstract class NodeSetView<N extends Node> implements IterableNodeView<N>
 
     @SuppressWarnings("serial")
     final Set<T> cache = new LinkedHashSet<>();
+
     final transient NodeSetView<T> nodeSetView;
     final transient Function<? super NodeView<T>, ? extends IterableNodeView<T>> fmap;
     volatile boolean exhausted;

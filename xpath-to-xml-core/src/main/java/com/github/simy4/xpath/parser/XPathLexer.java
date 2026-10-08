@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -244,5 +244,10 @@ class XPathLexer implements Iterator<Token> {
 
   private boolean isXmlCharacter(char ch) {
     return isXmlStartCharacter(ch) || Character.isDigit(ch) || '-' == ch || '.' == ch;
+  }
+
+  @Override
+  public String toString() {
+    return xpath;
   }
 }

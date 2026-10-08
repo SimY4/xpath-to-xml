@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,7 +83,7 @@ class UnaryExprTest {
 
     // when
     assertThat(unaryExpr.resolve(navigator, new NodeView<>(node("node")), false))
-        .extracting("number")
+        .extracting(View::toNumber)
         .isEqualTo(-number.toNumber());
   }
 
@@ -96,7 +96,7 @@ class UnaryExprTest {
 
     // when
     assertThat(unaryExpr.resolve(navigator, new NodeView<>(node("node")), false))
-        .extracting("number")
+        .extracting(View::toNumber)
         .isEqualTo(Double.NaN);
   }
 

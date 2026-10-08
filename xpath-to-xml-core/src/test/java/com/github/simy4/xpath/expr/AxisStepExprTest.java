@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,20 @@ package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.axis.AxisResolver;
+import com.github.simy4.xpath.expr.axis.SelfAxisResolver;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.BooleanView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.AdditionalAnswers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -34,28 +39,43 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import java.util.Collections;
+import javax.xml.namespace.QName;
+
+import java.util.stream.Stream;
 
 import static com.github.simy4.xpath.util.TestNode.node;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.tuple;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-class AxisStepExprTest {
+class AxisStepExprTest extends Assertions {
 
   private static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));
+
+  static Stream<Arguments> truthy() {
+    return Stream.of(
+        arguments(new LiteralExpr("2.0")),
+        arguments(new EqualsExpr(new NumberExpr(1.0), new NumberExpr(1.0))),
+        arguments(new AxisStepExpr(new SelfAxisResolver(new QName("*", "*")))));
+  }
+
+  static Stream<Arguments> falsy() {
+    return Stream.of(
+        arguments(new LiteralExpr("")),
+        arguments(new NotEqualsExpr(new NumberExpr(1.0), new NumberExpr(1.0))));
+  }
 
   @Mock private Navigator<TestNode> navigator;
   @Mock private AxisResolver axisResolver;
@@ -93,14 +113,14 @@ class AxisStepExprTest {
     var result = stepExpr.resolve(navigator, parentNode, false);
 
     // then
-    assertThat((Iterable<?>) result).isNotEmpty();
+    assertThatIterable(result).isNotEmpty();
     verify(predicate1).resolve(eq(navigator), predicate1ViewCaptor.capture(), eq(false));
     verify(predicate2).resolve(eq(navigator), predicate2ViewCaptor.capture(), eq(false));
-    assertThat((Iterable<?>) predicate1ViewCaptor.getValue())
-        .extracting("position")
+    assertThatIterable(predicate1ViewCaptor.getValue())
+        .extracting(NodeView::getPosition)
         .containsExactly(1);
-    assertThat((Iterable<?>) predicate2ViewCaptor.getValue())
-        .extracting("position")
+    assertThatIterable(predicate2ViewCaptor.getValue())
+        .extracting(NodeView::getPosition)
         .containsExactly(1);
   }
 
@@ -110,13 +130,13 @@ class AxisStepExprTest {
     // given
     when(axisResolver.resolveAxis(any(), any(), anyBoolean()))
         .thenReturn(new NodeView<>(node("node")));
-    stepExpr = new AxisStepExpr(axisResolver, Collections.emptyList());
+    stepExpr = new AxisStepExpr(axisResolver);
 
     // when
     var result = stepExpr.resolve(navigator, parentNode, false);
 
     // then
-    assertThat((Iterable<?>) result).isNotEmpty();
+    assertThatIterable(result).isNotEmpty();
     verify(predicate1, never()).resolve(any(), any(), anyBoolean());
     verify(predicate2, never()).resolve(any(), any(), anyBoolean());
   }
@@ -128,7 +148,7 @@ class AxisStepExprTest {
     var result = stepExpr.resolve(navigator, parentNode, false);
 
     // then
-    assertThat((Iterable<?>) result).isEmpty();
+    assertThatIterable(result).isEmpty();
   }
 
   @Test
@@ -142,7 +162,7 @@ class AxisStepExprTest {
     var result = stepExpr.resolve(navigator, parentNode, false);
 
     // then
-    assertThat((Iterable<?>) result).isEmpty();
+    assertThatIterable(result).isEmpty();
     verify(predicate2, never()).resolve(any(), any(), anyBoolean());
   }
 
@@ -158,18 +178,17 @@ class AxisStepExprTest {
     var result = stepExpr.resolve(navigator, parentNode, true);
 
     // then
-    assertThat((Iterable<?>) result).isNotEmpty();
+    assertThatIterable(result).isNotEmpty();
     var inOrder = inOrder(predicate1, predicate2);
     inOrder.verify(predicate1).resolve(eq(navigator), predicate1ViewCaptor.capture(), eq(false));
     inOrder.verify(predicate1).resolve(eq(navigator), predicate1ViewCaptor.capture(), eq(true));
-    inOrder.verify(predicate2).resolve(eq(navigator), predicate2ViewCaptor.capture(), eq(false));
     inOrder.verify(predicate2).resolve(eq(navigator), predicate2ViewCaptor.capture(), eq(true));
     assertThat(predicate1ViewCaptor.getAllValues())
-        .extracting("hasNext", "position")
+        .extracting(NodeView::hasNext, NodeView::getPosition)
         .containsExactly(tuple(false, 1), tuple(false, 2));
     assertThat(predicate2ViewCaptor.getAllValues())
-        .extracting("hasNext", "position")
-        .containsExactly(tuple(false, 1), tuple(false, 1));
+        .extracting(NodeView::hasNext, NodeView::getPosition)
+        .containsExactly(tuple(false, 1));
   }
 
   @Test
@@ -185,17 +204,17 @@ class AxisStepExprTest {
     var result = stepExpr.resolve(navigator, parentNode, true);
 
     // then
-    assertThat((Iterable<?>) result).isNotEmpty();
+    assertThatIterable(result).isNotEmpty();
     var inOrder = inOrder(predicate1, predicate2);
     inOrder.verify(predicate1).resolve(eq(navigator), predicate1ViewCaptor.capture(), eq(false));
     inOrder.verify(predicate2).resolve(eq(navigator), predicate2ViewCaptor.capture(), eq(false));
     inOrder.verify(predicate1).resolve(eq(navigator), predicate1ViewCaptor.capture(), eq(true));
     inOrder.verify(predicate2).resolve(eq(navigator), predicate2ViewCaptor.capture(), eq(true));
     assertThat(predicate1ViewCaptor.getAllValues())
-        .extracting("hasNext", "position")
+        .extracting(NodeView::hasNext, NodeView::getPosition)
         .containsExactly(tuple(false, 1), tuple(false, 2));
     assertThat(predicate2ViewCaptor.getAllValues())
-        .extracting("hasNext", "position")
+        .extracting(NodeView::hasNext, NodeView::getPosition)
         .containsExactly(tuple(false, 1), tuple(false, 2));
   }
 
@@ -210,9 +229,64 @@ class AxisStepExprTest {
         .isInstanceOf(XmlBuilderException.class);
   }
 
+  @ParameterizedTest(name = "Given truthy predicate {0}")
+  @DisplayName("Should resolve to true")
+  @MethodSource("truthy")
+  void shouldReturnTrueForTruthyPredicate(Expr truthy) {
+    // given
+    when(axisResolver.resolveAxis(any(), any(), anyBoolean()))
+        .thenReturn(new NodeView<>(node("node")));
+    stepExpr = new AxisStepExpr(axisResolver, singletonList(truthy));
+
+    // when
+    var result = stepExpr.resolve(navigator, new NodeView<>(node("node")), false).toBoolean();
+
+    // then
+    assertThat(result).isTrue();
+  }
+
+  @ParameterizedTest(name = "Given falsy predicate {0}")
+  @DisplayName("Should resolve to false")
+  @MethodSource("falsy")
+  void shouldReturnFalseForNonGreedyFalsePredicate(Expr falsy) {
+    // given
+    when(axisResolver.resolveAxis(any(), any(), anyBoolean()))
+        .thenReturn(new NodeView<>(node("node")));
+    stepExpr = new AxisStepExpr(axisResolver, singletonList(falsy));
+
+    // when
+    var result = stepExpr.resolve(navigator, new NodeView<>(node("node")), false).toBoolean();
+
+    // then
+    assertThat(result).isFalse();
+  }
+
+  @Test
+  @DisplayName(
+      "When greedy context, falsy predicate and new node should prepend missing nodes and return true")
+  void shouldPrependMissingNodesAndReturnTrueOnGreedyFalsePredicateAndNewNode() {
+    // given
+    TestNode resolved = node("node");
+    TestNode parent = node("parent");
+    when(axisResolver.resolveAxis(any(), any(), anyBoolean()))
+        .thenReturn(new NodeView<>(resolved, 1));
+    when(navigator.parentOf(resolved)).thenReturn(parent);
+    when(navigator.createElement(parent, new QName("node"))).thenReturn(node("node"));
+    stepExpr = new AxisStepExpr(axisResolver, singletonList(new NumberExpr(3.0)));
+
+    // when
+    var result = stepExpr.resolve(navigator, new NodeView<>(node("node")), true).toBoolean();
+
+    // then
+    assertThat(result).isEqualTo(true);
+    verify(navigator, times(2)).createElement(parent, new QName("node"));
+    verify(navigator, times(2)).appendPrev(resolved, node("node"));
+  }
+
   @Test
   @SuppressWarnings("DirectInvocationOnMock")
   void testToString() {
-    assertThat(stepExpr).hasToString(axisResolver.toString() + predicate1 + predicate2);
+    assertThat(stepExpr)
+        .hasToString(axisResolver.toString() + '[' + predicate1 + "][" + predicate2 + ']');
   }
 }

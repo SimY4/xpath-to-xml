@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Alex Simkin
+ * Copyright 2019-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,14 @@
 package com.github.simy4.xpath.expr;
 
 import com.github.simy4.xpath.helpers.SerializationHelper;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import java.io.IOException;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-abstract class AbstractOperationExprTest {
+abstract class AbstractOperationExprTest extends Assertions {
 
   @Mock(serializable = true)
   Expr leftExpr;
@@ -48,6 +47,7 @@ abstract class AbstractOperationExprTest {
   @SuppressWarnings("DirectInvocationOnMock")
   void testToString() {
     assertThat(operationExpr)
-        .hasToString(leftExpr.toString() + operationExpr.operator() + rightExpr.toString());
+        .hasToString(
+            leftExpr.toString() + ' ' + operationExpr.operator() + ' ' + rightExpr.toString());
   }
 }

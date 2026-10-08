@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Alex Simkin
+ * Copyright 2018-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ class JakartaJsonByNameNodeTest {
     byNameNode.set(jsonProvider, jsonProvider.createValue(4));
 
     assertThat(rootNode.get().asJsonObject())
-        .containsExactly(
+        .containsOnly(
             entry("one", jsonProvider.createValue(1)),
             entry("two", jsonProvider.createValue(4)),
             entry("three", jsonProvider.createValue(3)));
@@ -55,25 +55,18 @@ class JakartaJsonByNameNodeTest {
     byNameNode.set(jsonProvider, null);
 
     assertThat(rootNode.get().asJsonObject())
-        .containsExactly(
+        .containsOnly(
             entry("one", jsonProvider.createValue(1)), entry("three", jsonProvider.createValue(3)));
   }
 
   @Test
-  void shouldTraverseObjectAttributes() {
+  void shouldTraverseObject() {
     var parent = new JakartaJsonRootNode(jsonObject);
 
-    assertThat(parent.attributes())
-        .containsExactlyInAnyOrder(
+    assertThat(parent.traverse())
+        .containsExactly(
             new JakartaJsonByNameNode(QName.valueOf("one"), parent),
             new JakartaJsonByNameNode(QName.valueOf("two"), parent),
             new JakartaJsonByNameNode(QName.valueOf("three"), parent));
-  }
-
-  @Test
-  void shouldTraverseObjectElements() {
-    var parent = new JakartaJsonRootNode(jsonObject);
-
-    assertThat(parent.elements()).isEmpty();
   }
 }

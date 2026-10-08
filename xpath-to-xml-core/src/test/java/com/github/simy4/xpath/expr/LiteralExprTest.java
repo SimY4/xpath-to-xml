@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package com.github.simy4.xpath.expr;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.NodeView;
+import com.github.simy4.xpath.view.View;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +41,7 @@ class LiteralExprTest {
   @DisplayName("Should always return single literal node")
   void shouldAlwaysReturnSingleLiteralNode() {
     var result = literalExpr.resolve(navigator, parentNode, false);
-    assertThat(result).extracting("literal").isEqualTo("value");
+    assertThat(result).extracting(View::toString).isEqualTo("value");
   }
 
   @Test

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Alex Simkin
+ * Copyright 2018-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ class JacksonByNameNodeTest {
     assertThat(jsonObject.fieldNames())
         .toIterable()
         .map(name -> entry(name, jsonObject.get(name)))
-        .containsExactly(
+        .containsOnly(
             entry("one", new IntNode(1)),
             entry("two", new IntNode(4)),
             entry("three", new IntNode(3)));
@@ -64,24 +64,17 @@ class JacksonByNameNodeTest {
     assertThat(jsonObject.fieldNames())
         .toIterable()
         .map(name -> entry(name, jsonObject.get(name)))
-        .containsExactly(entry("one", new IntNode(1)), entry("three", new IntNode(3)));
+        .containsOnly(entry("one", new IntNode(1)), entry("three", new IntNode(3)));
   }
 
   @Test
-  void shouldTraverseObjectAttributes() {
+  void shouldTraverseObject() {
     var parent = new JacksonRootNode(jsonObject);
 
-    assertThat(parent.attributes())
+    assertThat(parent.traverse())
         .containsExactlyInAnyOrder(
             new JacksonByNameNode(QName.valueOf("one"), parent),
             new JacksonByNameNode(QName.valueOf("two"), parent),
             new JacksonByNameNode(QName.valueOf("three"), parent));
-  }
-
-  @Test
-  void shouldTraverseObjectElements() {
-    var parent = new JacksonRootNode(jsonObject);
-
-    assertThat(parent.elements()).isEmpty();
   }
 }

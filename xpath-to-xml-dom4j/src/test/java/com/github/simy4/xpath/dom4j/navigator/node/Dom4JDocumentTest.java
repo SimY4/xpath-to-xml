@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,7 +83,7 @@ class Dom4JDocumentTest {
     var newRoot = new Dom4jElement(DocumentHelper.createElement(new org.dom4j.QName("elem")));
     node.appendChild(newRoot);
 
-    assertThat(newRoot).extracting("name").isEqualTo(new QName("elem"));
+    assertThat(newRoot).extracting(Node::getName).isEqualTo(new QName("elem"));
   }
 
   @Test
@@ -111,6 +111,6 @@ class Dom4JDocumentTest {
     Node deserializedNode = SerializationHelper.serializeAndDeserializeBack(node);
 
     // then
-    assertThat(deserializedNode).extracting("name").isEqualTo(node.getName());
+    assertThat(deserializedNode).extracting(Node::getName).isEqualTo(node.getName());
   }
 }

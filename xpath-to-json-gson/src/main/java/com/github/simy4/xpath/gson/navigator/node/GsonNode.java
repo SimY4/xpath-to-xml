@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Alex Simkin
+ * Copyright 2018-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.navigator.Node;
 import com.google.gson.JsonElement;
 
+import java.util.stream.Stream;
+
 /**
  * Gson node contract.
  *
@@ -35,7 +37,5 @@ public interface GsonNode extends Node {
 
   void set(JsonElement jsonElement) throws XmlBuilderException;
 
-  Iterable<? extends GsonNode> elements();
-
-  Iterable<? extends GsonNode> attributes();
+  Stream<GsonNode> traverse();
 }

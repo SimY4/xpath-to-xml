@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,16 @@ import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.expr.axis.AxisResolver;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.navigator.Node;
+import com.github.simy4.xpath.view.AbstractViewVisitor;
 import com.github.simy4.xpath.view.IterableNodeView;
 import com.github.simy4.xpath.view.NodeSetView;
 import com.github.simy4.xpath.view.NodeView;
+import com.github.simy4.xpath.view.NumberView;
+import com.github.simy4.xpath.view.View;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.StringJoiner;
+import java.util.Collections;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 
@@ -35,8 +38,13 @@ public class AxisStepExpr implements StepExpr, Serializable {
 
   @SuppressWarnings("serial")
   private final AxisResolver axisResolver;
+
   @SuppressWarnings("serial")
   private final Collection<Expr> predicates;
+
+  public AxisStepExpr(AxisResolver axisResolver) {
+    this(axisResolver, Collections.emptySet());
+  }
 
   public AxisStepExpr(AxisResolver axisResolver, Collection<Expr> predicates) {
     this.axisResolver = axisResolver;
@@ -48,34 +56,33 @@ public class AxisStepExpr implements StepExpr, Serializable {
       Navigator<N> navigator, NodeView<N> view, boolean greedy) throws XmlBuilderException {
     final boolean newGreedy = !view.hasNext() && greedy;
     final IterableNodeView<N> result = axisResolver.resolveAxis(navigator, view, newGreedy);
+    if (predicates.isEmpty()) {
+      return result;
+    }
     return resolvePredicates(navigator, view, result, newGreedy);
   }
 
   private <N extends Node> IterableNodeView<N> resolvePredicates(
       Navigator<N> navigator, NodeView<N> view, IterableNodeView<N> axis, boolean greedy)
       throws XmlBuilderException {
-    IterableNodeView<N> result = axis;
-    if (!predicates.isEmpty()) {
-      IntFunction<NodeView<N>> nodeSupplier =
-          position -> axisResolver.createAxisNode(navigator, view, position);
-      for (Expr predicate : predicates) {
-        final PredicateExpr predicateExpr = new PredicateExpr(predicate);
-        final PredicateResolver<N> predicateResolver =
-            new PredicateResolver<>(navigator, nodeSupplier, predicateExpr, greedy);
-        result = result.flatMap(predicateResolver);
-        nodeSupplier = predicateResolver;
-      }
+    IntFunction<NodeView<N>> nodeSupplier =
+        position -> axisResolver.createAxisNode(navigator, view, position);
+    for (Expr predicate : predicates) {
+      final PredicateResolver<N> predicateResolver =
+          new PredicateResolver<>(navigator, nodeSupplier, predicate, greedy);
+      axis = axis.flatMap(predicateResolver);
+      nodeSupplier = predicateResolver;
     }
-    return result;
+    return axis;
   }
 
   @Override
   public String toString() {
-    final StringJoiner stringJoiner = new StringJoiner("", axisResolver.toString(), "");
+    final StringBuilder stringBuilder = new StringBuilder(axisResolver.toString());
     for (Expr predicate : predicates) {
-      stringJoiner.add(predicate.toString());
+      stringBuilder.append('[').append(predicate).append(']');
     }
-    return stringJoiner.toString();
+    return stringBuilder.toString();
   }
 
   private static final class PredicateResolver<T extends Node>
@@ -101,7 +108,9 @@ public class AxisStepExpr implements StepExpr, Serializable {
     @Override
     public NodeView<T> apply(int position) throws XmlBuilderException {
       final NodeView<T> newNode = parentNodeSupplier.apply(position);
-      if (!predicate.resolve(navigator, newNode, true).toBoolean()) {
+      if (!predicate
+          .resolve(navigator, newNode, true)
+          .visit(new PredicateVisitor<T>(navigator, newNode, true))) {
         throw new XmlBuilderException("Unable to satisfy expression predicate: " + predicate);
       }
       return newNode;
@@ -110,21 +119,59 @@ public class AxisStepExpr implements StepExpr, Serializable {
     @Override
     public IterableNodeView<T> apply(NodeView<T> view) {
       final IterableNodeView<T> result;
-      final boolean check = predicate.resolve(navigator, view, false).toBoolean();
-      if (check) {
+      final boolean greedy = view.isMarked() && this.greedy;
+      if (predicate
+          .resolve(navigator, view, greedy)
+          .visit(new PredicateVisitor<T>(navigator, view, greedy))) {
+        resolved = true;
         result = view;
-      } else if ((view.isNew() || view.isMarked()) && greedy) {
-        if (!predicate.resolve(navigator, view, true).toBoolean()) {
-          throw new XmlBuilderException("Unable to satisfy expression predicate: " + predicate);
-        }
-        result = view;
-      } else if (!view.hasNext() && !resolved && greedy) {
+      } else if (greedy) {
+        throw new XmlBuilderException("Unable to satisfy expression predicate: " + predicate);
+      } else if (!view.hasNext() && !resolved && this.greedy) {
         result = apply(view.getPosition() + 1);
       } else {
         result = NodeSetView.empty();
       }
-      resolved |= check;
       return result;
+    }
+  }
+
+  private static final class PredicateVisitor<T extends Node>
+      extends AbstractViewVisitor<T, Boolean> {
+
+    private final Navigator<T> navigator;
+    private final NodeView<T> view;
+    private final boolean greedy;
+
+    PredicateVisitor(Navigator<T> navigator, NodeView<T> view, boolean greedy) {
+      this.navigator = navigator;
+      this.view = view;
+      this.greedy = greedy;
+    }
+
+    @Override
+    public Boolean visit(NumberView<T> numberView) throws XmlBuilderException {
+      final double number = numberView.toNumber();
+      if (0 == Double.compare(number, view.getPosition())) {
+        view.mark();
+        return true;
+      } else if (greedy && number > view.getPosition()) {
+        final T nodeToCopy = view.getNode();
+        final T parent = navigator.parentOf(nodeToCopy);
+        long numberOfNodesToCreate = (long) number - view.getPosition();
+        do {
+          final T copy = navigator.createElement(parent, nodeToCopy.getName());
+          navigator.appendPrev(nodeToCopy, copy);
+        } while (--numberOfNodesToCreate > 0);
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    @Override
+    protected Boolean returnDefault(View<T> view) {
+      return view.toBoolean();
     }
   }
 }

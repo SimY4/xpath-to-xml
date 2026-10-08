@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Alex Simkin
+ * Copyright 2025-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,12 +50,12 @@ public class JsonJsonNavigator implements Navigator<JsonJsonNode> {
 
   @Override
   public Iterable<? extends JsonJsonNode> elementsOf(JsonJsonNode parent) {
-    return () -> parent.elements().iterator();
+    return () -> parent.traverse().iterator();
   }
 
   @Override
   public Iterable<? extends JsonJsonNode> attributesOf(JsonJsonNode parent) {
-    return () -> parent.attributes().iterator();
+    return elementsOf(parent);
   }
 
   @Override
@@ -177,7 +177,7 @@ public class JsonJsonNavigator implements Navigator<JsonJsonNode> {
     parentArray.put(arrayElement);
     while (valueToCopy != arrayElement && i > 0) {
       arrayElement = parentArray.get(i - 1);
-      parentArray.put(i, arrayElement);
+      parentArray.put(i, JSONObject.NULL);
       i -= 1;
     }
     return new JsonJsonByIndexNode(i, parent);

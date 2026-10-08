@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Alex Simkin
+ * Copyright 2018-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,12 +53,12 @@ public class JakartaJsonNavigator implements Navigator<JakartaJsonNode> {
 
   @Override
   public Iterable<? extends JakartaJsonNode> elementsOf(JakartaJsonNode parent) {
-    return () -> parent.elements().iterator();
+    return () -> parent.traverse().iterator();
   }
 
   @Override
   public Iterable<? extends JakartaJsonNode> attributesOf(JakartaJsonNode parent) {
-    return () -> parent.attributes().iterator();
+    return elementsOf(parent);
   }
 
   @Override
@@ -197,7 +197,7 @@ public class JakartaJsonNavigator implements Navigator<JakartaJsonNode> {
   private JakartaJsonByIndexNode prependToArray(
       JakartaJsonNode parent, JsonValue valueToCopy, JsonArray parentArray) {
     final int index = parentArray.indexOf(valueToCopy);
-    parentArray = jsonProvider.createArrayBuilder(parentArray).add(index, valueToCopy).build();
+    parentArray = jsonProvider.createArrayBuilder(parentArray).add(index, JsonValue.NULL).build();
     parent.set(jsonProvider, parentArray);
     return new JakartaJsonByIndexNode(index, parent);
   }

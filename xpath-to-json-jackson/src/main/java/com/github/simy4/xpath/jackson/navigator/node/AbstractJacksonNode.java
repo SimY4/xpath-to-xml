@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Alex Simkin
+ * Copyright 2018-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,13 +66,8 @@ abstract class AbstractJacksonNode implements JacksonNode {
   }
 
   @Override
-  public final Stream<JacksonNode> elements() {
-    return traverse(get(), this, false);
-  }
-
-  @Override
-  public final Stream<JacksonNode> attributes() {
-    return traverse(get(), this, true);
+  public final Stream<JacksonNode> traverse() {
+    return traverse(get(), this);
   }
 
   @Override
@@ -99,45 +94,38 @@ abstract class AbstractJacksonNode implements JacksonNode {
     return Objects.toString(get(), "???");
   }
 
-  static Stream<JacksonNode> traverse(JsonNode jsonNode, JacksonNode parent, boolean attribute) {
+  static Stream<JacksonNode> traverse(JsonNode jsonNode, JacksonNode parent) {
     if (jsonNode.isObject()) {
       return StreamSupport.stream(
               Spliterators.spliteratorUnknownSize(
                   jsonNode.fieldNames(),
                   Spliterator.IMMUTABLE | Spliterator.DISTINCT | Spliterator.NONNULL),
               false)
-          .filter(name -> attribute == isAttribute(jsonNode.get(name)))
           .map(name -> new JacksonByNameNode(QName.valueOf(name), parent));
     } else if (jsonNode.isArray()) {
       return IntStream.range(0, jsonNode.size())
           .mapToObj(jsonNode::get)
-          .flatMap(new JsonArrayWrapper(parent, attribute));
+          .flatMap(new JsonArrayWrapper(parent));
     } else {
       return Stream.empty();
     }
   }
 
-  static boolean isAttribute(JsonNode jsonNode) {
-    return jsonNode.isValueNode();
-  }
-
   private static final class JsonArrayWrapper implements Function<JsonNode, Stream<JacksonNode>> {
 
     private final JacksonNode parent;
-    private final boolean attribute;
     private int index;
 
-    JsonArrayWrapper(JacksonNode parent, boolean attribute) {
+    JsonArrayWrapper(JacksonNode parent) {
       this.parent = parent;
-      this.attribute = attribute;
     }
 
     @Override
     public Stream<JacksonNode> apply(JsonNode jsonValue) {
       final JacksonNode arrayElemNode = new JacksonByIndexNode(index++, parent);
-      return isAttribute(jsonValue)
-          ? attribute ? Stream.of(arrayElemNode) : Stream.empty()
-          : traverse(jsonValue, arrayElemNode, attribute);
+      return jsonValue.isValueNode()
+          ? Stream.of(arrayElemNode)
+          : traverse(jsonValue, arrayElemNode);
     }
   }
 }

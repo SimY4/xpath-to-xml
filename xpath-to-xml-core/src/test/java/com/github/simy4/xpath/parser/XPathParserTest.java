@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -432,7 +432,7 @@ class XPathParserTest {
       final String invalidXPath, final NamespaceContext namespaceContext) {
     assertThatThrownBy(() -> new XPathParser(namespaceContext).parse(invalidXPath))
         .isInstanceOf(XPathParserException.class)
-        .hasMessageMatching("(Expected tokens.+|Expected no more tokens but was.+)");
+        .hasMessageMatching("(?s)Unable to parse xpath:.+Expected tokens:.+Actual:.+");
   }
 
   private static Expr pathExpr(StepExpr... steps) {

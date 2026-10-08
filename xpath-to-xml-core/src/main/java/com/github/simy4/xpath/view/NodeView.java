@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,9 @@ public final class NodeView<N extends Node> implements IterableNodeView<N>, Seri
 
   @SuppressWarnings("serial")
   private final N node;
+
   private final int position;
   private final boolean hasNext;
-  private final boolean isNew;
   private boolean marked;
 
   public NodeView(N node) {
@@ -39,18 +39,17 @@ public final class NodeView<N extends Node> implements IterableNodeView<N>, Seri
   }
 
   public NodeView(N node, int position) {
-    this(node, position, false, true, false);
+    this(node, position, false, true);
   }
 
   public NodeView(N node, int position, boolean hasNext) {
-    this(node, position, hasNext, false, false);
+    this(node, position, hasNext, false);
   }
 
-  private NodeView(N node, int position, boolean hasNext, boolean isNew, boolean marked) {
+  private NodeView(N node, int position, boolean hasNext, boolean marked) {
     this.node = node;
     this.position = position;
     this.hasNext = hasNext;
-    this.isNew = isNew;
     this.marked = marked;
   }
 
@@ -106,10 +105,6 @@ public final class NodeView<N extends Node> implements IterableNodeView<N>, Seri
     return hasNext;
   }
 
-  public boolean isNew() {
-    return isNew;
-  }
-
   public boolean isMarked() {
     return marked;
   }
@@ -121,6 +116,6 @@ public final class NodeView<N extends Node> implements IterableNodeView<N>, Seri
   NodeView<N> copy(int position, boolean hasNext) {
     return this.position == position && this.hasNext == hasNext
         ? this
-        : new NodeView<>(node, position, hasNext, isNew, marked);
+        : new NodeView<>(node, position, hasNext, marked);
   }
 }

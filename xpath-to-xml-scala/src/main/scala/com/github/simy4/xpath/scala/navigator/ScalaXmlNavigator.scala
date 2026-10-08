@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Alex Simkin
+ * Copyright 2018-2025 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ class ScalaXmlNavigator(override val root: Root) extends Navigator[ScalaXmlNode]
   def parentOf(node: ScalaXmlNode): ScalaXmlNode                                = node.parent.orNull
   def elementsOf(parent: ScalaXmlNode): java.lang.Iterable[? <: ScalaXmlNode]   = parent.elements
   def attributesOf(parent: ScalaXmlNode): java.lang.Iterable[? <: ScalaXmlNode] = parent.attributes
-  def createAttribute(parent: ScalaXmlNode, attribute: QName): ScalaXmlNode = {
+  def createAttribute(parent: ScalaXmlNode, attribute: QName): ScalaXmlNode     = {
     val pre  = attribute.getPrefix
     val attr = XmlAttribute(if (pre.nonEmpty) Some(pre) else None, attribute.getLocalPart, Text(""), Null)
     Attribute(attr)()
@@ -113,7 +113,7 @@ class ScalaXmlNavigator(override val root: Root) extends Navigator[ScalaXmlNode]
         val toDelete   = a.node
         val parent     = a.parent.getOrElse(throw new XmlBuilderException("Unable to remove detached node"))
         val parentNode = parent.node
-        val newAttr =
+        val newAttr    =
           if (toDelete.isPrefixed)
             parentNode.attributes.remove(toDelete.getNamespace(parentNode), parentNode, toDelete.key)
           else parentNode.attributes.remove(toDelete.key)

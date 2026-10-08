@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Alex Simkin
+ * Copyright 2021-2025 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -119,9 +119,9 @@ class XmlBuilderSpec extends AnyFunSpec {
       }
 
       describe("should not modify document when XPaths are traversable") {
-        val xmlProperties = fixtureAccessor.getXmlProperties.asScala
-        val xml           = fixtureAccessor.getPutValueXml
-        val oldDocument   = XML.loadString(xml)
+        val xmlProperties  = fixtureAccessor.getXmlProperties.asScala
+        val xml            = fixtureAccessor.getPutValueXml
+        val oldDocument    = XML.loadString(xml)
         val builtDocument1 = xmlProperties.toSeq.traverse { case (xpath, value) =>
           Effect.putValue(xpath, value)
         }.flatMap {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ abstract class AbstractOperationExpr implements Expr, Serializable {
 
   @SuppressWarnings("serial")
   private final Expr leftExpr;
+
   @SuppressWarnings("serial")
   private final Expr rightExpr;
 
@@ -54,6 +55,6 @@ abstract class AbstractOperationExpr implements Expr, Serializable {
 
   @Override
   public final String toString() {
-    return leftExpr.toString() + operator() + rightExpr.toString();
+    return leftExpr.toString() + ' ' + operator() + ' ' + rightExpr.toString();
   }
 }

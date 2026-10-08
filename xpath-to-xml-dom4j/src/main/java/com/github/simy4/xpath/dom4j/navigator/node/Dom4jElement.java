@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import com.github.simy4.xpath.XmlBuilderException;
 import org.dom4j.Attribute;
 import org.dom4j.Element;
 import org.dom4j.IllegalAddException;
-import org.dom4j.Namespace;
 
 import javax.xml.namespace.QName;
 
@@ -35,14 +34,14 @@ public final class Dom4jElement extends AbstractDom4jNode<Element> {
 
   @Override
   public QName getName() {
-    final Namespace namespace = getNode().getNamespace();
+    final var namespace = getNode().getNamespace();
     return new QName(namespace.getURI(), getNode().getName(), namespace.getPrefix());
   }
 
   @Override
   public Dom4jNode getParent() {
-    final Element node = getNode();
-    final Element parent = node.getParent();
+    final var node = getNode();
+    final var parent = node.getParent();
     return null == parent
         ? node.getDocument().getRootElement() == node ? new Dom4jDocument(node.getDocument()) : null
         : new Dom4jElement(parent);

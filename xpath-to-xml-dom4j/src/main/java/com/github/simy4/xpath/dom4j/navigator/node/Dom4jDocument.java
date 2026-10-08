@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Alex Simkin
+ * Copyright 2017-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package com.github.simy4.xpath.dom4j.navigator.node;
 
 import com.github.simy4.xpath.XmlBuilderException;
 import org.dom4j.Document;
-import org.dom4j.Element;
 import org.dom4j.IllegalAddException;
 
 import javax.xml.namespace.QName;
@@ -44,7 +43,7 @@ public final class Dom4jDocument extends AbstractDom4jNode<Document> {
 
   @Override
   public Iterable<Dom4jElement> elements() {
-    final Element root = getNode().getRootElement();
+    final var root = getNode().getRootElement();
     return null == root
         ? Collections.emptyList()
         : Collections.singletonList(new Dom4jElement(root));

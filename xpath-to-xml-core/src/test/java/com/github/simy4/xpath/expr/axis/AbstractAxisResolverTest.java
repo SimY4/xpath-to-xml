@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Alex Simkin
+ * Copyright 2018-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import com.github.simy4.xpath.helpers.SerializationHelper;
 import com.github.simy4.xpath.navigator.Navigator;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.NodeView;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +32,6 @@ import java.io.IOException;
 import java.io.Serializable;
 
 import static com.github.simy4.xpath.util.TestNode.node;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -40,7 +40,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-abstract class AbstractAxisResolverTest {
+abstract class AbstractAxisResolverTest extends Assertions {
 
   static final NodeView<TestNode> parentNode = new NodeView<>(node("node"));
   static final QName name = new QName("name");
@@ -59,7 +59,7 @@ abstract class AbstractAxisResolverTest {
     var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
     // then
-    assertThat((Iterable<?>) result).extracting("node").containsExactly(node(name));
+    assertThatIterable(result).extracting(NodeView::getNode).containsExactly(node(name));
   }
 
   @Test
@@ -73,7 +73,7 @@ abstract class AbstractAxisResolverTest {
     var result = axisResolver.resolveAxis(navigator, parentNode, true);
 
     // then
-    assertThat((Iterable<?>) result).isNotEmpty();
+    assertThatIterable(result).isNotEmpty();
     verify(axisResolver, never()).createAxisNode(any(), any(), anyInt());
   }
 
@@ -84,7 +84,7 @@ abstract class AbstractAxisResolverTest {
     var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
     // then
-    assertThat((Iterable<?>) result).isEmpty();
+    assertThatIterable(result).isEmpty();
   }
 
   @Test

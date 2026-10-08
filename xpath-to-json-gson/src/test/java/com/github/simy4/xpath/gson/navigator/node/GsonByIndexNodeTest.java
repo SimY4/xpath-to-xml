@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Alex Simkin
+ * Copyright 2018-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,21 +55,13 @@ class GsonByIndexNodeTest {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
-  void shouldTraverseArrayAttributes() {
+  void shouldTraverseArray() {
     var parent = new GsonRootNode(jsonArray);
 
-    assertThat((Iterable<GsonNode>) parent.attributes())
-        .containsExactlyInAnyOrder(
+    assertThat(parent.traverse())
+        .containsExactly(
             new GsonByIndexNode(0, parent),
             new GsonByIndexNode(1, parent),
             new GsonByIndexNode(2, parent));
-  }
-
-  @Test
-  void shouldTraverseArrayElements() {
-    var parent = new GsonRootNode(jsonArray);
-
-    assertThat(parent.elements()).isEmpty();
   }
 }

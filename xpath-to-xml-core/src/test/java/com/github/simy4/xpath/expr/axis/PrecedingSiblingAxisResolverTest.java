@@ -18,6 +18,7 @@ package com.github.simy4.xpath.expr.axis;
 import com.github.simy4.xpath.XmlBuilderException;
 import com.github.simy4.xpath.util.TestNode;
 import com.github.simy4.xpath.view.IterableNodeView;
+import com.github.simy4.xpath.view.NodeView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,7 +65,7 @@ class PrecedingSiblingAxisResolverTest extends AbstractAxisResolverTest {
     var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
     // then
-    assertThat((Iterable<?>) result).extracting("node").containsExactly(node(name));
+    assertThatIterable(result).extracting(NodeView::getNode).containsExactly(node(name));
   }
 
   @Test
@@ -78,8 +79,8 @@ class PrecedingSiblingAxisResolverTest extends AbstractAxisResolverTest {
     var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
     // then
-    assertThat((Iterable<?>) result)
-        .extracting("node")
+    assertThatIterable(result)
+        .extracting(NodeView::getNode)
         .containsExactly(node(name), node("node1211"), node("node1212"));
   }
 
@@ -94,7 +95,7 @@ class PrecedingSiblingAxisResolverTest extends AbstractAxisResolverTest {
     var result = axisResolver.resolveAxis(navigator, parentNode, false);
 
     // then
-    assertThat((Iterable<?>) result).isEmpty();
+    assertThatIterable(result).isEmpty();
   }
 
   @Test
@@ -108,7 +109,7 @@ class PrecedingSiblingAxisResolverTest extends AbstractAxisResolverTest {
     IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, false);
 
     // then
-    assertThat((Iterable<?>) result).isEmpty();
+    assertThatIterable(result).isEmpty();
   }
 
   @Test
@@ -122,7 +123,9 @@ class PrecedingSiblingAxisResolverTest extends AbstractAxisResolverTest {
     IterableNodeView<TestNode> result = axisResolver.resolveAxis(navigator, parentNode, true);
 
     // then
-    assertThat((Object) result).extracting("node", "position").containsExactly(node("name"), 1);
+    assertThatIterable(result)
+        .extracting(NodeView::getNode, NodeView::getPosition)
+        .containsExactly(tuple(node("name"), 1));
     verify(navigator).createElement(parentParent, name);
     verify(navigator).appendPrev(parentNode.getNode(), node("name"));
   }

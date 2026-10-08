@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Alex Simkin
+ * Copyright 2018-2026 Alex Simkin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package com.github.simy4.xpath.jackson.navigator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.github.simy4.xpath.XmlBuilderException;
@@ -51,12 +52,12 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
 
   @Override
   public Iterable<? extends JacksonNode> elementsOf(JacksonNode parent) {
-    return () -> parent.elements().iterator();
+    return () -> parent.traverse().iterator();
   }
 
   @Override
   public Iterable<? extends JacksonNode> attributesOf(JacksonNode parent) {
-    return () -> parent.attributes().iterator();
+    return elementsOf(parent);
   }
 
   @Override
@@ -183,7 +184,7 @@ public class JacksonNavigator implements Navigator<JacksonNode> {
     parentArray.add(arrayNode);
     while (nodeToCopy != arrayNode && i > 0) {
       arrayNode = parentArray.get(i - 1);
-      parentArray.set(i, arrayNode);
+      parentArray.set(i, NullNode.instance);
       i -= 1;
     }
     return new JacksonByIndexNode(i, parent);
