@@ -106,7 +106,9 @@ public final class JDomNavigator implements Navigator<JDomNode> {
     node.visit(new RemoveVisitor());
   }
 
-  private static final class RemoveVisitor implements JDomNode.Visitor {
+  static final class RemoveVisitor implements JDomNode.Visitor {
+    RemoveVisitor() {}
+
     @Override
     public void visit(JDomAttribute attribute) {
       attribute.getNode().detach();
@@ -123,10 +125,10 @@ public final class JDomNavigator implements Navigator<JDomNode> {
     }
   }
 
-  private static final class SetTextVisitor implements JDomNode.Visitor {
+  static final class SetTextVisitor implements JDomNode.Visitor {
     private final String text;
 
-    private SetTextVisitor(String text) {
+    SetTextVisitor(String text) {
       this.text = text;
     }
 

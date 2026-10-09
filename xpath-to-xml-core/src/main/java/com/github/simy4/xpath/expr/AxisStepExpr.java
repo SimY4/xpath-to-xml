@@ -110,7 +110,7 @@ public class AxisStepExpr implements StepExpr, Serializable {
       final NodeView<T> newNode = parentNodeSupplier.apply(position);
       if (!predicate
           .resolve(navigator, newNode, true)
-          .visit(new PredicateVisitor<T>(navigator, newNode, true))) {
+          .visit(new PredicateVisitor<>(navigator, newNode, true))) {
         throw new XmlBuilderException("Unable to satisfy expression predicate: " + predicate);
       }
       return newNode;
@@ -122,7 +122,7 @@ public class AxisStepExpr implements StepExpr, Serializable {
       final boolean greedy = view.isMarked() && this.greedy;
       if (predicate
           .resolve(navigator, view, greedy)
-          .visit(new PredicateVisitor<T>(navigator, view, greedy))) {
+          .visit(new PredicateVisitor<>(navigator, view, greedy))) {
         resolved = true;
         result = view;
       } else if (greedy) {

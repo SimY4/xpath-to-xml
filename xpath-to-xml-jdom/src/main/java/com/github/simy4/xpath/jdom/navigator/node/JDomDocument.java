@@ -92,7 +92,7 @@ public final class JDomDocument extends AbstractJDomNode<Document> {
   private static final class AppendChild implements JDomNode.Visitor {
     private final Document document;
 
-    private AppendChild(Document document) {
+    AppendChild(Document document) {
       this.document = document;
     }
 

@@ -34,7 +34,7 @@ public final class LazyMemoizedServiceLoader<T> implements Function<Class<T>, It
 
   private synchronized Iterable<T> loadAndMemoize(final Class<T> clazz) {
     if (memoized == null) {
-      memoized = AccessController.doPrivileged(new ServiceLoaderAction<T>(clazz));
+      memoized = AccessController.doPrivileged(new ServiceLoaderAction<>(clazz));
     }
     return memoized;
   }
@@ -50,7 +50,7 @@ public final class LazyMemoizedServiceLoader<T> implements Function<Class<T>, It
     public Collection<T> run() {
       final ClassLoader classLoader = clazz.getClassLoader();
       final ServiceLoader<T> serviceLoader = ServiceLoader.load(clazz, classLoader);
-      final Collection<T> services = new ArrayList<T>();
+      final Collection<T> services = new ArrayList<>();
       for (T service : serviceLoader) {
         services.add(service);
       }

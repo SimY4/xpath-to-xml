@@ -441,7 +441,7 @@ public class XPathParser implements Serializable {
     private static final Map<String, Short> LOOKUP_MAP;
 
     static {
-      Map<String, Short> lookupMap = new HashMap<String, Short>();
+      Map<String, Short> lookupMap = new HashMap<>();
       lookupMap.put("child", CHILD);
       lookupMap.put("descendant", DESCENDANT);
       lookupMap.put("parent", PARENT);
@@ -457,7 +457,7 @@ public class XPathParser implements Serializable {
       LOOKUP_MAP = Collections.unmodifiableMap(lookupMap);
     }
 
-    private static short lookup(Token axisToken) {
+    static short lookup(Token axisToken) {
       return LOOKUP_MAP.getOrDefault(axisToken.getToken(), INVALID);
     }
 

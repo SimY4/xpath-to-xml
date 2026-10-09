@@ -64,14 +64,14 @@ public class PrecedingSiblingAxisResolver extends AbstractAxisResolver {
     return (sibling ? "preceding-sibling::" : "preceding::") + super.toString();
   }
 
-  private static final class PrecedingSiblingIterable<T extends Node> implements Iterable<T> {
+  static final class PrecedingSiblingIterable<T extends Node> implements Iterable<T> {
 
     private final Navigator<T> navigator;
     private final T parent;
     private final T current;
     private final boolean sibling;
 
-    private PrecedingSiblingIterable(Navigator<T> navigator, T parent, T current, boolean sibling) {
+    PrecedingSiblingIterable(Navigator<T> navigator, T parent, T current, boolean sibling) {
       this.navigator = navigator;
       this.parent = parent;
       this.current = current;
@@ -88,7 +88,7 @@ public class PrecedingSiblingAxisResolver extends AbstractAxisResolver {
     }
   }
 
-  private static final class Preceding<T extends Node> implements Iterator<T> {
+  static final class Preceding<T extends Node> implements Iterator<T> {
 
     private final Iterator<? extends T> children;
     private final T current;
@@ -96,7 +96,7 @@ public class PrecedingSiblingAxisResolver extends AbstractAxisResolver {
     private boolean hasPeeked;
     private T next;
 
-    private Preceding(Iterator<? extends T> children, T current) {
+    Preceding(Iterator<? extends T> children, T current) {
       this.children = children;
       this.current = current;
     }

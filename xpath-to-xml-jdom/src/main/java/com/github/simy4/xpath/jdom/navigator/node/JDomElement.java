@@ -91,10 +91,10 @@ public final class JDomElement extends AbstractJDomNode<Element> {
     visitor.visit(this);
   }
 
-  private static final class AppendPrev implements JDomNode.Visitor {
+  static final class AppendPrev implements JDomNode.Visitor {
     private final Element element;
 
-    private AppendPrev(Element element) {
+    AppendPrev(Element element) {
       this.element = element;
     }
 
@@ -120,10 +120,10 @@ public final class JDomElement extends AbstractJDomNode<Element> {
     }
   }
 
-  private static final class AppendChild implements JDomNode.Visitor {
+  static final class AppendChild implements JDomNode.Visitor {
     private final Element element;
 
-    private AppendChild(Element element) {
+    AppendChild(Element element) {
       this.element = element;
     }
 
@@ -151,10 +151,10 @@ public final class JDomElement extends AbstractJDomNode<Element> {
     }
   }
 
-  private static final class AppendNext implements JDomNode.Visitor {
+  static final class AppendNext implements JDomNode.Visitor {
     private final Element element;
 
-    private AppendNext(Element element) {
+    AppendNext(Element element) {
       this.element = element;
     }
 
